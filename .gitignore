@@ -1,0 +1,14 @@
+# macOS
+.DS_Store
+
+# SwiftPM/Xcode build output
+.build/
+.swiftpm/
+
+# User-local IDE state
+**/xcuserdata/
+**/*.xcuserstate
+
+# Local tool state
+.claude/
+.codex/
