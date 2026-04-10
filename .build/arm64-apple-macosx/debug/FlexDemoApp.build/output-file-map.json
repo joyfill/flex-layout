@@ -65,6 +65,13 @@
     "swift-dependencies": "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingCardUI.swiftdeps",
     "diagnostics": "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingCardUI.dia"
   },
+  "/Users/vishnudutt/layout-test/FlexDemoApp/PricingCardUIFlex.swift": {
+    "dependencies": "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingCardUIFlex.d",
+    "object": "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingCardUIFlex.swift.o",
+    "swiftmodule": "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingCardUIFlex~partial.swiftmodule",
+    "swift-dependencies": "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingCardUIFlex.swiftdeps",
+    "diagnostics": "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingCardUIFlex.dia"
+  },
   "/Users/vishnudutt/layout-test/FlexDemoApp/PricingPage.swift": {
     "dependencies": "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingPage.d",
     "object": "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingPage.swift.o",

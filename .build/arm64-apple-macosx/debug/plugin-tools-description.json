@@ -64,6 +64,10 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/vishnudutt/layout-test/FlexDemoApp/PricingCardUIFlex.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/vishnudutt/layout-test/FlexDemoApp/PricingPage.swift"
         },
         {
@@ -96,6 +100,7 @@
         "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/FlexSamples.swift.o",
         "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/NativePricingPage.swift.o",
         "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingCardUI.swift.o",
+        "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingCardUIFlex.swift.o",
         "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingPage.swift.o",
         "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/ResponsivePreview.swift.o"
       ],
@@ -194,6 +199,10 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingCardUIFlex.swift.o"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingPage.swift.o"
         },
         {
@@ -216,6 +225,7 @@
         "/Users/vishnudutt/layout-test/FlexDemoApp/FlexSamples.swift",
         "/Users/vishnudutt/layout-test/FlexDemoApp/NativePricingPage.swift",
         "/Users/vishnudutt/layout-test/FlexDemoApp/PricingCardUI.swift",
+        "/Users/vishnudutt/layout-test/FlexDemoApp/PricingCardUIFlex.swift",
         "/Users/vishnudutt/layout-test/FlexDemoApp/PricingPage.swift",
         "/Users/vishnudutt/layout-test/FlexDemoApp/ResponsivePreview.swift"
       ],
@@ -689,6 +699,7 @@
       "/Users/vishnudutt/layout-test/FlexDemoApp/FlexSamples.swift",
       "/Users/vishnudutt/layout-test/FlexDemoApp/NativePricingPage.swift",
       "/Users/vishnudutt/layout-test/FlexDemoApp/PricingCardUI.swift",
+      "/Users/vishnudutt/layout-test/FlexDemoApp/PricingCardUIFlex.swift",
       "/Users/vishnudutt/layout-test/FlexDemoApp/PricingPage.swift",
       "/Users/vishnudutt/layout-test/FlexDemoApp/ResponsivePreview.swift",
       "-I",
@@ -1118,6 +1129,10 @@
         },
         {
           "kind" : "file",
+          "name" : "/Users/vishnudutt/layout-test/FlexDemoApp/PricingCardUIFlex.swift"
+        },
+        {
+          "kind" : "file",
           "name" : "/Users/vishnudutt/layout-test/FlexDemoApp/PricingPage.swift"
         },
         {
@@ -1169,6 +1184,10 @@
         {
           "kind" : "file",
           "name" : "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingCardUI.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingCardUIFlex.swift.o"
         },
         {
           "kind" : "file",
@@ -1301,6 +1320,10 @@
         {
           "kind" : "file",
           "name" : "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingCardUI.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/vishnudutt/layout-test/.build/arm64-apple-macosx/debug/FlexDemoApp.build/PricingCardUIFlex.swift.o"
         },
         {
           "kind" : "file",

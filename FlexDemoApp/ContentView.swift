@@ -27,7 +27,9 @@ private let allDemos: [DemoItem] = [
     DemoItem(id: "s-product",  icon: "bag.fill",             title: "Product Page",      subtitle: "pure FlexBox screen"),
     DemoItem(id: "s-kanban",   icon: "rectangle.split.3x1.fill", title: "Kanban Board",  subtitle: "pure FlexBox screen"),
     DemoItem(id: "s-pricing", icon: "creditcard.fill",          title: "Pricing Page",  subtitle: "responsive wrap"),
-    DemoItem(id: "s-pricing-native", icon: "square.grid.2x2.fill", title: "Pricing Page (Native)", subtitle: "swiftui grid + stack"),
+
+//    DemoItem(id: "s-pricing-native", icon: "square.grid.2x2.fill", title: "Pricing Page (Native)", subtitle: "swiftui grid + stack"),
+
 ]
 
 // MARK: - Root

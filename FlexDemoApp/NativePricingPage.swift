@@ -17,7 +17,7 @@ struct NativePricingPage: View {
     var body: some View {
         LazyVGrid(columns: columns, alignment: .center, spacing: PricingLayoutMetrics.cardGap) {
             ForEach(PricingPlan.all) { plan in
-                PricingPlanCard(plan: plan)
+                PricingPlanCardFlex(plan: plan)
                     .frame(width: PricingLayoutMetrics.cardWidth)
             }
         }
