@@ -191,6 +191,44 @@ final class FlexGeometryTests: XCTestCase {
         XCTAssertLessThan(frames[2].minY, frames[0].minY)
     }
 
+    func testRowReversePlacesFirstItemAtMainEnd() {
+        let config = FlexContainerConfig(
+            direction: .rowReverse,
+            wrap: .nowrap,
+            justifyContent: .flexStart,
+            alignItems: .flexStart
+        )
+
+        let frames = captureFrames(
+            config: config,
+            itemSizes: [CGSize(width: 30, height: 20), CGSize(width: 40, height: 20)],
+            containerSize: CGSize(width: 120, height: 60)
+        )
+
+        XCTAssertEqual(frames.count, 2)
+        assertEqual(frames[0].minX, 90)
+        assertEqual(frames[1].minX, 50)
+    }
+
+    func testColumnDirectionUsesVerticalMainAxis() {
+        let config = FlexContainerConfig(
+            direction: .column,
+            wrap: .nowrap,
+            justifyContent: .flexStart,
+            alignItems: .flexStart
+        )
+
+        let frames = captureFrames(
+            config: config,
+            itemSizes: [CGSize(width: 30, height: 20), CGSize(width: 40, height: 30)],
+            containerSize: CGSize(width: 120, height: 120)
+        )
+
+        XCTAssertEqual(frames.count, 2)
+        assertEqual(frames[0].minY, 0)
+        assertEqual(frames[1].minY, 20)
+    }
+
     func testRowGapAndColumnGapApplyToCorrectAxes() {
         let config = FlexContainerConfig(
             direction: .row,
