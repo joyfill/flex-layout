@@ -41,51 +41,51 @@ import SwiftUI
 /// // solution.frames[0] → {x:0, y:0, width:100, height:200}
 /// // solution.frames[1] → {x:100, y:0, width:300, height:200}
 /// ```
-struct FlexItemInput {
+public struct FlexItemInput {
     /// Returns the item's natural size given a layout proposal.
     ///
     /// In production code this is `{ sv.sizeThatFits($0) }`.
     /// In tests it is any closure that returns a `CGSize`.
-    var measure: (ProposedViewSize) -> CGSize
+    public var measure: (ProposedViewSize) -> CGSize
 
     /// How much this item grows relative to siblings when free main-axis space is available.
     /// CSS `flex-grow`. Default `0` (no growth).
-    var grow:          CGFloat
+    public var grow:          CGFloat
 
     /// How much this item shrinks relative to siblings when the line overflows.
     /// CSS `flex-shrink`. Default `1`.
-    var shrink:        CGFloat
+    public var shrink:        CGFloat
 
     /// Initial main-axis size before free space is distributed. CSS `flex-basis`. Default `.auto`.
-    var basis:         FlexBasis
+    public var basis:         FlexBasis
 
     /// Cross-axis alignment override for this item. CSS `align-self`. Default `.auto`.
-    var alignSelf:     AlignSelf
+    public var alignSelf:     AlignSelf
 
     /// Visual ordering relative to other items. CSS `order`. Default `0`.
-    var order:         Int
+    public var order:         Int
 
     /// Z-axis stacking order. CSS `z-index`. Default `0`.
-    var zIndex:        Int
+    public var zIndex:        Int
 
     /// Positioning scheme. CSS `position`. Default `.relative`.
-    var position:      FlexPosition
+    public var position:      FlexPosition
 
     /// Explicit width override. CSS `width`. Default `.auto`.
-    var explicitWidth: FlexSize
+    public var explicitWidth: FlexSize
 
     /// Explicit height override. CSS `height`. Default `.auto`.
-    var explicitHeight: FlexSize
+    public var explicitHeight: FlexSize
 
     // Absolute-positioning insets (only meaningful when `position == .absolute`)
     /// Distance from the container's top edge. CSS `top`.
-    var top:           CGFloat?
+    public var top:           CGFloat?
     /// Distance from the container's bottom edge. CSS `bottom`.
-    var bottom:        CGFloat?
+    public var bottom:        CGFloat?
     /// Distance from the container's leading (left) edge. CSS `left`.
-    var leading:       CGFloat?
+    public var leading:       CGFloat?
     /// Distance from the container's trailing (right) edge. CSS `right`.
-    var trailing:      CGFloat?
+    public var trailing:      CGFloat?
 
     /// Creates a flex item input with all flex properties.
     ///
@@ -104,7 +104,7 @@ struct FlexItemInput {
     ///   - bottom:         CSS `bottom`. Default `nil`.
     ///   - leading:        CSS `left`. Default `nil`.
     ///   - trailing:       CSS `right`. Default `nil`.
-    init(
+    public init(
         measure:        @escaping (ProposedViewSize) -> CGSize,
         grow:           CGFloat      = 0,
         shrink:         CGFloat      = 1,
@@ -146,7 +146,7 @@ struct FlexItemInput {
     /// ```swift
     /// let item = FlexItemInput.fixed(CGSize(width: 80, height: 40), grow: 1)
     /// ```
-    static func fixed(
+    public static func fixed(
         _ size: CGSize,
         grow:      CGFloat      = 0,
         shrink:    CGFloat      = 1,
@@ -173,7 +173,7 @@ struct FlexItemInput {
     /// ```swift
     /// let item = FlexItemInput.fixed(width: 80, height: 40, grow: 1)
     /// ```
-    static func fixed(
+    public static func fixed(
         width: CGFloat, height: CGFloat,
         grow:      CGFloat      = 0,
         shrink:    CGFloat      = 1,
@@ -210,7 +210,7 @@ struct FlexItemInput {
     /// // solution.frames[0].width == 200
     /// // solution.frames[1].width == 200
     /// ```
-    static func fill(
+    public static func fill(
         grow:      CGFloat      = 0,
         shrink:    CGFloat      = 1,
         basis:     FlexBasis    = .auto,
@@ -233,22 +233,22 @@ struct FlexItemInput {
 /// All coordinates are relative to the container origin `(0, 0)`. When placing views
 /// inside a `CGRect` with a non-zero origin, add `bounds.minX` / `bounds.minY` to
 /// each frame as ``FlexLayout`` does in `placeSubviews`.
-struct FlexSolution {
+public struct FlexSolution {
     /// Frame of each item, indexed by **input order** (not visual/order-property order).
     ///
     /// `frames[i]` corresponds to `inputs[i]` in the original `[FlexItemInput]` array.
     /// Absolute-position items and order-reordered items are already resolved to their
     /// final positions.
-    var frames: [CGRect]
+    public var frames: [CGRect]
 
     /// The proposal to pass to `placeSubviews` for each item (same index as `frames`).
     ///
     /// Equal to `CGSize(width: frame.width, height: frame.height)` for in-flow items,
     /// and the resolved absolute size for out-of-flow items.
-    var proposals: [ProposedViewSize]
+    public var proposals: [ProposedViewSize]
 
     /// Total size of the flex container, including padding on all sides.
-    var containerSize: CGSize
+    public var containerSize: CGSize
 }
 
 // MARK: - Internal layout types (shared between FlexEngine and FlexLayout)
@@ -263,20 +263,20 @@ struct RawFlexItem {
     /// Resolved main-axis basis size in points.
     var basisMain:          CGFloat
     /// `flex-grow` factor.
-    var grow:               CGFloat
+    public var grow:               CGFloat
     /// `flex-shrink` factor.
-    var shrink:             CGFloat
+    public var shrink:             CGFloat
     /// Resolved `align-self` value (`.auto` already substituted with container `alignItems`).
     var effectiveAlignSelf: AlignSelf
     /// Explicit cross-axis size in points, or `nil` if the item uses intrinsic cross size.
     var explicitCrossSize:  CGFloat?
     /// CSS `z-index` value.
-    var zIndex:             Int
+    public var zIndex:             Int
     // Absolute-positioning insets (unused for in-flow items):
-    var top:                CGFloat?
-    var bottom:             CGFloat?
-    var leading:            CGFloat?
-    var trailing:           CGFloat?
+    public var top:                CGFloat?
+    public var bottom:             CGFloat?
+    public var leading:            CGFloat?
+    public var trailing:           CGFloat?
 }
 
 /// A fully resolved flex item ready for placement.
@@ -297,7 +297,7 @@ struct ComputedFlexItem {
     /// Distance from cross-start to the text baseline (simplified; equal to crossSize when baseline is used).
     var ascent:      CGFloat
     /// CSS `z-index`.
-    var zIndex:      Int
+    public var zIndex:      Int
     // Absolute positioning metadata:
     var isAbsolute:  Bool     = false
     var absTop:      CGFloat? = nil
@@ -359,7 +359,7 @@ struct ComputedFlexLine {
 /// 8. Apply `justify-content` (main-axis offsets).
 /// 9. Apply `align-content` (cross-axis line offsets + optional stretch redistribution).
 /// 10. Resolve absolute items.
-enum FlexEngine {
+public enum FlexEngine {
 
     // MARK: - Main entry point
 
@@ -387,7 +387,7 @@ enum FlexEngine {
     /// // solution.frames[1] → {x:220, y:30, width:80,  height:40}
     /// //                        ↑ spaceBetween pushes item to far end
     /// ```
-    static func solve(
+    public static func solve(
         config:   FlexContainerConfig,
         inputs:   [FlexItemInput],
         proposal: ProposedViewSize
@@ -885,7 +885,7 @@ enum FlexEngine {
     /// - `.minContent` → `.minContent` (trigger a min-content measurement)
     /// - `.points(n)` → `.value(max(0, n))`
     /// - `.fraction(f)` → `.value(max(0, f × container))` when container is known, else `.auto`
-    enum ResolvedFlexSize {
+    public enum ResolvedFlexSize {
         case value(CGFloat)
         case minContent
         case auto
@@ -896,7 +896,7 @@ enum FlexEngine {
     /// - Parameters:
     ///   - size:      The size value to resolve.
     ///   - container: The container's dimension on the same axis, or `nil` if unconstrained.
-    static func resolveFlexSizeEx(_ size: FlexSize, container: CGFloat?) -> ResolvedFlexSize {
+    public static func resolveFlexSizeEx(_ size: FlexSize, container: CGFloat?) -> ResolvedFlexSize {
         switch size {
         case .auto:          return .auto
         case .minContent:    return .minContent
@@ -918,7 +918,7 @@ enum FlexEngine {
     ///   - lineCrossSize:   The line's natural cross size (max of item cross sizes).
     ///   - crossConstraint: The container's cross-axis constraint, or `nil`.
     /// - Returns: The effective line cross size — expanded to the cross constraint for `nowrap`.
-    static func applySingleLineCrossConstraint(
+    public static func applySingleLineCrossConstraint(
         config:          FlexContainerConfig,
         lineCrossSize:   CGFloat,
         crossConstraint: CGFloat?
@@ -984,7 +984,7 @@ enum FlexEngine {
     ///   - ascent:    The item's ascent (distance from cross-start to baseline).
     ///   - maxAscent: The maximum ascent among all baseline-aligned items in the line.
     /// - Returns: Cross-axis offset from the line start to the item start.
-    static func itemCrossOffset(
+    public static func itemCrossOffset(
         alignSelf: AlignSelf,
         itemCross: CGFloat,
         lineCross: CGFloat,
@@ -1021,7 +1021,7 @@ enum FlexEngine {
     ///   - justify:       The container's `justify-content` value.
     ///   - reversed:      `true` for `rowReverse` / `columnReverse` directions.
     /// - Returns: Main-axis offset for each item, indexed in the same order as `itemSizes`.
-    static func distributeMain(
+    public static func distributeMain(
         containerMain: CGFloat,
         itemSizes:     [CGFloat],
         gap:           CGFloat,
@@ -1082,7 +1082,7 @@ enum FlexEngine {
     ///   - gap:            Gap between consecutive lines (`crossAxisGap`).
     ///   - align:          The container's `align-content` value.
     /// - Returns: Cross-axis offset for each line, indexed in the same order as `lineSizes`.
-    static func distributeLines(
+    public static func distributeLines(
         containerCross: CGFloat,
         lineSizes:      [CGFloat],
         gap:            CGFloat,

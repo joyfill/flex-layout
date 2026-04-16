@@ -113,7 +113,7 @@ public struct FlexBox<Content: View>: View {
     /// The view's body: a ``FlexLayout`` wrapped with the container's overflow modifier.
     ///
     /// The overflow behaviour is applied at the container level via
-    /// ``SwiftUI/View/flexOverflow(_:)`` so the `ScrollView` (if any) correctly encloses
+    /// ``FlexOverflowModifier`` so the `ScrollView` (if any) correctly encloses
     /// all children.
     @ViewBuilder
     public var body: some View {

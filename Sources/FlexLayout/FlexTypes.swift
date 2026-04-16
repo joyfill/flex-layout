@@ -5,7 +5,7 @@ import SwiftUI
 /// Controls how content that overflows a flex container is rendered.
 ///
 /// Maps directly to the CSS `overflow` property. Apply at the container level via
-/// ``FlexBox`` or ``FlexLayout``, or at the item level via ``SwiftUI/View/flexItem(grow:shrink:basis:alignSelf:order:width:height:overflow:zIndex:position:top:bottom:leading:trailing:display:)``.
+/// ``FlexBox`` or ``FlexLayout``, or at the item level via ``FlexItemModifier``.
 ///
 /// ```swift
 /// // Clip overflowing cards without a scrollbar
