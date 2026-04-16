@@ -6,8 +6,7 @@ import SwiftUI
 /// as `LayoutValueKey` values so they can be read by ``FlexLayout`` at layout time.
 ///
 /// You almost never need to create `FlexItemModifier` directly. Use the
-/// ``SwiftUI/View/flexItem(grow:shrink:basis:alignSelf:order:width:height:overflow:zIndex:position:top:bottom:leading:trailing:display:)``
-/// extension method instead.
+/// `.flexItem(...)` extension on `View` instead.
 public struct FlexItemModifier: ViewModifier {
 
     // Core flex item properties
@@ -211,7 +210,7 @@ public extension View {
 
 /// Applies visual overflow clipping to a view, mirroring the CSS `overflow` property.
 ///
-/// Used internally by ``SwiftUI/View/flexOverflow(_:)`` and applied at the container
+/// Applied via `.flexOverflow(_:)` on `View` and at the container
 /// level by ``FlexBox``.
 ///
 /// | Value        | SwiftUI behaviour                                               |

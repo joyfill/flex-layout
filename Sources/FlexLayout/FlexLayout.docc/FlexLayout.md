@@ -80,9 +80,8 @@ justify-content, align-content, absolute positioning — can be exercised in pla
 
 ### View modifiers
 
-- ``SwiftUI/View/flexItem(grow:shrink:basis:alignSelf:order:width:height:overflow:zIndex:position:top:bottom:leading:trailing:display:)``
-- ``SwiftUI/View/flexItem(flex:)``
-- ``SwiftUI/View/flexOverflow(_:)``
+- ``FlexItemModifier``
+- ``FlexOverflowModifier``
 - ``FlexItemModifier``
 - ``FlexOverflowModifier``
 

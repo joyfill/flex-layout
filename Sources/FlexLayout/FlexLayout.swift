@@ -31,7 +31,7 @@ import SwiftUI
 /// `placeSubviews` once with the final bounds. `FlexLayout` follows this pattern:
 ///
 /// 1. **`sizeThatFits`** → calls `FlexEngine.computeRawLayout` to get the intrinsic
-///    container size and caches the intermediate ``ComputedFlexLine`` array.
+///    container size and caches the intermediate line array.
 /// 2. **`placeSubviews`** → calls `FlexEngine.solve` with the *actual* placement
 ///    bounds (which may differ from the `sizeThatFits` result if the container was
 ///    stretched by a parent), then places each subview using `solution.frames[i]`.
