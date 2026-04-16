@@ -41,6 +41,26 @@ jobs:
             --additional-symbol-graph-dir /tmp/flex-symbols \
             --output-path /tmp/FlexLayoutDocs
 
+      - name: Add root redirect and 404 fallback
+        run: |
+          # Redirect root → documentation landing page
+          cat > /tmp/FlexLayoutDocs/index.html << 'REDIRECT'
+          <!doctype html>
+          <html>
+            <head>
+              <meta charset="utf-8">
+              <meta http-equiv="refresh" content="0; url=/flex-layout/documentation/flexlayout">
+              <title>FlexLayout – redirecting…</title>
+            </head>
+            <body>
+              <p>Redirecting to <a href="/flex-layout/documentation/flexlayout">documentation</a>…</p>
+              <script>window.location.replace("/flex-layout/documentation/flexlayout")</script>
+            </body>
+          </html>
+          REDIRECT
+          # 404 fallback — lets the DocC SPA handle deep links
+          cp /tmp/FlexLayoutDocs/documentation/flexlayout/index.html /tmp/FlexLayoutDocs/404.html
+
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v4
         with:
