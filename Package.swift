@@ -60,5 +60,10 @@ let package = Package(
             dependencies: ["FlexDemoApp", "FlexLayout"],
             path: "Tests/FlexDemoAppTests"
         ),
+        .testTarget(
+            name: "CSSLayoutTests",
+            dependencies: ["CSSLayout", "FlexLayout"],
+            path: "Tests/CSSLayoutTests"
+        ),
     ]
 )
