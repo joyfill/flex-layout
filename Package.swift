@@ -10,10 +10,14 @@ let package = Package(
         .watchOS(.v9),
     ],
     products: [
-        // The only public product — consumers add "FlexLayout" as a dependency.
+        // Public products — consumers add these as dependencies.
         .library(
             name: "FlexLayout",
             targets: ["FlexLayout"]
+        ),
+        .library(
+            name: "CSSLayout",
+            targets: ["CSSLayout"]
         ),
     ],
     targets: [
@@ -24,6 +28,16 @@ let package = Package(
             swiftSettings: [
                 // Treat all warnings as errors in release builds to keep the
                 // public API surface clean.
+                .unsafeFlags(["-warnings-as-errors"], .when(configuration: .release)),
+            ]
+        ),
+
+        // ── CSSLayout — flexbox-only CSS → FlexLayout bridge ───────────────────
+        .target(
+            name: "CSSLayout",
+            dependencies: ["FlexLayout"],
+            path: "Sources/CSSLayout",
+            swiftSettings: [
                 .unsafeFlags(["-warnings-as-errors"], .when(configuration: .release)),
             ]
         ),
