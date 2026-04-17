@@ -66,17 +66,29 @@ public enum RuleParser {
                 let name = atRuleName(prelude)
                 diagnostics.warn(.init(.unsupportedAtRule(name), prelude))
             } else if !prelude.isEmpty {
-                if let selector = SelectorParser.parse(prelude, diagnostics: &diagnostics) {
+                // Phase 2: the prelude may be a grouped selector list
+                // (`#a, #b { … }`). `parseList` expands it into one or more
+                // simple selectors; each becomes its own rule sharing the
+                // same declarations. A group with a mix of valid and
+                // unsupported members keeps the valid rules and emits one
+                // diagnostic per bad member (the per-member warning comes
+                // from `SelectorParser.parse`).
+                let selectors = SelectorParser.parseList(
+                    prelude,
+                    diagnostics: &diagnostics
+                )
+                if !selectors.isEmpty {
                     let decls = DeclarationParser.parse(body, diagnostics: &diagnostics)
-                    rules.append(CSSRule(
-                        selector: selector,
-                        declarations: decls,
-                        specificity: Specificity.of(selector),
-                        sourceOrder: sourceOrder
-                    ))
-                    sourceOrder += 1
+                    for selector in selectors {
+                        rules.append(CSSRule(
+                            selector: selector,
+                            declarations: decls,
+                            specificity: Specificity.of(selector),
+                            sourceOrder: sourceOrder
+                        ))
+                        sourceOrder += 1
+                    }
                 }
-                // SelectorParser already emitted the diagnostic on nil; drop.
             }
 
             // Advance past the closing brace (or to EOF on unterminated).

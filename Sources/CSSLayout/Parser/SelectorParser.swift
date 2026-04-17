@@ -24,6 +24,32 @@ import Foundation
 /// and expand this API.
 public enum SelectorParser {
 
+    /// Parse a **selector list** — `sel, sel, …` — into the sequence of
+    /// individual simple selectors it expands to.
+    ///
+    /// Grouping is a prelude-level construct: `#a, #b { flex: 1; }` produces
+    /// two rules sharing the same declarations. This helper is the entry point
+    /// `RuleParser` uses; `parse(_:diagnostics:)` remains strict (a grouped
+    /// source string is still reported as `unsupportedSelector("grouping")`).
+    ///
+    /// Empty members (`#a,,#b`) are tolerated silently; unparseable members
+    /// emit their usual `unsupportedSelector` diagnostic and are dropped while
+    /// the valid ones are kept.
+    public static func parseList(
+        _ source: String,
+        diagnostics: inout CSSDiagnostics
+    ) -> [SimpleSelector] {
+        var result: [SimpleSelector] = []
+        for part in source.split(separator: ",", omittingEmptySubsequences: false) {
+            let trimmed = part.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmed.isEmpty { continue }           // tolerate `,,` and trailing `,`
+            if let s = parse(trimmed, diagnostics: &diagnostics) {
+                result.append(s)
+            }
+        }
+        return result
+    }
+
     /// Parse `source` as a simple selector.
     ///
     /// - Parameters:

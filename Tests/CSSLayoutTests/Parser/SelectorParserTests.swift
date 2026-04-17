@@ -115,4 +115,53 @@ final class SelectorParserTests: XCTestCase {
     func testSpecificityEquality() {
         XCTAssertEqual(Specificity.of(.id("a")), Specificity.of(.id("b")))
     }
+
+    // MARK: - Grouping (Phase 2)
+
+    /// `parseList` is the grouping-aware entry point used by `RuleParser`. The
+    /// single-selector `parse` function still rejects a comma prelude outright,
+    /// so only `parseList` expands a group into multiple selectors.
+    private func parseList(_ s: String) -> ([SimpleSelector], CSSDiagnostics) {
+        var diags = CSSDiagnostics()
+        let result = SelectorParser.parseList(s, diagnostics: &diags)
+        return (result, diags)
+    }
+
+    func testParseListReturnsSingleSelector() {
+        let (list, diags) = parseList("#a")
+        XCTAssertEqual(list, [.id("a")])
+        XCTAssertEqual(diags.warnings.count, 0)
+    }
+
+    func testParseListSplitsOnComma() {
+        let (list, diags) = parseList("#a, #b, .c")
+        XCTAssertEqual(list, [.id("a"), .id("b"), .class("c")])
+        XCTAssertEqual(diags.warnings.count, 0)
+    }
+
+    func testParseListTrimsEachMember() {
+        let (list, diags) = parseList("  #a  ,\n\t.b\n")
+        XCTAssertEqual(list, [.id("a"), .class("b")])
+        XCTAssertEqual(diags.warnings.count, 0)
+    }
+
+    func testParseListSkipsEmptyMembers() {
+        // Trailing comma, doubled commas — tolerated, no diagnostic.
+        let (list, diags) = parseList("#a,,#b,")
+        XCTAssertEqual(list, [.id("a"), .id("b")])
+        XCTAssertEqual(diags.warnings.count, 0)
+    }
+
+    func testParseListCollectsValidPartsAndWarnsOnInvalid() {
+        // One valid + one attribute selector → [valid], 1 warning.
+        let (list, diags) = parseList("#a, [data-x]")
+        XCTAssertEqual(list, [.id("a")])
+        XCTAssertEqual(diags.count(of: .unsupportedSelector("attribute")), 1)
+    }
+
+    func testParseListEmptyInputYieldsEmpty() {
+        let (list, diags) = parseList("")
+        XCTAssertEqual(list, [])
+        XCTAssertEqual(diags.warnings.count, 0)
+    }
 }
