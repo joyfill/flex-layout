@@ -17,13 +17,15 @@ final class StyleResolverTests: XCTestCase {
     private func resolve(
         _ css: String,
         id: String = "a",
-        schemaType: String? = nil
+        schemaType: String? = nil,
+        classes: [String] = []
     ) -> (ComputedStyle, CSSDiagnostics) {
         var diags = CSSDiagnostics()
         let sheet = CSSParser.parse(css, diagnostics: &diags)
         let computed = StyleResolver.resolve(
             id: id,
             schemaType: schemaType,
+            classes: classes,
             stylesheet: sheet,
             diagnostics: &diags
         )
@@ -62,11 +64,48 @@ final class StyleResolverTests: XCTestCase {
         let (style, _) = resolve("""
             .primary { flex-grow: 2; }
             button   { flex-grow: 1; }
-        """, id: "submit", schemaType: "button")
-        // Note: in Phase 1 we don't match class names via id; classes require
-        // a "classes" dimension on the node. The minimum assertion here is
-        // that element-only matching still produces the element's value.
+        """, id: "submit", schemaType: "button", classes: ["primary"])
+        XCTAssertEqual(style.item.grow, 2)
+    }
+
+    // MARK: - Class matching (Phase 2)
+
+    func testMatchesClassSelector() {
+        let (style, _) = resolve(".primary { flex-grow: 3; }",
+                                 id: "submit", classes: ["primary"])
+        XCTAssertEqual(style.item.grow, 3)
+    }
+
+    func testMatchesAnyOfMultipleClasses() {
+        // Node carries two classes; each lone class selector matches.
+        let (style, _) = resolve("""
+            .primary { flex-grow: 1; }
+            .large   { flex-basis: 200px; }
+        """, id: "x", classes: ["primary", "large"])
         XCTAssertEqual(style.item.grow, 1)
+        XCTAssertEqual(style.item.basis, .points(200))
+    }
+
+    func testClassSelectorWithoutClassDoesNotMatch() {
+        let (style, _) = resolve(".primary { flex-grow: 9; }",
+                                 id: "x", classes: [])
+        XCTAssertEqual(style.item.grow, 0)          // default
+    }
+
+    func testIDBeatsClassOnSpecificity() {
+        let (style, _) = resolve("""
+            .primary { flex-grow: 1; }
+            #submit  { flex-grow: 7; }
+        """, id: "submit", classes: ["primary"])
+        XCTAssertEqual(style.item.grow, 7)
+    }
+
+    func testClassBeatsElementOnSpecificity() {
+        let (style, _) = resolve("""
+            button   { flex-grow: 1; }
+            .primary { flex-grow: 5; }
+        """, id: "x", schemaType: "button", classes: ["primary"])
+        XCTAssertEqual(style.item.grow, 5)
     }
 
     func testIDBeatsElement() {

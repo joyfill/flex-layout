@@ -13,12 +13,22 @@ public struct StyleNode: Equatable {
     /// The node's registered component type (drives element selectors and
     /// registry lookup). `nil` for the root node.
     public let schemaType: String?
+    /// The node's class names. Matches `.name` selectors in the cascade.
+    /// Preserved in source order so the resolver doesn't hash-allocate per
+    /// lookup (schemas are small; linear scan wins on cache).
+    public let classes: [String]
     /// The fully cascaded style for this node.
     public let computedStyle: ComputedStyle
 
-    public init(id: String, schemaType: String?, computedStyle: ComputedStyle) {
+    public init(
+        id: String,
+        schemaType: String?,
+        classes: [String] = [],
+        computedStyle: ComputedStyle
+    ) {
         self.id = id
         self.schemaType = schemaType
+        self.classes = classes
         self.computedStyle = computedStyle
     }
 }

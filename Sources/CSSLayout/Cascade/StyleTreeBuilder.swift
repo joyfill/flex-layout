@@ -36,20 +36,32 @@ public enum StyleTreeBuilder {
         let rootStyle = StyleResolver.resolve(
             id: rootID,
             schemaType: nil,
+            classes: [],
             stylesheet: stylesheet,
             diagnostics: &diagnostics
         )
-        nodes.append(StyleNode(id: rootID, schemaType: nil, computedStyle: rootStyle))
+        nodes.append(StyleNode(
+            id: rootID,
+            schemaType: nil,
+            classes: [],
+            computedStyle: rootStyle
+        ))
 
         // Children in schema insertion order.
         for entry in schema {
             let style = StyleResolver.resolve(
                 id: entry.id,
                 schemaType: entry.type,
+                classes: entry.classes,
                 stylesheet: stylesheet,
                 diagnostics: &diagnostics
             )
-            nodes.append(StyleNode(id: entry.id, schemaType: entry.type, computedStyle: style))
+            nodes.append(StyleNode(
+                id: entry.id,
+                schemaType: entry.type,
+                classes: entry.classes,
+                computedStyle: style
+            ))
         }
 
         return nodes

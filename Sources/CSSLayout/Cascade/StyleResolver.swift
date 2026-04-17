@@ -29,12 +29,15 @@ public enum StyleResolver {
     ///   - id: The node id (matches `#id` selectors).
     ///   - schemaType: The registered component type, if any (matches element
     ///     selectors like `button`).
+    ///   - classes: The node's CSS class names (matches `.name` selectors).
+    ///     Defaults to empty so pre-Phase-2 callers keep compiling.
     ///   - stylesheet: The parsed CSS to cascade over.
     ///   - diagnostics: Accumulator for invalid-value warnings.
     /// - Returns: The resolved ``ComputedStyle`` (defaults for unmatched nodes).
     public static func resolve(
         id: String,
         schemaType: String?,
+        classes: [String] = [],
         stylesheet: Stylesheet,
         diagnostics: inout CSSDiagnostics
     ) -> ComputedStyle {
@@ -43,7 +46,7 @@ public enum StyleResolver {
             switch rule.selector {
             case .id(let name):      return name == id
             case .element(let name): return name == schemaType
-            case .class:             return false  // classes unmodeled in Phase 1
+            case .class(let name):   return classes.contains(name)
             }
         }
 

@@ -20,10 +20,15 @@ public struct SchemaEntry: Equatable {
     /// Optional component type; `nil` means "unknown component, resolver will
     /// render a placeholder in debug builds".
     public let type: String?
+    /// Zero or more CSS class names this entry carries. `.name` selectors in
+    /// the stylesheet match against this list. Defaults to empty so callers
+    /// that predate class support keep compiling unchanged.
+    public let classes: [String]
 
-    public init(id: String, type: String? = nil) {
+    public init(id: String, type: String? = nil, classes: [String] = []) {
         self.id = id
         self.type = type
+        self.classes = classes
     }
 }
 

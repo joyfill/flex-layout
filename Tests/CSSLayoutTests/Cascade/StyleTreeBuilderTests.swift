@@ -113,6 +113,23 @@ final class StyleTreeBuilderTests: XCTestCase {
         XCTAssertEqual(nodes[1].computedStyle, ComputedStyle())
     }
 
+    // MARK: - Class matching (Phase 2)
+
+    /// A schema entry can now carry a `classes: [String]` list; `.class`
+    /// selectors match against it in the cascade.
+    func testSchemaClassesAreMatched() {
+        var diags = CSSDiagnostics()
+        let sheet = CSSParser.parse(".primary { flex-grow: 4; }", diagnostics: &diags)
+        let nodes = StyleTreeBuilder.build(
+            rootID: "root",
+            schema: [SchemaEntry(id: "submit", type: "button", classes: ["primary"])],
+            stylesheet: sheet,
+            diagnostics: &diags
+        )
+        XCTAssertEqual(nodes[1].classes, ["primary"])
+        XCTAssertEqual(nodes[1].computedStyle.item.grow, 4)
+    }
+
     func testChildrenPreserveSchemaInsertionOrder() {
         // Two children, styled in reverse order — the *output order* must
         // still match the schema's insertion order.
