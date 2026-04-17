@@ -141,9 +141,20 @@ public struct CSSLayout: View {
             locals: locals,
             registry: registry,
             placeholder: placeholderFactory,
-            eventSink: { sourceID, name, payload in
-                let event = CSSEvent(name: name, sourceID: sourceID, payload: payload)
-                handlers[name]?(event)
+            eventSink: { sourceID, name, payload, propagates in
+                let event = CSSEvent(
+                    name: name,
+                    sourceID: sourceID,
+                    payload: payload,
+                    propagates: propagates
+                )
+                // Bubbling terminates at the root: a non-propagating event
+                // is treated as target-only. Phase 2 has no per-node handler
+                // registry yet, so "target-only" is observable as "nothing
+                // fires"; local `.onCSSEvent` handlers will hook in here.
+                if propagates {
+                    handlers[name]?(event)
+                }
             },
             diagnostics: &diagnostics
         )

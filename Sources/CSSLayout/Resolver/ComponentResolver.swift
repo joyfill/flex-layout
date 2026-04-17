@@ -64,7 +64,12 @@ public enum ComponentResolver {
         locals: [Component],
         registry: ComponentRegistry,
         placeholder: (String) -> AnyView,
-        eventSink: ((_ sourceID: String, _ name: String, _ payload: [String: String]) -> Void)? = nil,
+        eventSink: ((
+            _ sourceID: String,
+            _ name: String,
+            _ payload: [String: String],
+            _ propagates: Bool
+        ) -> Void)? = nil,
         diagnostics: inout CSSDiagnostics
     ) -> Resolved {
         // Precondition: `StyleTreeBuilder` always emits at least the root.
@@ -92,8 +97,8 @@ public enum ComponentResolver {
                 resolution = .registry
                 let props = ComponentProps([:], id: node.id)
                 let id = node.id
-                let events = ComponentEvents { name, payload in
-                    eventSink?(id, name, payload)
+                let events = ComponentEvents { name, payload, propagates in
+                    eventSink?(id, name, payload, propagates)
                 }
                 view = factory(props, events)
             } else {

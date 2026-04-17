@@ -101,6 +101,74 @@ final class CSSLayoutIntegrationTests: XCTestCase {
         XCTAssertFalse(submitFired)
     }
 
+    // MARK: - Event bubbling (Phase 2)
+
+    func testNonPropagatingEventSkipsRootHandler() {
+        // Factory emits with `propagates: false` — root handler must NOT
+        // fire because the event did not bubble.
+        let registry = ComponentRegistry()
+        registry.register("silent-button") { _, events in
+            events.emit("tap", payload: [:], propagates: false)
+            return AnyView(EmptyView())
+        }
+
+        let payload = CSSPayload(
+            css: "",
+            schema: [SchemaEntry(id: "b", type: "silent-button")]
+        )
+
+        var rootFired = false
+        let layout = CSSLayout(payload: payload, registry: registry)
+            .onEvent("tap") { _ in rootFired = true }
+
+        _ = layout.body
+        XCTAssertFalse(rootFired)
+    }
+
+    func testPropagatingEventCarriesFlagToHandler() {
+        // The `propagates` value the factory chose must be observable on the
+        // delivered event so handlers can inspect it.
+        let registry = ComponentRegistry()
+        registry.register("bubbling-button") { _, events in
+            events.emit("tap", payload: [:], propagates: true)
+            return AnyView(EmptyView())
+        }
+
+        let payload = CSSPayload(
+            css: "",
+            schema: [SchemaEntry(id: "b", type: "bubbling-button")]
+        )
+
+        var received: CSSEvent?
+        let layout = CSSLayout(payload: payload, registry: registry)
+            .onEvent("tap") { event in received = event }
+
+        _ = layout.body
+        XCTAssertEqual(received?.propagates, true)
+    }
+
+    func testDefaultEmitStillBubbles() {
+        // Existing factories that call `emit(name, payload:)` without passing
+        // `propagates` must keep bubbling (backwards compatibility).
+        let registry = ComponentRegistry()
+        registry.register("legacy-button") { _, events in
+            events.emit("tap", payload: [:])
+            return AnyView(EmptyView())
+        }
+
+        let payload = CSSPayload(
+            css: "",
+            schema: [SchemaEntry(id: "b", type: "legacy-button")]
+        )
+
+        var rootFired = false
+        let layout = CSSLayout(payload: payload, registry: registry)
+            .onEvent("tap") { _ in rootFired = true }
+
+        _ = layout.body
+        XCTAssertTrue(rootFired)
+    }
+
     // MARK: - Diagnostics hook
 
     func testOnDiagnosticReceivesWarnings() {
