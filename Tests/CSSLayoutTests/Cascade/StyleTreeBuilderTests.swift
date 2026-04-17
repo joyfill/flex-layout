@@ -113,6 +113,62 @@ final class StyleTreeBuilderTests: XCTestCase {
         XCTAssertEqual(nodes[1].computedStyle, ComputedStyle())
     }
 
+    // MARK: - Hierarchical schema (Phase 2)
+
+    func testParentIDEstablishesHierarchy() {
+        var diags = CSSDiagnostics()
+        let sheet = CSSParser.parse("", diagnostics: &diags)
+        let nodes = StyleTreeBuilder.build(
+            rootID: "root",
+            schema: [
+                SchemaEntry(id: "form"),
+                SchemaEntry(id: "name", parentID: "form"),
+            ],
+            stylesheet: sheet,
+            diagnostics: &diags
+        )
+        XCTAssertEqual(nodes.count, 3)
+        XCTAssertNil(nodes[0].parentID)
+        XCTAssertEqual(nodes[1].id, "form")
+        XCTAssertEqual(nodes[1].parentID, "root")
+        XCTAssertEqual(nodes[2].id, "name")
+        XCTAssertEqual(nodes[2].parentID, "form")
+    }
+
+    func testDescendantSelectorMatchesHierarchically() {
+        var diags = CSSDiagnostics()
+        let sheet = CSSParser.parse(
+            "#form #name { flex-grow: 7; }",
+            diagnostics: &diags
+        )
+        let nodes = StyleTreeBuilder.build(
+            rootID: "root",
+            schema: [
+                SchemaEntry(id: "form"),
+                SchemaEntry(id: "row", parentID: "form"),
+                SchemaEntry(id: "name", parentID: "row"),
+            ],
+            stylesheet: sheet,
+            diagnostics: &diags
+        )
+        // The last node (`name`) has ancestors row→form→root; the selector
+        // matches because `#form` is reachable via descendant.
+        XCTAssertEqual(nodes.last?.id, "name")
+        XCTAssertEqual(nodes.last?.computedStyle.item.grow, 7)
+    }
+
+    func testUnknownParentIDAttachesToRoot() {
+        var diags = CSSDiagnostics()
+        let sheet = CSSParser.parse("", diagnostics: &diags)
+        let nodes = StyleTreeBuilder.build(
+            rootID: "root",
+            schema: [SchemaEntry(id: "orphan", parentID: "nowhere")],
+            stylesheet: sheet,
+            diagnostics: &diags
+        )
+        XCTAssertEqual(nodes[1].parentID, "root")
+    }
+
     // MARK: - Class matching (Phase 2)
 
     /// A schema entry can now carry a `classes: [String]` list; `.class`

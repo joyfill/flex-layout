@@ -1,31 +1,30 @@
-// SelectorParser — Phase 1 simple-selector parser.
+// SelectorParser — parses a CSS selector source string into a
+// `ComplexSelector` (Phase 2).
 //
-// Accepts exactly one of:
-//   •  `#ident`   → `.id(ident)`
-//   •  `.ident`   → `.class(ident)`
-//   •  `ident`    → `.element(ident)`
+// Supported shapes:
+//   •  a simple selector           `#id`, `.class`, `element`
+//   •  a compound selector chain   `button.primary#submit`
+//   •  descendant combinator       `#form #name`      (whitespace)
+//   •  child combinator            `#form > #name`    (explicit `>`)
+//   •  selector list via `parseList`  `#a, #b { … }`
 //
-// Anything else (attribute `[…]`, pseudo `:x` / `::x`, combinators `>` or
-// descendant whitespace, grouping `,`) emits a diagnostic under
-// `CSSWarning.Kind.unsupportedSelector(<category>)` and returns `nil`. The
-// caller drops the rule and moves on — CSSLayout is tolerant by design.
+// Rejected (emit `.unsupportedSelector(<category>)` and return `nil`):
+//   •  attribute selectors     `[data-x]`
+//   •  pseudo classes/elements `:hover`, `::before`
+//   •  grouping via comma at the single-selector entry point
+//     (the grouping-aware `parseList` splits commas before calling `parse`)
 //
-// We scan the raw (trimmed) source rather than routing through `CSSTokenizer`
-// because the tokenizer intentionally drops characters outside the flexbox
-// subset (e.g. `[`, `]`, `(`). Detecting unsupported-selector shapes requires
-// seeing those characters, so a tiny raw-string scan is the right tool here.
+// The scan walks raw `String.UnicodeScalarView` rather than routing through
+// `CSSTokenizer`: the tokenizer intentionally drops characters like `[` and
+// `(` that we need to see to classify unsupported shapes correctly.
 
 import Foundation
 
-/// Parses a **single simple selector** source string into a ``SimpleSelector``.
-///
-/// Not a full CSS selector parser — Phase 1 deliberately rejects combinators,
-/// grouping, attributes, and pseudos. Phase 2 will introduce `ComplexSelector`
-/// and expand this API.
+/// Parses a CSS selector string into a ``ComplexSelector``.
 public enum SelectorParser {
 
     /// Parse a **selector list** — `sel, sel, …` — into the sequence of
-    /// compound selectors it expands to.
+    /// complex selectors it expands to.
     ///
     /// Grouping is a prelude-level construct: `#a, #b { flex: 1; }` produces
     /// two rules sharing the same declarations. This helper is the entry point
@@ -38,8 +37,8 @@ public enum SelectorParser {
     public static func parseList(
         _ source: String,
         diagnostics: inout CSSDiagnostics
-    ) -> [CompoundSelector] {
-        var result: [CompoundSelector] = []
+    ) -> [ComplexSelector] {
+        var result: [ComplexSelector] = []
         for part in source.split(separator: ",", omittingEmptySubsequences: false) {
             let trimmed = part.trimmingCharacters(in: .whitespacesAndNewlines)
             if trimmed.isEmpty { continue }           // tolerate `,,` and trailing `,`
@@ -50,27 +49,17 @@ public enum SelectorParser {
         return result
     }
 
-    /// Parse `source` as a **compound selector** — a chain of simple
-    /// selectors on the same subject, e.g. `button.primary#submit`.
-    ///
-    /// - Parameters:
-    ///   - source: The raw selector text (between `<css>{` and the `{`).
-    ///   - diagnostics: Accumulator; one warning is appended per unsupported
-    ///     selector shape.
-    /// - Returns: The parsed ``CompoundSelector``, or `nil` if the input is
-    ///   empty, malformed, or uses unsupported CSS.
+    /// Parse `source` as a **complex selector** — one or more compound
+    /// selectors joined by descendant or child combinators.
     public static func parse(
         _ source: String,
         diagnostics: inout CSSDiagnostics
-    ) -> CompoundSelector? {
+    ) -> ComplexSelector? {
         let trimmed = source.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
 
-        // Detect unsupported shapes up-front. Order matters only where more
-        // than one category could match a single string; for the Phase 1
-        // rejection set, the categories are mutually exclusive for realistic
-        // inputs, so we pick the most specific signal first.
-
+        // Reject unsupported shapes up-front. Combinators (`>` and whitespace)
+        // are now parsed, not rejected.
         if trimmed.contains("[") || trimmed.contains("]") {
             diagnostics.warn(.init(.unsupportedSelector("attribute"), trimmed))
             return nil
@@ -79,39 +68,63 @@ public enum SelectorParser {
             diagnostics.warn(.init(.unsupportedSelector("grouping"), trimmed))
             return nil
         }
-        if trimmed.contains(">") {
-            diagnostics.warn(.init(.unsupportedSelector("combinator"), trimmed))
-            return nil
-        }
         if trimmed.contains(":") {
-            // Covers both `:hover` (pseudo-class) and `::before` (pseudo-element).
             diagnostics.warn(.init(.unsupportedSelector("pseudo"), trimmed))
             return nil
         }
-        // Internal whitespace after trimming ⇒ descendant combinator.
-        if trimmed.unicodeScalars.contains(where: { isASCIIWhitespace($0) }) {
-            diagnostics.warn(.init(.unsupportedSelector("combinator"), trimmed))
-            return nil
-        }
 
-        // Compound selector parse — scan a chain of simple selectors.
-        //
-        // Grammar (per CSS Selectors Level 3, reduced):
-        //   compound := element? (hash | klass)*
-        //   element  := ident
-        //   hash     := '#' ident
-        //   klass    := '.' ident
-        //
-        // A second bare element would need a combinator to be meaningful; the
-        // descendant-combinator / whitespace check above already rejects it.
+        // Walk the scan: read one compound, then alternately read
+        // combinators (descendant / child) and compounds until the input is
+        // consumed. A dangling combinator at either end fails the parse.
 
         let scalars = Array(trimmed.unicodeScalars)
         var i = 0
+
+        guard let first = parseCompound(scalars, at: &i) else { return nil }
+        var parts = [first]
+        var combinators: [Combinator] = []
+
+        while i < scalars.count {
+            // Collect whitespace; decide between descendant and child
+            // combinator based on whether the next non-whitespace char is `>`.
+            let hadSpace = skipASCIIWhitespace(scalars, at: &i)
+            guard i < scalars.count else { break }          // trailing whitespace — done
+
+            let combinator: Combinator
+            if scalars[i] == ">" {
+                i += 1
+                _ = skipASCIIWhitespace(scalars, at: &i)
+                combinator = .child
+            } else if hadSpace {
+                combinator = .descendant
+            } else {
+                // No whitespace and no `>` — malformed.
+                return nil
+            }
+
+            guard let next = parseCompound(scalars, at: &i) else {
+                // Dangling combinator with no right-hand compound.
+                return nil
+            }
+            combinators.append(combinator)
+            parts.append(next)
+        }
+
+        return ComplexSelector(parts: parts, combinators: combinators)
+    }
+
+    // MARK: - Compound scan
+
+    /// Scan one compound selector (`element? (#id | .class)*`) starting at
+    /// `i`. Advances `i` past the consumed characters. Returns `nil` if the
+    /// scan cannot yield a non-empty compound.
+    private static func parseCompound(
+        _ scalars: [Unicode.Scalar],
+        at i: inout Int
+    ) -> CompoundSelector? {
         var parts: [SimpleSelector] = []
 
-        // Optional leading element selector. The first char being an ident
-        // starter means we pick up a type selector; `#` / `.` skip straight
-        // to the hash/class loop.
+        // Optional leading element selector.
         if i < scalars.count, isIdentStart(scalars[i]) {
             let start = i
             while i < scalars.count, isIdentContinue(scalars[i]) { i += 1 }
@@ -123,20 +136,28 @@ public enum SelectorParser {
         // Zero or more `#ident` / `.ident` parts.
         while i < scalars.count {
             let marker = scalars[i]
-            guard marker == "#" || marker == "." else {
-                // Anything other than a hash/class marker here is malformed.
-                return nil
-            }
+            guard marker == "#" || marker == "." else { break }
             i += 1
             let start = i
             while i < scalars.count, isIdentContinue(scalars[i]) { i += 1 }
-            guard start < i else { return nil }           // empty ident after marker
+            guard start < i else { return nil }             // empty ident after marker
             let name = String(String.UnicodeScalarView(scalars[start..<i]))
             parts.append(marker == "#" ? .id(name) : .class(name))
         }
 
         guard !parts.isEmpty else { return nil }
         return CompoundSelector(parts)
+    }
+
+    /// Advance `i` past any ASCII whitespace; return whether any was skipped.
+    @discardableResult
+    private static func skipASCIIWhitespace(
+        _ scalars: [Unicode.Scalar],
+        at i: inout Int
+    ) -> Bool {
+        let start = i
+        while i < scalars.count, isASCIIWhitespace(scalars[i]) { i += 1 }
+        return i > start
     }
 
     // MARK: - Character classes (mirror CSSTokenizer's rules)
@@ -151,12 +172,5 @@ public enum SelectorParser {
 
     private static func isIdentContinue(_ c: Unicode.Scalar) -> Bool {
         isIdentStart(c) || (c >= "0" && c <= "9")
-    }
-
-    private static func isValidIdent(_ s: String) -> Bool {
-        let scalars = Array(s.unicodeScalars)
-        guard let head = scalars.first, isIdentStart(head) else { return false }
-        for c in scalars.dropFirst() where !isIdentContinue(c) { return false }
-        return true
     }
 }

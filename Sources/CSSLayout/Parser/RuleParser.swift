@@ -73,7 +73,7 @@ public enum RuleParser {
                 // unsupported members keeps the valid rules and emits one
                 // diagnostic per bad member (the per-member warning comes
                 // from `SelectorParser.parse`).
-                let selectors = SelectorParser.parseList(
+                let selectors: [ComplexSelector] = SelectorParser.parseList(
                     prelude,
                     diagnostics: &diagnostics
                 )

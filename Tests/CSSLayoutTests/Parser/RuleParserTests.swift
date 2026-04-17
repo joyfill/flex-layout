@@ -59,10 +59,19 @@ final class RuleParserTests: XCTestCase {
         XCTAssertEqual(diags.count(of: .unsupportedSelector("attribute")), 1)
     }
 
-    func testSkipsRuleWithCombinatorSelector() {
+    func testParsesRuleWithChildCombinator() {
+        // Phase 2: combinators are supported — the rule is kept.
         let (rules, diags) = parse("#a > #b { flex: 1; }")
-        XCTAssertEqual(rules.count, 0)
-        XCTAssertEqual(diags.count(of: .unsupportedSelector("combinator")), 1)
+        XCTAssertEqual(rules.count, 1)
+        XCTAssertEqual(rules[0].selector.parts.count, 2)
+        XCTAssertEqual(rules[0].selector.combinators, [.child])
+        XCTAssertEqual(diags.warnings.count, 0)
+    }
+
+    func testParsesRuleWithDescendantCombinator() {
+        let (rules, _) = parse("#form #name { flex: 1; }")
+        XCTAssertEqual(rules.count, 1)
+        XCTAssertEqual(rules[0].selector.combinators, [.descendant])
     }
 
     func testSkipsAtRulesInPhase1() {

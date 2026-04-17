@@ -24,11 +24,21 @@ public struct SchemaEntry: Equatable {
     /// the stylesheet match against this list. Defaults to empty so callers
     /// that predate class support keep compiling unchanged.
     public let classes: [String]
+    /// Optional id of the entry's parent in the layout tree. `nil` (default)
+    /// attaches the entry to the implicit root. Non-nil ids that don't resolve
+    /// to another entry fall back to root — the tree is always connected.
+    public let parentID: String?
 
-    public init(id: String, type: String? = nil, classes: [String] = []) {
+    public init(
+        id: String,
+        type: String? = nil,
+        classes: [String] = [],
+        parentID: String? = nil
+    ) {
         self.id = id
         self.type = type
         self.classes = classes
+        self.parentID = parentID
     }
 }
 

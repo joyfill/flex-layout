@@ -23,6 +23,21 @@ import CoreGraphics
 /// Resolves computed style for a single node.
 public enum StyleResolver {
 
+    /// A minimal ancestor-ref used by the combinator matcher. Constructed by
+    /// `StyleTreeBuilder` from each schema entry; exposed publicly so tests
+    /// can exercise the resolver in isolation.
+    public struct NodeRef: Equatable {
+        public let id: String
+        public let schemaType: String?
+        public let classes: [String]
+
+        public init(id: String, schemaType: String?, classes: [String]) {
+            self.id = id
+            self.schemaType = schemaType
+            self.classes = classes
+        }
+    }
+
     /// Produce the fully computed style for a node.
     ///
     /// - Parameters:
@@ -31,6 +46,9 @@ public enum StyleResolver {
     ///     selectors like `button`).
     ///   - classes: The node's CSS class names (matches `.name` selectors).
     ///     Defaults to empty so pre-Phase-2 callers keep compiling.
+    ///   - ancestors: The node's ancestor chain, innermost parent first and
+    ///     the outermost ancestor last. Used to resolve descendant / child
+    ///     combinators. Defaults to empty (flat schema).
     ///   - stylesheet: The parsed CSS to cascade over.
     ///   - diagnostics: Accumulator for invalid-value warnings.
     /// - Returns: The resolved ``ComputedStyle`` (defaults for unmatched nodes).
@@ -38,19 +56,17 @@ public enum StyleResolver {
         id: String,
         schemaType: String?,
         classes: [String] = [],
+        ancestors: [NodeRef] = [],
         stylesheet: Stylesheet,
         diagnostics: inout CSSDiagnostics
     ) -> ComputedStyle {
-        // 1. Select matching rules. A compound selector matches iff **every**
-        // part matches the node — a single dissenter rejects the whole rule.
+        let subject = NodeRef(id: id, schemaType: schemaType, classes: classes)
+
+        // 1. Select matching rules. A complex selector matches iff its subject
+        // compound matches the node AND every preceding compound can be
+        // satisfied by the ancestor chain respecting its combinator.
         let matched = stylesheet.rules.filter { rule in
-            rule.selector.parts.allSatisfy { part in
-                switch part {
-                case .id(let name):      return name == id
-                case .element(let name): return name == schemaType
-                case .class(let name):   return classes.contains(name)
-                }
-            }
+            matches(rule.selector, subject: subject, ancestors: ancestors)
         }
 
         // 2. Sort by (specificity asc, sourceOrder asc). "Later wins" on ties.
@@ -67,6 +83,71 @@ public enum StyleResolver {
             }
         }
         return style
+    }
+
+    // MARK: - Selector matching
+
+    /// Full complex-selector match: subject compound against the node plus
+    /// every preceding compound against the ancestor chain per its combinator.
+    ///
+    /// Scans compounds right-to-left (subject first). For each preceding
+    /// compound:
+    ///   • `.child` — the current ancestor must match; if not, fail.
+    ///   • `.descendant` — search outwards for the first matching ancestor;
+    ///     fail only if no ancestor matches.
+    ///
+    /// Greedy matching is safe here because descendant compounds only need
+    /// "some ancestor" and combinators are left-associative — no backtracking
+    /// scenario can turn a greedy failure into a success for this subset.
+    private static func matches(
+        _ complex: ComplexSelector,
+        subject: NodeRef,
+        ancestors: [NodeRef]
+    ) -> Bool {
+        guard matchesCompound(complex.subject, node: subject) else { return false }
+        if complex.parts.count == 1 { return true }
+
+        var cursor = 0    // index into `ancestors` (innermost-first)
+        // Walk compound parts from the one adjacent to the subject outwards.
+        // `combinators[i]` links `parts[i]` to `parts[i + 1]`, so the
+        // combinator connecting the current preceding compound to whatever
+        // already matched (initially the subject) lives at index `i`.
+        for i in stride(from: complex.parts.count - 2, through: 0, by: -1) {
+            let compound = complex.parts[i]
+            switch complex.combinators[i] {
+            case .child:
+                guard cursor < ancestors.count,
+                      matchesCompound(compound, node: ancestors[cursor])
+                else { return false }
+                cursor += 1
+            case .descendant:
+                var found = false
+                while cursor < ancestors.count {
+                    let candidate = ancestors[cursor]
+                    cursor += 1
+                    if matchesCompound(compound, node: candidate) {
+                        found = true
+                        break
+                    }
+                }
+                guard found else { return false }
+            }
+        }
+        return true
+    }
+
+    /// Every simple part of `compound` must match `node`.
+    private static func matchesCompound(
+        _ compound: CompoundSelector,
+        node: NodeRef
+    ) -> Bool {
+        compound.parts.allSatisfy { part in
+            switch part {
+            case .id(let name):      return name == node.id
+            case .element(let name): return name == node.schemaType
+            case .class(let name):   return node.classes.contains(name)
+            }
+        }
     }
 
     // MARK: - Declaration application

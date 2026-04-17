@@ -141,6 +141,104 @@ final class StyleResolverTests: XCTestCase {
         XCTAssertEqual(style.item.grow, 9)
     }
 
+    // MARK: - Combinator matching (Phase 2)
+
+    /// Helper: resolve with an explicit ancestor chain (innermost parent first).
+    private func resolveWithAncestors(
+        _ css: String,
+        id: String = "a",
+        schemaType: String? = nil,
+        classes: [String] = [],
+        ancestors: [StyleResolver.NodeRef]
+    ) -> (ComputedStyle, CSSDiagnostics) {
+        var diags = CSSDiagnostics()
+        let sheet = CSSParser.parse(css, diagnostics: &diags)
+        let style = StyleResolver.resolve(
+            id: id,
+            schemaType: schemaType,
+            classes: classes,
+            ancestors: ancestors,
+            stylesheet: sheet,
+            diagnostics: &diags
+        )
+        return (style, diags)
+    }
+
+    func testDescendantCombinatorMatchesDirectParent() {
+        let ancestors: [StyleResolver.NodeRef] = [
+            .init(id: "form", schemaType: nil, classes: []),
+        ]
+        let (style, _) = resolveWithAncestors(
+            "#form #name { flex-grow: 3; }",
+            id: "name", ancestors: ancestors
+        )
+        XCTAssertEqual(style.item.grow, 3)
+    }
+
+    func testDescendantCombinatorMatchesGrandparent() {
+        // obj has ancestor chain row→form; selector `#form #obj` must match
+        // across the `row` gap.
+        let ancestors: [StyleResolver.NodeRef] = [
+            .init(id: "row",  schemaType: nil, classes: []),
+            .init(id: "form", schemaType: nil, classes: []),
+        ]
+        let (style, _) = resolveWithAncestors(
+            "#form #obj { flex-grow: 4; }",
+            id: "obj", ancestors: ancestors
+        )
+        XCTAssertEqual(style.item.grow, 4)
+    }
+
+    func testDescendantCombinatorDoesNotMatchUnrelatedSubtree() {
+        // Subject's ancestor is `other`, not `form`.
+        let ancestors: [StyleResolver.NodeRef] = [
+            .init(id: "other", schemaType: nil, classes: []),
+        ]
+        let (style, _) = resolveWithAncestors(
+            "#form #name { flex-grow: 9; }",
+            id: "name", ancestors: ancestors
+        )
+        XCTAssertEqual(style.item.grow, 0)
+    }
+
+    func testChildCombinatorRequiresImmediateParent() {
+        // `#form > #name` matches only when form is the IMMEDIATE parent.
+        let immediate: [StyleResolver.NodeRef] = [
+            .init(id: "form", schemaType: nil, classes: []),
+        ]
+        let (yes, _) = resolveWithAncestors(
+            "#form > #name { flex-grow: 5; }",
+            id: "name", ancestors: immediate
+        )
+        XCTAssertEqual(yes.item.grow, 5)
+
+        // With a `row` between name and form, child combinator must NOT match.
+        let viaRow: [StyleResolver.NodeRef] = [
+            .init(id: "row",  schemaType: nil, classes: []),
+            .init(id: "form", schemaType: nil, classes: []),
+        ]
+        let (no, _) = resolveWithAncestors(
+            "#form > #name { flex-grow: 5; }",
+            id: "name", ancestors: viaRow
+        )
+        XCTAssertEqual(no.item.grow, 0)
+    }
+
+    func testMixedChildAndDescendantChain() {
+        // `#form > .row input` — form is immediate parent of a `.row`, which
+        // is any ancestor of the subject `input`.
+        let ancestors: [StyleResolver.NodeRef] = [
+            .init(id: "cell", schemaType: nil, classes: []),
+            .init(id: "x",    schemaType: nil, classes: ["row"]),
+            .init(id: "form", schemaType: nil, classes: []),
+        ]
+        let (style, _) = resolveWithAncestors(
+            "#form > .row input { flex-grow: 2; }",
+            id: "i", schemaType: "input", ancestors: ancestors
+        )
+        XCTAssertEqual(style.item.grow, 2)
+    }
+
     func testIDBeatsElement() {
         let (style, _) = resolve("""
             button { flex-grow: 1; }

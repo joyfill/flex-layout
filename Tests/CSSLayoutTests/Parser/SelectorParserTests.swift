@@ -9,7 +9,7 @@ final class SelectorParserTests: XCTestCase {
 
     // MARK: Helpers
 
-    private func parse(_ s: String) -> (CompoundSelector?, CSSDiagnostics) {
+    private func parse(_ s: String) -> (ComplexSelector?, CSSDiagnostics) {
         var diags = CSSDiagnostics()
         let result = SelectorParser.parse(s, diagnostics: &diags)
         return (result, diags)
@@ -65,17 +65,9 @@ final class SelectorParserTests: XCTestCase {
         XCTAssertEqual(diags.count(of: .unsupportedSelector("pseudo")), 1)
     }
 
-    func testRejectsChildCombinator() {
-        let (sel, diags) = parse("#a > #b")
-        XCTAssertNil(sel)
-        XCTAssertEqual(diags.count(of: .unsupportedSelector("combinator")), 1)
-    }
-
-    func testRejectsDescendantCombinator() {
-        let (sel, diags) = parse("#form #name")
-        XCTAssertNil(sel)
-        XCTAssertEqual(diags.count(of: .unsupportedSelector("combinator")), 1)
-    }
+    // `>` and descendant (whitespace) combinators are **supported** in
+    // Phase 2; see the "Combinators" section below for their tests. The
+    // attribute/pseudo/grouping rejections above continue to hold.
 
     func testRejectsGrouping() {
         let (sel, diags) = parse("#a, #b")
@@ -121,7 +113,7 @@ final class SelectorParserTests: XCTestCase {
     /// `parseList` is the grouping-aware entry point used by `RuleParser`. The
     /// single-selector `parse` function still rejects a comma prelude outright,
     /// so only `parseList` expands a group into multiple selectors.
-    private func parseList(_ s: String) -> ([CompoundSelector], CSSDiagnostics) {
+    private func parseList(_ s: String) -> ([ComplexSelector], CSSDiagnostics) {
         var diags = CSSDiagnostics()
         let result = SelectorParser.parseList(s, diagnostics: &diags)
         return (result, diags)
@@ -169,25 +161,31 @@ final class SelectorParserTests: XCTestCase {
 
     func testParsesCompoundElementAndClass() {
         let (sel, diags) = parse("button.primary")
-        XCTAssertEqual(sel, CompoundSelector([.element("button"), .class("primary")]))
+        XCTAssertEqual(sel, ComplexSelector(
+            CompoundSelector([.element("button"), .class("primary")])
+        ))
         XCTAssertEqual(diags.warnings.count, 0)
     }
 
     func testParsesCompoundElementClassID() {
         let (sel, _) = parse("button.primary#submit")
-        XCTAssertEqual(sel, CompoundSelector([
+        XCTAssertEqual(sel, ComplexSelector(CompoundSelector([
             .element("button"), .class("primary"), .id("submit"),
-        ]))
+        ])))
     }
 
     func testParsesCompoundMultipleClasses() {
         let (sel, _) = parse(".a.b.c")
-        XCTAssertEqual(sel, CompoundSelector([.class("a"), .class("b"), .class("c")]))
+        XCTAssertEqual(sel, ComplexSelector(
+            CompoundSelector([.class("a"), .class("b"), .class("c")])
+        ))
     }
 
     func testParsesCompoundIDThenClass() {
         let (sel, _) = parse("#submit.primary")
-        XCTAssertEqual(sel, CompoundSelector([.id("submit"), .class("primary")]))
+        XCTAssertEqual(sel, ComplexSelector(
+            CompoundSelector([.id("submit"), .class("primary")])
+        ))
     }
 
     func testRejectsEmptyIdentAfterMarker() {
@@ -207,20 +205,89 @@ final class SelectorParserTests: XCTestCase {
         let compound = CompoundSelector([
             .element("button"), .class("primary"), .id("submit"),
         ])
-        XCTAssertEqual(Specificity.of(compound), Specificity(a: 0, b: 1, c: 1, d: 1))
+        XCTAssertEqual(Specificity.of(compound: compound),
+                       Specificity(a: 0, b: 1, c: 1, d: 1))
     }
 
     func testSpecificityOfMultipleClasses() {
         let compound = CompoundSelector([.class("a"), .class("b"), .class("c")])
-        XCTAssertEqual(Specificity.of(compound), Specificity(a: 0, b: 0, c: 3, d: 0))
+        XCTAssertEqual(Specificity.of(compound: compound),
+                       Specificity(a: 0, b: 0, c: 3, d: 0))
     }
 
     func testSpecificityOfSingleCompoundMatchesSimple() {
         // A compound of length one carries the same specificity as the bare
         // simple selector it wraps.
         XCTAssertEqual(
-            Specificity.of(CompoundSelector([.id("a")])),
+            Specificity.of(compound: CompoundSelector([.id("a")])),
             Specificity.of(part: .id("a"))
         )
+    }
+
+    // MARK: - Combinators (Phase 2)
+
+    func testParsesDescendantCombinator() {
+        let (sel, diags) = parse("#form #name")
+        XCTAssertEqual(sel, ComplexSelector(
+            parts: [CompoundSelector([.id("form")]),
+                    CompoundSelector([.id("name")])],
+            combinators: [.descendant]
+        ))
+        XCTAssertEqual(diags.warnings.count, 0)
+    }
+
+    func testParsesChildCombinator() {
+        let (sel, _) = parse("#form > #name")
+        XCTAssertEqual(sel, ComplexSelector(
+            parts: [CompoundSelector([.id("form")]),
+                    CompoundSelector([.id("name")])],
+            combinators: [.child]
+        ))
+    }
+
+    func testParsesDescendantChain() {
+        let (sel, _) = parse("#outer .middle #inner")
+        XCTAssertEqual(sel?.parts.count, 3)
+        XCTAssertEqual(sel?.combinators, [.descendant, .descendant])
+    }
+
+    func testParsesMixedCombinators() {
+        let (sel, _) = parse("#form > .row .input")
+        XCTAssertEqual(sel?.parts.count, 3)
+        XCTAssertEqual(sel?.combinators, [.child, .descendant])
+    }
+
+    func testParsesChildCombinatorWithoutSurroundingSpace() {
+        let (sel, _) = parse("#a>#b")
+        XCTAssertEqual(sel, ComplexSelector(
+            parts: [CompoundSelector([.id("a")]),
+                    CompoundSelector([.id("b")])],
+            combinators: [.child]
+        ))
+    }
+
+    func testDanglingCombinatorFailsParse() {
+        // A trailing `>` with no right-hand compound is malformed.
+        let (sel1, _) = parse("#a >")
+        XCTAssertNil(sel1)
+        let (sel2, _) = parse("> #a")
+        XCTAssertNil(sel2)
+    }
+
+    func testComplexSelectorSpecificitySums() {
+        // `#form .row input` → (b=1) + (c=1) + (d=1) = (0,1,1,1)
+        let complex = ComplexSelector(
+            parts: [CompoundSelector([.id("form")]),
+                    CompoundSelector([.class("row")]),
+                    CompoundSelector([.element("input")])],
+            combinators: [.descendant, .descendant]
+        )
+        XCTAssertEqual(Specificity.of(complex), Specificity(a: 0, b: 1, c: 1, d: 1))
+    }
+
+    func testComplexSingleCompoundHasCompoundSpecificity() {
+        let complex = ComplexSelector(CompoundSelector([.id("a"), .class("b")]))
+        XCTAssertEqual(Specificity.of(complex),
+                       Specificity.of(compound: CompoundSelector([.id("a"), .class("b")])))
     }
 }
