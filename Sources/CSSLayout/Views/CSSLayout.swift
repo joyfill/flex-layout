@@ -205,6 +205,22 @@ public struct CSSLayout: View {
         localsByID.reserveCapacity(locals.count)
         for l in locals { localsByID[l.id] = l }
         let rootID = "root"
+        // Prune FormState to the binding paths the current schema
+        // declares *before* handing it to the resolver. Done up front so
+        // a factory that reads its binding during its initial render
+        // can't observe a stale value from a previous payload that
+        // happened to reuse a now-dropped path key.
+        if let form = formStateRef {
+            var keep: Set<String> = []
+            for n in nodes {
+                for (key, value) in n.props {
+                    if key == "binding" || key.hasPrefix("binding.") {
+                        keep.insert(value)
+                    }
+                }
+            }
+            form.prune(keeping: keep)
+        }
         let resolved = ComponentResolver.resolve(
             nodes: nodes,
             locals: locals,
@@ -239,6 +255,7 @@ public struct CSSLayout: View {
                     if name != "*" { handlers["*"]?(event) }
                 }
             },
+            formState: formStateRef,
             diagnostics: &diagnostics
         )
 
