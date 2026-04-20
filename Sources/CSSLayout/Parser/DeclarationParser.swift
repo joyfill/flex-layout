@@ -39,6 +39,8 @@ public enum DeclarationParser {
         "width", "height",
         "z-index",
         "position", "top", "bottom", "left", "right",
+        // Visibility (Phase 2)
+        "visibility",
     ]
 
     /// Parse `body` — the text between `{` and `}` of a single rule.

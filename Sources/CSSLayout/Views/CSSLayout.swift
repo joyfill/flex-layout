@@ -140,15 +140,24 @@ public struct CSSLayout: View {
     /// so container geometry (direction, gap, padding, justify/align) takes
     /// effect exactly where the schema declares it.
     private func render(_ child: ResolvedChild) -> AnyView {
+        let rawView: AnyView
         if child.isContainer {
             let nested = child.nested
             let inner = FlexLayout(child.containerStyle) {
                 self.childrenView(nested)
             }
             .flexOverflow(child.containerStyle.overflow)
-            return AnyView(applyItem(AnyView(inner), style: child.itemStyle))
+            rawView = AnyView(inner)
+        } else {
+            rawView = child.view
         }
-        return AnyView(applyItem(child.view, style: child.itemStyle))
+        // `visibility: hidden` keeps the flex slot and only suppresses the
+        // paint — apply `.hidden()` *before* `.flexItem(...)` so layout
+        // still sees the natural size of the underlying view.
+        let maybeHidden: AnyView = child.isVisibilityHidden
+            ? AnyView(rawView.hidden())
+            : rawView
+        return AnyView(applyItem(maybeHidden, style: child.itemStyle))
     }
 
     // MARK: - Rendering helpers

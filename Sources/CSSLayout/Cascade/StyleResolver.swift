@@ -211,6 +211,18 @@ public enum StyleResolver {
                 diagnostics.warn(.init(.invalidValue(property: decl.property, value: decl.value)))
             }
 
+        case "visibility":
+            // Only `visible` / `hidden` are modelled. `collapse` has no
+            // meaningful flex mapping (it targets table-rows in CSS 2.1)
+            // and anything else is garbage — both get `.invalidValue` so
+            // the prior cascaded value is preserved.
+            switch decl.value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
+            case "visible": style.isVisibilityHidden = false
+            case "hidden":  style.isVisibilityHidden = true
+            default:
+                diagnostics.warn(.init(.invalidValue(property: decl.property, value: decl.value)))
+            }
+
         case "flex-direction":
             if let v = CSSValueParsers.parseFlexDirection(decl.value) {
                 style.container.direction = v

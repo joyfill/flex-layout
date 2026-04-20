@@ -224,7 +224,8 @@ public enum ComponentResolver {
                 containerStyle: leaf.node.computedStyle.container,
                 resolution: leaf.resolution,
                 view: leaf.view,
-                nested: nested
+                nested: nested,
+                isVisibilityHidden: leaf.node.computedStyle.isVisibilityHidden
             )
         }
 
