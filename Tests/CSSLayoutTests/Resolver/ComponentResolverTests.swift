@@ -15,12 +15,14 @@ final class ComponentResolverTests: XCTestCase {
     private func styleNode(
         id: String,
         parentID: String? = nil,
-        schemaType: String? = nil
+        schemaType: String? = nil,
+        props: [String: String] = [:]
     ) -> StyleNode {
         StyleNode(
             id: id,
             parentID: parentID,
             schemaType: schemaType,
+            props: props,
             computedStyle: ComputedStyle()
         )
     }
@@ -288,5 +290,43 @@ final class ComponentResolverTests: XCTestCase {
         XCTAssertEqual(res.children.map(\.id), ["outer"])
         XCTAssertEqual(res.children[0].nested.map(\.id), ["inner"])
         XCTAssertEqual(res.children[0].nested[0].nested.map(\.id), ["leaf"])
+    }
+
+    // MARK: - Phase 3 — schema props reach the factory
+
+    /// Factories need the server-sent prop bag (placeholder text, labels,
+    /// binding paths). The resolver must thread `StyleNode.props` into
+    /// `ComponentProps.values` so `props.string("placeholder")` inside the
+    /// factory sees what the schema declared.
+    func testSchemaPropsAreForwardedToFactory() {
+        final class PropsCapture { var seen: [String: String] = [:] }
+        let captured = PropsCapture()
+        let registry = ComponentRegistry()
+            .register("text-input") { props, _ in
+                captured.seen = props.values
+                return AnyView(EmptyView())
+            }
+        _ = resolve(
+            nodes: [
+                rootNode(),
+                styleNode(id: "name",
+                          schemaType: "text-input",
+                          props: ["placeholder": "Full name",
+                                  "binding": "user.name"]),
+            ],
+            registry: registry
+        )
+        XCTAssertEqual(captured.seen["placeholder"], "Full name")
+        XCTAssertEqual(captured.seen["binding"], "user.name")
+    }
+
+    /// Props with no registered factory are irrelevant (placeholder
+    /// branch) but must not crash. Sanity-check the fallback path.
+    func testPropsAreIgnoredOnPlaceholderPath() {
+        let (res, _) = resolve(nodes: [
+            rootNode(),
+            styleNode(id: "mystery", props: ["anything": "ok"]),
+        ])
+        XCTAssertEqual(res.children.first?.resolution, .placeholder)
     }
 }
