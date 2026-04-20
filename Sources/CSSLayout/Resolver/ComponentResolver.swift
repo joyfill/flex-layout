@@ -105,8 +105,12 @@ public enum ComponentResolver {
             _ payload: [String: String],
             _ propagates: Bool
         ) -> Void)? = nil,
+        formState: FormState? = nil,
         diagnostics: inout CSSDiagnostics
     ) -> Resolved {
+        // Phase 3 stub: formState is accepted but not yet consumed. The
+        // following unit wires it into a BindingResolver closure.
+        _ = formState
         // Precondition: `StyleTreeBuilder` always emits at least the root.
         let rootNode = nodes.first ?? StyleNode(
             id: "root", schemaType: nil, computedStyle: ComputedStyle()

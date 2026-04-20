@@ -34,7 +34,8 @@ final class ComponentResolverTests: XCTestCase {
     private func resolve(
         nodes: [StyleNode],
         locals: [Component] = [],
-        registry: ComponentRegistry = ComponentRegistry()
+        registry: ComponentRegistry = ComponentRegistry(),
+        formState: FormState? = nil
     ) -> (result: ComponentResolver.Resolved, diagnostics: CSSDiagnostics) {
         var diags = CSSDiagnostics()
         let result = ComponentResolver.resolve(
@@ -42,6 +43,7 @@ final class ComponentResolverTests: XCTestCase {
             locals: locals,
             registry: registry,
             placeholder: { _ in AnyView(EmptyView()) },
+            formState: formState,
             diagnostics: &diags
         )
         return (result, diags)
@@ -328,5 +330,103 @@ final class ComponentResolverTests: XCTestCase {
             styleNode(id: "mystery", props: ["anything": "ok"]),
         ])
         XCTAssertEqual(res.children.first?.resolution, .placeholder)
+    }
+
+    // MARK: - Phase 3 — FormState-backed bindings
+
+    /// Harness that registers a capturing factory and returns the
+    /// `ComponentEvents` handed to it, so a test can exercise
+    /// `events.binding(_:)` directly.
+    private final class BindingProbe {
+        var events: ComponentEvents?
+    }
+
+    private func resolveWithBindingProbe(
+        nodes: [StyleNode],
+        formState: FormState?,
+        type: String = "text-input"
+    ) -> BindingProbe {
+        let probe = BindingProbe()
+        let registry = ComponentRegistry()
+            .register(type) { _, events in
+                probe.events = events
+                return AnyView(EmptyView())
+            }
+        _ = resolve(nodes: nodes, registry: registry, formState: formState)
+        return probe
+    }
+
+    /// With no FormState wired in, every binding must be dead — the
+    /// factory can still call `events.binding("value")` safely but it
+    /// resolves to the empty-string default.
+    func testBindingIsDeadWhenNoFormStateProvided() {
+        let probe = resolveWithBindingProbe(
+            nodes: [
+                rootNode(),
+                styleNode(id: "name", schemaType: "text-input",
+                          props: ["binding": "user.name"]),
+            ],
+            formState: nil
+        )
+        XCTAssertEqual(probe.events?.binding("value").wrappedValue, "")
+    }
+
+    /// A schema that declares `"binding": "user.name"` must produce a
+    /// binding that reads from (and writes to) `FormState` at that path.
+    func testBindingResolvesPathFromSchemaToFormState() {
+        let form = FormState(values: ["user.name": "Ada"])
+        let probe = resolveWithBindingProbe(
+            nodes: [
+                rootNode(),
+                styleNode(id: "name", schemaType: "text-input",
+                          props: ["binding": "user.name"]),
+            ],
+            formState: form
+        )
+        let b = probe.events!.binding("value")
+        XCTAssertEqual(b.wrappedValue, "Ada")
+        b.wrappedValue = "Grace"
+        XCTAssertEqual(form.get("user.name"), "Grace")
+    }
+
+    /// Components with multiple bound fields can scope the path per
+    /// field via `"binding.<field>"` (e.g. a form row that binds both
+    /// `value` and `checked`). The field-scoped key wins over the
+    /// default `"binding"` key.
+    func testFieldScopedBindingOverridesDefaultBinding() {
+        let form = FormState(values: [
+            "default.path": "should-not-read",
+            "user.agreed": "yes",
+        ])
+        let probe = resolveWithBindingProbe(
+            nodes: [
+                rootNode(),
+                styleNode(id: "row", schemaType: "text-input",
+                          props: [
+                            "binding":          "default.path",
+                            "binding.checked":  "user.agreed",
+                          ]),
+            ],
+            formState: form
+        )
+        XCTAssertEqual(probe.events?.binding("checked").wrappedValue, "yes")
+        // Field without a scoped override still falls back to the
+        // default binding key.
+        XCTAssertEqual(probe.events?.binding("value").wrappedValue,
+                       "should-not-read")
+    }
+
+    /// If the schema declares neither a default nor a field-scoped
+    /// binding, the factory gets a dead binding — never a crash.
+    func testBindingForFieldWithoutPathReturnsDeadBinding() {
+        let form = FormState()
+        let probe = resolveWithBindingProbe(
+            nodes: [
+                rootNode(),
+                styleNode(id: "name", schemaType: "text-input", props: [:]),
+            ],
+            formState: form
+        )
+        XCTAssertEqual(probe.events?.binding("value").wrappedValue, "")
     }
 }
