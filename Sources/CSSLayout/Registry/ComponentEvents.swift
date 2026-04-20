@@ -1,10 +1,18 @@
 // ComponentEvents — the outbound-event sink handed to each component factory.
 //
-// Phase 2: events now carry a `propagates` bit. The sink signature gained the
-// flag so the `CSSLayout` dispatcher can skip ancestor handlers (including
-// the root) when a factory emits a non-bubbling event.
+// Phase 2 added the `propagates` bit on events.
+// Phase 3 adds `binding(_:)` — a typed escape hatch that hands the factory a
+// SwiftUI `Binding<String>` for a named field (e.g. `"value"`, `"checked"`).
+// The surrounding payload decides what backs the binding (`FormState` in
+// production, a plain local value in tests/previews); factories remain
+// oblivious.
+//
+// Stub note: the red commit returns `.constant("")` from `binding(_:)`
+// unconditionally. The matching green commit will delegate to an injected
+// resolver so `FormState` can own the storage.
 
 import Foundation
+import SwiftUI
 
 /// The outbound event channel given to a component factory.
 ///
@@ -21,10 +29,25 @@ public struct ComponentEvents {
         _ payload: [String: String],
         _ propagates: Bool
     ) -> Void
+    /// Produces the SwiftUI `Binding<String>` returned by `binding(_:)`.
+    /// The field name is the key the factory asked for (e.g. `"value"`);
+    /// the resolver decides how to map that to FormState storage.
+    public typealias BindingResolver = (_ field: String) -> Binding<String>
+
     private let sink: Sink?
+    private let bindingResolver: BindingResolver?
 
     public init(_ sink: Sink? = nil) {
         self.sink = sink
+        self.bindingResolver = nil
+    }
+
+    /// Wire both the event sink and the binding resolver. The resolver
+    /// parameter is nullable so test call sites can opt into binding
+    /// behavior independently of event dispatch.
+    public init(sink: Sink?, bindings: BindingResolver?) {
+        self.sink = sink
+        self.bindingResolver = bindings
     }
 
     /// Emit a named event with an optional payload. `propagates` controls
@@ -37,5 +60,12 @@ public struct ComponentEvents {
         propagates: Bool = true
     ) {
         sink?(name, payload, propagates)
+    }
+
+    /// Return a `Binding<String>` for `field`. Red stub always returns a
+    /// dead binding; the green commit will delegate to `bindingResolver`.
+    public func binding(_ field: String) -> Binding<String> {
+        _ = field
+        return .constant("")
     }
 }
