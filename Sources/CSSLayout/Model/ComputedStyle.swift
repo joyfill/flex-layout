@@ -47,5 +47,18 @@ public struct ComputedStyle: Equatable {
     public var item:      ItemStyle           = ItemStyle()
     public var display:   FlexDisplay         = .flex
 
+    /// `display: none` removes the element (and its whole subtree) from the
+    /// formatting tree. We track it as a flag — rather than a `FlexDisplay`
+    /// case — so the FlexLayout enum stays untouched; the resolver filters
+    /// flagged nodes out before any view is produced.
+    public var isDisplayNone: Bool = false
+
+    /// `visibility: hidden` keeps the element in layout (it still reserves
+    /// space) but suppresses its paint. Carried as a flag on ComputedStyle
+    /// so the resolver can forward it to `ResolvedChild`, which in turn
+    /// lets the render layer apply SwiftUI's `.hidden()` without touching
+    /// the flex tree.
+    public var isVisibilityHidden: Bool = false
+
     public init() {}
 }

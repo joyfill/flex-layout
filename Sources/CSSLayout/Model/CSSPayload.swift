@@ -20,10 +20,25 @@ public struct SchemaEntry: Equatable {
     /// Optional component type; `nil` means "unknown component, resolver will
     /// render a placeholder in debug builds".
     public let type: String?
+    /// Zero or more CSS class names this entry carries. `.name` selectors in
+    /// the stylesheet match against this list. Defaults to empty so callers
+    /// that predate class support keep compiling unchanged.
+    public let classes: [String]
+    /// Optional id of the entry's parent in the layout tree. `nil` (default)
+    /// attaches the entry to the implicit root. Non-nil ids that don't resolve
+    /// to another entry fall back to root — the tree is always connected.
+    public let parentID: String?
 
-    public init(id: String, type: String? = nil) {
+    public init(
+        id: String,
+        type: String? = nil,
+        classes: [String] = [],
+        parentID: String? = nil
+    ) {
         self.id = id
         self.type = type
+        self.classes = classes
+        self.parentID = parentID
     }
 }
 

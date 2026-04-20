@@ -23,28 +23,50 @@ import CoreGraphics
 /// Resolves computed style for a single node.
 public enum StyleResolver {
 
+    /// A minimal ancestor-ref used by the combinator matcher. Constructed by
+    /// `StyleTreeBuilder` from each schema entry; exposed publicly so tests
+    /// can exercise the resolver in isolation.
+    public struct NodeRef: Equatable {
+        public let id: String
+        public let schemaType: String?
+        public let classes: [String]
+
+        public init(id: String, schemaType: String?, classes: [String]) {
+            self.id = id
+            self.schemaType = schemaType
+            self.classes = classes
+        }
+    }
+
     /// Produce the fully computed style for a node.
     ///
     /// - Parameters:
     ///   - id: The node id (matches `#id` selectors).
     ///   - schemaType: The registered component type, if any (matches element
     ///     selectors like `button`).
+    ///   - classes: The node's CSS class names (matches `.name` selectors).
+    ///     Defaults to empty so pre-Phase-2 callers keep compiling.
+    ///   - ancestors: The node's ancestor chain, innermost parent first and
+    ///     the outermost ancestor last. Used to resolve descendant / child
+    ///     combinators. Defaults to empty (flat schema).
     ///   - stylesheet: The parsed CSS to cascade over.
     ///   - diagnostics: Accumulator for invalid-value warnings.
     /// - Returns: The resolved ``ComputedStyle`` (defaults for unmatched nodes).
     public static func resolve(
         id: String,
         schemaType: String?,
+        classes: [String] = [],
+        ancestors: [NodeRef] = [],
         stylesheet: Stylesheet,
         diagnostics: inout CSSDiagnostics
     ) -> ComputedStyle {
-        // 1. Select matching rules.
+        let subject = NodeRef(id: id, schemaType: schemaType, classes: classes)
+
+        // 1. Select matching rules. A complex selector matches iff its subject
+        // compound matches the node AND every preceding compound can be
+        // satisfied by the ancestor chain respecting its combinator.
         let matched = stylesheet.rules.filter { rule in
-            switch rule.selector {
-            case .id(let name):      return name == id
-            case .element(let name): return name == schemaType
-            case .class:             return false  // classes unmodeled in Phase 1
-            }
+            matches(rule.selector, subject: subject, ancestors: ancestors)
         }
 
         // 2. Sort by (specificity asc, sourceOrder asc). "Later wins" on ties.
@@ -63,6 +85,105 @@ public enum StyleResolver {
         return style
     }
 
+    // MARK: - Selector matching
+
+    /// Full complex-selector match: subject compound against the node plus
+    /// every preceding compound against the ancestor chain per its combinator.
+    ///
+    /// Scans compounds right-to-left (subject first) with backtracking for
+    /// descendant combinators. Greedy matching is NOT sufficient — consider
+    /// `#form > .row input` against an ancestor chain `[inner.row, cell,
+    /// outer.row, form]`: picking the innermost `.row` greedily fails the
+    /// `#form >` child check, even though choosing `outer.row` succeeds.
+    ///
+    /// For each preceding compound:
+    ///   • `.child` — the very next ancestor must match; one shot, no choice.
+    ///   • `.descendant` — try each candidate ancestor in turn; recurse on
+    ///     the remainder. First success wins.
+    private static func matches(
+        _ complex: ComplexSelector,
+        subject: NodeRef,
+        ancestors: [NodeRef]
+    ) -> Bool {
+        guard matchesCompound(complex.subject, node: subject) else { return false }
+        if complex.parts.count == 1 { return true }
+        // Start matching from the compound adjacent to the subject, walking
+        // outwards into `ancestors` (cursor = 0 = innermost).
+        return matchPreceding(
+            complex: complex,
+            partIndex: complex.parts.count - 2,
+            ancestors: ancestors,
+            cursor: 0
+        )
+    }
+
+    /// Recursive backtracking helper for preceding compounds. `partIndex`
+    /// points at the compound to satisfy; `cursor` is the next ancestor to
+    /// consider. Returns `true` when every preceding compound has found a
+    /// consistent ancestor assignment.
+    private static func matchPreceding(
+        complex: ComplexSelector,
+        partIndex: Int,
+        ancestors: [NodeRef],
+        cursor: Int
+    ) -> Bool {
+        // All preceding compounds satisfied.
+        if partIndex < 0 { return true }
+
+        let compound = complex.parts[partIndex]
+        // `combinators[i]` links parts[i] to parts[i + 1]. Since we've already
+        // matched parts[partIndex + 1], the relevant combinator is at
+        // `partIndex`.
+        switch complex.combinators[partIndex] {
+        case .child:
+            // One shot: ancestors[cursor] must match this compound, then
+            // advance both partIndex and cursor by one.
+            guard cursor < ancestors.count,
+                  matchesCompound(compound, node: ancestors[cursor])
+            else { return false }
+            return matchPreceding(
+                complex: complex,
+                partIndex: partIndex - 1,
+                ancestors: ancestors,
+                cursor: cursor + 1
+            )
+
+        case .descendant:
+            // Try each candidate ancestor at or after `cursor`. If matching
+            // the remainder from that position succeeds, we're done. This
+            // is the backtracking step: a later candidate may work when an
+            // earlier one doesn't.
+            var i = cursor
+            while i < ancestors.count {
+                if matchesCompound(compound, node: ancestors[i]),
+                   matchPreceding(
+                       complex: complex,
+                       partIndex: partIndex - 1,
+                       ancestors: ancestors,
+                       cursor: i + 1
+                   ) {
+                    return true
+                }
+                i += 1
+            }
+            return false
+        }
+    }
+
+    /// Every simple part of `compound` must match `node`.
+    private static func matchesCompound(
+        _ compound: CompoundSelector,
+        node: NodeRef
+    ) -> Bool {
+        compound.parts.allSatisfy { part in
+            switch part {
+            case .id(let name):      return name == node.id
+            case .element(let name): return name == node.schemaType
+            case .class(let name):   return node.classes.contains(name)
+            }
+        }
+    }
+
     // MARK: - Declaration application
 
     // Dispatch table for one declaration. Invalid values are reported via
@@ -77,9 +198,28 @@ public enum StyleResolver {
 
         // MARK: Container
         case "display":
-            if let v = CSSValueParsers.parseDisplay(decl.value) {
+            // `display: none` is parsed here (not in `parseDisplay`) because
+            // FlexDisplay has no `.none` case — we flag it on ComputedStyle
+            // and let the resolver filter the node's whole subtree out.
+            let raw = decl.value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            if raw == "none" {
+                style.isDisplayNone = true
+            } else if let v = CSSValueParsers.parseDisplay(decl.value) {
                 style.display = v
+                style.isDisplayNone = false
             } else {
+                diagnostics.warn(.init(.invalidValue(property: decl.property, value: decl.value)))
+            }
+
+        case "visibility":
+            // Only `visible` / `hidden` are modelled. `collapse` has no
+            // meaningful flex mapping (it targets table-rows in CSS 2.1)
+            // and anything else is garbage — both get `.invalidValue` so
+            // the prior cascaded value is preserved.
+            switch decl.value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
+            case "visible": style.isVisibilityHidden = false
+            case "hidden":  style.isVisibilityHidden = true
+            default:
                 diagnostics.warn(.init(.invalidValue(property: decl.property, value: decl.value)))
             }
 
@@ -175,7 +315,11 @@ public enum StyleResolver {
             else { diagnostics.warn(.init(.invalidValue(property: decl.property, value: decl.value))) }
 
         case "flex-basis":
-            style.item.basis = CSSValueParsers.parseFlexBasis(decl.value)
+            if let v = CSSValueParsers.parseFlexBasis(decl.value) {
+                style.item.basis = v
+            } else {
+                diagnostics.warn(.init(.invalidValue(property: decl.property, value: decl.value)))
+            }
 
         case "align-self":
             if let v = CSSValueParsers.parseAlignSelf(decl.value) {
@@ -191,8 +335,18 @@ public enum StyleResolver {
                 diagnostics.warn(.init(.invalidValue(property: decl.property, value: decl.value)))
             }
 
-        case "width":  style.item.width  = CSSValueParsers.parseFlexSize(decl.value)
-        case "height": style.item.height = CSSValueParsers.parseFlexSize(decl.value)
+        case "width":
+            if let v = CSSValueParsers.parseFlexSize(decl.value) {
+                style.item.width = v
+            } else {
+                diagnostics.warn(.init(.invalidValue(property: decl.property, value: decl.value)))
+            }
+        case "height":
+            if let v = CSSValueParsers.parseFlexSize(decl.value) {
+                style.item.height = v
+            } else {
+                diagnostics.warn(.init(.invalidValue(property: decl.property, value: decl.value)))
+            }
 
         case "z-index":
             if let n = Int(decl.value.trimmingCharacters(in: .whitespaces)) {
@@ -309,8 +463,10 @@ public enum StyleResolver {
                 item.grow = CGFloat(n)
                 item.shrink = 1
                 item.basis = .points(0)
+            } else if let b = CSSValueParsers.parseFlexBasis(parts[0]) {
+                item.basis = b
             } else {
-                item.basis = CSSValueParsers.parseFlexBasis(parts[0])
+                diagnostics.warn(.init(.invalidValue(property: "flex", value: value)))
             }
         case 2:
             if let g = Double(parts[0]), let s = Double(parts[1]) {
@@ -320,10 +476,11 @@ public enum StyleResolver {
                 diagnostics.warn(.init(.invalidValue(property: "flex", value: value)))
             }
         case 3...:
-            if let g = Double(parts[0]), let s = Double(parts[1]) {
+            if let g = Double(parts[0]), let s = Double(parts[1]),
+               let b = CSSValueParsers.parseFlexBasis(parts[2]) {
                 item.grow = CGFloat(g)
                 item.shrink = CGFloat(s)
-                item.basis = CSSValueParsers.parseFlexBasis(parts[2])
+                item.basis = b
             } else {
                 diagnostics.warn(.init(.invalidValue(property: "flex", value: value)))
             }

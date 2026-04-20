@@ -79,8 +79,10 @@ public struct CSSLayout: View {
     /// Register a handler for events named `name`. Returns a new view — chain
     /// multiple calls to register for different names.
     ///
-    /// Phase 1: no `"*"` catch-all, no event bubbling. Only the exact name
-    /// matches. Later calls with the same name overwrite the earlier handler.
+    /// Pass `"*"` to register a catch-all that fires for every propagating
+    /// event after the named handler (if any). Later calls with the same name
+    /// overwrite the earlier handler. Non-propagating events (emitted with
+    /// `propagates: false`) bypass both named and wildcard handlers.
     public func onEvent(_ name: String, _ handler: @escaping (CSSEvent) -> Void) -> CSSLayout {
         var copy = self
         copy.eventHandlers[name] = handler
@@ -106,14 +108,56 @@ public struct CSSLayout: View {
 
     // MARK: - Body
 
+    /// Identifiable pair used by `ForEach` so the child index provides stable
+    /// identity without requiring `ResolvedChild` itself to be `Identifiable`
+    /// (child ids are non-unique across subtrees during Phase 2 development).
+    private struct IndexedChild: Identifiable {
+        let offset: Int
+        let child: ResolvedChild
+        var id: Int { offset }
+    }
+
     public var body: some View {
         let snapshot = renderSnapshot()
         return FlexLayout(snapshot.rootStyle.container) {
-            ForEach(Array(snapshot.children.enumerated()), id: \.offset) { _, child in
-                applyItem(child.view, style: child.itemStyle)
-            }
+            childrenView(snapshot.children)
         }
         .flexOverflow(snapshot.rootStyle.container.overflow)
+    }
+
+    /// Build the `ForEach` over one level of resolved children. Separated so
+    /// the recursive case in `render(_:)` doesn't have to reason about the
+    /// `@ViewBuilder` closure types.
+    private func childrenView(_ children: [ResolvedChild]) -> some View {
+        let pairs = Array(children.enumerated()).map { IndexedChild(offset: $0.offset, child: $0.element) }
+        return ForEach(pairs) { pair in
+            self.render(pair.child)
+        }
+    }
+
+    /// Render a single resolved child. Leaves use the factory's view; nodes
+    /// with schema descendants wrap their children in a nested `FlexLayout`
+    /// so container geometry (direction, gap, padding, justify/align) takes
+    /// effect exactly where the schema declares it.
+    private func render(_ child: ResolvedChild) -> AnyView {
+        let rawView: AnyView
+        if child.isContainer {
+            let nested = child.nested
+            let inner = FlexLayout(child.containerStyle) {
+                self.childrenView(nested)
+            }
+            .flexOverflow(child.containerStyle.overflow)
+            rawView = AnyView(inner)
+        } else {
+            rawView = child.view
+        }
+        // `visibility: hidden` keeps the flex slot and only suppresses the
+        // paint — apply `.hidden()` *before* `.flexItem(...)` so layout
+        // still sees the natural size of the underlying view.
+        let maybeHidden: AnyView = child.isVisibilityHidden
+            ? AnyView(rawView.hidden())
+            : rawView
+        return AnyView(applyItem(maybeHidden, style: child.itemStyle))
     }
 
     // MARK: - Rendering helpers
@@ -136,14 +180,52 @@ public struct CSSLayout: View {
         // Capture the handler map locally so the event sink closure doesn't
         // need to retain `self`.
         let handlers = eventHandlers
+        // Bubble-path plumbing: look up each node's parent to walk ancestors,
+        // and every local's handlers so `.onCSSEvent` can fire during bubble.
+        // Both dictionaries use a tolerant init (`[key] = value` in a loop)
+        // so adversarial payloads with duplicate ids never hard-crash.
+        var parentByID: [String: String?] = [:]
+        parentByID.reserveCapacity(nodes.count)
+        for n in nodes where parentByID[n.id] == nil {
+            parentByID[n.id] = n.parentID
+        }
+        var localsByID: [String: Component] = [:]
+        localsByID.reserveCapacity(locals.count)
+        for l in locals { localsByID[l.id] = l }
+        let rootID = "root"
         let resolved = ComponentResolver.resolve(
             nodes: nodes,
             locals: locals,
             registry: registry,
             placeholder: placeholderFactory,
-            eventSink: { sourceID, name, payload in
-                let event = CSSEvent(name: name, sourceID: sourceID, payload: payload)
-                handlers[name]?(event)
+            eventSink: { sourceID, name, payload, propagates in
+                let event = CSSEvent(
+                    name: name,
+                    sourceID: sourceID,
+                    payload: payload,
+                    propagates: propagates
+                )
+                // Bubble phase: visit source first, then each ancestor up to
+                // (but excluding) the root. Each local along the way may
+                // carry a matching `.onCSSEvent` handler. A non-propagating
+                // event only fires at the target.
+                var cursor: String? = sourceID
+                var visited: Set<String> = []
+                while let id = cursor, id != rootID, visited.insert(id).inserted {
+                    if let local = localsByID[id],
+                       let handler = local.handlers[name] {
+                        handler(event)
+                    }
+                    if !propagates { break }
+                    cursor = parentByID[id] ?? nil
+                }
+                // Root handlers are the terminal stop of the bubble phase.
+                if propagates {
+                    handlers[name]?(event)
+                    // Wildcard fires after the named handler so specific
+                    // logic (which may modify state) runs before the sniffer.
+                    if name != "*" { handlers["*"]?(event) }
+                }
             },
             diagnostics: &diagnostics
         )

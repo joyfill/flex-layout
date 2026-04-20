@@ -76,15 +76,17 @@ final class ComponentRegistryTests: XCTestCase {
     }
 
     func testEventsSinkReceivesCalls() {
-        var received: [(String, [String: String])] = []
-        let events = ComponentEvents { name, payload in
-            received.append((name, payload))
+        var received: [(String, [String: String], Bool)] = []
+        let events = ComponentEvents { name, payload, propagates in
+            received.append((name, payload, propagates))
         }
         events.emit("submit", payload: ["form": "signup"])
-        events.emit("tap",    payload: [:])
+        events.emit("tap",    payload: [:],  propagates: false)
         XCTAssertEqual(received.count, 2)
         XCTAssertEqual(received[0].0, "submit")
         XCTAssertEqual(received[0].1["form"], "signup")
+        XCTAssertTrue(received[0].2, "default emit bubbles")
         XCTAssertEqual(received[1].0, "tap")
+        XCTAssertFalse(received[1].2, "explicit propagates: false respected")
     }
 }

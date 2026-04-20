@@ -21,13 +21,40 @@ public struct Specificity: Equatable, Comparable {
         self.a = a; self.b = b; self.c = c; self.d = d
     }
 
-    /// Specificity of a single simple selector.
-    public static func of(_ selector: SimpleSelector) -> Specificity {
+    /// Specificity of a single simple selector. Labeled (`part:`) so
+    /// dot-syntax like `Specificity.of(.id("a"))` resolves to the unlabeled
+    /// complex-selector overload below.
+    public static func of(part selector: SimpleSelector) -> Specificity {
         switch selector {
         case .id:      return Specificity(a: 0, b: 1, c: 0, d: 0)
         case .class:   return Specificity(a: 0, b: 0, c: 1, d: 0)
         case .element: return Specificity(a: 0, b: 0, c: 0, d: 1)
         }
+    }
+
+    /// Specificity of a compound selector — the component-wise sum of each
+    /// part's specificity (CSS Selectors Level 3 §16). Labeled to keep
+    /// dot-syntax resolution unambiguous.
+    public static func of(compound: CompoundSelector) -> Specificity {
+        var acc = Specificity()
+        for part in compound.parts {
+            let p = of(part: part)
+            acc = Specificity(a: acc.a + p.a, b: acc.b + p.b,
+                              c: acc.c + p.c, d: acc.d + p.d)
+        }
+        return acc
+    }
+
+    /// Specificity of a full complex selector — sum of every compound part.
+    /// Combinators contribute nothing to specificity (spec §16).
+    public static func of(_ complex: ComplexSelector) -> Specificity {
+        var acc = Specificity()
+        for p in complex.parts {
+            let s = of(compound: p)
+            acc = Specificity(a: acc.a + s.a, b: acc.b + s.b,
+                              c: acc.c + s.c, d: acc.d + s.d)
+        }
+        return acc
     }
 
     public static func < (lhs: Specificity, rhs: Specificity) -> Bool {

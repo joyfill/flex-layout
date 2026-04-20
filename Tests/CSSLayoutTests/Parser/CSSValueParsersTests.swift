@@ -50,8 +50,10 @@ final class CSSValueParsersTests: XCTestCase {
         XCTAssertEqual(CSSValueParsers.parseFlexBasis("50%"), .fraction(0.5))
     }
 
-    func testParseFlexBasis_invalidFallsBackToAuto() {
-        XCTAssertEqual(CSSValueParsers.parseFlexBasis("banana"), .auto)
+    func testParseFlexBasis_invalidReturnsNil() {
+        // CSS rule: invalid declarations are ignored so a prior value isn't
+        // overwritten. Parser returns `nil`; the caller emits a diagnostic.
+        XCTAssertNil(CSSValueParsers.parseFlexBasis("banana"))
     }
 
     // MARK: - parseFlexSize
@@ -72,8 +74,8 @@ final class CSSValueParsersTests: XCTestCase {
         XCTAssertEqual(CSSValueParsers.parseFlexSize("240px"), .points(240))
     }
 
-    func testParseFlexSize_invalidFallsBackToAuto() {
-        XCTAssertEqual(CSSValueParsers.parseFlexSize("nonsense"), .auto)
+    func testParseFlexSize_invalidReturnsNil() {
+        XCTAssertNil(CSSValueParsers.parseFlexSize("nonsense"))
     }
 
     // MARK: - parseOverflow
@@ -194,7 +196,10 @@ final class CSSValueParsersTests: XCTestCase {
     }
 
     func testParseDisplay_unsupportedReturnsNil() {
-        // Phase 1 does not support `display: none` — drop with diagnostic.
+        // `display: none` is recognised at the StyleResolver level (it sets
+        // `ComputedStyle.isDisplayNone`) because FlexDisplay has no `.none`
+        // case. The pure value parser therefore still returns nil for it,
+        // same as any other value that can't map onto FlexDisplay.
         XCTAssertNil(CSSValueParsers.parseDisplay("none"))
         XCTAssertNil(CSSValueParsers.parseDisplay("grid"))
     }

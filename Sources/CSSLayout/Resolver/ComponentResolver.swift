@@ -12,6 +12,7 @@
 
 import Foundation
 import SwiftUI
+import FlexLayout
 
 /// The source the resolver chose for a given node.
 public enum Resolution: Equatable {
@@ -24,14 +25,48 @@ public enum Resolution: Equatable {
 }
 
 /// One fully-resolved child, ready for the `FlexBox` to consume.
+///
+/// Phase 2: children can themselves be containers. When ``nested`` is
+/// non-empty the node acts as a flex container — its ``view`` is the
+/// factory/local/placeholder output but is only rendered when the node is
+/// a leaf (no schema descendants). A container node's visible output is a
+/// `FlexLayout(containerStyle) { nested… }`.
 public struct ResolvedChild {
     public let id: String
     public let itemStyle: ItemStyle
+    public let containerStyle: FlexContainerConfig
     public let resolution: Resolution
     public let view: AnyView
+    public let nested: [ResolvedChild]
+    /// Mirrors `ComputedStyle.isVisibilityHidden`. When true the render
+    /// layer wraps this child in `.hidden()` — the flex slot stays.
+    public let isVisibilityHidden: Bool
+
+    /// True iff the node has at least one schema-declared child; such nodes
+    /// render as a nested `FlexLayout` wrapping ``nested`` and the factory's
+    /// output is dropped (with a diagnostic from the resolver).
+    public var isContainer: Bool { !nested.isEmpty }
+
+    public init(
+        id: String,
+        itemStyle: ItemStyle,
+        containerStyle: FlexContainerConfig = FlexContainerConfig(),
+        resolution: Resolution,
+        view: AnyView,
+        nested: [ResolvedChild] = [],
+        isVisibilityHidden: Bool = false
+    ) {
+        self.id = id
+        self.itemStyle = itemStyle
+        self.containerStyle = containerStyle
+        self.resolution = resolution
+        self.view = view
+        self.nested = nested
+        self.isVisibilityHidden = isVisibilityHidden
+    }
 }
 
-/// Phase 1 resolver: flat root + schema-entry siblings.
+/// Phase 2 resolver: hierarchical root + schema-entry subtrees.
 public enum ComponentResolver {
 
     /// Grouped return value for `resolve`.
@@ -64,7 +99,12 @@ public enum ComponentResolver {
         locals: [Component],
         registry: ComponentRegistry,
         placeholder: (String) -> AnyView,
-        eventSink: ((_ sourceID: String, _ name: String, _ payload: [String: String]) -> Void)? = nil,
+        eventSink: ((
+            _ sourceID: String,
+            _ name: String,
+            _ payload: [String: String],
+            _ propagates: Bool
+        ) -> Void)? = nil,
         diagnostics: inout CSSDiagnostics
     ) -> Resolved {
         // Precondition: `StyleTreeBuilder` always emits at least the root.
@@ -73,15 +113,55 @@ public enum ComponentResolver {
         )
         let childNodes = nodes.dropFirst()
 
-        // Pre-index locals for O(1) lookup by id.
-        let localsByID: [String: Component] = Dictionary(
-            uniqueKeysWithValues: locals.map { ($0.id, $0) }
-        )
+        // Pre-index locals for O(1) lookup by id. Duplicates resolve to
+        // last-wins with a diagnostic so a typo in the author's locals block
+        // surfaces instead of crashing the pipeline.
+        var localsByID: [String: Component] = [:]
+        localsByID.reserveCapacity(locals.count)
+        for local in locals {
+            if localsByID[local.id] != nil {
+                diagnostics.warn(.init(.duplicateLocalID(local.id)))
+            }
+            localsByID[local.id] = local
+        }
 
-        var resolved: [ResolvedChild] = []
-        resolved.reserveCapacity(childNodes.count)
+        // Per-node leaf data (view + resolution). We resolve each node to a
+        // leaf view first, then assemble the tree in a second pass. Doing
+        // both in one loop is tempting but complicates the diagnostic for
+        // "factory declared on a container node" — we want to fire it only
+        // once children have been counted.
+        struct Leaf {
+            let node: StyleNode
+            let resolution: Resolution
+            let view: AnyView
+        }
+        var leafByID: [String: Leaf] = [:]
+        leafByID.reserveCapacity(childNodes.count)
+        var orderedIDs: [String] = []
+        orderedIDs.reserveCapacity(childNodes.count)
+
+        // Identify display:none ancestors up-front so we can skip not just
+        // the flagged node itself but its entire subtree. Walking parent
+        // pointers once per node is O(depth) in the worst case and happens
+        // before any view allocation — much cheaper than running the factory
+        // and then throwing the output away.
+        var nodeByID: [String: StyleNode] = [:]
+        nodeByID.reserveCapacity(childNodes.count)
+        for n in childNodes where nodeByID[n.id] == nil { nodeByID[n.id] = n }
+        func isHiddenBranch(_ id: String) -> Bool {
+            var visited: Set<String> = []
+            var cursor: String? = id
+            while let cur = cursor, visited.insert(cur).inserted {
+                guard let node = nodeByID[cur] else { return false }
+                if node.computedStyle.isDisplayNone { return true }
+                cursor = node.parentID
+            }
+            return false
+        }
 
         for node in childNodes {
+            if isHiddenBranch(node.id) { continue }
+
             let resolution: Resolution
             let view: AnyView
 
@@ -92,8 +172,8 @@ public enum ComponentResolver {
                 resolution = .registry
                 let props = ComponentProps([:], id: node.id)
                 let id = node.id
-                let events = ComponentEvents { name, payload in
-                    eventSink?(id, name, payload)
+                let events = ComponentEvents { name, payload, propagates in
+                    eventSink?(id, name, payload, propagates)
                 }
                 view = factory(props, events)
             } else {
@@ -110,14 +190,46 @@ public enum ComponentResolver {
                 view = placeholder(node.id)
             }
 
-            resolved.append(ResolvedChild(
-                id: node.id,
-                itemStyle: node.computedStyle.item,
-                resolution: resolution,
-                view: view
-            ))
+            leafByID[node.id] = Leaf(node: node, resolution: resolution, view: view)
+            orderedIDs.append(node.id)
         }
 
-        return Resolved(rootStyle: rootNode.computedStyle, children: resolved)
+        // Group node ids by their effective parent so we can assemble the
+        // tree without mutating `leafByID`.
+        var childrenByParent: [String: [String]] = [:]
+        for id in orderedIDs {
+            guard let leaf = leafByID[id] else { continue }
+            let parent = leaf.node.parentID ?? rootNode.id
+            childrenByParent[parent, default: []].append(id)
+        }
+
+        // Recursive assembly: any node with schema descendants becomes a
+        // container (its factory view is dropped, with a diagnostic).
+        func assemble(id: String) -> ResolvedChild {
+            // Precondition: caller only passes ids present in `leafByID`.
+            let leaf = leafByID[id]!
+            let nested = (childrenByParent[id] ?? []).map { assemble(id: $0) }
+            if !nested.isEmpty, leaf.resolution != .placeholder {
+                // Author supplied a factory/local for a node that the schema
+                // also populates with children. We can't inject children into
+                // an opaque AnyView, so the schema wins; warn the author.
+                diagnostics.warn(.init(
+                    .other,
+                    "node '\(id)' has schema children; its \(leaf.resolution) view was dropped in favour of a nested flex container"
+                ))
+            }
+            return ResolvedChild(
+                id: id,
+                itemStyle: leaf.node.computedStyle.item,
+                containerStyle: leaf.node.computedStyle.container,
+                resolution: leaf.resolution,
+                view: leaf.view,
+                nested: nested,
+                isVisibilityHidden: leaf.node.computedStyle.isVisibilityHidden
+            )
+        }
+
+        let topLevel = (childrenByParent[rootNode.id] ?? []).map { assemble(id: $0) }
+        return Resolved(rootStyle: rootNode.computedStyle, children: topLevel)
     }
 }

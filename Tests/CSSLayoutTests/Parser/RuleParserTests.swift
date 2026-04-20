@@ -59,10 +59,19 @@ final class RuleParserTests: XCTestCase {
         XCTAssertEqual(diags.count(of: .unsupportedSelector("attribute")), 1)
     }
 
-    func testSkipsRuleWithCombinatorSelector() {
+    func testParsesRuleWithChildCombinator() {
+        // Phase 2: combinators are supported — the rule is kept.
         let (rules, diags) = parse("#a > #b { flex: 1; }")
-        XCTAssertEqual(rules.count, 0)
-        XCTAssertEqual(diags.count(of: .unsupportedSelector("combinator")), 1)
+        XCTAssertEqual(rules.count, 1)
+        XCTAssertEqual(rules[0].selector.parts.count, 2)
+        XCTAssertEqual(rules[0].selector.combinators, [.child])
+        XCTAssertEqual(diags.warnings.count, 0)
+    }
+
+    func testParsesRuleWithDescendantCombinator() {
+        let (rules, _) = parse("#form #name { flex: 1; }")
+        XCTAssertEqual(rules.count, 1)
+        XCTAssertEqual(rules[0].selector.combinators, [.descendant])
     }
 
     func testSkipsAtRulesInPhase1() {
@@ -105,6 +114,40 @@ final class RuleParserTests: XCTestCase {
         let (rules, diags) = parse("")
         XCTAssertEqual(rules.count, 0)
         XCTAssertEqual(diags.warnings.count, 0)
+    }
+
+    // MARK: - Grouping (Phase 2)
+
+    func testGroupedSelectorExpandsToMultipleRules() {
+        let (rules, diags) = parse("#a, #b { flex: 1; }")
+        XCTAssertEqual(rules.count, 2)
+        XCTAssertEqual(rules[0].selector, .id("a"))
+        XCTAssertEqual(rules[1].selector, .id("b"))
+        // Both rules carry the same declarations.
+        XCTAssertEqual(rules[0].declarations.count, 1)
+        XCTAssertEqual(rules[1].declarations.count, 1)
+        XCTAssertEqual(rules[0].declarations[0].property, "flex")
+        XCTAssertEqual(rules[1].declarations[0].property, "flex")
+        XCTAssertEqual(diags.warnings.count, 0)
+    }
+
+    func testGroupedSelectorsAssignDistinctSourceOrders() {
+        // Each expanded selector gets its own monotonically increasing
+        // sourceOrder — the second member wins a last-in-group tie on
+        // identical specificity, matching spec cascade semantics.
+        let (rules, _) = parse("#a, #b { flex: 1; } #c { flex: 2; }")
+        XCTAssertEqual(rules.count, 3)
+        XCTAssertEqual(rules.map(\.sourceOrder), [0, 1, 2])
+        XCTAssertEqual(rules.map(\.selector), [.id("a"), .id("b"), .id("c")])
+    }
+
+    func testGroupPartialFailureKeepsValidSelectors() {
+        // `[data-x]` is unsupported → one warning + one dropped member;
+        // `#a` still produces a rule.
+        let (rules, diags) = parse("#a, [data-x] { flex: 1; }")
+        XCTAssertEqual(rules.count, 1)
+        XCTAssertEqual(rules[0].selector, .id("a"))
+        XCTAssertEqual(diags.count(of: .unsupportedSelector("attribute")), 1)
     }
 
     func testSkipsCommentsBetweenRules() {
