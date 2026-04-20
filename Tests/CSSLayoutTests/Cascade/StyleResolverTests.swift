@@ -239,6 +239,46 @@ final class StyleResolverTests: XCTestCase {
         XCTAssertEqual(style.item.grow, 2)
     }
 
+    // Regression: greedy right-to-left matching used to pick the innermost
+    // `.row` unconditionally, then fail the `#form >` constraint against
+    // that `.row`'s parent. The correct match requires the OUTER `.row`,
+    // which backtracking must find.
+    func testMixedCombinatorsFindValidMatchWithBacktracking() {
+        // Tree: #form > .row(outer) > .cell > .row(inner) > input
+        // Selector: `#form > .row input`
+        //   - subject: input ✓
+        //   - `.row` ancestor (descendant): two candidates
+        //   - `#form >` child: only the OUTER .row's parent is #form
+        let ancestors: [StyleResolver.NodeRef] = [
+            .init(id: "inner", schemaType: nil, classes: ["row"]),
+            .init(id: "cell",  schemaType: nil, classes: []),
+            .init(id: "outer", schemaType: nil, classes: ["row"]),
+            .init(id: "form",  schemaType: nil, classes: []),
+        ]
+        let (style, _) = resolveWithAncestors(
+            "#form > .row input { flex-grow: 7; }",
+            id: "i", schemaType: "input", ancestors: ancestors
+        )
+        XCTAssertEqual(style.item.grow, 7,
+                       "matcher must backtrack past the inner .row to find the match")
+    }
+
+    func testMixedCombinatorsRejectWhenNoMatchExists() {
+        // Same shape but the outer .row's parent is NOT #form → no match
+        // regardless of backtracking. Sanity: backtracking doesn't over-match.
+        let ancestors: [StyleResolver.NodeRef] = [
+            .init(id: "inner", schemaType: nil, classes: ["row"]),
+            .init(id: "cell",  schemaType: nil, classes: []),
+            .init(id: "outer", schemaType: nil, classes: ["row"]),
+            .init(id: "wrap",  schemaType: nil, classes: []),   // not #form
+        ]
+        let (style, _) = resolveWithAncestors(
+            "#form > .row input { flex-grow: 7; }",
+            id: "i", schemaType: "input", ancestors: ancestors
+        )
+        XCTAssertEqual(style.item.grow, 0)
+    }
+
     func testIDBeatsElement() {
         let (style, _) = resolve("""
             button { flex-grow: 1; }

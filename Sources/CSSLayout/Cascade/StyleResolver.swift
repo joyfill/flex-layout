@@ -90,15 +90,16 @@ public enum StyleResolver {
     /// Full complex-selector match: subject compound against the node plus
     /// every preceding compound against the ancestor chain per its combinator.
     ///
-    /// Scans compounds right-to-left (subject first). For each preceding
-    /// compound:
-    ///   • `.child` — the current ancestor must match; if not, fail.
-    ///   • `.descendant` — search outwards for the first matching ancestor;
-    ///     fail only if no ancestor matches.
+    /// Scans compounds right-to-left (subject first) with backtracking for
+    /// descendant combinators. Greedy matching is NOT sufficient — consider
+    /// `#form > .row input` against an ancestor chain `[inner.row, cell,
+    /// outer.row, form]`: picking the innermost `.row` greedily fails the
+    /// `#form >` child check, even though choosing `outer.row` succeeds.
     ///
-    /// Greedy matching is safe here because descendant compounds only need
-    /// "some ancestor" and combinators are left-associative — no backtracking
-    /// scenario can turn a greedy failure into a success for this subset.
+    /// For each preceding compound:
+    ///   • `.child` — the very next ancestor must match; one shot, no choice.
+    ///   • `.descendant` — try each candidate ancestor in turn; recurse on
+    ///     the remainder. First success wins.
     private static func matches(
         _ complex: ComplexSelector,
         subject: NodeRef,
@@ -106,34 +107,67 @@ public enum StyleResolver {
     ) -> Bool {
         guard matchesCompound(complex.subject, node: subject) else { return false }
         if complex.parts.count == 1 { return true }
+        // Start matching from the compound adjacent to the subject, walking
+        // outwards into `ancestors` (cursor = 0 = innermost).
+        return matchPreceding(
+            complex: complex,
+            partIndex: complex.parts.count - 2,
+            ancestors: ancestors,
+            cursor: 0
+        )
+    }
 
-        var cursor = 0    // index into `ancestors` (innermost-first)
-        // Walk compound parts from the one adjacent to the subject outwards.
-        // `combinators[i]` links `parts[i]` to `parts[i + 1]`, so the
-        // combinator connecting the current preceding compound to whatever
-        // already matched (initially the subject) lives at index `i`.
-        for i in stride(from: complex.parts.count - 2, through: 0, by: -1) {
-            let compound = complex.parts[i]
-            switch complex.combinators[i] {
-            case .child:
-                guard cursor < ancestors.count,
-                      matchesCompound(compound, node: ancestors[cursor])
-                else { return false }
-                cursor += 1
-            case .descendant:
-                var found = false
-                while cursor < ancestors.count {
-                    let candidate = ancestors[cursor]
-                    cursor += 1
-                    if matchesCompound(compound, node: candidate) {
-                        found = true
-                        break
-                    }
+    /// Recursive backtracking helper for preceding compounds. `partIndex`
+    /// points at the compound to satisfy; `cursor` is the next ancestor to
+    /// consider. Returns `true` when every preceding compound has found a
+    /// consistent ancestor assignment.
+    private static func matchPreceding(
+        complex: ComplexSelector,
+        partIndex: Int,
+        ancestors: [NodeRef],
+        cursor: Int
+    ) -> Bool {
+        // All preceding compounds satisfied.
+        if partIndex < 0 { return true }
+
+        let compound = complex.parts[partIndex]
+        // `combinators[i]` links parts[i] to parts[i + 1]. Since we've already
+        // matched parts[partIndex + 1], the relevant combinator is at
+        // `partIndex`.
+        switch complex.combinators[partIndex] {
+        case .child:
+            // One shot: ancestors[cursor] must match this compound, then
+            // advance both partIndex and cursor by one.
+            guard cursor < ancestors.count,
+                  matchesCompound(compound, node: ancestors[cursor])
+            else { return false }
+            return matchPreceding(
+                complex: complex,
+                partIndex: partIndex - 1,
+                ancestors: ancestors,
+                cursor: cursor + 1
+            )
+
+        case .descendant:
+            // Try each candidate ancestor at or after `cursor`. If matching
+            // the remainder from that position succeeds, we're done. This
+            // is the backtracking step: a later candidate may work when an
+            // earlier one doesn't.
+            var i = cursor
+            while i < ancestors.count {
+                if matchesCompound(compound, node: ancestors[i]),
+                   matchPreceding(
+                       complex: complex,
+                       partIndex: partIndex - 1,
+                       ancestors: ancestors,
+                       cursor: i + 1
+                   ) {
+                    return true
                 }
-                guard found else { return false }
+                i += 1
             }
+            return false
         }
-        return true
     }
 
     /// Every simple part of `compound` must match `node`.
