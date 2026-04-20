@@ -108,14 +108,47 @@ public struct CSSLayout: View {
 
     // MARK: - Body
 
+    /// Identifiable pair used by `ForEach` so the child index provides stable
+    /// identity without requiring `ResolvedChild` itself to be `Identifiable`
+    /// (child ids are non-unique across subtrees during Phase 2 development).
+    private struct IndexedChild: Identifiable {
+        let offset: Int
+        let child: ResolvedChild
+        var id: Int { offset }
+    }
+
     public var body: some View {
         let snapshot = renderSnapshot()
         return FlexLayout(snapshot.rootStyle.container) {
-            ForEach(Array(snapshot.children.enumerated()), id: \.offset) { _, child in
-                applyItem(child.view, style: child.itemStyle)
-            }
+            childrenView(snapshot.children)
         }
         .flexOverflow(snapshot.rootStyle.container.overflow)
+    }
+
+    /// Build the `ForEach` over one level of resolved children. Separated so
+    /// the recursive case in `render(_:)` doesn't have to reason about the
+    /// `@ViewBuilder` closure types.
+    private func childrenView(_ children: [ResolvedChild]) -> some View {
+        let pairs = Array(children.enumerated()).map { IndexedChild(offset: $0.offset, child: $0.element) }
+        return ForEach(pairs) { pair in
+            self.render(pair.child)
+        }
+    }
+
+    /// Render a single resolved child. Leaves use the factory's view; nodes
+    /// with schema descendants wrap their children in a nested `FlexLayout`
+    /// so container geometry (direction, gap, padding, justify/align) takes
+    /// effect exactly where the schema declares it.
+    private func render(_ child: ResolvedChild) -> AnyView {
+        if child.isContainer {
+            let nested = child.nested
+            let inner = FlexLayout(child.containerStyle) {
+                self.childrenView(nested)
+            }
+            .flexOverflow(child.containerStyle.overflow)
+            return AnyView(applyItem(AnyView(inner), style: child.itemStyle))
+        }
+        return AnyView(applyItem(child.view, style: child.itemStyle))
     }
 
     // MARK: - Rendering helpers

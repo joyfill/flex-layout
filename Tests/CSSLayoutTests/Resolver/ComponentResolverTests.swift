@@ -12,8 +12,17 @@ final class ComponentResolverTests: XCTestCase {
 
     // MARK: - Fixtures
 
-    private func styleNode(id: String, schemaType: String? = nil) -> StyleNode {
-        StyleNode(id: id, schemaType: schemaType, computedStyle: ComputedStyle())
+    private func styleNode(
+        id: String,
+        parentID: String? = nil,
+        schemaType: String? = nil
+    ) -> StyleNode {
+        StyleNode(
+            id: id,
+            parentID: parentID,
+            schemaType: schemaType,
+            computedStyle: ComputedStyle()
+        )
     }
 
     private func rootNode() -> StyleNode {
@@ -150,5 +159,66 @@ final class ComponentResolverTests: XCTestCase {
         XCTAssertEqual(res.children.first?.resolution, .local)
         // A diagnostic should surface so the author notices.
         XCTAssertTrue(diags.warnings.contains { $0.kind == .duplicateLocalID("a") })
+    }
+
+    // MARK: - Hierarchical assembly (Phase 2 render-tree shape)
+
+    /// A node with schema descendants becomes a container: its `nested`
+    /// slot is populated and `isContainer` flips true. Leaves underneath
+    /// stay flat. This is the structural precondition for the nested
+    /// `FlexLayout` emitted by `CSSLayout.body`.
+    func testContainerNodeExposesNestedChildren() {
+        let (res, _) = resolve(nodes: [
+            rootNode(),
+            styleNode(id: "row"),
+            styleNode(id: "a", parentID: "row"),
+            styleNode(id: "b", parentID: "row"),
+        ])
+        XCTAssertEqual(res.children.map(\.id), ["row"])
+        let row = res.children[0]
+        XCTAssertTrue(row.isContainer)
+        XCTAssertEqual(row.nested.map(\.id), ["a", "b"])
+        XCTAssertTrue(row.nested.allSatisfy { !$0.isContainer })
+    }
+
+    /// When a container node has a factory/local, the schema wins and the
+    /// factory view is dropped with an `.other` diagnostic so the author
+    /// notices rather than silently losing the view.
+    func testContainerWithFactoryDropsViewWithDiagnostic() {
+        let registry = ComponentRegistry()
+            .register("box") { _, _ in AnyView(Text("dropped")) }
+        let (res, diags) = resolve(
+            nodes: [
+                rootNode(),
+                styleNode(id: "row", schemaType: "box"),
+                styleNode(id: "a", parentID: "row"),
+            ],
+            registry: registry
+        )
+        XCTAssertTrue(res.children[0].isContainer)
+        XCTAssertEqual(res.children[0].resolution, .registry)
+        XCTAssertTrue(
+            diags.warnings.contains {
+                if case .other = $0.kind {
+                    return $0.detail.contains("'row'") && $0.detail.contains("schema children")
+                }
+                return false
+            },
+            "expected diagnostic about container 'row' dropping its factory view"
+        )
+    }
+
+    /// Deeper nesting must round-trip: grandchildren surface as nested
+    /// inside their parent container (which is itself nested inside root).
+    func testThreeLevelHierarchyAssembles() {
+        let (res, _) = resolve(nodes: [
+            rootNode(),
+            styleNode(id: "outer"),
+            styleNode(id: "inner", parentID: "outer"),
+            styleNode(id: "leaf", parentID: "inner"),
+        ])
+        XCTAssertEqual(res.children.map(\.id), ["outer"])
+        XCTAssertEqual(res.children[0].nested.map(\.id), ["inner"])
+        XCTAssertEqual(res.children[0].nested[0].nested.map(\.id), ["leaf"])
     }
 }

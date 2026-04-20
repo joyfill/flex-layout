@@ -12,6 +12,7 @@
 
 import Foundation
 import SwiftUI
+import FlexLayout
 
 /// The source the resolver chose for a given node.
 public enum Resolution: Equatable {
@@ -24,14 +25,43 @@ public enum Resolution: Equatable {
 }
 
 /// One fully-resolved child, ready for the `FlexBox` to consume.
+///
+/// Phase 2: children can themselves be containers. When ``nested`` is
+/// non-empty the node acts as a flex container — its ``view`` is the
+/// factory/local/placeholder output but is only rendered when the node is
+/// a leaf (no schema descendants). A container node's visible output is a
+/// `FlexLayout(containerStyle) { nested… }`.
 public struct ResolvedChild {
     public let id: String
     public let itemStyle: ItemStyle
+    public let containerStyle: FlexContainerConfig
     public let resolution: Resolution
     public let view: AnyView
+    public let nested: [ResolvedChild]
+
+    /// True iff the node has at least one schema-declared child; such nodes
+    /// render as a nested `FlexLayout` wrapping ``nested`` and the factory's
+    /// output is dropped (with a diagnostic from the resolver).
+    public var isContainer: Bool { !nested.isEmpty }
+
+    public init(
+        id: String,
+        itemStyle: ItemStyle,
+        containerStyle: FlexContainerConfig = FlexContainerConfig(),
+        resolution: Resolution,
+        view: AnyView,
+        nested: [ResolvedChild] = []
+    ) {
+        self.id = id
+        self.itemStyle = itemStyle
+        self.containerStyle = containerStyle
+        self.resolution = resolution
+        self.view = view
+        self.nested = nested
+    }
 }
 
-/// Phase 1 resolver: flat root + schema-entry siblings.
+/// Phase 2 resolver: hierarchical root + schema-entry subtrees.
 public enum ComponentResolver {
 
     /// Grouped return value for `resolve`.
@@ -90,8 +120,20 @@ public enum ComponentResolver {
             localsByID[local.id] = local
         }
 
-        var resolved: [ResolvedChild] = []
-        resolved.reserveCapacity(childNodes.count)
+        // Per-node leaf data (view + resolution). We resolve each node to a
+        // leaf view first, then assemble the tree in a second pass. Doing
+        // both in one loop is tempting but complicates the diagnostic for
+        // "factory declared on a container node" — we want to fire it only
+        // once children have been counted.
+        struct Leaf {
+            let node: StyleNode
+            let resolution: Resolution
+            let view: AnyView
+        }
+        var leafByID: [String: Leaf] = [:]
+        leafByID.reserveCapacity(childNodes.count)
+        var orderedIDs: [String] = []
+        orderedIDs.reserveCapacity(childNodes.count)
 
         for node in childNodes {
             let resolution: Resolution
@@ -122,14 +164,45 @@ public enum ComponentResolver {
                 view = placeholder(node.id)
             }
 
-            resolved.append(ResolvedChild(
-                id: node.id,
-                itemStyle: node.computedStyle.item,
-                resolution: resolution,
-                view: view
-            ))
+            leafByID[node.id] = Leaf(node: node, resolution: resolution, view: view)
+            orderedIDs.append(node.id)
         }
 
-        return Resolved(rootStyle: rootNode.computedStyle, children: resolved)
+        // Group node ids by their effective parent so we can assemble the
+        // tree without mutating `leafByID`.
+        var childrenByParent: [String: [String]] = [:]
+        for id in orderedIDs {
+            guard let leaf = leafByID[id] else { continue }
+            let parent = leaf.node.parentID ?? rootNode.id
+            childrenByParent[parent, default: []].append(id)
+        }
+
+        // Recursive assembly: any node with schema descendants becomes a
+        // container (its factory view is dropped, with a diagnostic).
+        func assemble(id: String) -> ResolvedChild {
+            // Precondition: caller only passes ids present in `leafByID`.
+            let leaf = leafByID[id]!
+            let nested = (childrenByParent[id] ?? []).map { assemble(id: $0) }
+            if !nested.isEmpty, leaf.resolution != .placeholder {
+                // Author supplied a factory/local for a node that the schema
+                // also populates with children. We can't inject children into
+                // an opaque AnyView, so the schema wins; warn the author.
+                diagnostics.warn(.init(
+                    .other,
+                    "node '\(id)' has schema children; its \(leaf.resolution) view was dropped in favour of a nested flex container"
+                ))
+            }
+            return ResolvedChild(
+                id: id,
+                itemStyle: leaf.node.computedStyle.item,
+                containerStyle: leaf.node.computedStyle.container,
+                resolution: leaf.resolution,
+                view: leaf.view,
+                nested: nested
+            )
+        }
+
+        let topLevel = (childrenByParent[rootNode.id] ?? []).map { assemble(id: $0) }
+        return Resolved(rootStyle: rootNode.computedStyle, children: topLevel)
     }
 }
