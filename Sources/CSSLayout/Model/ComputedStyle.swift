@@ -47,5 +47,11 @@ public struct ComputedStyle: Equatable {
     public var item:      ItemStyle           = ItemStyle()
     public var display:   FlexDisplay         = .flex
 
+    /// `display: none` removes the element (and its whole subtree) from the
+    /// formatting tree. We track it as a flag — rather than a `FlexDisplay`
+    /// case — so the FlexLayout enum stays untouched; the resolver filters
+    /// flagged nodes out before any view is produced.
+    public var isDisplayNone: Bool = false
+
     public init() {}
 }

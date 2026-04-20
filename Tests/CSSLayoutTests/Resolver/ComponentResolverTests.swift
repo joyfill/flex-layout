@@ -208,6 +208,42 @@ final class ComponentResolverTests: XCTestCase {
         )
     }
 
+    // MARK: - `display: none` subtree removal
+
+    private func hiddenStyle() -> ComputedStyle {
+        var s = ComputedStyle()
+        s.isDisplayNone = true
+        return s
+    }
+
+    /// A flagged node is removed entirely: it does not appear as a child,
+    /// no factory runs, and no placeholder is emitted.
+    func testDisplayNoneNodeIsFiltered() {
+        let registry = ComponentRegistry()
+            .register("button") { _, _ in AnyView(Text("should not render")) }
+        let hidden = StyleNode(id: "a", schemaType: "button", computedStyle: hiddenStyle())
+        let (res, _) = resolve(
+            nodes: [rootNode(), hidden, styleNode(id: "b")],
+            registry: registry
+        )
+        XCTAssertEqual(res.children.map(\.id), ["b"])
+    }
+
+    /// CSS `display: none` removes the node's whole subtree, not just the
+    /// node itself — children of a hidden node must not render either.
+    func testDisplayNoneRemovesDescendantSubtree() {
+        let hidden = StyleNode(id: "row", schemaType: nil, computedStyle: hiddenStyle())
+        let (res, _) = resolve(nodes: [
+            rootNode(),
+            hidden,
+            styleNode(id: "a", parentID: "row"),
+            styleNode(id: "b", parentID: "row"),
+            styleNode(id: "c"),
+        ])
+        XCTAssertEqual(res.children.map(\.id), ["c"],
+                       "hidden row + its descendants a,b must all be filtered")
+    }
+
     /// Deeper nesting must round-trip: grandchildren surface as nested
     /// inside their parent container (which is itself nested inside root).
     func testThreeLevelHierarchyAssembles() {

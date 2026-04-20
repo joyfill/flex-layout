@@ -198,8 +198,15 @@ public enum StyleResolver {
 
         // MARK: Container
         case "display":
-            if let v = CSSValueParsers.parseDisplay(decl.value) {
+            // `display: none` is parsed here (not in `parseDisplay`) because
+            // FlexDisplay has no `.none` case — we flag it on ComputedStyle
+            // and let the resolver filter the node's whole subtree out.
+            let raw = decl.value.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            if raw == "none" {
+                style.isDisplayNone = true
+            } else if let v = CSSValueParsers.parseDisplay(decl.value) {
                 style.display = v
+                style.isDisplayNone = false
             } else {
                 diagnostics.warn(.init(.invalidValue(property: decl.property, value: decl.value)))
             }

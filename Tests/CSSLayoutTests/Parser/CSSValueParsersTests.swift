@@ -196,7 +196,10 @@ final class CSSValueParsersTests: XCTestCase {
     }
 
     func testParseDisplay_unsupportedReturnsNil() {
-        // Phase 1 does not support `display: none` — drop with diagnostic.
+        // `display: none` is recognised at the StyleResolver level (it sets
+        // `ComputedStyle.isDisplayNone`) because FlexDisplay has no `.none`
+        // case. The pure value parser therefore still returns nil for it,
+        // same as any other value that can't map onto FlexDisplay.
         XCTAssertNil(CSSValueParsers.parseDisplay("none"))
         XCTAssertNil(CSSValueParsers.parseDisplay("grid"))
     }

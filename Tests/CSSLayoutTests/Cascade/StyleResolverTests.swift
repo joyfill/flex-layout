@@ -454,4 +454,31 @@ final class StyleResolverTests: XCTestCase {
         XCTAssertEqual(style.item.height, .fraction(0.8))
         XCTAssertEqual(diags.count(of: .invalidValue(property: "height", value: "tall")), 1)
     }
+
+    // MARK: - `display: none`
+
+    /// `display: none` has no matching FlexDisplay case, so we carry it as
+    /// a separate flag on ComputedStyle. The cascade must set the flag
+    /// without emitting an invalidValue diagnostic — `none` is a valid CSS
+    /// value, just one that triggers subtree removal at resolve time.
+    func testDisplayNoneSetsFlagWithoutWarning() {
+        let (style, diags) = resolve("#a { display: none; }")
+        XCTAssertTrue(style.isDisplayNone)
+        XCTAssertEqual(
+            diags.count(of: .invalidValue(property: "display", value: "none")),
+            0
+        )
+    }
+
+    /// A later `display: flex` cleanly un-hides the node (cascade still
+    /// applies last-wins on the flag, so authors can override earlier
+    /// `display: none` declarations).
+    func testLaterDisplayFlexClearsDisplayNoneFlag() {
+        let (style, _) = resolve("""
+            #a { display: none; }
+            #a { display: flex; }
+        """)
+        XCTAssertFalse(style.isDisplayNone)
+        XCTAssertEqual(style.display, .flex)
+    }
 }

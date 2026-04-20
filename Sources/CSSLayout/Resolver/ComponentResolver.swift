@@ -135,7 +135,28 @@ public enum ComponentResolver {
         var orderedIDs: [String] = []
         orderedIDs.reserveCapacity(childNodes.count)
 
+        // Identify display:none ancestors up-front so we can skip not just
+        // the flagged node itself but its entire subtree. Walking parent
+        // pointers once per node is O(depth) in the worst case and happens
+        // before any view allocation — much cheaper than running the factory
+        // and then throwing the output away.
+        var nodeByID: [String: StyleNode] = [:]
+        nodeByID.reserveCapacity(childNodes.count)
+        for n in childNodes where nodeByID[n.id] == nil { nodeByID[n.id] = n }
+        func isHiddenBranch(_ id: String) -> Bool {
+            var visited: Set<String> = []
+            var cursor: String? = id
+            while let cur = cursor, visited.insert(cur).inserted {
+                guard let node = nodeByID[cur] else { return false }
+                if node.computedStyle.isDisplayNone { return true }
+                cursor = node.parentID
+            }
+            return false
+        }
+
         for node in childNodes {
+            if isHiddenBranch(node.id) { continue }
+
             let resolution: Resolution
             let view: AnyView
 
