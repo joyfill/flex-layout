@@ -15,7 +15,18 @@ import SwiftUI
 /// sink that routes user interactions back to the `CSSLayout` host. Return
 /// an `AnyView` to keep the registry value type-erased — each factory
 /// controls its own body.
+///
+/// Tier 2 note: this typealias is the *legacy* factory shape. New
+/// registrations should prefer ``ComponentBodyFactory`` via the
+/// ``register(_:body:)`` overload, which returns the multi-host
+/// ``ComponentBody`` wrapper. Unit 7 of the Tier-2 plan retires this
+/// typealias in favour of `ComponentBody`; until then both shapes
+/// coexist so call sites can migrate incrementally.
 public typealias ComponentFactory = (_ props: ComponentProps, _ events: ComponentEvents) -> AnyView
+
+/// Tier 2 factory shape — returns a ``ComponentBody`` wrapper that can
+/// carry SwiftUI, UIKit, or WebKit-backed views uniformly.
+public typealias ComponentBodyFactory = (_ props: ComponentProps, _ events: ComponentEvents) -> ComponentBody
 
 /// Registry of component factories keyed by type name.
 public final class ComponentRegistry {
@@ -48,8 +59,33 @@ public final class ComponentRegistry {
         return self
     }
 
+    /// Tier 2 register overload for the new ``ComponentBodyFactory`` shape.
+    ///
+    /// RED stub: compiles, accepts the closure, but silently drops it
+    /// without populating any storage. Unit 3's green commit wires it
+    /// through shared storage alongside the legacy overload.
+    @discardableResult
+    public func register(
+        _ type: String,
+        body: @escaping ComponentBodyFactory
+    ) -> ComponentRegistry {
+        // RED: intentionally a no-op to make bodyFactory(for:) return nil
+        // for the tests that exercise the new path.
+        _ = type
+        _ = body
+        return self
+    }
+
     /// Look up a factory by component type. Returns `nil` for unknown types.
     public func factory(for type: String) -> ComponentFactory? {
         factories[type]
+    }
+
+    /// Tier 2: look up a ``ComponentBodyFactory`` by type.
+    ///
+    /// RED stub: always nil. Green merges body + legacy storage so either
+    /// registration shape round-trips through this method.
+    public func bodyFactory(for type: String) -> ComponentBodyFactory? {
+        nil
     }
 }

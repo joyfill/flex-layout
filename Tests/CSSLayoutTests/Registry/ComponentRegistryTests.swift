@@ -49,6 +49,58 @@ final class ComponentRegistryTests: XCTestCase {
         XCTAssertNotNil(registry.factory(for: "b"))
     }
 
+    // MARK: - Tier 2: ComponentBody factory overload
+
+    /// The new `register(_:body:)` overload stores the factory; a
+    /// subsequent `bodyFactory(for:)` lookup returns the same closure,
+    /// and invoking it runs the supplied builder.
+    func testRegisterBodyFactoryAndInvoke() {
+        var calls = 0
+        registry.register("card") { _, _ -> ComponentBody in
+            calls += 1
+            return .custom { EmptyView() }
+        }
+        let retrieved = registry.bodyFactory(for: "card")
+        XCTAssertNotNil(retrieved, "body factory must round-trip through registry")
+        _ = retrieved?(ComponentProps([:]), ComponentEvents())
+        XCTAssertEqual(calls, 1)
+    }
+
+    /// Both legacy and Tier-2 overloads co-exist under different type
+    /// keys. Each lookup method surfaces its own registration.
+    func testBothOverloadsCoexistForDifferentTypes() {
+        registry.register("legacy")   { _, _ in AnyView(EmptyView()) }
+        registry.register("modern",   body: { _, _ in .custom { EmptyView() } })
+        // Unified lookup: both APIs succeed regardless of which overload
+        // was used to register (green-phase promise).
+        XCTAssertNotNil(registry.bodyFactory(for: "legacy"),
+                        "legacy registrations must be reachable as ComponentBody too")
+        XCTAssertNotNil(registry.bodyFactory(for: "modern"))
+        XCTAssertNotNil(registry.factory(for: "legacy"))
+    }
+
+    /// Re-registering a key via the body overload must replace the
+    /// legacy registration: a subsequent `bodyFactory(for:)` returns a
+    /// closure whose body-version counter increments, not the legacy
+    /// one's.
+    func testBodyRegistrationOverridesAnyViewRegistrationForSameKey() {
+        var legacyCalls = 0
+        var bodyCalls = 0
+        registry.register("x") { _, _ -> AnyView in
+            legacyCalls += 1
+            return AnyView(EmptyView())
+        }
+        registry.register("x", body: { _, _ -> ComponentBody in
+            bodyCalls += 1
+            return .custom { EmptyView() }
+        })
+        _ = registry.bodyFactory(for: "x")?(
+            ComponentProps([:]), ComponentEvents()
+        )
+        XCTAssertEqual(bodyCalls, 1)
+        XCTAssertEqual(legacyCalls, 0, "legacy factory must be shadowed")
+    }
+
     // MARK: - ComponentProps
 
     func testPropsStringSubscript() {
