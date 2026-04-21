@@ -35,13 +35,11 @@ extension ComponentBody {
         baseURL: URL? = nil,
         onMessage: @escaping ([String: String]) -> Void = { _ in }
     ) -> ComponentBody {
-        // RED stub: ignore all three parameters, hand back a bare
-        // SwiftUI body. `_webViewPayload` returns nil and the
-        // `onMessage` driver has nothing to fire — the tests fail.
-        _ = html
-        _ = baseURL
-        _ = onMessage
-        return .custom { EmptyView() }
+        ComponentBody(storage: .webView(
+            html: html,
+            baseURL: baseURL,
+            onMessage: onMessage
+        ))
     }
 
     // MARK: - Internal test hooks
