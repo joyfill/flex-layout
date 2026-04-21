@@ -31,6 +31,11 @@ public struct ComponentBody {
         /// public `.uiKit(make:update:)` factory re-casts at the edge.
         case uiKit(make: () -> UIView, update: (UIView) -> Void)
         #endif
+        #if canImport(WebKit) && !os(tvOS) && !os(watchOS)
+        /// Static HTML rendered through `WKWebView`, with an optional
+        /// channel for JS-originated messages back into Swift.
+        case webView(html: String, baseURL: URL?, onMessage: ([String: String]) -> Void)
+        #endif
     }
 
     /// Tag mirrored onto `Storage` for test assertions.
@@ -38,6 +43,9 @@ public struct ComponentBody {
         case custom
         #if canImport(UIKit) && !os(watchOS)
         case uiKit
+        #endif
+        #if canImport(WebKit) && !os(tvOS) && !os(watchOS)
+        case webView
         #endif
     }
 
@@ -48,6 +56,9 @@ public struct ComponentBody {
         case .custom: return .custom
         #if canImport(UIKit) && !os(watchOS)
         case .uiKit:  return .uiKit
+        #endif
+        #if canImport(WebKit) && !os(tvOS) && !os(watchOS)
+        case .webView: return .webView
         #endif
         }
     }
@@ -74,6 +85,12 @@ public struct ComponentBody {
         #if canImport(UIKit) && !os(watchOS)
         case .uiKit(let make, let update):
             return AnyView(_UIKitRepresentable(make: make, update: update))
+        #endif
+        #if canImport(WebKit) && !os(tvOS) && !os(watchOS)
+        case .webView(let html, let baseURL, let onMessage):
+            return AnyView(_WebViewRepresentable(
+                html: html, baseURL: baseURL, onMessage: onMessage
+            ))
         #endif
         }
     }
