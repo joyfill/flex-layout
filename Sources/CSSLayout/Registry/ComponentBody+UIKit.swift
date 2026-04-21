@@ -32,11 +32,17 @@ extension ComponentBody {
         make: @escaping () -> V,
         update: @escaping (V) -> Void = { _ in }
     ) -> ComponentBody {
-        // RED stub: ignore the closures and hand back a bare SwiftUI
-        // body so the "storage captures the closures" tests fail.
-        _ = make
-        _ = update
-        return .custom { EmptyView() }
+        // Erase the concrete `V` to `UIView` so Storage stays
+        // non-generic. The `update` adapter downcasts — the only way
+        // the stored view is not a `V` is if the Storage is mutated
+        // externally, which we don't permit.
+        ComponentBody(storage: .uiKit(
+            make: { make() },
+            update: { erased in
+                guard let concrete = erased as? V else { return }
+                update(concrete)
+            }
+        ))
     }
 
     // MARK: - Internal test hooks
