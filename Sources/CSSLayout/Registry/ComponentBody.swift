@@ -25,11 +25,20 @@ public struct ComponentBody {
     internal enum Storage {
         /// A pure SwiftUI body built by the caller's `@ViewBuilder`.
         case custom(() -> AnyView)
+        #if canImport(UIKit) && !os(watchOS)
+        /// A UIKit `UIView` lifted into the pipeline. The closures are
+        /// erased to `UIView` so `Storage` can remain non-generic; the
+        /// public `.uiKit(make:update:)` factory re-casts at the edge.
+        case uiKit(make: () -> UIView, update: (UIView) -> Void)
+        #endif
     }
 
     /// Tag mirrored onto `Storage` for test assertions.
     internal enum Kind: Equatable {
         case custom
+        #if canImport(UIKit) && !os(watchOS)
+        case uiKit
+        #endif
     }
 
     internal let storage: Storage
@@ -37,6 +46,9 @@ public struct ComponentBody {
     internal var kind: Kind {
         switch storage {
         case .custom: return .custom
+        #if canImport(UIKit) && !os(watchOS)
+        case .uiKit:  return .uiKit
+        #endif
         }
     }
 
@@ -59,6 +71,25 @@ public struct ComponentBody {
         switch storage {
         case .custom(let build):
             return build()
+        #if canImport(UIKit) && !os(watchOS)
+        case .uiKit(let make, let update):
+            return AnyView(_UIKitRepresentable(make: make, update: update))
+        #endif
         }
     }
 }
+
+#if canImport(UIKit) && !os(watchOS)
+import UIKit
+
+/// Private SwiftUI adapter for UIKit-backed `ComponentBody` storage.
+/// Consumers never see this type directly — they get an `AnyView` out
+/// of `makeView()`.
+internal struct _UIKitRepresentable: UIViewRepresentable {
+    let make: () -> UIView
+    let update: (UIView) -> Void
+
+    func makeUIView(context: Context) -> UIView { make() }
+    func updateUIView(_ uiView: UIView, context: Context) { update(uiView) }
+}
+#endif
