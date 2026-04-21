@@ -170,7 +170,7 @@ public enum ComponentResolver {
             if let local = localsByID[node.id] {
                 resolution = .local
                 view = local.content
-            } else if let type = node.schemaType, let factory = registry.bodyFactory(for: type) {
+            } else if let type = node.schemaType, let factory = registry.factory(for: type) {
                 resolution = .registry
                 let props = ComponentProps(node.props, id: node.id)
                 let id = node.id
