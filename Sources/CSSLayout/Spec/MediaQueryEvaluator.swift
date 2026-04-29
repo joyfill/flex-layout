@@ -17,6 +17,42 @@ extension MediaQuery {
 
     /// Evaluate this query against the supplied viewport.
     public func matches(in viewport: Viewport) -> Bool {
-        return false
+        switch self {
+        case .logical(let op, let conditions):
+            switch op {
+            case .and:
+                // `allSatisfy` returns true on the empty array
+                // (vacuously true) which is the correct CSS behavior.
+                return conditions.allSatisfy { $0.matches(in: viewport) }
+            case .or:
+                // `contains(where:)` returns false on the empty array
+                // (vacuously false) — matches CSS.
+                return conditions.contains(where: { $0.matches(in: viewport) })
+            }
+
+        case .not(let inner):
+            return !inner.matches(in: viewport)
+
+        case .type(let kind):
+            switch kind {
+            case .print:
+                return viewport.isPrint
+            }
+
+        case .width(let op, let value, _):
+            // Without an operator+value pair, the query is a feature-
+            // presence test: `(width)` always matches in joy-dom (a
+            // viewport always has a width). With both supplied, compare.
+            guard let op = op, let value = value else { return true }
+            switch op {
+            case .greaterThan:        return viewport.width >  CGFloat(value)
+            case .lessThan:           return viewport.width <  CGFloat(value)
+            case .greaterThanOrEqual: return viewport.width >= CGFloat(value)
+            case .lessThanOrEqual:    return viewport.width <= CGFloat(value)
+            }
+
+        case .orientation(let o):
+            return viewport.orientation == o
+        }
     }
 }
