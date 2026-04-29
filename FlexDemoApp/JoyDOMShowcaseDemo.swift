@@ -27,7 +27,7 @@
 // through the prop bag and out via ComponentEvents.
 
 import SwiftUI
-import CSSLayout
+import JoyDOM
 
 struct JoyDOMShowcaseDemo: View {
 
