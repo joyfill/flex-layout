@@ -9,13 +9,18 @@
 import Foundation
 import SwiftUI
 
-/// Builds a SwiftUI view for one schema-supplied component.
+/// Builds a ``ComponentBody`` for one schema-supplied component.
 ///
 /// The factory receives the props extracted from the schema and an event
 /// sink that routes user interactions back to the `CSSLayout` host. Return
-/// an `AnyView` to keep the registry value type-erased — each factory
-/// controls its own body.
-public typealias ComponentFactory = (_ props: ComponentProps, _ events: ComponentEvents) -> AnyView
+/// a ``ComponentBody`` — constructed via `.custom { ... }`, `.uiKit(...)`,
+/// or `.webView(...)` — so the registry stays host-agnostic.
+///
+/// Tier 2 retired the legacy `-> AnyView` shape in favour of this one.
+/// Call sites that previously returned `AnyView(X)` now return
+/// `.custom { X }`; UIKit- or WebKit-backed components use the
+/// corresponding ``ComponentBody`` factory.
+public typealias ComponentFactory = (_ props: ComponentProps, _ events: ComponentEvents) -> ComponentBody
 
 /// Registry of component factories keyed by type name.
 public final class ComponentRegistry {
@@ -36,8 +41,8 @@ public final class ComponentRegistry {
     /// Returns `self` so registrations can be chained fluently:
     /// ```swift
     /// ComponentRegistry.shared
-    ///     .register("button") { props, events in … }
-    ///     .register("text")   { props, _      in … }
+    ///     .register("button") { props, events in .custom { … } }
+    ///     .register("text")   { props, _      in .custom { … } }
     /// ```
     @discardableResult
     public func register(

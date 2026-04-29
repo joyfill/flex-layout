@@ -106,6 +106,7 @@ public enum ComponentResolver {
             _ propagates: Bool
         ) -> Void)? = nil,
         formState: FormState? = nil,
+        valueStore: ValueStore? = nil,
         diagnostics: inout CSSDiagnostics
     ) -> Resolved {
         // Precondition: `StyleTreeBuilder` always emits at least the root.
@@ -193,8 +194,16 @@ public enum ComponentResolver {
                         )
                     }
                 }
-                let events = ComponentEvents(sink: sink, bindings: bindings)
-                view = factory(props, events)
+                // Tier 2: host-agnostic value store plumb-through. When
+                // the caller supplied a `valueStore`, every factory's
+                // ComponentEvents gets it — enabling setValue / observe
+                // for non-SwiftUI bridges that can't speak Binding.
+                let events = ComponentEvents(
+                    sink: sink,
+                    bindings: bindings,
+                    values: valueStore
+                )
+                view = factory(props, events).makeView()
             } else {
                 resolution = .placeholder
                 // Only diagnose when the schema names a type we can't find —

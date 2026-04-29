@@ -2,12 +2,18 @@ import XCTest
 import SwiftUI
 @testable import CSSLayout
 
-/// Unit (i) — `ComponentRegistry` stores factories by type name.
+/// `ComponentRegistry` stores factories by type name.
 ///
 /// Tests exercise the contract shape only; they don't assert on the actual
 /// View output, because inspecting opaque SwiftUI views is brittle. The
-/// resolver tests (Unit k) verify that the right factory fires via marker
-/// traces.
+/// resolver tests verify that the right factory fires via marker traces.
+///
+/// Tier 2 note: these tests previously split coverage across a legacy
+/// `AnyView`-returning `register(_:factory:)` and a Tier-2
+/// `register(_:body:)` overload. Unit 7 retired the legacy shape, so the
+/// two APIs collapsed into a single factory that returns
+/// ``ComponentBody``. The old co-existence / shadowing assertions are no
+/// longer meaningful and were deleted.
 final class ComponentRegistryTests: XCTestCase {
 
     // MARK: - Test fixture
@@ -24,14 +30,20 @@ final class ComponentRegistryTests: XCTestCase {
     // MARK: - Registration
 
     func testRegisterAndLookupByType() {
-        registry.register("button") { _, _ in AnyView(EmptyView()) }
+        registry.register("button") { _, _ in .custom { EmptyView() } }
         XCTAssertNotNil(registry.factory(for: "button"))
     }
 
     func testLastRegistrationWins() {
         var hit = 0
-        registry.register("text") { _, _ in hit = 1; return AnyView(EmptyView()) }
-        registry.register("text") { _, _ in hit = 2; return AnyView(EmptyView()) }
+        registry.register("text") { _, _ in
+            hit = 1
+            return .custom { EmptyView() }
+        }
+        registry.register("text") { _, _ in
+            hit = 2
+            return .custom { EmptyView() }
+        }
         _ = registry.factory(for: "text")?(ComponentProps([:]), ComponentEvents())
         XCTAssertEqual(hit, 2)
     }
@@ -42,11 +54,27 @@ final class ComponentRegistryTests: XCTestCase {
 
     func testRegisterIsChainable() {
         let returned = registry
-            .register("a") { _, _ in AnyView(EmptyView()) }
-            .register("b") { _, _ in AnyView(EmptyView()) }
+            .register("a") { _, _ in .custom { EmptyView() } }
+            .register("b") { _, _ in .custom { EmptyView() } }
         XCTAssertTrue(returned === registry)
         XCTAssertNotNil(registry.factory(for: "a"))
         XCTAssertNotNil(registry.factory(for: "b"))
+    }
+
+    // MARK: - ComponentBody round-trip
+
+    /// A factory stored via `register(_:factory:)` round-trips through
+    /// `factory(for:)` and, when invoked, runs exactly once per call.
+    func testFactoryRoundTripInvokesBuilder() {
+        var calls = 0
+        registry.register("card") { _, _ -> ComponentBody in
+            calls += 1
+            return .custom { EmptyView() }
+        }
+        let retrieved = registry.factory(for: "card")
+        XCTAssertNotNil(retrieved, "factory must round-trip through registry")
+        _ = retrieved?(ComponentProps([:]), ComponentEvents())
+        XCTAssertEqual(calls, 1)
     }
 
     // MARK: - ComponentProps

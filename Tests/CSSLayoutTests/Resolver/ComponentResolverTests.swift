@@ -35,7 +35,8 @@ final class ComponentResolverTests: XCTestCase {
         nodes: [StyleNode],
         locals: [Component] = [],
         registry: ComponentRegistry = ComponentRegistry(),
-        formState: FormState? = nil
+        formState: FormState? = nil,
+        valueStore: ValueStore? = nil
     ) -> (result: ComponentResolver.Resolved, diagnostics: CSSDiagnostics) {
         var diags = CSSDiagnostics()
         let result = ComponentResolver.resolve(
@@ -44,6 +45,7 @@ final class ComponentResolverTests: XCTestCase {
             registry: registry,
             placeholder: { _ in AnyView(EmptyView()) },
             formState: formState,
+            valueStore: valueStore,
             diagnostics: &diags
         )
         return (result, diags)
@@ -69,7 +71,7 @@ final class ComponentResolverTests: XCTestCase {
 
     func testLocalComponentWinsOverRegistry() {
         let registry = ComponentRegistry()
-            .register("button") { _, _ in AnyView(Text("registry")) }
+            .register("button") { _, _ in .custom { Text("registry") } }
         let locals = [Component("submit") { Text("local") }]
         let (res, _) = resolve(
             nodes: [rootNode(), styleNode(id: "submit", schemaType: "button")],
@@ -81,7 +83,7 @@ final class ComponentResolverTests: XCTestCase {
 
     func testFallsBackToRegistry() {
         let registry = ComponentRegistry()
-            .register("button") { _, _ in AnyView(Text("registry")) }
+            .register("button") { _, _ in .custom { Text("registry") } }
         let (res, _) = resolve(
             nodes: [rootNode(), styleNode(id: "submit", schemaType: "button")],
             registry: registry
@@ -110,6 +112,55 @@ final class ComponentResolverTests: XCTestCase {
             if case .other = $0.kind { return $0.detail.contains("widget") }
             return false
         })
+    }
+
+    // MARK: - Tier 2: ComponentBody + ValueStore plumb-through
+
+    /// A factory registered through the (now unified) ComponentFactory
+    /// surface runs through the resolver and surfaces as `.registry`.
+    /// The returned view is materialised via `ComponentBody.makeView()`
+    /// under the hood.
+    func testResolverInvokesBodyFactory() {
+        var calls = 0
+        let registry = ComponentRegistry()
+        registry.register("card") { _, _ -> ComponentBody in
+            calls += 1
+            return .custom { EmptyView() }
+        }
+        let (res, _) = resolve(
+            nodes: [rootNode(), styleNode(id: "hero", schemaType: "card")],
+            registry: registry
+        )
+        XCTAssertEqual(res.children.first?.resolution, .registry)
+        XCTAssertEqual(calls, 1, "body factory must fire exactly once per resolve")
+    }
+
+    /// When a `ValueStore` is handed to the resolver it must be woven
+    /// into every factory's `ComponentEvents`, so the factory's
+    /// `setValue` calls route through to the injected store.
+    func testResolverThreadsValueStoreIntoComponentEvents() {
+        final class CaptureStore {
+            var writes: [(field: String, value: String)] = []
+        }
+        let store = CaptureStore()
+        let valueStore = ValueStore(
+            get: { _ in nil },
+            set: { value, field in store.writes.append((field, value)) },
+            observe: { _, _ in NoopCancellableStub() }
+        )
+        let registry = ComponentRegistry()
+        registry.register("input") { _, events -> ComponentBody in
+            events.setValue("hello", for: "name")
+            return .custom { EmptyView() }
+        }
+        _ = resolve(
+            nodes: [rootNode(), styleNode(id: "n", schemaType: "input")],
+            registry: registry,
+            valueStore: valueStore
+        )
+        XCTAssertEqual(store.writes.count, 1)
+        XCTAssertEqual(store.writes.first?.field, "name")
+        XCTAssertEqual(store.writes.first?.value, "hello")
     }
 
     // MARK: - Root style propagation
@@ -190,7 +241,7 @@ final class ComponentResolverTests: XCTestCase {
     /// notices rather than silently losing the view.
     func testContainerWithFactoryDropsViewWithDiagnostic() {
         let registry = ComponentRegistry()
-            .register("box") { _, _ in AnyView(Text("dropped")) }
+            .register("box") { _, _ in .custom { Text("dropped") } }
         let (res, diags) = resolve(
             nodes: [
                 rootNode(),
@@ -224,7 +275,7 @@ final class ComponentResolverTests: XCTestCase {
     /// no factory runs, and no placeholder is emitted.
     func testDisplayNoneNodeIsFiltered() {
         let registry = ComponentRegistry()
-            .register("button") { _, _ in AnyView(Text("should not render")) }
+            .register("button") { _, _ in .custom { Text("should not render") } }
         let hidden = StyleNode(id: "a", schemaType: "button", computedStyle: hiddenStyle())
         let (res, _) = resolve(
             nodes: [rootNode(), hidden, styleNode(id: "b")],
@@ -306,7 +357,7 @@ final class ComponentResolverTests: XCTestCase {
         let registry = ComponentRegistry()
             .register("text-input") { props, _ in
                 captured.seen = props.values
-                return AnyView(EmptyView())
+                return .custom { EmptyView() }
             }
         _ = resolve(
             nodes: [
@@ -350,7 +401,7 @@ final class ComponentResolverTests: XCTestCase {
         let registry = ComponentRegistry()
             .register(type) { _, events in
                 probe.events = events
-                return AnyView(EmptyView())
+                return .custom { EmptyView() }
             }
         _ = resolve(nodes: nodes, registry: registry, formState: formState)
         return probe
@@ -429,4 +480,13 @@ final class ComponentResolverTests: XCTestCase {
         )
         XCTAssertEqual(probe.events?.binding("value").wrappedValue, "")
     }
+}
+
+// MARK: - Test doubles
+
+/// Minimal `Cancellable` for use inside `ValueStore` fakes — the
+/// resolver tests never exercise cancellation so a pure no-op is
+/// enough.
+private final class NoopCancellableStub: Cancellable {
+    func cancel() {}
 }
