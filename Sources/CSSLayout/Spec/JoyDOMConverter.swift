@@ -43,36 +43,58 @@ public enum JoyDOMConverter {
     /// affected `SchemaEntry` so class selectors re-match against the
     /// breakpoint-effective class list.
     public static func convert(_ spec: JoyDOMSpec, viewport: Viewport?) -> CSSPayload {
-        // RED stub — replaced in Unit 8 GREEN. Falls back to the
-        // viewport-less convert so tests that compare to it still
-        // work; cascade and per-node-override checks fail observably.
-        return convert(spec)
-    }
+        let activeBreakpoint = viewport.flatMap {
+            BreakpointResolver.active(in: $0, breakpoints: spec.breakpoints)
+        }
 
-    /// Convert a `JoyDOMSpec` into the `CSSPayload` CSSLayout's
-    /// resolver consumes.
-    public static func convert(_ spec: JoyDOMSpec) -> CSSPayload {
-        let schema = SchemaFlattener.flatten(spec.layout)
+        // Schema entries — base flatten, then per-node className
+        // overrides from the active breakpoint applied as a transform.
+        let baseSchema = SchemaFlattener.flatten(spec.layout)
+        let schema = applyClassNameOverrides(
+            baseSchema,
+            from: activeBreakpoint?.nodes ?? [:]
+        )
 
         // Document-level rules first. Sorted by selector key so output
         // is deterministic across dictionary iteration order.
-        let documentRules = spec.style
+        let documentRules = serializeSelectorMap(spec.style)
+
+        // Active breakpoint's selector-keyed rules sit between document
+        // rules and any inline rules — later source order means they
+        // win equal-specificity ties against document rules.
+        let breakpointSelectorRules = serializeSelectorMap(activeBreakpoint?.style ?? [:])
+
+        // Per-node inline rules from `Node.props.style`.
+        let baseInlineCSS = inlineStyleCSS(for: spec.layout)
+
+        // Per-node breakpoint inline rules from
+        // `Breakpoint.nodes[id].style`. Emitted last so their later
+        // source order wins equal-specificity ties against base inline.
+        let breakpointInlineRules = (activeBreakpoint?.nodes ?? [:])
             .sorted(by: { $0.key < $1.key })
-            .compactMap { selector, style -> String? in
-                let rule = StyleSerializer.rule(selector: selector, style: style)
+            .compactMap { id, props -> String? in
+                guard let style = props.style else { return nil }
+                let rule = StyleSerializer.rule(selector: "#\(id)", style: style)
                 return rule.isEmpty ? nil : rule
             }
 
-        // Per-node inline rules second. Their id-level specificity
-        // wins on the cascade, but emitting after means same-specificity
-        // ties also fall to inline (which matches authorial intent).
-        let inlineCSS = inlineStyleCSS(for: spec.layout)
-        let pieces = documentRules + (inlineCSS.isEmpty ? [] : [inlineCSS])
+        let pieces: [String] = (
+            documentRules
+            + breakpointSelectorRules
+            + (baseInlineCSS.isEmpty ? [] : [baseInlineCSS])
+            + breakpointInlineRules
+        )
 
         return CSSPayload(
             css: pieces.joined(separator: "\n"),
             schema: schema
         )
+    }
+
+    /// Convert a `JoyDOMSpec` into the `CSSPayload` CSSLayout's
+    /// resolver consumes.
+    public static func convert(_ spec: JoyDOMSpec) -> CSSPayload {
+        return convert(spec, viewport: nil)
     }
 
     /// Walk a layout tree and produce the CSS rules implied by each
@@ -129,5 +151,41 @@ public enum JoyDOMConverter {
         }
         if path.isEmpty { return "_root" }
         return "_n_" + path.map(String.init).joined(separator: "_")
+    }
+
+    // MARK: - Per-node breakpoint overrides
+
+    /// Apply `className` overrides from the active breakpoint to the
+    /// flattened schema. Only `className` is applied here — `style`
+    /// overrides ride the CSS cascade via dedicated `#id { ... }` rules
+    /// emitted in `convert(_:viewport:)`.
+    private static func applyClassNameOverrides(
+        _ schema: [SchemaEntry],
+        from overrides: [String: NodeProps]
+    ) -> [SchemaEntry] {
+        guard !overrides.isEmpty else { return schema }
+        return schema.map { entry in
+            guard let override = overrides[entry.id],
+                  let newClasses = override.className
+            else { return entry }
+            return SchemaEntry(
+                id: entry.id,
+                type: entry.type,
+                classes: newClasses,
+                parentID: entry.parentID,
+                props: entry.props
+            )
+        }
+    }
+
+    /// Stable, deterministic CSS rules for a `[selector: Style]` map.
+    /// Sorted by selector so dictionary iteration order doesn't leak
+    /// into golden-string tests downstream.
+    private static func serializeSelectorMap(_ map: [String: Style]) -> [String] {
+        map.sorted(by: { $0.key < $1.key })
+            .compactMap { selector, style -> String? in
+                let rule = StyleSerializer.rule(selector: selector, style: style)
+                return rule.isEmpty ? nil : rule
+            }
     }
 }
