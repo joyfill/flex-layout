@@ -32,6 +32,24 @@ public enum JoyDOMConverter {
     // MARK: - Public API
 
     /// Convert a `JoyDOMSpec` into the `CSSPayload` CSSLayout's
+    /// resolver consumes, applying the active breakpoint (if any) for
+    /// `viewport`.
+    ///
+    /// Cascade order produced (later wins on tie):
+    ///   `Document.style → Breakpoint.style → node.props.style →
+    ///    Breakpoint.nodes[id].style`
+    ///
+    /// Per-node breakpoint overrides also REPLACE `className` on the
+    /// affected `SchemaEntry` so class selectors re-match against the
+    /// breakpoint-effective class list.
+    public static func convert(_ spec: JoyDOMSpec, viewport: Viewport?) -> CSSPayload {
+        // RED stub — replaced in Unit 8 GREEN. Falls back to the
+        // viewport-less convert so tests that compare to it still
+        // work; cascade and per-node-override checks fail observably.
+        return convert(spec)
+    }
+
+    /// Convert a `JoyDOMSpec` into the `CSSPayload` CSSLayout's
     /// resolver consumes.
     public static func convert(_ spec: JoyDOMSpec) -> CSSPayload {
         let schema = SchemaFlattener.flatten(spec.layout)
