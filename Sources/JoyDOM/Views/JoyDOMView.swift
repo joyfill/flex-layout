@@ -70,7 +70,7 @@ public struct JoyDOMView: View {
     public init(
         spec: Spec,
         registry: ComponentRegistry = .shared,
-        @CSSLayoutBuilder locals: () -> [Component] = { [] }
+        @JoyDOMComponentBuilder locals: () -> [Component] = { [] }
     ) {
         self.source = .spec(spec)
         self.registry = registry
@@ -83,7 +83,7 @@ public struct JoyDOMView: View {
     internal init(
         payload: CSSPayload,
         registry: ComponentRegistry = .shared,
-        @CSSLayoutBuilder locals: () -> [Component] = { [] }
+        @JoyDOMComponentBuilder locals: () -> [Component] = { [] }
     ) {
         self.source = .payload(payload)
         self.registry = registry
@@ -95,7 +95,7 @@ public struct JoyDOMView: View {
         css: String,
         schema: [SchemaEntry] = [],
         registry: ComponentRegistry = .shared,
-        @CSSLayoutBuilder _ locals: () -> [Component] = { [] }
+        @JoyDOMComponentBuilder _ locals: () -> [Component] = { [] }
     ) {
         self.init(
             payload: CSSPayload(css: css, schema: schema),
