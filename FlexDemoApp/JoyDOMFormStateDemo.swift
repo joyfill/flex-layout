@@ -180,7 +180,8 @@ struct JoyDOMFormStateDemo: View {
     // MARK: - Registry
 
     private var registry: ComponentRegistry {
-        let r = ComponentRegistry().withDefaultPrimitives()
+        let r = ComponentRegistry()
+            .withDefaultPrimitives()
         r.register("name-input")  { props, events in fieldFactory(props, events, placeholder: "Full name") }
         r.register("email-input") { props, events in fieldFactory(props, events, placeholder: "Email address") }
         r.register("submit-button") { props, events in

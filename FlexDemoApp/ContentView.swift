@@ -13,6 +13,7 @@ private struct DemoItem: Identifiable {
 private let allDemos: [DemoItem] = [
     DemoItem(id: "joy-dom",  icon: "doc.append",                    title: "joy-dom Showcase",     subtitle: "Tier 3 · spec + breakpoints + UiAction"),
     DemoItem(id: "joy-form", icon: "person.text.rectangle",         title: "joy-dom + FormState",  subtitle: "Tier 4 · .bindings declarative wiring"),
+    DemoItem(id: "joy-paste",icon: "doc.text.magnifyingglass",      title: "Paste joy-dom JSON",   subtitle: "edit & preview live"),
     DemoItem(id: "sandbox",  icon: "slider.horizontal.3",           title: "Sandbox",          subtitle: "all properties live"),
     DemoItem(id: "hero",     icon: "rectangle.center.inset.filled", title: "Centered Hero",    subtitle: "column · center · gap"),
     DemoItem(id: "navbar",   icon: "menubar.rectangle",             title: "Navigation Bar",   subtitle: "row · space-between"),
@@ -73,6 +74,7 @@ struct ContentView: View {
                 switch selectedId {
                 case "joy-dom":   ResponsivePreview { JoyDOMShowcaseDemo() }
                 case "joy-form":  ResponsivePreview { JoyDOMFormStateDemo() }
+                case "joy-paste": ResponsivePreview { JoyDOMPasteDemo() }
                 case "hero":    CenteredHeroDemo()
                 case "navbar":  NavBarDemo()
                 case "grid":    CardGridDemo()
