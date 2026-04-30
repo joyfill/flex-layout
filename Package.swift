@@ -16,8 +16,8 @@ let package = Package(
             targets: ["FlexLayout"]
         ),
         .library(
-            name: "CSSLayout",
-            targets: ["CSSLayout"]
+            name: "JoyDOM",
+            targets: ["JoyDOM"]
         ),
     ],
     targets: [
@@ -32,11 +32,11 @@ let package = Package(
             ]
         ),
 
-        // ── CSSLayout — flexbox-only CSS → FlexLayout bridge ───────────────────
+        // ── JoyDOM — joyfill/.joy DOM spec → FlexLayout renderer ──────────────
         .target(
-            name: "CSSLayout",
+            name: "JoyDOM",
             dependencies: ["FlexLayout"],
-            path: "Sources/CSSLayout",
+            path: "Sources/JoyDOM",
             swiftSettings: [
                 .unsafeFlags(["-warnings-as-errors"], .when(configuration: .release)),
             ]
@@ -45,7 +45,7 @@ let package = Package(
         // ── Demo app (not a library product; local development only) ───────────
         .executableTarget(
             name: "FlexDemoApp",
-            dependencies: ["FlexLayout", "CSSLayout"],
+            dependencies: ["FlexLayout", "JoyDOM"],
             path: "FlexDemoApp"
         ),
 
@@ -56,15 +56,9 @@ let package = Package(
             path: "Tests/FlexLayoutTests"
         ),
         .testTarget(
-            name: "FlexDemoAppTests",
-            dependencies: ["FlexDemoApp", "FlexLayout"],
-            path: "Tests/FlexDemoAppTests"
-        ),
-        .testTarget(
-            name: "CSSLayoutTests",
-            dependencies: ["CSSLayout", "FlexLayout"],
-            path: "Tests/CSSLayoutTests",
-            resources: [.copy("Fixtures")]
+            name: "JoyDOMTests",
+            dependencies: ["JoyDOM", "FlexLayout"],
+            path: "Tests/JoyDOMTests"
         ),
     ]
 )

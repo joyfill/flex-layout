@@ -1,7 +1,7 @@
 // JoyDOMShowcaseDemo — Tier 3 end-to-end demo.
 //
 // Renders a `JoyDOMSpec` (Josh's joyfill/.joy DOM spec) through every
-// piece of plumbing CSSLayout's Tier 3 added:
+// piece of plumbing JoyDOMView's Tier 3 added:
 //
 //   • Spec types       (Unit 1)  — JoyDOMSpec / Node / NodeProps / Style
 //   • Style serializer (Unit 2)  — Style → CSS text the parser accepts
@@ -27,7 +27,7 @@
 // through the prop bag and out via ComponentEvents.
 
 import SwiftUI
-import CSSLayout
+import JoyDOM
 
 struct JoyDOMShowcaseDemo: View {
 
@@ -46,7 +46,6 @@ struct JoyDOMShowcaseDemo: View {
 
     var body: some View {
         let viewport = Viewport(width: simulatedWidth)
-        let payload  = JoyDOMConverter.convert(spec, viewport: viewport)
         let activeIndex = BreakpointResolver.activeIndex(
             in: viewport,
             breakpoints: spec.breakpoints
@@ -57,7 +56,7 @@ struct JoyDOMShowcaseDemo: View {
                 header
                 control
                 Divider()
-                canvas(payload: payload)
+                canvas(viewport: viewport)
                 debug(active: activeIndex)
             }
             .padding(24)
@@ -125,8 +124,9 @@ struct JoyDOMShowcaseDemo: View {
             )
     }
 
-    private func canvas(payload: CSSPayload) -> some View {
-        CSSLayout(payload: payload, registry: registry)
+    private func canvas(viewport: Viewport) -> some View {
+        JoyDOMView(spec: spec, registry: registry)
+            .viewport(viewport)
             .onEvent("*") { event in
                 eventLog.append("\(event.sourceID) → \(event.name) \(event.payload)")
                 if eventLog.count > 8 {
