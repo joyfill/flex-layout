@@ -91,15 +91,27 @@ public enum SelectorParser {
             guard i < scalars.count else { break }          // trailing whitespace — done
 
             let combinator: Combinator
-            if scalars[i] == ">" {
+            switch scalars[i] {
+            case ">":
                 i += 1
                 _ = skipASCIIWhitespace(scalars, at: &i)
                 combinator = .child
-            } else if hadSpace {
-                combinator = .descendant
-            } else {
-                // No whitespace and no `>` — malformed.
-                return nil
+            case "+":
+                i += 1
+                _ = skipASCIIWhitespace(scalars, at: &i)
+                combinator = .adjacentSibling
+            case "~":
+                i += 1
+                _ = skipASCIIWhitespace(scalars, at: &i)
+                combinator = .generalSibling
+            default:
+                if hadSpace {
+                    combinator = .descendant
+                } else {
+                    // No whitespace and no recognized combinator token —
+                    // malformed.
+                    return nil
+                }
             }
 
             guard let next = parseCompound(scalars, at: &i) else {

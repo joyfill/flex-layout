@@ -56,6 +56,32 @@ internal enum StyleTreeBuilder {
             return rootID
         }
 
+        /// All schema entries that share `entry`'s effective parent and
+        /// appear earlier in render order. The resolver uses this to
+        /// match sibling combinators (`+`, `~`). Listed in source order
+        /// (oldest first), so the immediately preceding sibling is the
+        /// last element.
+        ///
+        /// Indexes the schema once per call — fine for the small node
+        /// counts joy-dom payloads carry, and keeps the implementation
+        /// straightforward. If profiling ever shows this dominates,
+        /// caching by parent-id is a small follow-up.
+        func precedingSiblings(of entry: SchemaEntry) -> [StyleResolver.NodeRef] {
+            let myParent = effectiveParentID(entry)
+            var siblings: [StyleResolver.NodeRef] = []
+            for other in schema {
+                if other.id == entry.id { break }            // stop at the subject itself
+                if effectiveParentID(other) == myParent {
+                    siblings.append(StyleResolver.NodeRef(
+                        id: other.id,
+                        schemaType: other.type,
+                        classes: other.classes
+                    ))
+                }
+            }
+            return siblings
+        }
+
         /// Walk parentID pointers outwards (not including root) and collect
         /// each ancestor as a `NodeRef` for the resolver. `innermost first,
         /// outermost last`, matching the resolver's contract.
@@ -100,11 +126,13 @@ internal enum StyleTreeBuilder {
         var emitted: Set<String> = []
         for entry in schema where emitted.insert(entry.id).inserted {
             let ancestors = ancestorChain(of: entry)
+            let siblings  = precedingSiblings(of: entry)
             let style = StyleResolver.resolve(
                 id: entry.id,
                 schemaType: entry.type,
                 classes: entry.classes,
                 ancestors: ancestors,
+                precedingSiblings: siblings,
                 stylesheet: stylesheet,
                 diagnostics: &diagnostics
             )

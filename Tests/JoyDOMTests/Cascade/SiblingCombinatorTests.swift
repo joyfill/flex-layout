@@ -103,7 +103,7 @@ final class SiblingCombinatorTests: XCTestCase {
                 node("b", classes: ["other"]),
             ]
         )
-        XCTAssertNil(style.item.grow, "non-adjacent sibling shouldn't fire `+`")
+        XCTAssertEqual(style.item.grow, 0, "non-adjacent sibling shouldn't fire `+`")
     }
 
     func testGeneralSiblingMatchesAnyEarlierSibling() {
@@ -127,7 +127,7 @@ final class SiblingCombinatorTests: XCTestCase {
             classes: ["body"],
             precedingSiblings: [node("a", classes: ["other"])]
         )
-        XCTAssertNil(style.item.grow)
+        XCTAssertEqual(style.item.grow, 0)
     }
 
     func testNoPrecedingSiblingsMeansSiblingSelectorsNeverMatch() {
@@ -137,8 +137,9 @@ final class SiblingCombinatorTests: XCTestCase {
             classes: ["y"],
             precedingSiblings: []
         )
-        XCTAssertNil(style.item.grow)
-        XCTAssertNil(style.item.shrink)
+        // Defaults preserved: grow stays 0, shrink stays 1.
+        XCTAssertEqual(style.item.grow, 0)
+        XCTAssertEqual(style.item.shrink, 1)
     }
 
     func testChainedSiblingCombinators() {
@@ -213,7 +214,7 @@ final class SiblingCombinatorTests: XCTestCase {
             diagnostics: &diags
         )
         let target = nodes.first { $0.id == "target" }
-        XCTAssertNil(target?.computedStyle.item.grow,
-                     "cross-parent siblings should not match")
+        XCTAssertEqual(target?.computedStyle.item.grow, 0,
+                       "cross-parent siblings should not match")
     }
 }
