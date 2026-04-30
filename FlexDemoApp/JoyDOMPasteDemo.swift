@@ -21,9 +21,12 @@ struct JoyDOMPasteDemo: View {
 
     // MARK: - Owned state
 
-    @State private var jsonText: String = JoyDOMPasteDemo.sampleJSON
+    @State private var jsonText: String = JoyDOMSamples.sample(withID: JoyDOMSamples.defaultID)?.json ?? ""
     @State private var decodeError: String? = nil
     @State private var simulatedWidth: CGFloat = 600
+    /// Currently selected sample. Picking a different one repopulates
+    /// `jsonText` (and the user can keep editing from there).
+    @State private var selectedSampleID: String = JoyDOMSamples.defaultID
     /// One-shot toast message ("JSON formatted", "Copied as Swift") so
     /// button taps give visible feedback instead of feeling silent.
     @State private var toast: String? = nil
@@ -81,6 +84,7 @@ struct JoyDOMPasteDemo: View {
                         .transition(.opacity)
                 }
                 Spacer()
+                samplePicker
                 Button("Format") { formatJSON() }
                     .buttonStyle(.bordered)
                     .controlSize(.small)
@@ -89,8 +93,10 @@ struct JoyDOMPasteDemo: View {
                     .buttonStyle(.bordered)
                     .controlSize(.small)
                     .disabled(decodedSpec == nil)
-                Button("Reset to sample") {
-                    jsonText = JoyDOMPasteDemo.sampleJSON
+                Button("Reset") {
+                    if let s = JoyDOMSamples.sample(withID: selectedSampleID) {
+                        jsonText = s.json
+                    }
                 }
                 .buttonStyle(.bordered)
                 .controlSize(.small)
@@ -120,6 +126,22 @@ struct JoyDOMPasteDemo: View {
                 RoundedRectangle(cornerRadius: 8)
                     .strokeBorder(Color.gray.opacity(0.25))
             )
+        }
+    }
+
+    private var samplePicker: some View {
+        Picker("Sample", selection: $selectedSampleID) {
+            ForEach(JoyDOMSamples.all) { sample in
+                Text(sample.label).tag(sample.id)
+            }
+        }
+        .pickerStyle(.menu)
+        .controlSize(.small)
+        .labelsHidden()
+        .onChange(of: selectedSampleID) { newID in
+            if let s = JoyDOMSamples.sample(withID: newID) {
+                jsonText = s.json
+            }
         }
     }
 
@@ -327,68 +349,6 @@ struct JoyDOMPasteDemo: View {
         return r
     }
 
-    // MARK: - Sample payload
-
-    /// A representative `JoyDOMSpec` used to seed the editor on first
-    /// open and on "Reset to sample". Demonstrates document-level
-    /// styles, a breakpoint, and a few of the registered component
-    /// types so a fresh user sees a non-trivial layout immediately.
-    fileprivate static let sampleJSON: String = #"""
-    {
-      "version": 1,
-      "style": {
-        "#root": {
-          "flexDirection": "column",
-          "gap": { "value": 12, "unit": "px" },
-          "padding": { "value": 16, "unit": "px" }
-        },
-        "#row": {
-          "flexDirection": "column",
-          "gap": { "value": 12, "unit": "px" }
-        },
-        "#a, #b, #c": {
-          "flexGrow": 1,
-          "height": { "value": 80, "unit": "px" }
-        }
-      },
-      "breakpoints": [
-        {
-          "conditions": [
-            { "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }
-          ],
-          "nodes": {},
-          "style": {
-            "#row": {
-              "flexDirection": "row",
-              "gap": { "value": 16, "unit": "px" }
-            }
-          }
-        }
-      ],
-      "layout": {
-        "type": "div",
-        "props": { "id": "root" },
-        "children": [
-          {
-            "type": "p",
-            "props": { "id": "title" },
-            "children": ["Hello, joy-dom!"]
-          },
-          {
-            "type": "div",
-            "props": { "id": "row" },
-            "children": [
-              { "type": "card", "props": { "id": "a", "label": "Card A" } },
-              { "type": "card", "props": { "id": "b", "label": "Card B" } },
-              { "type": "card", "props": { "id": "c", "label": "Card C" } }
-            ]
-          },
-          {
-            "type": "button",
-            "props": { "id": "submit", "label": "Submit", "event": "submit" }
-          }
-        ]
-      }
-    }
-    """#
+    // Sample payloads live in JoyDOMSamples.swift — pickable from the
+    // dropdown in the editor pane.
 }
