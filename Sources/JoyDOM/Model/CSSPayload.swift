@@ -12,7 +12,7 @@ import Foundation
 /// One entry in the layout schema — the authoring counterpart to a DOM node.
 ///
 /// The `id` is the anchor for `#id` selectors and the key that
-/// `CSSLayoutBuilder` locals match against. `type` is matched by element
+/// `JoyDOMComponentBuilder` locals match against. `type` is matched by element
 /// selectors (`button { … }` matches every entry with `type == "button"`).
 internal struct SchemaEntry: Equatable {
     /// Unique per payload — the cascade matches `#id` selectors against this.
