@@ -51,6 +51,12 @@ public enum Combinator: Equatable {
     case descendant
     /// `>` — the immediate parent must match.
     case child
+    /// `+` — the immediately preceding sibling must match. Both compounds
+    /// must share the same parent.
+    case adjacentSibling
+    /// `~` — any preceding sibling (in source order, same parent) must
+    /// match. Like ``descendant`` but along the sibling axis.
+    case generalSibling
 }
 
 /// A complex selector — a chain of compound selectors joined by combinators.

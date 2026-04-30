@@ -57,6 +57,7 @@ public enum StyleResolver {
         schemaType: String?,
         classes: [String] = [],
         ancestors: [NodeRef] = [],
+        precedingSiblings: [NodeRef] = [],
         stylesheet: Stylesheet,
         diagnostics: inout JoyDiagnostics
     ) -> ComputedStyle {
@@ -64,9 +65,15 @@ public enum StyleResolver {
 
         // 1. Select matching rules. A complex selector matches iff its subject
         // compound matches the node AND every preceding compound can be
-        // satisfied by the ancestor chain respecting its combinator.
+        // satisfied by the ancestor chain (descendant / child combinators)
+        // or the preceding-sibling chain (adjacent / general sibling).
         let matched = stylesheet.rules.filter { rule in
-            matches(rule.selector, subject: subject, ancestors: ancestors)
+            matches(
+                rule.selector,
+                subject: subject,
+                ancestors: ancestors,
+                precedingSiblings: precedingSiblings
+            )
         }
 
         // 2. Sort by (specificity asc, sourceOrder asc). "Later wins" on ties.
@@ -103,68 +110,112 @@ public enum StyleResolver {
     private static func matches(
         _ complex: ComplexSelector,
         subject: NodeRef,
-        ancestors: [NodeRef]
+        ancestors: [NodeRef],
+        precedingSiblings: [NodeRef]
     ) -> Bool {
         guard matchesCompound(complex.subject, node: subject) else { return false }
         if complex.parts.count == 1 { return true }
-        // Start matching from the compound adjacent to the subject, walking
-        // outwards into `ancestors` (cursor = 0 = innermost).
         return matchPreceding(
             complex: complex,
             partIndex: complex.parts.count - 2,
             ancestors: ancestors,
-            cursor: 0
+            ancestorCursor: 0,
+            precedingSiblings: precedingSiblings,
+            siblingUpperBound: precedingSiblings.count
         )
     }
 
-    /// Recursive backtracking helper for preceding compounds. `partIndex`
-    /// points at the compound to satisfy; `cursor` is the next ancestor to
-    /// consider. Returns `true` when every preceding compound has found a
-    /// consistent ancestor assignment.
+    /// Recursive backtracking helper for preceding compounds.
+    ///
+    /// State carried through the recursion:
+    ///   • `partIndex` — compound left to satisfy (decreases towards 0).
+    ///   • `ancestorCursor` — next ancestor index up the chain to consider
+    ///     (increases as descendant / child combinators consume the chain).
+    ///   • `siblingUpperBound` — strict upper bound on the sibling index
+    ///     we may match next. Decreases as `+` / `~` consume preceding
+    ///     siblings in source order, ensuring a later combinator can never
+    ///     re-match an already-claimed sibling.
+    ///
+    /// A sibling-matched compound stays at the SAME ancestor depth (siblings
+    /// share a parent), so `ancestorCursor` is unchanged when a sibling
+    /// combinator fires; only `siblingUpperBound` moves.
     private static func matchPreceding(
         complex: ComplexSelector,
         partIndex: Int,
         ancestors: [NodeRef],
-        cursor: Int
+        ancestorCursor: Int,
+        precedingSiblings: [NodeRef],
+        siblingUpperBound: Int
     ) -> Bool {
-        // All preceding compounds satisfied.
         if partIndex < 0 { return true }
 
         let compound = complex.parts[partIndex]
-        // `combinators[i]` links parts[i] to parts[i + 1]. Since we've already
-        // matched parts[partIndex + 1], the relevant combinator is at
-        // `partIndex`.
         switch complex.combinators[partIndex] {
+
         case .child:
-            // One shot: ancestors[cursor] must match this compound, then
-            // advance both partIndex and cursor by one.
-            guard cursor < ancestors.count,
-                  matchesCompound(compound, node: ancestors[cursor])
+            guard ancestorCursor < ancestors.count,
+                  matchesCompound(compound, node: ancestors[ancestorCursor])
             else { return false }
             return matchPreceding(
                 complex: complex,
                 partIndex: partIndex - 1,
                 ancestors: ancestors,
-                cursor: cursor + 1
+                ancestorCursor: ancestorCursor + 1,
+                precedingSiblings: precedingSiblings,
+                siblingUpperBound: siblingUpperBound
             )
 
         case .descendant:
-            // Try each candidate ancestor at or after `cursor`. If matching
-            // the remainder from that position succeeds, we're done. This
-            // is the backtracking step: a later candidate may work when an
-            // earlier one doesn't.
-            var i = cursor
+            var i = ancestorCursor
             while i < ancestors.count {
                 if matchesCompound(compound, node: ancestors[i]),
                    matchPreceding(
                        complex: complex,
                        partIndex: partIndex - 1,
                        ancestors: ancestors,
-                       cursor: i + 1
+                       ancestorCursor: i + 1,
+                       precedingSiblings: precedingSiblings,
+                       siblingUpperBound: siblingUpperBound
                    ) {
                     return true
                 }
                 i += 1
+            }
+            return false
+
+        case .adjacentSibling:
+            // The IMMEDIATELY preceding sibling — index `siblingUpperBound - 1`.
+            let idx = siblingUpperBound - 1
+            guard idx >= 0,
+                  matchesCompound(compound, node: precedingSiblings[idx])
+            else { return false }
+            return matchPreceding(
+                complex: complex,
+                partIndex: partIndex - 1,
+                ancestors: ancestors,
+                ancestorCursor: ancestorCursor,
+                precedingSiblings: precedingSiblings,
+                siblingUpperBound: idx
+            )
+
+        case .generalSibling:
+            // Try each preceding sibling strictly before `siblingUpperBound`,
+            // newest first (so a tighter match wins when both `~` and `+`
+            // would have applied).
+            var i = siblingUpperBound - 1
+            while i >= 0 {
+                if matchesCompound(compound, node: precedingSiblings[i]),
+                   matchPreceding(
+                       complex: complex,
+                       partIndex: partIndex - 1,
+                       ancestors: ancestors,
+                       ancestorCursor: ancestorCursor,
+                       precedingSiblings: precedingSiblings,
+                       siblingUpperBound: i
+                   ) {
+                    return true
+                }
+                i -= 1
             }
             return false
         }
