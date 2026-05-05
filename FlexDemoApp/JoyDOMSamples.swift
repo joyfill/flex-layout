@@ -27,6 +27,12 @@ enum JoyDOMSamples {
         pricingTiers,
         kitchenSink,
         visualCSS,
+        decorations,
+        positioning,
+        cornerRadius,
+        flexAlign,
+        constraints,
+        marginShowcase,
     ]
 
     /// Default selection on first open. Matches the demo's prior
@@ -828,6 +834,542 @@ enum JoyDOMSamples {
                   { "type": "p",  "props": { "id": "typo-p" },  "children": ["Body paragraph with comfortable line-height and subdued color. Designed to be readable at 14 px on any background."] }
                 ]
               }
+            ]
+          }
+        }
+        """#
+    )
+
+    // MARK: - Sample 8 — Decorations (Phase 2 typography showcase)
+    //
+    // Exercises: textDecoration env cascade onto text leaves,
+    // textTransform: uppercase, fontStyle: italic, letterSpacing em→pt
+    // scaling at known font sizes, and the four numeric font-weight bands
+    // (100 ultraLight, 400 regular, 700 bold, 900 black).
+
+    static let decorations = JoyDOMSample(
+        id: "decorations",
+        label: "Typography · decorations + weights",
+        json: #"""
+        {
+          "version": 1,
+          "style": {
+            "#root": {
+              "flexDirection": "column",
+              "gap": { "value": 16, "unit": "px" },
+              "padding": { "value": 24, "unit": "px" },
+              "backgroundColor": "#FFFFFF"
+            },
+            "#underline-block": {
+              "flexDirection": "column",
+              "gap": { "value": 6, "unit": "px" },
+              "textDecoration": "underline",
+              "color": "#1A1A2E",
+              "fontSize": { "value": 16, "unit": "px" }
+            },
+            "#strike-block": {
+              "flexDirection": "column",
+              "gap": { "value": 6, "unit": "px" },
+              "textDecoration": "line-through",
+              "color": "#888888"
+            },
+            "#shout": {
+              "textTransform": "uppercase",
+              "fontSize": { "value": 18, "unit": "px" },
+              "fontWeight": 600,
+              "letterSpacing": { "value": 1, "unit": "px" },
+              "color": "#0F3460"
+            },
+            "#italic-line": {
+              "fontStyle": "italic",
+              "fontSize": { "value": 16, "unit": "px" },
+              "color": "#16213E"
+            },
+            "#tracked": {
+              "fontSize": { "value": 24, "unit": "px" },
+              "letterSpacing": { "value": 0.1, "unit": "em" },
+              "color": "#3B4FE0"
+            },
+            ".weights-row": {
+              "flexDirection": "row",
+              "flexWrap": "wrap",
+              "gap": { "value": 16, "unit": "px" },
+              "fontSize": { "value": 18, "unit": "px" }
+            },
+            "#w-100": { "fontWeight": 100 },
+            "#w-400": { "fontWeight": 400 },
+            "#w-700": { "fontWeight": 700 },
+            "#w-900": { "fontWeight": 900 }
+          },
+          "breakpoints": [],
+          "layout": {
+            "type": "div",
+            "props": { "id": "root" },
+            "children": [
+              {
+                "type": "div",
+                "props": { "id": "underline-block" },
+                "children": [
+                  { "type": "p", "props": { "id": "underline-line" }, "children": ["Underlined heading via env cascade"] },
+                  { "type": "p", "props": { "id": "underline-line-2" }, "children": ["A second line that also picks up the underline"] }
+                ]
+              },
+              {
+                "type": "div",
+                "props": { "id": "strike-block" },
+                "children": [
+                  { "type": "p", "props": { "id": "strike-line" }, "children": ["Discounted price through the cascade"] }
+                ]
+              },
+              { "type": "p", "props": { "id": "shout" }, "children": ["uppercase shouting"] },
+              { "type": "p", "props": { "id": "italic-line" }, "children": ["This line is rendered in italic"] },
+              { "type": "p", "props": { "id": "tracked" }, "children": ["letter-spaced em→pt"] },
+              {
+                "type": "div",
+                "props": { "id": "weights", "className": ["weights-row"] },
+                "children": [
+                  { "type": "p", "props": { "id": "w-100" }, "children": ["Weight 100"] },
+                  { "type": "p", "props": { "id": "w-400" }, "children": ["Weight 400"] },
+                  { "type": "p", "props": { "id": "w-700" }, "children": ["Weight 700"] },
+                  { "type": "p", "props": { "id": "w-900" }, "children": ["Weight 900"] }
+                ]
+              }
+            ]
+          }
+        }
+        """#
+    )
+
+    // MARK: - Sample 9 — Positioning (absolute overlays + zIndex + fixed diagnostic)
+
+    static let positioning = JoyDOMSample(
+        id: "positioning",
+        label: "Positioning · absolute, zIndex, fixed",
+        json: #"""
+        {
+          "version": 1,
+          "style": {
+            "#root": {
+              "flexDirection": "column",
+              "gap": { "value": 16, "unit": "px" },
+              "padding": { "value": 24, "unit": "px" }
+            },
+            "#card": {
+              "position": "relative",
+              "width":  { "value": 300, "unit": "px" },
+              "height": { "value": 200, "unit": "px" },
+              "backgroundColor": "#F0F4FF",
+              "borderRadius": { "value": 8, "unit": "px" }
+            },
+            "#ribbon": {
+              "position": "absolute",
+              "top":  { "value": 0, "unit": "px" },
+              "left": { "value": 0, "unit": "px" },
+              "width":  { "value": 80, "unit": "px" },
+              "height": { "value": 22, "unit": "px" },
+              "backgroundColor": "#3B4FE0",
+              "zIndex": 1
+            },
+            "#badge": {
+              "position": "absolute",
+              "top":   { "value": 8, "unit": "px" },
+              "right": { "value": 8, "unit": "px" },
+              "zIndex": 10,
+              "width":  { "value": 56, "unit": "px" },
+              "height": { "value": 22, "unit": "px" },
+              "backgroundColor": "#E94560"
+            },
+            "#footer-pin": {
+              "position": "absolute",
+              "left":   { "value": 0, "unit": "px" },
+              "right":  { "value": 0, "unit": "px" },
+              "bottom": { "value": 0, "unit": "px" },
+              "height": { "value": 32, "unit": "px" },
+              "backgroundColor": "#16213E"
+            },
+            "#fixed-diag": {
+              "position": "fixed",
+              "top":  { "value": 0, "unit": "px" },
+              "left": { "value": 0, "unit": "px" },
+              "width":  { "value": 120, "unit": "px" },
+              "height": { "value": 24, "unit": "px" }
+            }
+          },
+          "breakpoints": [],
+          "layout": {
+            "type": "div",
+            "props": { "id": "root" },
+            "children": [
+              {
+                "type": "div",
+                "props": { "id": "card" },
+                "children": [
+                  { "type": "card", "props": { "id": "ribbon", "label": "RIBBON" } },
+                  { "type": "card", "props": { "id": "badge",  "label": "NEW" } },
+                  { "type": "card", "props": { "id": "footer-pin", "label": "Pinned footer" } }
+                ]
+              },
+              { "type": "card", "props": { "id": "fixed-diag", "label": "position:fixed (diagnostic)" } }
+            ]
+          }
+        }
+        """#
+    )
+
+    // MARK: - Sample 10 — Per-corner radius shapes
+
+    static let cornerRadius = JoyDOMSample(
+        id: "corner-radius",
+        label: "Corner radius · per-corner shapes",
+        json: #"""
+        {
+          "version": 1,
+          "style": {
+            "#root": {
+              "flexDirection": "column",
+              "gap": { "value": 20, "unit": "px" },
+              "padding": { "value": 24, "unit": "px" }
+            },
+            "#bubble": {
+              "width":  { "value": 240, "unit": "px" },
+              "height": { "value": 80,  "unit": "px" },
+              "backgroundColor": "#E8F4FD",
+              "borderRadius": {
+                "topLeft":     { "value": 12, "unit": "px" },
+                "topRight":    { "value": 12, "unit": "px" },
+                "bottomRight": { "value": 12, "unit": "px" },
+                "bottomLeft":  { "value": 0,  "unit": "px" }
+              }
+            },
+            "#chip": {
+              "width":  { "value": 160, "unit": "px" },
+              "height": { "value": 32,  "unit": "px" },
+              "backgroundColor": "#3B4FE0",
+              "borderRadius": {
+                "topLeft":     { "value": 16, "unit": "px" },
+                "topRight":    { "value": 0,  "unit": "px" },
+                "bottomRight": { "value": 0,  "unit": "px" },
+                "bottomLeft":  { "value": 16, "unit": "px" }
+              }
+            },
+            "#asym": {
+              "width":  { "value": 200, "unit": "px" },
+              "height": { "value": 80,  "unit": "px" },
+              "backgroundColor": "#F0F4FF",
+              "borderRadius": {
+                "topLeft":     { "value": 4,  "unit": "px" },
+                "topRight":    { "value": 8,  "unit": "px" },
+                "bottomRight": { "value": 16, "unit": "px" },
+                "bottomLeft":  { "value": 24, "unit": "px" }
+              }
+            }
+          },
+          "breakpoints": [],
+          "layout": {
+            "type": "div",
+            "props": { "id": "root" },
+            "children": [
+              { "type": "card", "props": { "id": "bubble", "label": "Speech bubble" } },
+              { "type": "card", "props": { "id": "chip",   "label": "Asymmetric pill" } },
+              { "type": "card", "props": { "id": "asym",   "label": "All four corners" } }
+            ]
+          }
+        }
+        """#
+    )
+
+    // MARK: - Sample 11 — Flex alignment (alignSelf, order, alignContent, all directions)
+
+    static let flexAlign = JoyDOMSample(
+        id: "flex-align",
+        label: "Flex · alignSelf, order, all directions",
+        json: #"""
+        {
+          "version": 1,
+          "style": {
+            "#root": {
+              "flexDirection": "column",
+              "gap": { "value": 20, "unit": "px" },
+              "padding": { "value": 16, "unit": "px" }
+            },
+            ".section": {
+              "flexDirection": "column",
+              "gap": { "value": 8, "unit": "px" }
+            },
+            "#wrap-row": {
+              "flexDirection": "row",
+              "flexWrap": "wrap",
+              "alignContent": "space-between",
+              "gap": { "value": 8, "unit": "px" },
+              "height": { "value": 220, "unit": "px" },
+              "backgroundColor": "#F0F4FF"
+            },
+            ".wrap-cell": {
+              "width":  { "value": 110, "unit": "px" },
+              "height": { "value": 40,  "unit": "px" },
+              "backgroundColor": "#3B4FE0"
+            },
+            "#self-row": {
+              "flexDirection": "row",
+              "alignItems": "flex-start",
+              "gap": { "value": 8, "unit": "px" },
+              "height": { "value": 100, "unit": "px" },
+              "backgroundColor": "#E8F4FD"
+            },
+            "#self-a": { "width": { "value": 60, "unit": "px" }, "height": { "value": 30, "unit": "px" } },
+            "#self-b": { "width": { "value": 60, "unit": "px" }, "height": { "value": 30, "unit": "px" }, "alignSelf": "center" },
+            "#self-c": { "width": { "value": 60, "unit": "px" }, "height": { "value": 30, "unit": "px" }, "alignSelf": "flex-end" },
+            "#order-row": {
+              "flexDirection": "row",
+              "gap": { "value": 8, "unit": "px" }
+            },
+            "#order-a": { "order": 3, "width": { "value": 60, "unit": "px" }, "height": { "value": 30, "unit": "px" } },
+            "#order-b": { "order": 1, "width": { "value": 60, "unit": "px" }, "height": { "value": 30, "unit": "px" } },
+            "#order-c": { "order": 2, "width": { "value": 60, "unit": "px" }, "height": { "value": 30, "unit": "px" } },
+            "#dir-row":          { "flexDirection": "row",            "gap": { "value": 8, "unit": "px" } },
+            "#dir-row-reverse":  { "flexDirection": "row-reverse",    "gap": { "value": 8, "unit": "px" } },
+            "#dir-col":          { "flexDirection": "column",         "gap": { "value": 8, "unit": "px" } },
+            "#dir-col-reverse":  { "flexDirection": "column-reverse", "gap": { "value": 8, "unit": "px" } },
+            ".dir-cell": { "width": { "value": 40, "unit": "px" }, "height": { "value": 24, "unit": "px" } },
+            "#wrap-rev": {
+              "flexDirection": "row",
+              "flexWrap": "wrap-reverse",
+              "gap": { "value": 8, "unit": "px" },
+              "height": { "value": 80, "unit": "px" }
+            }
+          },
+          "breakpoints": [],
+          "layout": {
+            "type": "div",
+            "props": { "id": "root" },
+            "children": [
+              {
+                "type": "div",
+                "props": { "id": "wrap-row" },
+                "children": [
+                  { "type": "card", "props": { "id": "wc-1", "className": ["wrap-cell"], "label": "1" } },
+                  { "type": "card", "props": { "id": "wc-2", "className": ["wrap-cell"], "label": "2" } },
+                  { "type": "card", "props": { "id": "wc-3", "className": ["wrap-cell"], "label": "3" } },
+                  { "type": "card", "props": { "id": "wc-4", "className": ["wrap-cell"], "label": "4" } },
+                  { "type": "card", "props": { "id": "wc-5", "className": ["wrap-cell"], "label": "5" } },
+                  { "type": "card", "props": { "id": "wc-6", "className": ["wrap-cell"], "label": "6" } }
+                ]
+              },
+              {
+                "type": "div",
+                "props": { "id": "self-row" },
+                "children": [
+                  { "type": "card", "props": { "id": "self-a", "label": "start" } },
+                  { "type": "card", "props": { "id": "self-b", "label": "center" } },
+                  { "type": "card", "props": { "id": "self-c", "label": "end" } }
+                ]
+              },
+              {
+                "type": "div",
+                "props": { "id": "order-row" },
+                "children": [
+                  { "type": "card", "props": { "id": "order-a", "label": "A (order 3)" } },
+                  { "type": "card", "props": { "id": "order-b", "label": "B (order 1)" } },
+                  { "type": "card", "props": { "id": "order-c", "label": "C (order 2)" } }
+                ]
+              },
+              {
+                "type": "div",
+                "props": { "id": "dir-row" },
+                "children": [
+                  { "type": "card", "props": { "id": "dr-1", "className": ["dir-cell"], "label": "1" } },
+                  { "type": "card", "props": { "id": "dr-2", "className": ["dir-cell"], "label": "2" } },
+                  { "type": "card", "props": { "id": "dr-3", "className": ["dir-cell"], "label": "3" } }
+                ]
+              },
+              {
+                "type": "div",
+                "props": { "id": "dir-row-reverse" },
+                "children": [
+                  { "type": "card", "props": { "id": "drr-1", "className": ["dir-cell"], "label": "1" } },
+                  { "type": "card", "props": { "id": "drr-2", "className": ["dir-cell"], "label": "2" } },
+                  { "type": "card", "props": { "id": "drr-3", "className": ["dir-cell"], "label": "3" } }
+                ]
+              },
+              {
+                "type": "div",
+                "props": { "id": "dir-col" },
+                "children": [
+                  { "type": "card", "props": { "id": "dc-1", "className": ["dir-cell"], "label": "1" } },
+                  { "type": "card", "props": { "id": "dc-2", "className": ["dir-cell"], "label": "2" } }
+                ]
+              },
+              {
+                "type": "div",
+                "props": { "id": "dir-col-reverse" },
+                "children": [
+                  { "type": "card", "props": { "id": "dcr-1", "className": ["dir-cell"], "label": "1" } },
+                  { "type": "card", "props": { "id": "dcr-2", "className": ["dir-cell"], "label": "2" } }
+                ]
+              },
+              {
+                "type": "div",
+                "props": { "id": "wrap-rev" },
+                "children": [
+                  { "type": "card", "props": { "id": "wr-1", "className": ["wrap-cell"], "label": "1" } },
+                  { "type": "card", "props": { "id": "wr-2", "className": ["wrap-cell"], "label": "2" } },
+                  { "type": "card", "props": { "id": "wr-3", "className": ["wrap-cell"], "label": "3" } }
+                ]
+              }
+            ]
+          }
+        }
+        """#
+    )
+
+    // MARK: - Sample 12 — Constraints (min/max + §9.7 redistribution)
+
+    static let constraints = JoyDOMSample(
+        id: "constraints",
+        label: "Constraints · min/max + redistribution",
+        json: #"""
+        {
+          "version": 1,
+          "style": {
+            "#root": {
+              "flexDirection": "column",
+              "gap": { "value": 20, "unit": "px" },
+              "padding": { "value": 16, "unit": "px" }
+            },
+            "#redist-row": {
+              "flexDirection": "row",
+              "gap": { "value": 0, "unit": "px" },
+              "width":  { "value": 300, "unit": "px" },
+              "height": { "value": 60,  "unit": "px" }
+            },
+            "#redist-a": { "flexGrow": 1, "maxWidth": { "value": 50, "unit": "px" }, "backgroundColor": "#3B4FE0" },
+            "#redist-b": { "flexGrow": 1, "backgroundColor": "#16213E" },
+            "#redist-c": { "flexGrow": 1, "backgroundColor": "#0F3460" },
+            "#min-h": {
+              "minHeight": { "value": 100, "unit": "px" },
+              "width":     { "value": 240, "unit": "px" },
+              "backgroundColor": "#E8F4FD"
+            },
+            "#max-h": {
+              "maxHeight": { "value": 80, "unit": "px" },
+              "width":     { "value": 240, "unit": "px" },
+              "backgroundColor": "#F0F4FF"
+            },
+            "#nested-outer": {
+              "flexDirection": "column",
+              "width": { "value": 320, "unit": "px" },
+              "padding": { "value": 8, "unit": "px" },
+              "backgroundColor": "#F8F9FA"
+            },
+            "#nested-inner": {
+              "minWidth": { "value": 50, "unit": "%" },
+              "height":   { "value": 40, "unit": "px" },
+              "backgroundColor": "#3B4FE0"
+            }
+          },
+          "breakpoints": [],
+          "layout": {
+            "type": "div",
+            "props": { "id": "root" },
+            "children": [
+              {
+                "type": "div",
+                "props": { "id": "redist-row" },
+                "children": [
+                  { "type": "card", "props": { "id": "redist-a", "label": "max=50" } },
+                  { "type": "card", "props": { "id": "redist-b", "label": "grow" } },
+                  { "type": "card", "props": { "id": "redist-c", "label": "grow" } }
+                ]
+              },
+              { "type": "card", "props": { "id": "min-h", "label": "minHeight 100 (content shorter)" } },
+              { "type": "card", "props": { "id": "max-h", "label": "maxHeight 80 (content taller — clamped)" } },
+              {
+                "type": "div",
+                "props": { "id": "nested-outer" },
+                "children": [
+                  { "type": "card", "props": { "id": "nested-inner", "label": "minWidth 50% of outer" } }
+                ]
+              }
+            ]
+          }
+        }
+        """#
+    )
+
+    // MARK: - Sample 13 — Margin showcase (Phase 3 true flex-item margin)
+
+    static let marginShowcase = JoyDOMSample(
+        id: "margin-showcase",
+        label: "Margin · true flex-item margins",
+        json: #"""
+        {
+          "version": 1,
+          "style": {
+            "#root": {
+              "flexDirection": "column",
+              "gap": { "value": 16, "unit": "px" },
+              "padding": { "value": 16, "unit": "px" }
+            },
+            "#mg-row": {
+              "flexDirection": "row",
+              "gap": { "value": 0, "unit": "px" },
+              "backgroundColor": "#F0F4FF"
+            },
+            ".mg-card": {
+              "flexGrow": 1,
+              "height": { "value": 60, "unit": "px" },
+              "margin": { "value": 16, "unit": "px" },
+              "backgroundColor": "#3B4FE0"
+            },
+            "#asym-col": {
+              "flexDirection": "column",
+              "backgroundColor": "#E8F4FD"
+            },
+            ".asym-row": {
+              "height": { "value": 32, "unit": "px" },
+              "margin": {
+                "top":    { "value": 8,  "unit": "px" },
+                "right":  { "value": 0,  "unit": "px" },
+                "bottom": { "value": 16, "unit": "px" },
+                "left":   { "value": 0,  "unit": "px" }
+              },
+              "backgroundColor": "#16213E"
+            },
+            "#composed": {
+              "width":   { "value": 200, "unit": "px" },
+              "height":  { "value": 80,  "unit": "px" },
+              "padding": { "value": 12,  "unit": "px" },
+              "margin":  { "value": 24,  "unit": "px" },
+              "backgroundColor": "#F8F9FA",
+              "borderWidth": { "value": 2, "unit": "px" },
+              "borderColor": "#3B4FE0",
+              "borderStyle": "solid"
+            }
+          },
+          "breakpoints": [],
+          "layout": {
+            "type": "div",
+            "props": { "id": "root" },
+            "children": [
+              {
+                "type": "div",
+                "props": { "id": "mg-row" },
+                "children": [
+                  { "type": "card", "props": { "id": "mg-1", "className": ["mg-card"], "label": "m=16" } },
+                  { "type": "card", "props": { "id": "mg-2", "className": ["mg-card"], "label": "m=16" } },
+                  { "type": "card", "props": { "id": "mg-3", "className": ["mg-card"], "label": "m=16" } }
+                ]
+              },
+              {
+                "type": "div",
+                "props": { "id": "asym-col" },
+                "children": [
+                  { "type": "card", "props": { "id": "asym-1", "className": ["asym-row"], "label": "asym 1" } },
+                  { "type": "card", "props": { "id": "asym-2", "className": ["asym-row"], "label": "asym 2" } },
+                  { "type": "card", "props": { "id": "asym-3", "className": ["asym-row"], "label": "asym 3" } }
+                ]
+              },
+              { "type": "card", "props": { "id": "composed", "label": "padding 12 + margin 24" } }
             ]
           }
         }

@@ -240,6 +240,34 @@ public struct JoyDOMView: View {
         }
     }
 
+    /// Construct the SwiftUI `Font` value implied by a `VisualStyle`'s
+    /// typography fields, returning `nil` if none of `fontFamily`,
+    /// `fontSize`, `fontWeight`, or `fontStyle` are set. Mirrors the
+    /// branch inside `applyVisual` exactly so the two paths can't drift.
+    /// Exposed `internal` so unit tests can assert that a custom
+    /// `fontFamily` produces a `.custom(...)` font (and the absence of one
+    /// yields `.system(...)`) without spinning up a hosting controller.
+    internal static func font(for visual: VisualStyle) -> Font? {
+        guard visual.fontFamily != nil
+            || visual.fontSize   != nil
+            || visual.fontWeight != nil
+            || visual.fontStyle  != nil
+        else { return nil }
+
+        let size = visual.fontSize ?? 17
+        var font: Font = visual.fontFamily.map { .custom($0, size: size) }
+                         ?? .system(size: size)
+        if let w = visual.fontWeight {
+            switch w {
+            case .normal:        font = font.weight(.regular)
+            case .bold:          font = font.weight(.bold)
+            case .numeric(let n): font = font.weight(swiftFontWeight(forCSSWeight: n))
+            }
+        }
+        if visual.fontStyle == .italic { font = font.italic() }
+        return font
+    }
+
     /// Compute the SwiftUI `lineSpacing` value for a given CSS
     /// `line-height` multiplier and font size, matching the formula used
     /// inside `applyVisual`. Exposed `internal` for tests.
@@ -271,18 +299,7 @@ public struct JoyDOMView: View {
 
         // --- Typography (propagates via SwiftUI environment) ---
 
-        if visual.fontFamily != nil || visual.fontSize != nil || visual.fontWeight != nil || visual.fontStyle != nil {
-            let size     = visual.fontSize ?? 17
-            var font: Font = visual.fontFamily.map { .custom($0, size: size) } ?? .system(size: size)
-            if let w = visual.fontWeight {
-                switch w {
-                case .normal:      font = font.weight(.regular)
-                case .bold:        font = font.weight(.bold)
-                case .numeric(let n):
-                    font = font.weight(JoyDOMView.swiftFontWeight(forCSSWeight: n))
-                }
-            }
-            if visual.fontStyle == .italic { font = font.italic() }
+        if let font = JoyDOMView.font(for: visual) {
             v = AnyView(v.font(font))
         }
 
