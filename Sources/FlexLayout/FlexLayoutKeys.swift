@@ -80,6 +80,58 @@ public struct FlexHeightKey: LayoutValueKey {
     public static let defaultValue: FlexSize = .auto
 }
 
+/// Lower bound on a flex item's resolved width.
+///
+/// CSS `min-width`. The engine clamps the item's final width to be at least
+/// this size after grow/shrink resolution. Per CSS 2.1 §10.4 `min-*` wins
+/// over `max-*` on conflict.
+///
+/// - Default: `nil` — no lower bound.
+/// - Set via: `.flexItem(minWidth: .points(120))`
+public struct FlexMinWidthKey: LayoutValueKey {
+    public static let defaultValue: FlexSize? = nil
+}
+
+/// Upper bound on a flex item's resolved width.
+///
+/// CSS `max-width`. The engine clamps the item's final width to be at most
+/// this size before applying `min-width`.
+///
+/// - Default: `nil` — no upper bound.
+/// - Set via: `.flexItem(maxWidth: .points(320))`
+public struct FlexMaxWidthKey: LayoutValueKey {
+    public static let defaultValue: FlexSize? = nil
+}
+
+/// Lower bound on a flex item's resolved height.
+///
+/// CSS `min-height`. - Default: `nil` — no lower bound.
+/// Set via `.flexItem(minHeight: .points(60))`.
+public struct FlexMinHeightKey: LayoutValueKey {
+    public static let defaultValue: FlexSize? = nil
+}
+
+/// Upper bound on a flex item's resolved height.
+///
+/// CSS `max-height`. - Default: `nil` — no upper bound.
+/// Set via `.flexItem(maxHeight: .points(240))`.
+public struct FlexMaxHeightKey: LayoutValueKey {
+    public static let defaultValue: FlexSize? = nil
+}
+
+/// Outer margin around the flex item.
+///
+/// CSS `margin`. The engine subtracts the main-axis margin from the line's
+/// available space before grow/shrink, and offsets the item's frame origin
+/// by the start margin during placement. `margin: auto` (centering) is not
+/// supported in this iteration — defer to `justifyContent` / `alignSelf`.
+///
+/// - Default: `.zero` — no margin.
+/// - Set via: `.flexItem(margin: EdgeInsets(top: 8, leading: 8, bottom: 8, trailing: 8))`
+public struct FlexMarginKey: LayoutValueKey {
+    public static let defaultValue: EdgeInsets = EdgeInsets()
+}
+
 /// Overflow clipping behaviour for an individual flex item.
 ///
 /// - Default: `.visible` — content is not clipped.

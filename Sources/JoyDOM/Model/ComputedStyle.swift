@@ -17,6 +17,16 @@ import CoreGraphics
 /// Initial values match the CSS spec defaults exactly (`flex-grow:0`,
 /// `flex-shrink:1`, `flex-basis:auto`, etc.) so an unstyled node still
 /// renders correctly.
+///
+/// Phase 3 moved `margin` from `VisualStyle` into `ItemStyle` because the
+/// FlexLayout engine now resolves it as a true flex-item margin (affecting
+/// available space and item offset). The visual layer no longer wraps the
+/// item in a SwiftUI `.padding()` to fake margin.
+///
+/// `box-sizing: border-box` is **not** yet enforced in layout — explicit
+/// width/height are still treated as content-box sizes regardless of the
+/// `boxSizing` field on `Style`. Tracked as a follow-up; see Phase 3.3 in
+/// `SPEC_GAP_PLAN.md`.
 public struct ItemStyle: Equatable {
     public var grow:      CGFloat       = 0
     public var shrink:    CGFloat       = 1
@@ -29,6 +39,7 @@ public struct ItemStyle: Equatable {
     public var maxWidth:  CGFloat?      = nil
     public var minHeight: CGFloat?      = nil
     public var maxHeight: CGFloat?      = nil
+    public var margin:    Padding?      = nil
     public var overflow:  FlexOverflow  = .visible
     public var zIndex:    Int           = 0
     public var position:  FlexPosition  = .relative
@@ -55,7 +66,6 @@ public struct VisualStyle: Equatable {
     public var borderColor:     String?           = nil
     public var borderStyle:     Style.BorderStyleProp? = nil
     public var borderRadius:    BorderRadius?     = nil
-    public var margin:          Padding?          = nil
 
     // Typography
     public var fontFamily:      String?           = nil

@@ -77,6 +77,29 @@ public struct FlexItemInput {
     /// Explicit height override. CSS `height`. Default `.auto`.
     public var explicitHeight: FlexSize
 
+    /// Lower bound on the resolved width. CSS `min-width`. Default `nil`.
+    /// When set, the item's final width is clamped to at least this size.
+    public var minWidth:  FlexSize?
+
+    /// Upper bound on the resolved width. CSS `max-width`. Default `nil`.
+    /// When set, the item's final width is clamped to at most this size.
+    public var maxWidth:  FlexSize?
+
+    /// Lower bound on the resolved height. CSS `min-height`. Default `nil`.
+    public var minHeight: FlexSize?
+
+    /// Upper bound on the resolved height. CSS `max-height`. Default `nil`.
+    public var maxHeight: FlexSize?
+
+    /// Outer margin around the flex item. CSS `margin`. Default `.zero`.
+    ///
+    /// Margin reduces the space available to the item's content box and
+    /// offsets the item's frame origin within the line. Negative values are
+    /// not supported; `EdgeInsets` is treated as a non-negative quantity.
+    /// `margin: auto` (centering) is **not** supported in this iteration —
+    /// authors that need it should use `justifyContent` / `alignSelf`.
+    public var margin: EdgeInsets
+
     // Absolute-positioning insets (only meaningful when `position == .absolute`)
     /// Distance from the container's top edge. CSS `top`.
     public var top:           CGFloat?
@@ -115,6 +138,11 @@ public struct FlexItemInput {
         position:       FlexPosition = .relative,
         explicitWidth:  FlexSize     = .auto,
         explicitHeight: FlexSize     = .auto,
+        minWidth:       FlexSize?    = nil,
+        maxWidth:       FlexSize?    = nil,
+        minHeight:      FlexSize?    = nil,
+        maxHeight:      FlexSize?    = nil,
+        margin:         EdgeInsets   = EdgeInsets(),
         top:            CGFloat?     = nil,
         bottom:         CGFloat?     = nil,
         leading:        CGFloat?     = nil,
@@ -130,6 +158,20 @@ public struct FlexItemInput {
         self.position       = position
         self.explicitWidth  = explicitWidth
         self.explicitHeight = explicitHeight
+        self.minWidth       = minWidth
+        self.maxWidth       = maxWidth
+        self.minHeight      = minHeight
+        self.maxHeight      = maxHeight
+        // Clamp at the boundary so the layout pass can assume non-negative
+        // margins. Negative margins (overlap/gutter tricks) aren't supported
+        // yet; if the requirement appears, lift this clamp and add tests
+        // covering interaction with gap, justify-content, and absolute insets.
+        self.margin = EdgeInsets(
+            top:      max(0, margin.top),
+            leading:  max(0, margin.leading),
+            bottom:   max(0, margin.bottom),
+            trailing: max(0, margin.trailing)
+        )
         self.top            = top
         self.bottom         = bottom
         self.leading        = leading
@@ -260,7 +302,7 @@ public struct FlexSolution {
 struct RawFlexItem {
     /// Index into the original `[FlexItemInput]` array (source order, not `order`-sorted).
     var inputIndex:         Int
-    /// Resolved main-axis basis size in points.
+    /// Resolved main-axis basis size in points (content size, excluding margin).
     var basisMain:          CGFloat
     /// `flex-grow` factor.
     public var grow:               CGFloat
@@ -272,6 +314,22 @@ struct RawFlexItem {
     var explicitCrossSize:  CGFloat?
     /// CSS `z-index` value.
     public var zIndex:             Int
+    /// Resolved min main-axis content size in points, or `nil`.
+    var minMain:            CGFloat? = nil
+    /// Resolved max main-axis content size in points, or `nil`.
+    var maxMain:            CGFloat? = nil
+    /// Resolved min cross-axis content size in points, or `nil`.
+    var minCross:           CGFloat? = nil
+    /// Resolved max cross-axis content size in points, or `nil`.
+    var maxCross:           CGFloat? = nil
+    /// Margin on the main-axis "start" side (leading for row, top for column).
+    var marginMainStart:    CGFloat = 0
+    /// Margin on the main-axis "end" side (trailing for row, bottom for column).
+    var marginMainEnd:      CGFloat = 0
+    /// Margin on the cross-axis "start" side (top for row, leading for column).
+    var marginCrossStart:   CGFloat = 0
+    /// Margin on the cross-axis "end" side (bottom for row, trailing for column).
+    var marginCrossEnd:     CGFloat = 0
     // Absolute-positioning insets (unused for in-flow items):
     public var top:                CGFloat?
     public var bottom:             CGFloat?
@@ -291,13 +349,25 @@ struct ComputedFlexItem {
     /// Final cross-axis size in points (after stretch/explicit override).
     var crossSize:   CGFloat
     /// Position on the main axis within the container (after justify-content).
+    /// This is the position of the item's outer (margin) box; the content
+    /// frame origin is `mainOffset + marginMainStart`.
     var mainOffset:  CGFloat
     /// Position on the cross axis within the item's flex line (after align-items/align-self).
+    /// Like `mainOffset`, this is the outer-box origin; the content frame
+    /// origin is `crossOffset + marginCrossStart`.
     var crossOffset: CGFloat
     /// Distance from cross-start to the text baseline (simplified; equal to crossSize when baseline is used).
     var ascent:      CGFloat
     /// CSS `z-index`.
     public var zIndex:      Int
+    /// Margin start on the main axis (added to `mainOffset` when placing the frame).
+    var marginMainStart:  CGFloat = 0
+    /// Margin end on the main axis (used to compute the outer box for justify/free-space).
+    var marginMainEnd:    CGFloat = 0
+    /// Margin start on the cross axis (added to `crossOffset` when placing).
+    var marginCrossStart: CGFloat = 0
+    /// Margin end on the cross axis.
+    var marginCrossEnd:   CGFloat = 0
     // Absolute positioning metadata:
     var isAbsolute:  Bool     = false
     var absTop:      CGFloat? = nil
@@ -428,11 +498,13 @@ public enum FlexEngine {
                 let x: CGFloat
                 let y: CGFloat
                 if isRow {
-                    x = pad.leading + item.mainOffset
-                    y = pad.top     + line.crossOffset + item.crossOffset
+                    // mainOffset / crossOffset point at the *outer* box origin;
+                    // shift by the margin start to land on the content box.
+                    x = pad.leading + item.mainOffset  + item.marginMainStart
+                    y = pad.top     + line.crossOffset + item.crossOffset + item.marginCrossStart
                 } else {
-                    x = pad.leading + line.crossOffset + item.crossOffset
-                    y = pad.top     + item.mainOffset
+                    x = pad.leading + line.crossOffset + item.crossOffset + item.marginCrossStart
+                    y = pad.top     + item.mainOffset  + item.marginMainStart
                 }
                 frames[item.inputIndex]    = CGRect(x: x, y: y, width: w, height: h)
                 proposals[item.inputIndex] = ProposedViewSize(width: w, height: h)
@@ -538,10 +610,37 @@ public enum FlexEngine {
                 ? AlignSelf(from: config.alignItems)
                 : rawAlignSelf
 
+            // Resolve min/max constraints per axis. Width-side bounds always
+            // apply to width, height-side bounds to height — independent of
+            // `direction`. We project them onto main/cross below.
+            //
+            // Note: CSS resolves min/max percentages against the full
+            // containing block (raw `mainConstraint`), unlike flex-basis
+            // percentages which use the margin-adjusted inner box. CSS 2.1
+            // §10.4 / Flexbox §9.2. Don't subtract margin here.
+            let minWidthPx  = resolveOptionalConstraint(input.minWidth,  container: isRow ? mainConstraint  : crossConstraint)
+            let maxWidthPx  = resolveOptionalConstraint(input.maxWidth,  container: isRow ? mainConstraint  : crossConstraint)
+            let minHeightPx = resolveOptionalConstraint(input.minHeight, container: isRow ? crossConstraint : mainConstraint)
+            let maxHeightPx = resolveOptionalConstraint(input.maxHeight, container: isRow ? crossConstraint : mainConstraint)
+
+            let minMain:  CGFloat? = isRow ? minWidthPx  : minHeightPx
+            let maxMain:  CGFloat? = isRow ? maxWidthPx  : maxHeightPx
+            let minCross: CGFloat? = isRow ? minHeightPx : minWidthPx
+            let maxCross: CGFloat? = isRow ? maxHeightPx : maxWidthPx
+
+            // Project margin onto main/cross axes (CSS §8.3 — vertical margins
+            // do not collapse in a flex context).
+            let marginMainStart:  CGFloat = isRow ? input.margin.leading : input.margin.top
+            let marginMainEnd:    CGFloat = isRow ? input.margin.trailing : input.margin.bottom
+            let marginCrossStart: CGFloat = isRow ? input.margin.top : input.margin.leading
+            let marginCrossEnd:   CGFloat = isRow ? input.margin.bottom : input.margin.trailing
+            let marginMainTotal   = marginMainStart + marginMainEnd
+            let marginCrossTotal  = marginCrossStart + marginCrossEnd
+
             let mainSize   = isRow ? input.explicitWidth  : input.explicitHeight
             let crossSize  = isRow ? input.explicitHeight : input.explicitWidth
-            let mainRes    = resolveFlexSizeEx(mainSize,  container: mainConstraint)
-            let crossRes   = resolveFlexSizeEx(crossSize, container: crossConstraint)
+            let mainRes    = resolveFlexSizeEx(mainSize,  container: mainConstraint.map { max(0, $0 - marginMainTotal) })
+            let crossRes   = resolveFlexSizeEx(crossSize, container: crossConstraint.map { max(0, $0 - marginCrossTotal) })
 
             // Explicit main-axis value (overrides flex-basis when set).
             let mainExplicit: CGFloat? = {
@@ -564,19 +663,28 @@ public enum FlexEngine {
             case .auto:
                 crossExplicit = nil
             }
+            // Apply min/max clamp to an explicit cross size up front so the
+            // measure pass below sees the constrained value when stretching.
+            if var ec = crossExplicit {
+                ec = clamp(ec, min: minCross, max: maxCross)
+                crossExplicit = ec
+            }
 
             // Measure the item's natural size. The cross-axis proposal respects
             // `align-self: stretch` (offer the available cross space) or explicit
-            // cross sizes, so the item can size accordingly.
+            // cross sizes, so the item can size accordingly. Subtract margin
+            // from any constraint we propose so the item is sized as a content
+            // box, not an outer box.
+            let stretchCross = crossConstraint.map { max(0, $0 - marginCrossTotal) }
             let measureCross = crossExplicit
-                ?? ((effectiveAlignSelf == .stretch) ? crossConstraint : nil)
+                ?? ((effectiveAlignSelf == .stretch) ? stretchCross : nil)
             let naturalProposal: ProposedViewSize = isRow
                 ? ProposedViewSize(width: nil, height: measureCross)
                 : ProposedViewSize(width: measureCross, height: nil)
             let naturalSize = input.measure(naturalProposal)
 
             // Resolve the flex-basis to a point value.
-            let basisMain: CGFloat
+            var basisMain: CGFloat
             if case .minContent = mainRes {
                 // min-content on main axis: measure with a zero main-axis proposal.
                 let minP: ProposedViewSize = isRow
@@ -591,12 +699,19 @@ public enum FlexEngine {
                 case .points(let n):
                     basisMain = max(0, n)
                 case .fraction(let f):
-                    // Percentage basis: resolve against the main constraint.
-                    // Falls back to intrinsic size when the container is unconstrained.
-                    basisMain = mainConstraint.map { max(0, f * $0) }
+                    // Percentage basis (e.g. flex-basis: 50%). Resolve against
+                    // the main constraint *minus* this item's main-axis margin
+                    // so the percentage refers to the inner content box.
+                    // `mainConstraint` is the raw container size — adjust here.
+                    // Falls back to intrinsic size when the main axis is
+                    // unconstrained, matching CSS `flex-basis: auto`.
+                    let cmAdj = mainConstraint.map { max(0, $0 - marginMainTotal) }
+                    basisMain = cmAdj.map { max(0, f * $0) }
                         ?? (isRow ? naturalSize.width : naturalSize.height)
                 }
             }
+            // Apply min/max clamp on the main axis (CSS §10.4).
+            basisMain = clamp(basisMain, min: minMain, max: maxMain)
 
             return RawFlexItem(
                 inputIndex:         idx,
@@ -606,6 +721,14 @@ public enum FlexEngine {
                 effectiveAlignSelf: effectiveAlignSelf,
                 explicitCrossSize:  crossExplicit,
                 zIndex:             input.zIndex,
+                minMain:            minMain,
+                maxMain:            maxMain,
+                minCross:           minCross,
+                maxCross:           maxCross,
+                marginMainStart:    marginMainStart,
+                marginMainEnd:      marginMainEnd,
+                marginCrossStart:   marginCrossStart,
+                marginCrossEnd:     marginCrossEnd,
                 top:                input.top,
                 bottom:             input.bottom,
                 leading:            input.leading,
@@ -627,7 +750,10 @@ public enum FlexEngine {
             var usedMain: CGFloat = 0
 
             for i in rawItems.indices {
-                let itemMain  = rawItems[i].basisMain
+                // Line breaking measures the item's *outer* size — content
+                // size plus its main-axis margins — so a wide margin still
+                // forces a wrap.
+                let itemMain  = rawItems[i].basisMain + rawItems[i].marginMainStart + rawItems[i].marginMainEnd
                 let gapBefore = (i > lineStart) ? mainGap : 0
 
                 if i > lineStart && usedMain + gapBefore + itemMain > cm + 0.001 {
@@ -648,22 +774,32 @@ public enum FlexEngine {
 
         for lineGroup in lineGroups {
             let lineRaw    = lineGroup.map { rawItems[$0] }
-            let totalBasis = lineRaw.reduce(0) { $0 + $1.basisMain }
-            let totalGaps  = CGFloat(max(0, lineRaw.count - 1)) * mainGap
+            // For free-space accounting we use the *outer* main size (content
+            // basis plus main-axis margins). Grow/shrink, however, only modify
+            // the content size; margins are added back when distributing.
+            let totalMargin = lineRaw.reduce(0) { $0 + $1.marginMainStart + $1.marginMainEnd }
+            let totalBasis  = lineRaw.reduce(0) { $0 + $1.basisMain }
+            let totalGaps   = CGFloat(max(0, lineRaw.count - 1)) * mainGap
 
             // Distribute free space via grow or shrink (§9.7–9.11).
             var mainSizes: [CGFloat]
             if let cm = mainConstraint {
-                let free = cm - totalBasis - totalGaps
+                let free = cm - totalBasis - totalMargin - totalGaps
                 if free > 0.5 {
-                    mainSizes = resolveGrow(items: lineRaw, freeSpace: free)
+                    // §9.7 freeze-and-redistribute: when an item hits maxMain
+                    // it freezes and the residual space is redistributed across
+                    // remaining growers — matching CSS browser behaviour.
+                    mainSizes = resolveGrowWithClamp(items: lineRaw, freeSpace: free)
                 } else if free < -0.5 {
-                    mainSizes = resolveShrink(items: lineRaw, overflow: -free)
+                    mainSizes = resolveShrinkWithClamp(items: lineRaw, overflow: -free)
                 } else {
-                    mainSizes = lineRaw.map { $0.basisMain }
+                    mainSizes = lineRaw.map {
+                        clamp($0.basisMain, min: $0.minMain, max: $0.maxMain)
+                    }
                 }
             } else {
-                // Unconstrained main axis: no grow or shrink — items use basis size.
+                // Unconstrained main axis: no grow or shrink — items use
+                // their (already clamped) basis size.
                 mainSizes = lineRaw.map { $0.basisMain }
             }
 
@@ -687,6 +823,13 @@ public enum FlexEngine {
                     let sz        = input.measure(crossProp)
                     crossSizes[i] = isRow ? sz.height : sz.width
                 }
+                // Clamp the measured cross size to the item's [minCross, maxCross]
+                // window. Explicit cross sizes were already clamped in Step 2.
+                crossSizes[i] = clamp(
+                    crossSizes[i],
+                    min: lineRaw[i].minCross,
+                    max: lineRaw[i].maxCross
+                )
 
                 if lineRaw[i].effectiveAlignSelf == .baseline {
                     ascents[i] = crossSizes[i]   // simplified: ascent = full cross size
@@ -694,10 +837,11 @@ public enum FlexEngine {
                 }
             }
 
-            // The line's cross size = max of item cross sizes.
-            // For `nowrap` only: expand to fill the cross constraint (CSS §9.4).
+            // The line's cross size = max of item *outer* cross sizes (content
+            // size plus cross-axis margins). For `nowrap` only: expand to fill
+            // the cross constraint (CSS §9.4).
             var lineCrossSize: CGFloat = lineRaw.indices.reduce(0) { acc, i in
-                max(acc, crossSizes[i])
+                max(acc, crossSizes[i] + lineRaw[i].marginCrossStart + lineRaw[i].marginCrossEnd)
             }
             lineCrossSize = applySingleLineCrossConstraint(
                 config:          config,
@@ -712,28 +856,37 @@ public enum FlexEngine {
                 let mainSz = mainSizes[i]
                 var finalCross = crossSizes[i]
 
-                // `align-self: stretch` expands the item to the line's cross size.
+                // `align-self: stretch` expands the item's content box to fill
+                // the line's cross size *minus* the item's cross-axis margins.
                 if lineRaw[i].effectiveAlignSelf == .stretch
                     && lineRaw[i].explicitCrossSize == nil {
-                    finalCross = lineCrossSize
+                    finalCross = max(0, lineCrossSize - lineRaw[i].marginCrossStart - lineRaw[i].marginCrossEnd)
+                    finalCross = clamp(finalCross, min: lineRaw[i].minCross, max: lineRaw[i].maxCross)
                 }
 
+                // Cross offset is computed against the item's *outer* size
+                // (content + cross margins) to keep margins inside the line.
+                let outerCross = finalCross + lineRaw[i].marginCrossStart + lineRaw[i].marginCrossEnd
                 let crossOff = itemCrossOffset(
                     alignSelf: lineRaw[i].effectiveAlignSelf,
-                    itemCross: finalCross,
+                    itemCross: outerCross,
                     lineCross: lineCrossSize,
                     ascent:    ascents[i],
                     maxAscent: maxAscent
                 )
 
                 computedItems.append(ComputedFlexItem(
-                    inputIndex:  lineRaw[i].inputIndex,
-                    mainSize:    mainSz,
-                    crossSize:   finalCross,
-                    mainOffset:  0,          // populated in Step 7
-                    crossOffset: crossOff,
-                    ascent:      ascents[i],
-                    zIndex:      lineRaw[i].zIndex
+                    inputIndex:       lineRaw[i].inputIndex,
+                    mainSize:         mainSz,
+                    crossSize:        finalCross,
+                    mainOffset:       0,          // populated in Step 7
+                    crossOffset:      crossOff,
+                    ascent:           ascents[i],
+                    zIndex:           lineRaw[i].zIndex,
+                    marginMainStart:  lineRaw[i].marginMainStart,
+                    marginMainEnd:    lineRaw[i].marginMainEnd,
+                    marginCrossStart: lineRaw[i].marginCrossStart,
+                    marginCrossEnd:   lineRaw[i].marginCrossEnd
                 ))
             }
 
@@ -757,16 +910,20 @@ public enum FlexEngine {
             containerMain = cm
         } else {
             containerMain = lines.map { line in
-                line.items.reduce(0) { $0 + $1.mainSize }
+                line.items.reduce(0) { $0 + $1.mainSize + $1.marginMainStart + $1.marginMainEnd }
                 + CGFloat(max(0, line.items.count - 1)) * mainGap
             }.max() ?? 0
         }
 
         // ── Step 7: justify-content (main-axis offsets) ───────────────────────
+        // Distribution is computed using each item's *outer* main size (content
+        // size + main-axis margins). The resulting offset is the position of
+        // the outer box; the rendered frame origin is `mainOffset + marginMainStart`.
         for li in lines.indices {
+            let outerSizes = lines[li].items.map { $0.mainSize + $0.marginMainStart + $0.marginMainEnd }
             let offsets = distributeMain(
                 containerMain: containerMain,
-                itemSizes:     lines[li].items.map { $0.mainSize },
+                itemSizes:     outerSizes,
                 gap:           mainGap,
                 justify:       config.justifyContent,
                 reversed:      config.direction.isReversed
@@ -802,12 +959,14 @@ public enum FlexEngine {
                         let raw    = rawItems[rawIdx]
                         var finalCross = item.crossSize
                         if raw.effectiveAlignSelf == .stretch && raw.explicitCrossSize == nil {
-                            finalCross = newLineCross
+                            finalCross = max(0, newLineCross - raw.marginCrossStart - raw.marginCrossEnd)
+                            finalCross = clamp(finalCross, min: raw.minCross, max: raw.maxCross)
                         }
                         lines[li].items[i].crossSize   = finalCross
+                        let outerCross = finalCross + raw.marginCrossStart + raw.marginCrossEnd
                         lines[li].items[i].crossOffset = itemCrossOffset(
                             alignSelf:  raw.effectiveAlignSelf,
-                            itemCross:  finalCross,
+                            itemCross:  outerCross,
                             lineCross:  newLineCross,
                             ascent:     item.ascent,
                             maxAscent:  lineMaxAscent
@@ -838,18 +997,32 @@ public enum FlexEngine {
             let resH  = resolveFlexSizeEx(input.explicitHeight,
                                           container: isRow ? containerCross : containerMain)
 
-            let w: CGFloat
+            var w: CGFloat
             switch resW {
             case .value(let v): w = v
             case .minContent:   w = input.measure(ProposedViewSize(width: 0,   height: nil)).width
             case .auto:         w = input.measure(ProposedViewSize(width: nil,  height: nil)).width
             }
-            let h: CGFloat
+            var h: CGFloat
             switch resH {
             case .value(let v): h = v
             case .minContent:   h = input.measure(ProposedViewSize(width: w,   height: 0  )).height
             case .auto:         h = input.measure(ProposedViewSize(width: w,   height: nil)).height
             }
+            // Apply CSS min/max clamps to absolute items as well.
+            // CSS resolves min/max percentages against the full containing
+            // block (not margin-adjusted), unlike flex-basis percentages.
+            // CSS 2.1 §10.4 / Flexbox §9.2.
+            let absMinW = resolveOptionalConstraint(input.minWidth,  container: isRow ? containerMain : containerCross)
+            let absMaxW = resolveOptionalConstraint(input.maxWidth,  container: isRow ? containerMain : containerCross)
+            let absMinH = resolveOptionalConstraint(input.minHeight, container: isRow ? containerCross : containerMain)
+            let absMaxH = resolveOptionalConstraint(input.maxHeight, container: isRow ? containerCross : containerMain)
+            w = clamp(w, min: absMinW, max: absMaxW)
+            h = clamp(h, min: absMinH, max: absMaxH)
+            // TODO: margin on absolute items is currently ignored. CSS shifts
+            // the content inward from the inset edges by the margin; here we
+            // place the item at top/leading directly. Track alongside the
+            // box-sizing TODO in JoyDOMView.applyItem.
 
             let mainSz:  CGFloat = isRow ? w : h
             let crossSz: CGFloat = isRow ? h : w
@@ -905,6 +1078,29 @@ public enum FlexEngine {
             if let c = container { return .value(max(0, f * c)) }
             return .auto
         }
+    }
+
+    /// Resolves an optional `min-*` / `max-*` `FlexSize` to a concrete point value.
+    ///
+    /// `.auto` and `.minContent` (the latter is not meaningful as a min/max bound
+    /// in this engine) resolve to `nil`, indicating no constraint on that side.
+    static func resolveOptionalConstraint(_ size: FlexSize?, container: CGFloat?) -> CGFloat? {
+        guard let size else { return nil }
+        switch resolveFlexSizeEx(size, container: container) {
+        case .value(let v): return max(0, v)
+        case .auto, .minContent: return nil
+        }
+    }
+
+    /// Clamps `value` between optional `min` and `max` bounds per CSS 2.1 §10.4.
+    ///
+    /// The CSS rule is: apply `max-*` first, then `min-*`. When `min > max`,
+    /// `min` always wins (the spec says min beats max on conflict).
+    static func clamp(_ value: CGFloat, min minValue: CGFloat?, max maxValue: CGFloat?) -> CGFloat {
+        var v = value
+        if let m = maxValue { v = Swift.min(v, m) }
+        if let m = minValue { v = Swift.max(v, m) }
+        return v
     }
 
     /// Applies the CSS §9.4 single-line cross-size rule.
@@ -970,6 +1166,102 @@ public enum FlexEngine {
             let weight = item.shrink * item.basisMain / totalWeight
             return max(0, item.basisMain - weight * overflow)
         }
+    }
+
+    /// Multi-pass freeze-and-redistribute grow per CSS Flexible Box §9.7
+    /// "Resolving Flexible Lengths". The single-pass `resolveGrow` strands
+    /// any leftover space when an item hits its `max-width` cap; this
+    /// version detects the violation, freezes the capped item at its limit,
+    /// and redistributes the residual space among the remaining growers.
+    ///
+    /// Termination: each pass freezes ≥1 item or exits, so the loop runs
+    /// at most `items.count` times.
+    static func resolveGrowWithClamp(items: [RawFlexItem], freeSpace: CGFloat) -> [CGFloat] {
+        // Self-contained: clamp basisMain ourselves so this works whether or
+        // not the call site already pre-clamped it. The current layout pass
+        // does pre-clamp (FlexEngine line ~696), making the basis-violates-
+        // constraint pre-freeze branch unreachable in practice — kept as a
+        // guard against future call sites that hand us unclamped input.
+        var sizes = items.map { clamp($0.basisMain, min: $0.minMain, max: $0.maxMain) }
+        var frozen = [Bool](repeating: false, count: items.count)
+        for i in items.indices {
+            if items[i].grow == 0 {
+                frozen[i] = true
+            } else if sizes[i] != items[i].basisMain {
+                frozen[i] = true
+            }
+        }
+
+        for _ in 0..<items.count {
+            // Net consumption by frozen items (positive when they took space,
+            // negative when a min-clamp made them larger than basis).
+            let consumedByFrozen = items.indices.reduce(CGFloat(0)) { acc, i in
+                frozen[i] ? acc + (sizes[i] - items[i].basisMain) : acc
+            }
+            let remaining = freeSpace - consumedByFrozen
+            let unfrozen = items.indices.filter { !frozen[$0] }
+            let totalGrow = unfrozen.reduce(CGFloat(0)) { $0 + items[$1].grow }
+            guard !unfrozen.isEmpty, totalGrow > 0, remaining > 0.001 else { break }
+
+            var anyFroze = false
+            for i in unfrozen {
+                let proposed = items[i].basisMain + (items[i].grow / totalGrow) * remaining
+                let clamped  = clamp(proposed, min: items[i].minMain, max: items[i].maxMain)
+                sizes[i] = clamped
+                if abs(clamped - proposed) > 0.001 {
+                    frozen[i] = true
+                    anyFroze = true
+                }
+            }
+            if !anyFroze { break }
+        }
+        return sizes
+    }
+
+    /// Multi-pass freeze-and-redistribute shrink per CSS §9.7. Mirrors
+    /// `resolveGrowWithClamp` but uses shrink × basis weighting and treats
+    /// remaining as the unabsorbed overflow.
+    static func resolveShrinkWithClamp(items: [RawFlexItem], overflow: CGFloat) -> [CGFloat] {
+        // See `resolveGrowWithClamp` for the rationale on the basis-violates-
+        // constraint pre-freeze arm — it's a guard for unclamped callers and
+        // is unreachable from the current layout pass.
+        var sizes = items.map { clamp($0.basisMain, min: $0.minMain, max: $0.maxMain) }
+        var frozen = [Bool](repeating: false, count: items.count)
+        for i in items.indices {
+            if items[i].shrink == 0 {
+                frozen[i] = true
+            } else if sizes[i] != items[i].basisMain {
+                frozen[i] = true
+            }
+        }
+
+        for _ in 0..<items.count {
+            // Overflow already absorbed by frozen items (positive when they
+            // shrank below basis; negative when min-clamp held them above).
+            let absorbedByFrozen = items.indices.reduce(CGFloat(0)) { acc, i in
+                frozen[i] ? acc + (items[i].basisMain - sizes[i]) : acc
+            }
+            let remaining = overflow - absorbedByFrozen
+            let unfrozen = items.indices.filter { !frozen[$0] }
+            let totalWeight = unfrozen.reduce(CGFloat(0)) {
+                $0 + items[$1].shrink * items[$1].basisMain
+            }
+            guard !unfrozen.isEmpty, totalWeight > 0, remaining > 0.001 else { break }
+
+            var anyFroze = false
+            for i in unfrozen {
+                let weight   = items[i].shrink * items[i].basisMain / totalWeight
+                let proposed = max(0, items[i].basisMain - weight * remaining)
+                let clamped  = clamp(proposed, min: items[i].minMain, max: items[i].maxMain)
+                sizes[i] = clamped
+                if abs(clamped - proposed) > 0.001 {
+                    frozen[i] = true
+                    anyFroze = true
+                }
+            }
+            if !anyFroze { break }
+        }
+        return sizes
     }
 
     /// Computes the cross-axis offset of a single item within its flex line.

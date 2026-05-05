@@ -236,9 +236,12 @@ final class SpecGapTests: XCTestCase {
                                            bottom: .px(8), left: .px(4))))
     }
 
-    func testMarginMapsToVisual() {
+    func testMarginMapsToItem() {
+        // Phase 3: margin is a flex-item property, stored on ItemStyle so
+        // FlexLayout's engine consumes it as a true layout margin (not a
+        // SwiftUI .padding() wrapper on the rendered view).
         let c = resolve(style: Style(margin: .uniform(.px(10))))
-        guard case .uniform(let l) = c.visual.margin else {
+        guard case .uniform(let l) = c.item.margin else {
             XCTFail("expected .uniform"); return
         }
         XCTAssertEqual(l, .px(10))
