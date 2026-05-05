@@ -1177,10 +1177,13 @@ public enum FlexEngine {
     /// Termination: each pass freezes ≥1 item or exits, so the loop runs
     /// at most `items.count` times.
     static func resolveGrowWithClamp(items: [RawFlexItem], freeSpace: CGFloat) -> [CGFloat] {
+        // Self-contained: clamp basisMain ourselves so this works whether or
+        // not the call site already pre-clamped it. The current layout pass
+        // does pre-clamp (FlexEngine line ~696), making the basis-violates-
+        // constraint pre-freeze branch unreachable in practice — kept as a
+        // guard against future call sites that hand us unclamped input.
         var sizes = items.map { clamp($0.basisMain, min: $0.minMain, max: $0.maxMain) }
         var frozen = [Bool](repeating: false, count: items.count)
-        // Pre-freeze items with grow == 0 (they don't participate in
-        // distribution) and items whose basis already hits a constraint.
         for i in items.indices {
             if items[i].grow == 0 {
                 frozen[i] = true
@@ -1219,6 +1222,9 @@ public enum FlexEngine {
     /// `resolveGrowWithClamp` but uses shrink × basis weighting and treats
     /// remaining as the unabsorbed overflow.
     static func resolveShrinkWithClamp(items: [RawFlexItem], overflow: CGFloat) -> [CGFloat] {
+        // See `resolveGrowWithClamp` for the rationale on the basis-violates-
+        // constraint pre-freeze arm — it's a guard for unclamped callers and
+        // is unreachable from the current layout pass.
         var sizes = items.map { clamp($0.basisMain, min: $0.minMain, max: $0.maxMain) }
         var frozen = [Bool](repeating: false, count: items.count)
         for i in items.indices {
