@@ -191,6 +191,7 @@ public struct Style: Equatable {
     public var justifyContent: Style.JustifyContent?
     public var alignItems: Style.AlignItems?
     public var alignSelf: Style.AlignSelf?
+    public var alignContent: Style.AlignContent?
     public var flexWrap: Style.FlexWrap?
     public var gap: Gap?
     public var rowGap: Length?
@@ -246,6 +247,7 @@ public struct Style: Equatable {
         justifyContent: Style.JustifyContent? = nil,
         alignItems: Style.AlignItems? = nil,
         alignSelf: Style.AlignSelf? = nil,
+        alignContent: Style.AlignContent? = nil,
         flexWrap: Style.FlexWrap? = nil,
         gap: Gap? = nil,
         rowGap: Length? = nil,
@@ -294,6 +296,7 @@ public struct Style: Equatable {
         self.justifyContent = justifyContent
         self.alignItems = alignItems
         self.alignSelf = alignSelf
+        self.alignContent = alignContent
         self.flexWrap = flexWrap
         self.gap = gap
         self.rowGap = rowGap
@@ -333,6 +336,8 @@ public struct Style: Equatable {
 public enum Position: String, Equatable, Codable {
     case absolute
     case relative
+    case fixed
+    case sticky
 }
 
 public enum Display: String, Equatable, Codable {
@@ -340,6 +345,8 @@ public enum Display: String, Equatable, Codable {
     case inlineBlock = "inline-block"
     case flex
     case none
+    case inline
+    case inlineFlex = "inline-flex"
 }
 
 public enum Overflow: String, Equatable, Codable {
@@ -359,6 +366,8 @@ extension Style {
     public enum FlexDirection: String, Equatable, Codable {
         case row
         case column
+        case rowReverse    = "row-reverse"
+        case columnReverse = "column-reverse"
     }
 
     public enum JustifyContent: String, Equatable, Codable {
@@ -375,6 +384,7 @@ extension Style {
         case flexEnd   = "flex-end"
         case center
         case stretch
+        case baseline
     }
 
     public enum AlignSelf: String, Equatable, Codable {
@@ -383,11 +393,23 @@ extension Style {
         case flexEnd   = "flex-end"
         case center
         case stretch
+        case baseline
     }
 
     public enum FlexWrap: String, Equatable, Codable {
         case nowrap
         case wrap
+        case wrapReverse = "wrap-reverse"
+    }
+
+    public enum AlignContent: String, Equatable, Codable {
+        case flexStart    = "flex-start"
+        case flexEnd      = "flex-end"
+        case center
+        case spaceBetween = "space-between"
+        case spaceAround  = "space-around"
+        case spaceEvenly  = "space-evenly"
+        case stretch
     }
 
     public enum BoxSizing: String, Equatable, Codable {
@@ -397,6 +419,9 @@ extension Style {
     public enum BorderStyleProp: String, Equatable, Codable {
         case solid
         case none
+        case dashed
+        case dotted
+        case double
     }
 
     /// `fontWeight` is either a named keyword ("normal", "bold") or a

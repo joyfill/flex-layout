@@ -362,4 +362,99 @@ final class JoyDOMTests: XCTestCase {
     func testInvalidEnumValueThrows() {
         XCTAssertThrowsError(try decode(Position.self, from: #""sideways""#))
     }
+
+    // MARK: - Phase 1 — spec-enum extensions
+
+    // 1.1 — flex-direction reverses
+    func testFlexDirectionRowReverseSerializesWithDash() throws {
+        let json = try encodeJSON(Style.FlexDirection.rowReverse) as? String
+        XCTAssertEqual(json, "row-reverse")
+        try roundTrip(Style.FlexDirection.rowReverse)
+    }
+    func testFlexDirectionColumnReverseSerializesWithDash() throws {
+        let json = try encodeJSON(Style.FlexDirection.columnReverse) as? String
+        XCTAssertEqual(json, "column-reverse")
+        try roundTrip(Style.FlexDirection.columnReverse)
+    }
+
+    // 1.2 — flex-wrap: wrap-reverse
+    func testFlexWrapWrapReverseSerializesWithDash() throws {
+        let json = try encodeJSON(Style.FlexWrap.wrapReverse) as? String
+        XCTAssertEqual(json, "wrap-reverse")
+        try roundTrip(Style.FlexWrap.wrapReverse)
+    }
+
+    // 1.3 — align-items / align-self: baseline
+    func testAlignItemsBaselineRoundTrip() throws {
+        let json = try encodeJSON(Style.AlignItems.baseline) as? String
+        XCTAssertEqual(json, "baseline")
+        try roundTrip(Style.AlignItems.baseline)
+    }
+    func testAlignSelfBaselineRoundTrip() throws {
+        let json = try encodeJSON(Style.AlignSelf.baseline) as? String
+        XCTAssertEqual(json, "baseline")
+        try roundTrip(Style.AlignSelf.baseline)
+    }
+
+    // 1.4 — align-content
+    func testAlignContentEachValueRoundTrip() throws {
+        let cases: [(Style.AlignContent, String)] = [
+            (.flexStart,    "flex-start"),
+            (.flexEnd,      "flex-end"),
+            (.center,       "center"),
+            (.spaceBetween, "space-between"),
+            (.spaceAround,  "space-around"),
+            (.spaceEvenly,  "space-evenly"),
+            (.stretch,      "stretch"),
+        ]
+        for (value, wire) in cases {
+            let json = try encodeJSON(value) as? String
+            XCTAssertEqual(json, wire)
+            try roundTrip(value)
+        }
+    }
+    func testAlignContentRoundTripsThroughStyle() throws {
+        try roundTrip(Style(alignContent: .spaceBetween))
+    }
+
+    // 1.5 — border-style: dashed / dotted / double
+    func testBorderStyleDashedRoundTrip() throws {
+        let json = try encodeJSON(Style.BorderStyleProp.dashed) as? String
+        XCTAssertEqual(json, "dashed")
+        try roundTrip(Style.BorderStyleProp.dashed)
+    }
+    func testBorderStyleDottedRoundTrip() throws {
+        let json = try encodeJSON(Style.BorderStyleProp.dotted) as? String
+        XCTAssertEqual(json, "dotted")
+        try roundTrip(Style.BorderStyleProp.dotted)
+    }
+    func testBorderStyleDoubleRoundTrip() throws {
+        let json = try encodeJSON(Style.BorderStyleProp.double) as? String
+        XCTAssertEqual(json, "double")
+        try roundTrip(Style.BorderStyleProp.double)
+    }
+
+    // 1.6 — position: fixed / sticky
+    func testPositionFixedRoundTrip() throws {
+        let json = try encodeJSON(Position.fixed) as? String
+        XCTAssertEqual(json, "fixed")
+        try roundTrip(Position.fixed)
+    }
+    func testPositionStickyRoundTrip() throws {
+        let json = try encodeJSON(Position.sticky) as? String
+        XCTAssertEqual(json, "sticky")
+        try roundTrip(Position.sticky)
+    }
+
+    // 1.7 — display: inline / inline-flex
+    func testDisplayInlineRoundTrip() throws {
+        let json = try encodeJSON(Display.inline) as? String
+        XCTAssertEqual(json, "inline")
+        try roundTrip(Display.inline)
+    }
+    func testDisplayInlineFlexSerializesWithDash() throws {
+        let json = try encodeJSON(Display.inlineFlex) as? String
+        XCTAssertEqual(json, "inline-flex")
+        try roundTrip(Display.inlineFlex)
+    }
 }

@@ -180,7 +180,10 @@ enum JoyDOMSwiftEmitter {
         if let v = s.flexBasis      { lines.append("\(next)flexBasis: \(emitFlexBasis(v))") }
         if let v = s.justifyContent { lines.append("\(next)justifyContent: \(emitJustifyContent(v))") }
         if let v = s.alignItems     { lines.append("\(next)alignItems: \(emitAlignItems(v))") }
+        if let v = s.alignSelf      { lines.append("\(next)alignSelf: \(emitAlignSelf(v))") }
+        if let v = s.alignContent   { lines.append("\(next)alignContent: \(emitAlignContent(v))") }
         if let v = s.flexWrap       { lines.append("\(next)flexWrap: \(emitFlexWrap(v))") }
+        if let v = s.borderStyle    { lines.append("\(next)borderStyle: \(emitBorderStyleProp(v))") }
         if let v = s.gap            { lines.append("\(next)gap: \(emitGap(v))") }
         if let v = s.order          { lines.append("\(next)order: \(v)") }
         if let v = s.width          { lines.append("\(next)width: \(emitLength(v))") }
@@ -195,7 +198,6 @@ enum JoyDOMSwiftEmitter {
 
     // MARK: - Style enums
 
-    private static func emitPosition(_ v: Position) -> String { ".\(v.rawValue)" }
     private static func emitOverflow(_ v: Overflow) -> String { ".\(v.rawValue)" }
 
     private static func emitDisplay(_ v: Display) -> String {
@@ -204,13 +206,17 @@ enum JoyDOMSwiftEmitter {
         case .inlineBlock: return ".inlineBlock"
         case .flex:        return ".flex"
         case .none:        return ".none"
+        case .inline:      return ".inline"
+        case .inlineFlex:  return ".inlineFlex"
         }
     }
 
     private static func emitFlexDirection(_ v: Style.FlexDirection) -> String {
         switch v {
-        case .row:    return ".row"
-        case .column: return ".column"
+        case .row:           return ".row"
+        case .column:        return ".column"
+        case .rowReverse:    return ".rowReverse"
+        case .columnReverse: return ".columnReverse"
         }
     }
 
@@ -231,13 +237,57 @@ enum JoyDOMSwiftEmitter {
         case .flexEnd:   return ".flexEnd"
         case .center:    return ".center"
         case .stretch:   return ".stretch"
+        case .baseline:  return ".baseline"
+        }
+    }
+
+    private static func emitAlignSelf(_ v: Style.AlignSelf) -> String {
+        switch v {
+        case .auto:      return ".auto"
+        case .flexStart: return ".flexStart"
+        case .flexEnd:   return ".flexEnd"
+        case .center:    return ".center"
+        case .stretch:   return ".stretch"
+        case .baseline:  return ".baseline"
+        }
+    }
+
+    private static func emitAlignContent(_ v: Style.AlignContent) -> String {
+        switch v {
+        case .flexStart:    return ".flexStart"
+        case .flexEnd:      return ".flexEnd"
+        case .center:       return ".center"
+        case .spaceBetween: return ".spaceBetween"
+        case .spaceAround:  return ".spaceAround"
+        case .spaceEvenly:  return ".spaceEvenly"
+        case .stretch:      return ".stretch"
         }
     }
 
     private static func emitFlexWrap(_ v: Style.FlexWrap) -> String {
         switch v {
-        case .nowrap: return ".nowrap"
-        case .wrap:   return ".wrap"
+        case .nowrap:      return ".nowrap"
+        case .wrap:        return ".wrap"
+        case .wrapReverse: return ".wrapReverse"
+        }
+    }
+
+    private static func emitPosition(_ v: Position) -> String {
+        switch v {
+        case .absolute: return ".absolute"
+        case .relative: return ".relative"
+        case .fixed:    return ".fixed"
+        case .sticky:   return ".sticky"
+        }
+    }
+
+    private static func emitBorderStyleProp(_ v: Style.BorderStyleProp) -> String {
+        switch v {
+        case .solid:  return ".solid"
+        case .none:   return ".none"
+        case .dashed: return ".dashed"
+        case .dotted: return ".dotted"
+        case .double: return ".double"
         }
     }
 
@@ -288,11 +338,9 @@ enum JoyDOMSwiftEmitter {
     }
 
     private static func isEmpty(_ s: Style) -> Bool {
-        s.position == nil && s.display == nil && s.zIndex == nil && s.overflow == nil &&
-        s.top == nil && s.left == nil && s.bottom == nil && s.right == nil &&
-        s.flexDirection == nil && s.flexGrow == nil && s.flexShrink == nil && s.flexBasis == nil &&
-        s.justifyContent == nil && s.alignItems == nil && s.flexWrap == nil && s.gap == nil &&
-        s.order == nil && s.width == nil && s.height == nil && s.padding == nil
+        // Use Style's synthesized Equatable so visual / typography / sizing
+        // fields can't be silently dropped when new ones are added.
+        s == Style()
     }
 
     /// Escape a string for safe embedding in Swift source. Handles
