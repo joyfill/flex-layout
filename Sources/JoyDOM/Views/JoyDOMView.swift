@@ -608,19 +608,20 @@ public struct JoyDOMView: View {
     /// Translate JoyDOM's `Padding` shape (uniform / per-side) into the
     /// SwiftUI `EdgeInsets` value FlexLayout's `ItemStyle.margin` expects.
     /// Returns `EdgeInsets()` (zero on all sides) when no margin is set.
+    ///
+    /// Only `px` units feed the layout engine. Percentage / em / other
+    /// units are not yet supported on margin and resolve to zero — the
+    /// engine has no notion of "margin: 5%" today, so silently dropping
+    /// such values is preferable to mis-scaling them as raw points.
     private static func edgeInsets(from padding: Padding?) -> EdgeInsets {
         guard let padding else { return EdgeInsets() }
+        func px(_ l: Length) -> CGFloat { l.unit == "px" ? CGFloat(l.value) : 0 }
         switch padding {
         case .uniform(let l):
-            let n = CGFloat(l.value)
+            let n = px(l)
             return EdgeInsets(top: n, leading: n, bottom: n, trailing: n)
         case .sides(let t, let r, let b, let l):
-            return EdgeInsets(
-                top:      CGFloat(t.value),
-                leading:  CGFloat(l.value),
-                bottom:   CGFloat(b.value),
-                trailing: CGFloat(r.value)
-            )
+            return EdgeInsets(top: px(t), leading: px(l), bottom: px(b), trailing: px(r))
         }
     }
 }

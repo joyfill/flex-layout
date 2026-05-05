@@ -59,9 +59,11 @@ final class FlexMarginTests: XCTestCase {
             in: CGSize(width: 200, height: 100),
             config: .init(direction: .row, alignItems: .flexStart)
         )
-        XCTAssertEqual(frames[0].minX,  12, accuracy: ε)
-        XCTAssertEqual(frames[0].minY,   4, accuracy: ε)
-        XCTAssertEqual(frames[0].width, 50, accuracy: ε)
+        XCTAssertEqual(frames[0].minX,   12, accuracy: ε)
+        XCTAssertEqual(frames[0].minY,    4, accuracy: ε)
+        XCTAssertEqual(frames[0].width,  50, accuracy: ε)
+        XCTAssertEqual(frames[0].height, 20, accuracy: ε,
+                       "asymmetric margin must not collapse or inflate cross-axis size")
     }
 
     // MARK: - margin between two items

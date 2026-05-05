@@ -193,4 +193,57 @@ final class MinMaxConstraintTests: XCTestCase {
         XCTAssertEqual(frames[0].width, 100, accuracy: ε)
         XCTAssertEqual(frames[1].width,  50, accuracy: ε)
     }
+
+    // MARK: - §9.7 freeze-and-redistribute
+
+    func testMaxWidthOnGrowerRedistributesLeftoverToSiblings() {
+        // 3 grow:1 items in a 300-wide row, basis 0. A is capped at 50;
+        // CSS §9.7 prescribes freezing A at its max and redistributing the
+        // leftover 50pt across B and C (browsers give 50/125/125, not
+        // 50/100/100 as the prior single-pass implementation produced).
+        let make: (CGFloat?) -> FlexItemInput = { max in
+            FlexItemInput(
+                measure:        { _ in CGSize(width: 0, height: 20) },
+                grow:           1,
+                shrink:         0,
+                basis:          .points(0),
+                explicitHeight: .points(20),
+                maxWidth:       max.map { .points($0) }
+            )
+        }
+        let frames = solve(
+            [make(50), make(nil), make(nil)],
+            in: CGSize(width: 300, height: 50)
+        )
+        XCTAssertEqual(frames[0].width,  50, accuracy: ε)
+        XCTAssertEqual(frames[1].width, 125, accuracy: ε,
+                       "B should absorb half of A's stranded 50pt leftover")
+        XCTAssertEqual(frames[2].width, 125, accuracy: ε,
+                       "C should absorb the other half")
+    }
+
+    func testMinWidthOnShrinkingItemRedistributesShortfall() {
+        // 3 items basis=100, grow=0, shrink=1, container=200, overflow=100.
+        // A has minWidth=80 — it can only absorb 20 of the overflow before
+        // hitting its floor; the remaining 80 must be split between B and C.
+        // Expected: A=80, B=60, C=60 (sums to 200).
+        let make: (CGFloat?) -> FlexItemInput = { min in
+            FlexItemInput(
+                measure:        { _ in CGSize(width: 100, height: 20) },
+                grow:           0,
+                shrink:         1,
+                basis:          .points(100),
+                explicitHeight: .points(20),
+                minWidth:       min.map { .points($0) }
+            )
+        }
+        let frames = solve(
+            [make(80), make(nil), make(nil)],
+            in: CGSize(width: 200, height: 50)
+        )
+        XCTAssertEqual(frames[0].width, 80, accuracy: ε)
+        XCTAssertEqual(frames[1].width, 60, accuracy: ε,
+                       "B must absorb half of A's unabsorbed 80pt overflow")
+        XCTAssertEqual(frames[2].width, 60, accuracy: ε)
+    }
 }
