@@ -80,7 +80,7 @@ final class ComponentRegistryTests: XCTestCase {
     // MARK: - ComponentProps
 
     func testPropsStringSubscript() {
-        let props = ComponentProps(["label": "Submit", "placeholder": "Name"])
+        let props = ComponentProps(["label": .string("Submit"), "placeholder": .string("Name")])
         XCTAssertEqual(props.string("label"), "Submit")
         XCTAssertEqual(props.string("placeholder"), "Name")
     }
@@ -91,7 +91,7 @@ final class ComponentRegistryTests: XCTestCase {
     }
 
     func testPropsID() {
-        let props = ComponentProps(["label": "Go"], id: "submit")
+        let props = ComponentProps(["label": .string("Go")], id: "submit")
         XCTAssertEqual(props.id, "submit")
     }
 

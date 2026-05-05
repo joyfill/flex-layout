@@ -77,9 +77,6 @@ public struct Node: Equatable {
 }
 
 /// Element-level props. Mirrors `NodeProps` in `DOM/spec.ts`.
-///
-/// Unit 1 covers the named fields only; the TS `[key: string]: unknown`
-/// escape hatch lands in Unit 10.
 public struct NodeProps: Equatable {
     /// Element id — used as both the graph identity and the CSS `#id`
     /// selector target. Nodes without an `id` cannot be addressed in
@@ -90,15 +87,21 @@ public struct NodeProps: Equatable {
     /// Inline style applied directly to this node. Wins over selector-based
     /// rules per the cascade order documented in `DOM/guides/Styles.md`.
     public var style: Style?
+    /// Open bag for component-specific props (`[key: string]: unknown` from
+    /// the TS spec). Preserves structured JSON values — arrays, objects,
+    /// numbers, booleans, and null — without coercing them to strings.
+    public var extras: [String: JSONValue]
 
     public init(
         id: String? = nil,
         className: [String]? = nil,
-        style: Style? = nil
+        style: Style? = nil,
+        extras: [String: JSONValue] = [:]
     ) {
         self.id = id
         self.className = className
         self.style = style
+        self.extras = extras
     }
 }
 
@@ -144,14 +147,34 @@ public struct Length: Equatable {
     }
 }
 
+/// `flexBasis` is either the keyword `"auto"` or a concrete `Length`.
+///
+/// Swift's type system can't encode this union as a `RawRepresentable` enum
+/// because `Length` isn't a raw value, so we use a custom enum with a manual
+/// `Codable` implementation that tries the string path first.
+public enum FlexBasisValue: Equatable {
+    case auto
+    case length(Length)
+
+    /// Flatten to a string suitable for component-factory `props` dicts.
+    public var stringValue: String {
+        switch self {
+        case .auto: return "auto"
+        case .length(let l): return l.unit == "px" ? "\(l.value)px" : "\(l.value)\(l.unit)"
+        }
+    }
+}
+
 /// Subset of CSS that joy-dom supports. Mirrors `Style` in `DOM/spec.ts`.
 ///
 /// Every field is optional — `Style()` represents "no overrides". The
 /// cascade in Unit 8 deep-merges Style values, so partial overrides keep
 /// sibling fields intact.
 public struct Style: Equatable {
+    // MARK: Layout & positioning
     public var position: Position?
     public var display: Display?
+    public var boxSizing: Style.BoxSizing?
     public var zIndex: Int?
     public var overflow: Overflow?
 
@@ -160,23 +183,56 @@ public struct Style: Equatable {
     public var bottom: Length?
     public var right: Length?
 
+    // MARK: Flexbox
     public var flexDirection: Style.FlexDirection?
     public var flexGrow: Double?
     public var flexShrink: Double?
-    public var flexBasis: Length?
+    public var flexBasis: FlexBasisValue?
     public var justifyContent: Style.JustifyContent?
     public var alignItems: Style.AlignItems?
+    public var alignSelf: Style.AlignSelf?
     public var flexWrap: Style.FlexWrap?
     public var gap: Gap?
+    public var rowGap: Length?
+    public var columnGap: Length?
     public var order: Int?
 
+    // MARK: Sizing
     public var width: Length?
     public var height: Length?
+    public var minWidth: Length?
+    public var maxWidth: Length?
+    public var minHeight: Length?
+    public var maxHeight: Length?
+
+    // MARK: Box model & visuals
     public var padding: Padding?
+    public var margin: Padding?
+    public var backgroundColor: String?
+    public var opacity: Double?
+    public var borderWidth: Length?
+    public var borderColor: String?
+    public var borderStyle: Style.BorderStyleProp?
+    public var borderRadius: BorderRadius?
+
+    // MARK: Typography
+    public var fontFamily: String?
+    public var fontSize: Length?
+    public var fontWeight: Style.FontWeight?
+    public var fontStyle: Style.FontStyleProp?
+    public var color: String?
+    public var textDecoration: Style.TextDecoration?
+    public var textAlign: Style.TextAlign?
+    public var textTransform: Style.TextTransform?
+    public var lineHeight: Double?
+    public var letterSpacing: Length?
+    public var textOverflow: Style.TextOverflow?
+    public var whiteSpace: Style.WhiteSpace?
 
     public init(
         position: Position? = nil,
         display: Display? = nil,
+        boxSizing: Style.BoxSizing? = nil,
         zIndex: Int? = nil,
         overflow: Overflow? = nil,
         top: Length? = nil,
@@ -186,18 +242,45 @@ public struct Style: Equatable {
         flexDirection: Style.FlexDirection? = nil,
         flexGrow: Double? = nil,
         flexShrink: Double? = nil,
-        flexBasis: Length? = nil,
+        flexBasis: FlexBasisValue? = nil,
         justifyContent: Style.JustifyContent? = nil,
         alignItems: Style.AlignItems? = nil,
+        alignSelf: Style.AlignSelf? = nil,
         flexWrap: Style.FlexWrap? = nil,
         gap: Gap? = nil,
+        rowGap: Length? = nil,
+        columnGap: Length? = nil,
         order: Int? = nil,
         width: Length? = nil,
         height: Length? = nil,
-        padding: Padding? = nil
+        minWidth: Length? = nil,
+        maxWidth: Length? = nil,
+        minHeight: Length? = nil,
+        maxHeight: Length? = nil,
+        padding: Padding? = nil,
+        margin: Padding? = nil,
+        backgroundColor: String? = nil,
+        opacity: Double? = nil,
+        borderWidth: Length? = nil,
+        borderColor: String? = nil,
+        borderStyle: Style.BorderStyleProp? = nil,
+        borderRadius: BorderRadius? = nil,
+        fontFamily: String? = nil,
+        fontSize: Length? = nil,
+        fontWeight: Style.FontWeight? = nil,
+        fontStyle: Style.FontStyleProp? = nil,
+        color: String? = nil,
+        textDecoration: Style.TextDecoration? = nil,
+        textAlign: Style.TextAlign? = nil,
+        textTransform: Style.TextTransform? = nil,
+        lineHeight: Double? = nil,
+        letterSpacing: Length? = nil,
+        textOverflow: Style.TextOverflow? = nil,
+        whiteSpace: Style.WhiteSpace? = nil
     ) {
         self.position = position
         self.display = display
+        self.boxSizing = boxSizing
         self.zIndex = zIndex
         self.overflow = overflow
         self.top = top
@@ -210,29 +293,56 @@ public struct Style: Equatable {
         self.flexBasis = flexBasis
         self.justifyContent = justifyContent
         self.alignItems = alignItems
+        self.alignSelf = alignSelf
         self.flexWrap = flexWrap
         self.gap = gap
+        self.rowGap = rowGap
+        self.columnGap = columnGap
         self.order = order
         self.width = width
         self.height = height
+        self.minWidth = minWidth
+        self.maxWidth = maxWidth
+        self.minHeight = minHeight
+        self.maxHeight = maxHeight
         self.padding = padding
+        self.margin = margin
+        self.backgroundColor = backgroundColor
+        self.opacity = opacity
+        self.borderWidth = borderWidth
+        self.borderColor = borderColor
+        self.borderStyle = borderStyle
+        self.borderRadius = borderRadius
+        self.fontFamily = fontFamily
+        self.fontSize = fontSize
+        self.fontWeight = fontWeight
+        self.fontStyle = fontStyle
+        self.color = color
+        self.textDecoration = textDecoration
+        self.textAlign = textAlign
+        self.textTransform = textTransform
+        self.lineHeight = lineHeight
+        self.letterSpacing = letterSpacing
+        self.textOverflow = textOverflow
+        self.whiteSpace = whiteSpace
     }
 }
 
 // MARK: - Style enums (string-keyed, raw values match the TS literal types)
 
-public enum Position: String, Equatable {
+public enum Position: String, Equatable, Codable {
     case absolute
     case relative
 }
 
-public enum Display: String, Equatable {
+public enum Display: String, Equatable, Codable {
     case block
     case inlineBlock = "inline-block"
     case flex
+    case none
 }
 
-public enum Overflow: String, Equatable {
+public enum Overflow: String, Equatable, Codable {
     case visible
     case hidden
     case clip
@@ -240,34 +350,96 @@ public enum Overflow: String, Equatable {
     case auto
 }
 
-// `FlexDirection` / `JustifyContent` / `AlignItems` / `FlexWrap` are nested
-// inside `Style` because the surrounding `FlexLayout` package exports
-// types with the same top-level names. Nesting keeps the API honest
+// `FlexDirection` / `JustifyContent` / `AlignItems` / `FlexWrap` / `AlignSelf`
+// are nested inside `Style` because the surrounding `FlexLayout` package
+// exports types with the same top-level names. Nesting keeps the API honest
 // (`Style.FlexDirection.row`) while avoiding ambiguity at every call site
 // in the resolver and serializer.
 extension Style {
-    public enum FlexDirection: String, Equatable {
+    public enum FlexDirection: String, Equatable, Codable {
         case row
         case column
     }
 
-    public enum JustifyContent: String, Equatable {
+    public enum JustifyContent: String, Equatable, Codable {
         case flexStart    = "flex-start"
         case flexEnd      = "flex-end"
         case center
         case spaceBetween = "space-between"
         case spaceAround  = "space-around"
+        case spaceEvenly  = "space-evenly"
     }
 
-    public enum AlignItems: String, Equatable {
+    public enum AlignItems: String, Equatable, Codable {
         case flexStart = "flex-start"
         case flexEnd   = "flex-end"
         case center
+        case stretch
     }
 
-    public enum FlexWrap: String, Equatable {
+    public enum AlignSelf: String, Equatable, Codable {
+        case auto
+        case flexStart = "flex-start"
+        case flexEnd   = "flex-end"
+        case center
+        case stretch
+    }
+
+    public enum FlexWrap: String, Equatable, Codable {
         case nowrap
         case wrap
+    }
+
+    public enum BoxSizing: String, Equatable, Codable {
+        case borderBox = "border-box"
+    }
+
+    public enum BorderStyleProp: String, Equatable, Codable {
+        case solid
+        case none
+    }
+
+    /// `fontWeight` is either a named keyword ("normal", "bold") or a
+    /// numeric value (100–900). Swift's enum doesn't natively mix String
+    /// raw values with Int raw values, so we model it as a custom enum
+    /// with a manual Codable implementation.
+    public enum FontWeight: Equatable {
+        case normal
+        case bold
+        case numeric(Int)
+    }
+
+    public enum FontStyleProp: String, Equatable, Codable {
+        case normal
+        case italic
+    }
+
+    public enum TextDecoration: String, Equatable, Codable {
+        case none
+        case underline
+        case lineThrough = "line-through"
+    }
+
+    public enum TextAlign: String, Equatable, Codable {
+        case left
+        case center
+        case right
+    }
+
+    public enum TextTransform: String, Equatable, Codable {
+        case none
+        case uppercase
+        case lowercase
+    }
+
+    public enum TextOverflow: String, Equatable, Codable {
+        case clip
+        case ellipsis
+    }
+
+    public enum WhiteSpace: String, Equatable, Codable {
+        case normal
+        case nowrap
     }
 }
 
@@ -278,10 +450,17 @@ public enum Gap: Equatable {
     case axes(column: Length, row: Length)
 }
 
-/// `padding` is either a uniform length or a per-side `{ top, right, bottom, left }`.
+/// `padding` / `margin` — either a uniform length or per-side `{ top, right, bottom, left }`.
+/// `margin` reuses this shape (same JSON structure, same cascade semantics).
 public enum Padding: Equatable {
     case uniform(Length)
     case sides(top: Length, right: Length, bottom: Length, left: Length)
+}
+
+/// `borderRadius` is either a uniform length or a per-corner object.
+public enum BorderRadius: Equatable {
+    case uniform(Length)
+    case corners(topLeft: Length?, topRight: Length?, bottomRight: Length?, bottomLeft: Length?)
 }
 
 // MARK: - Breakpoints
@@ -372,18 +551,10 @@ public enum Orientation: String, Equatable {
 
 extension Spec: Codable {}
 extension Node: Codable {}
-extension NodeProps: Codable {}
 extension Style: Codable {}
 extension Length: Codable {}
 extension Breakpoint: Codable {}
 
-extension Position: Codable {}
-extension Display: Codable {}
-extension Overflow: Codable {}
-extension Style.FlexDirection: Codable {}
-extension Style.JustifyContent: Codable {}
-extension Style.AlignItems: Codable {}
-extension Style.FlexWrap: Codable {}
 extension LogicalOp: Codable {}
 extension MediaTypeKind: Codable {}
 extension WidthOperator: Codable {}
@@ -590,4 +761,195 @@ extension MediaQuery: Codable {
             try c.encode(o,             forKey: .value)
         }
     }
+}
+
+/// `BorderRadius` is `Length<'px'>` (uniform) or
+/// `{ topLeft?, topRight?, bottomRight?, bottomLeft? }` (per-corner).
+extension BorderRadius: Codable {
+    private struct Corners: Codable {
+        let topLeft:     Length?
+        let topRight:    Length?
+        let bottomRight: Length?
+        let bottomLeft:  Length?
+    }
+    public init(from decoder: Decoder) throws {
+        // Try Length FIRST — `{"value":N,"unit":"px"}` is uniform.
+        // Corners must come second because all its fields are optional,
+        // so it would silently decode a Length object with all-nil corners.
+        if let l = try? Length(from: decoder) {
+            self = .uniform(l)
+            return
+        }
+        let corners = try Corners(from: decoder)
+        self = .corners(
+            topLeft:     corners.topLeft,
+            topRight:    corners.topRight,
+            bottomRight: corners.bottomRight,
+            bottomLeft:  corners.bottomLeft
+        )
+    }
+    public func encode(to encoder: Encoder) throws {
+        switch self {
+        case .uniform(let l):
+            try l.encode(to: encoder)
+        case .corners(let tl, let tr, let br, let bl):
+            try Corners(topLeft: tl, topRight: tr,
+                        bottomRight: br, bottomLeft: bl).encode(to: encoder)
+        }
+    }
+}
+
+/// `FontWeight` is either a named string ("normal", "bold") or a number
+/// (100–900). Swift enums can't mix raw value types, so we implement
+/// Codable manually.
+extension Style.FontWeight: Codable {
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.singleValueContainer()
+        if let s = try? c.decode(String.self) {
+            switch s {
+            case "normal": self = .normal
+            case "bold":   self = .bold
+            default:
+                throw DecodingError.dataCorruptedError(
+                    in: c,
+                    debugDescription: "unknown fontWeight string '\(s)'"
+                )
+            }
+        } else if let n = try? c.decode(Int.self) {
+            self = .numeric(n)
+        } else {
+            throw DecodingError.dataCorruptedError(
+                in: c,
+                debugDescription: "fontWeight must be a named string or numeric value"
+            )
+        }
+    }
+    public func encode(to encoder: Encoder) throws {
+        var c = encoder.singleValueContainer()
+        switch self {
+        case .normal:      try c.encode("normal")
+        case .bold:        try c.encode("bold")
+        case .numeric(let n): try c.encode(n)
+        }
+    }
+}
+
+/// Lossless JSON value type for `NodeProps.extras`. Mirrors the
+/// `[key: string]: unknown` escape hatch in the TS spec — preserves
+/// arrays, objects, and null without coercing them to strings.
+public indirect enum JSONValue: Equatable, Codable {
+    case string(String)
+    case number(Double)
+    case bool(Bool)
+    case null
+    case array([JSONValue])
+    case object([String: JSONValue])
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.singleValueContainer()
+        // Bool must precede Double — Swift's JSON decoder decodes `true`
+        // as 1.0 if Bool is not tried first.
+        if let b = try? c.decode(Bool.self)               { self = .bool(b);   return }
+        if let s = try? c.decode(String.self)             { self = .string(s); return }
+        if let n = try? c.decode(Double.self)             { self = .number(n); return }
+        if c.decodeNil()                                  { self = .null;      return }
+        if let a = try? c.decode([JSONValue].self)        { self = .array(a);  return }
+        if let o = try? c.decode([String: JSONValue].self){ self = .object(o); return }
+        throw DecodingError.typeMismatch(
+            JSONValue.self,
+            .init(codingPath: decoder.codingPath,
+                  debugDescription: "unexpected JSON type for JSONValue")
+        )
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var c = encoder.singleValueContainer()
+        switch self {
+        case .string(let s): try c.encode(s)
+        case .number(let n): try c.encode(n)
+        case .bool(let b):   try c.encode(b)
+        case .null:          try c.encodeNil()
+        case .array(let a):  try c.encode(a)
+        case .object(let o): try c.encode(o)
+        }
+    }
+
+    /// Flatten to a `String` for component-factory props dicts that expect
+    /// `[String: String]`. Returns `nil` for arrays and objects since they
+    /// can't be meaningfully collapsed to a single string.
+    public var stringValue: String? {
+        switch self {
+        case .string(let s): return s
+        case .number(let n): return n.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(n)) : String(n)
+        case .bool(let b):   return b ? "true" : "false"
+        case .null, .array, .object: return nil
+        }
+    }
+}
+
+/// `NodeProps` requires a custom Codable to capture unknown keys as
+/// `extras` (the `[key: string]: unknown` escape hatch from the TS spec)
+/// while still synthesizing the known fields normally.
+extension NodeProps: Codable {
+    private enum KnownKey: String, CodingKey {
+        case id, className, style
+    }
+
+    public init(from decoder: Decoder) throws {
+        let known = try decoder.container(keyedBy: KnownKey.self)
+        id        = try known.decodeIfPresent(String.self,   forKey: .id)
+        className = try known.decodeIfPresent([String].self, forKey: .className)
+        style     = try known.decodeIfPresent(Style.self,    forKey: .style)
+
+        let any = try decoder.container(keyedBy: AnyCodingKey.self)
+        let reserved: Set<String> = ["id", "className", "style"]
+        var bag: [String: JSONValue] = [:]
+        for key in any.allKeys where !reserved.contains(key.stringValue) {
+            if let v = try? any.decode(JSONValue.self, forKey: key) {
+                bag[key.stringValue] = v
+            }
+        }
+        extras = bag
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var known = encoder.container(keyedBy: KnownKey.self)
+        try known.encodeIfPresent(id,        forKey: .id)
+        try known.encodeIfPresent(className, forKey: .className)
+        try known.encodeIfPresent(style,     forKey: .style)
+        var any = encoder.container(keyedBy: AnyCodingKey.self)
+        for (k, v) in extras {
+            try any.encode(v, forKey: AnyCodingKey(k))
+        }
+    }
+}
+
+/// `FlexBasisValue` is either the string `"auto"` or a `Length` object.
+/// We try the string path first so a bare `"auto"` decodes correctly without
+/// accidentally matching the `Length` struct.
+extension FlexBasisValue: Codable {
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.singleValueContainer()
+        if let s = try? c.decode(String.self), s == "auto" { self = .auto; return }
+        self = .length(try Length(from: decoder))
+    }
+    public func encode(to encoder: Encoder) throws {
+        switch self {
+        case .auto:
+            var c = encoder.singleValueContainer()
+            try c.encode("auto")
+        case .length(let l):
+            try l.encode(to: encoder)
+        }
+    }
+}
+
+/// Generic `CodingKey` that accepts any string. Used by `NodeProps` to
+/// capture the `[key: string]: unknown` extras bag.
+struct AnyCodingKey: CodingKey {
+    let stringValue: String
+    var intValue: Int? { nil }
+    init(_ string: String) { self.stringValue = string }
+    init?(stringValue: String) { self.stringValue = stringValue }
+    init?(intValue: Int) { return nil }
 }

@@ -263,7 +263,7 @@ final class JoyDOMTests: XCTestCase {
             flexDirection: .column,
             flexGrow: 1,
             flexShrink: 0,
-            flexBasis: .percent(50),
+            flexBasis: .length(.percent(50)),
             justifyContent: .spaceBetween,
             alignItems: .center,
             flexWrap: .wrap,

@@ -26,6 +26,7 @@ enum JoyDOMSamples {
         article,
         pricingTiers,
         kitchenSink,
+        visualCSS,
     ]
 
     /// Default selection on first open. Matches the demo's prior
@@ -627,6 +628,204 @@ enum JoyDOMSamples {
                       { "type": "button", "props": { "id": "nav-github", "className": ["nav-link"], "label": "GitHub", "event": "nav-github" } }
                     ]
                   }
+                ]
+              }
+            ]
+          }
+        }
+        """#
+    )
+
+    // MARK: - Sample 7 — Visual CSS
+    // Exercises backgroundColor, opacity, border, borderRadius, margin,
+    // typography (fontFamily, fontSize, fontWeight, color, lineHeight,
+    // letterSpacing, textAlign, textTransform), alignSelf, minWidth/maxWidth,
+    // rowGap/columnGap, display:none, h1–h4, span, and img.
+
+    static let visualCSS = JoyDOMSample(
+        id: "visual-css",
+        label: "Visual CSS · typography + box model",
+        json: #"""
+        {
+          "version": 1,
+          "style": {
+            "#root": {
+              "flexDirection": "column",
+              "gap": { "value": 0, "unit": "px" },
+              "backgroundColor": "#F8F9FA"
+            },
+            ".section": {
+              "flexDirection": "column",
+              "padding": { "value": 20, "unit": "px" },
+              "margin": { "value": 12, "unit": "px" },
+              "backgroundColor": "#FFFFFF",
+              "borderRadius": { "value": 12, "unit": "px" },
+              "borderWidth": { "value": 1, "unit": "px" },
+              "borderColor": "#E0E0E0",
+              "borderStyle": "solid"
+            },
+            "h1": {
+              "fontSize": { "value": 28, "unit": "px" },
+              "fontWeight": 700,
+              "color": "#1A1A2E",
+              "letterSpacing": { "value": -0.5, "unit": "px" },
+              "lineHeight": 1.2
+            },
+            "h2": {
+              "fontSize": { "value": 20, "unit": "px" },
+              "fontWeight": 600,
+              "color": "#16213E",
+              "lineHeight": 1.3
+            },
+            "h3": {
+              "fontSize": { "value": 16, "unit": "px" },
+              "fontWeight": 500,
+              "color": "#0F3460",
+              "textTransform": "uppercase",
+              "letterSpacing": { "value": 1, "unit": "px" }
+            },
+            "p": {
+              "fontSize": { "value": 14, "unit": "px" },
+              "color": "#555555",
+              "lineHeight": 1.6
+            },
+            ".badge": {
+              "backgroundColor": "#E8F4FD",
+              "borderRadius": { "value": 20, "unit": "px" },
+              "padding": { "topLeft": null, "top": { "value": 4, "unit": "px" }, "right": { "value": 12, "unit": "px" }, "bottom": { "value": 4, "unit": "px" }, "left": { "value": 12, "unit": "px" } },
+              "borderWidth": { "value": 1, "unit": "px" },
+              "borderColor": "#B3D9F5",
+              "borderStyle": "solid"
+            },
+            ".badge-text": {
+              "fontSize": { "value": 12, "unit": "px" },
+              "fontWeight": 600,
+              "color": "#1976D2",
+              "textTransform": "uppercase",
+              "letterSpacing": { "value": 0.5, "unit": "px" }
+            },
+            ".row": {
+              "flexDirection": "row",
+              "flexWrap": "wrap",
+              "columnGap": { "value": 12, "unit": "px" },
+              "rowGap": { "value": 8, "unit": "px" }
+            },
+            ".card": {
+              "flexDirection": "column",
+              "flexGrow": 1,
+              "minWidth": { "value": 120, "unit": "px" },
+              "maxWidth": { "value": 200, "unit": "px" },
+              "padding": { "value": 16, "unit": "px" },
+              "backgroundColor": "#F0F4FF",
+              "borderRadius": { "value": 8, "unit": "px" }
+            },
+            ".card-value": {
+              "fontSize": { "value": 24, "unit": "px" },
+              "fontWeight": 700,
+              "color": "#3B4FE0",
+              "textAlign": "center"
+            },
+            ".card-label": {
+              "fontSize": { "value": 11, "unit": "px" },
+              "color": "#888888",
+              "textAlign": "center",
+              "textTransform": "uppercase",
+              "letterSpacing": { "value": 0.8, "unit": "px" }
+            },
+            ".faded": {
+              "opacity": 0.4
+            },
+            ".hidden-node": {
+              "display": "none"
+            }
+          },
+          "breakpoints": [],
+          "layout": {
+            "type": "div",
+            "props": { "id": "root" },
+            "children": [
+              {
+                "type": "div",
+                "props": { "id": "hero-section", "className": ["section"] },
+                "children": [
+                  {
+                    "type": "div",
+                    "props": { "id": "badge-row", "className": ["row"] },
+                    "children": [
+                      {
+                        "type": "div",
+                        "props": { "id": "badge-new", "className": ["badge"] },
+                        "children": [
+                          { "type": "p", "props": { "id": "badge-new-text", "className": ["badge-text"] }, "children": ["New"] }
+                        ]
+                      },
+                      {
+                        "type": "div",
+                        "props": { "id": "badge-v2", "className": ["badge"] },
+                        "children": [
+                          { "type": "p", "props": { "id": "badge-v2-text", "className": ["badge-text"] }, "children": ["v2.0"] }
+                        ]
+                      }
+                    ]
+                  },
+                  { "type": "h1", "props": { "id": "hero-title" }, "children": ["Visual CSS in JoyDOM"] },
+                  { "type": "p",  "props": { "id": "hero-body" },  "children": ["This sample exercises the full visual CSS property set: borders, border radius, background colors, opacity, typography, min/max sizing, and more."] }
+                ]
+              },
+              {
+                "type": "div",
+                "props": { "id": "stats-section", "className": ["section"] },
+                "children": [
+                  { "type": "h3", "props": { "id": "stats-label" }, "children": ["At a glance"] },
+                  {
+                    "type": "div",
+                    "props": { "id": "stats-row", "className": ["row"] },
+                    "children": [
+                      {
+                        "type": "div",
+                        "props": { "id": "stat-a", "className": ["card"] },
+                        "children": [
+                          { "type": "p", "props": { "id": "stat-a-val", "className": ["card-value"] }, "children": ["28"] },
+                          { "type": "p", "props": { "id": "stat-a-lbl", "className": ["card-label"] }, "children": ["CSS props"] }
+                        ]
+                      },
+                      {
+                        "type": "div",
+                        "props": { "id": "stat-b", "className": ["card"] },
+                        "children": [
+                          { "type": "p", "props": { "id": "stat-b-val", "className": ["card-value"] }, "children": ["8"] },
+                          { "type": "p", "props": { "id": "stat-b-lbl", "className": ["card-label"] }, "children": ["HTML types"] }
+                        ]
+                      },
+                      {
+                        "type": "div",
+                        "props": { "id": "stat-c", "className": ["card", "faded"] },
+                        "children": [
+                          { "type": "p", "props": { "id": "stat-c-val", "className": ["card-value"] }, "children": ["∞"] },
+                          { "type": "p", "props": { "id": "stat-c-lbl", "className": ["card-label"] }, "children": ["Possible UIs"] }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "div",
+                "props": { "id": "hidden-section", "className": ["hidden-node"] },
+                "children": [
+                  { "type": "p", "props": { "id": "hidden-p" }, "children": ["This node is display:none — it should not be visible."] }
+                ]
+              },
+              {
+                "type": "div",
+                "props": { "id": "typography-section", "className": ["section"] },
+                "children": [
+                  { "type": "h2", "props": { "id": "typo-title" }, "children": ["Typography scale"] },
+                  { "type": "h1", "props": { "id": "typo-h1" }, "children": ["Heading 1"] },
+                  { "type": "h2", "props": { "id": "typo-h2" }, "children": ["Heading 2"] },
+                  { "type": "h3", "props": { "id": "typo-h3" }, "children": ["Heading 3"] },
+                  { "type": "h4", "props": { "id": "typo-h4" }, "children": ["Heading 4"] },
+                  { "type": "p",  "props": { "id": "typo-p" },  "children": ["Body paragraph with comfortable line-height and subdued color. Designed to be readable at 14 px on any background."] }
                 ]
               }
             ]

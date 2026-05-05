@@ -25,6 +25,10 @@ public struct ItemStyle: Equatable {
     public var order:     Int           = 0
     public var width:     FlexSize      = .auto
     public var height:    FlexSize      = .auto
+    public var minWidth:  CGFloat?      = nil
+    public var maxWidth:  CGFloat?      = nil
+    public var minHeight: CGFloat?      = nil
+    public var maxHeight: CGFloat?      = nil
     public var overflow:  FlexOverflow  = .visible
     public var zIndex:    Int           = 0
     public var position:  FlexPosition  = .relative
@@ -32,6 +36,40 @@ public struct ItemStyle: Equatable {
     public var bottom:    CGFloat?      = nil
     public var leading:   CGFloat?      = nil
     public var trailing:  CGFloat?      = nil
+
+    public init() {}
+}
+
+/// Non-layout visual properties carried through the cascade.
+///
+/// These are applied by the render layer as SwiftUI view modifiers rather
+/// than by the flex engine, so they live separately from `ItemStyle` and
+/// `FlexContainerConfig`. Typography modifiers (font, color, etc.) are
+/// applied as SwiftUI environment values, propagating automatically to
+/// `Text` descendants.
+public struct VisualStyle: Equatable {
+    // Box model & visuals
+    public var backgroundColor: String?           = nil
+    public var opacity:         Double?           = nil
+    public var borderWidth:     CGFloat?          = nil
+    public var borderColor:     String?           = nil
+    public var borderStyle:     Style.BorderStyleProp? = nil
+    public var borderRadius:    BorderRadius?     = nil
+    public var margin:          Padding?          = nil
+
+    // Typography
+    public var fontFamily:      String?           = nil
+    public var fontSize:        CGFloat?          = nil
+    public var fontWeight:      Style.FontWeight? = nil
+    public var fontStyle:       Style.FontStyleProp? = nil
+    public var color:           String?           = nil
+    public var textDecoration:  Style.TextDecoration? = nil
+    public var textAlign:       Style.TextAlign?  = nil
+    public var textTransform:   Style.TextTransform? = nil
+    public var lineHeight:      Double?           = nil
+    public var letterSpacing:   CGFloat?          = nil
+    public var textOverflow:    Style.TextOverflow? = nil
+    public var whiteSpace:      Style.WhiteSpace? = nil
 
     public init() {}
 }
@@ -45,6 +83,7 @@ public struct ItemStyle: Equatable {
 public struct ComputedStyle: Equatable {
     public var container: FlexContainerConfig = FlexContainerConfig()
     public var item:      ItemStyle           = ItemStyle()
+    public var visual:    VisualStyle         = VisualStyle()
     public var display:   FlexDisplay         = .flex
 
     /// `display: none` removes the element (and its whole subtree) from the
