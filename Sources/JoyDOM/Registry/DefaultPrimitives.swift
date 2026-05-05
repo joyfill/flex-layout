@@ -1,38 +1,34 @@
 // DefaultPrimitives — `ComponentRegistry.withDefaultPrimitives()` adds
-// factories for the joy-dom primitives every renderer needs:
+// factories for the joy-dom HTML element types and internal primitives.
 //
-//   • `div`              — passthrough container (children compose
-//                          through the layout tree).
-//   • `p`                — paragraph; children render through the
-//                          layout tree exactly like `div`. Block-flow
-//                          semantics aren't represented in flex-only
-//                          JoyDOMView, so `p` and `div` differ only by
-//                          element type for selector purposes.
-//   • `primitive_string` — `Text(props["value"])` — text content.
-//   • `primitive_number` — `Text(props["value"])` — number content
-//                          serialized to a string by SchemaFlattener.
-//   • `primitive_null`   — `EmptyView()` — explicit nothing.
+// Container elements (div, span, p, h1–h6): render as passthrough — the
+// FlexLayout subtree handles their content; they contribute no chrome.
+// Typography styling on these elements is applied by the render layer as
+// SwiftUI environment modifiers that cascade to Text descendants.
 //
-// Apps that don't want these defaults can ignore the helper; apps
-// that want to override one of them should register a custom factory
-// AFTER calling `withDefaultPrimitives()` (last-wins per the registry's
-// existing contract) — the helper itself preserves any pre-existing
-// registration to support the opposite ordering too.
+// Void elements:
+//   • `img`             — AsyncImage driven by a `src` extra prop.
+//
+// Internal primitives (produced by StyleTreeBuilder for primitive children):
+//   • `primitive_string` — `Text(value)`
+//   • `primitive_number` — `Text(value)` (number serialised to string)
+//   • `primitive_null`   — `EmptyView()`
+//
+// Apps can override any of these by registering a custom factory BEFORE
+// or AFTER calling `withDefaultPrimitives()` (last-wins per registry
+// contract; the helper skips already-registered slots when called last).
 
 import Foundation
 import SwiftUI
 
 extension ComponentRegistry {
 
-    /// Register the joy-dom primitive factories (`div`, `p`,
-    /// `primitive_string`, `primitive_number`, `primitive_null`).
+    /// Register joy-dom primitive factories for all built-in element types.
     ///
-    /// Existing registrations for any of these types are preserved —
-    /// the helper only fills in slots that are currently empty, so
-    /// callers can register custom primitives first without losing
-    /// them when chaining the helper afterward.
+    /// Existing registrations for any type are preserved — the helper only
+    /// fills empty slots — so callers can register custom overrides in any order.
     ///
-    /// Returns `self` so registrations can be chained fluently:
+    /// Returns `self` for fluent chaining:
     /// ```swift
     /// let registry = ComponentRegistry()
     ///     .withDefaultPrimitives()
@@ -40,17 +36,41 @@ extension ComponentRegistry {
     /// ```
     @discardableResult
     public func withDefaultPrimitives() -> ComponentRegistry {
-        registerIfAbsent("div") { _, _ in
-            // Passthrough — children render through the layout tree.
-            // The container itself contributes no visible chrome.
-            .custom { EmptyView() }
+        // Block containers — children render through the layout tree.
+        for type_ in ["div", "span", "section", "article", "header", "footer",
+                      "main", "nav", "ul", "ol", "li", "form", "label"] {
+            let t = type_
+            registerIfAbsent(t) { _, _ in .custom { EmptyView() } }
         }
-        registerIfAbsent("p") { _, _ in
-            // Same as div for now. Block-flow semantics aren't part
-            // of JoyDOMView's flex-only model; `p` is meaningful for
-            // selector targeting only.
-            .custom { EmptyView() }
+
+        // Text containers — semantic block elements; same passthrough
+        // rendering; typography styling cascades via SwiftUI environment.
+        for type_ in ["p", "h1", "h2", "h3", "h4", "h5", "h6"] {
+            let t = type_
+            registerIfAbsent(t) { _, _ in .custom { EmptyView() } }
         }
+
+        // Inline text container
+        registerIfAbsent("span") { _, _ in .custom { EmptyView() } }
+
+        // Image — `src` extra prop drives the URL.
+        registerIfAbsent("img") { props, _ in
+            let src = props.string("src") ?? ""
+            if let url = URL(string: src) {
+                return .custom {
+                    AsyncImage(url: url) { phase in
+                        switch phase {
+                        case .success(let image): image.resizable().scaledToFit()
+                        case .failure:            Color.gray.opacity(0.2)
+                        default:                  Color.gray.opacity(0.1)
+                        }
+                    }
+                }
+            }
+            return .custom { Color.gray.opacity(0.1) }
+        }
+
+        // Internal primitives produced by StyleTreeBuilder for text children.
         registerIfAbsent("primitive_string") { props, _ in
             let value = props.string("value") ?? ""
             return .custom { Text(value) }
@@ -65,9 +85,7 @@ extension ComponentRegistry {
         return self
     }
 
-    /// Helper: register a factory only when the type isn't already
-    /// registered. Lets `withDefaultPrimitives()` preserve user-supplied
-    /// factories no matter the chaining order.
+    /// Register a factory only when the type isn't already registered.
     private func registerIfAbsent(
         _ type: String,
         factory: @escaping ComponentFactory

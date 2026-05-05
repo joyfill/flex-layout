@@ -135,10 +135,9 @@ internal enum StyleTreeBuilder {
             diagnostics: &diagnostics
         )
 
-        // Bake the FormState binding path into props if `.bindings(_:)`
-        // declared one for this node id. The resolver looks here for
-        // `binding`/`binding.<field>` keys to wire up Binding<String>.
-        var props: [String: String] = [:]
+        // Merge props: node extras first (component-specific props from the
+        // JSON), then FormState binding path — binding wins on conflict.
+        var props: [String: String] = node.props?.extras ?? [:]
         if let path = bindingsByID[id] {
             props["binding"] = path
         }

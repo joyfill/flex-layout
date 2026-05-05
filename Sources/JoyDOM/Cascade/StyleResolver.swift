@@ -250,19 +250,17 @@ public enum StyleResolver {
         to computed: inout ComputedStyle,
         diagnostics: inout JoyDiagnostics
     ) {
-        // Display — joy-dom's enum doesn't include `none`, so we don't
-        // touch `isDisplayNone` here. (None can't be expressed in Style
-        // today; future spec rev would add it.)
+        // Display
         if let v = s.display {
             switch v {
-            case .flex:        computed.display = .flex
-            case .block:       computed.display = .block
-            case .inlineBlock: computed.display = .inline   // FlexDisplay has no inlineBlock; treat as inline
+            case .flex:        computed.display = .flex;  computed.isDisplayNone = false
+            case .block:       computed.display = .block; computed.isDisplayNone = false
+            case .inlineBlock: computed.display = .inline; computed.isDisplayNone = false
+            case .none:        computed.isDisplayNone = true
             }
-            computed.isDisplayNone = false
         }
 
-        // Container
+        // Container — direction
 
         if let v = s.flexDirection {
             switch v {
@@ -285,6 +283,7 @@ public enum StyleResolver {
             case .center:       computed.container.justifyContent = .center
             case .spaceBetween: computed.container.justifyContent = .spaceBetween
             case .spaceAround:  computed.container.justifyContent = .spaceAround
+            case .spaceEvenly:  computed.container.justifyContent = .spaceEvenly
             }
         }
 
@@ -293,9 +292,11 @@ public enum StyleResolver {
             case .flexStart: computed.container.alignItems = .flexStart
             case .flexEnd:   computed.container.alignItems = .flexEnd
             case .center:    computed.container.alignItems = .center
+            case .stretch:   computed.container.alignItems = .stretch
             }
         }
 
+        // Gap — `gap` sets both axes; `rowGap`/`columnGap` override per-axis.
         if let v = s.gap {
             switch v {
             case .uniform(let l):
@@ -305,6 +306,8 @@ public enum StyleResolver {
                 computed.container.columnGap = lengthToPx(column)
             }
         }
+        if let v = s.rowGap    { computed.container.rowGap    = lengthToPx(v) }
+        if let v = s.columnGap { computed.container.columnGap = lengthToPx(v) }
 
         if let v = s.padding {
             switch v {
@@ -322,9 +325,6 @@ public enum StyleResolver {
         }
 
         if let v = s.overflow {
-            // Overflow applies to both container and item contexts. The
-            // flex engine reads from the item key when set, so we write
-            // to both; the effective value is the same either way.
             let mapped: FlexOverflow
             switch v {
             case .visible: mapped = .visible
@@ -337,21 +337,33 @@ public enum StyleResolver {
             computed.item.overflow      = mapped
         }
 
-        // Item
+        // Item — flex properties
 
         if let v = s.flexGrow   { computed.item.grow   = CGFloat(v) }
         if let v = s.flexShrink { computed.item.shrink = CGFloat(v) }
+        if let v = s.flexBasis  { computed.item.basis  = lengthToFlexBasis(v) }
+        if let v = s.order      { computed.item.order  = v }
 
-        if let v = s.flexBasis {
-            computed.item.basis = lengthToFlexBasis(v)
+        if let v = s.alignSelf {
+            switch v {
+            case .auto:      computed.item.alignSelf = .auto
+            case .flexStart: computed.item.alignSelf = .flexStart
+            case .flexEnd:   computed.item.alignSelf = .flexEnd
+            case .center:    computed.item.alignSelf = .center
+            case .stretch:   computed.item.alignSelf = .stretch
+            }
         }
 
-        if let v = s.order { computed.item.order = v }
+        // Item — sizing
 
-        if let v = s.width  { computed.item.width  = lengthToFlexSize(v) }
-        if let v = s.height { computed.item.height = lengthToFlexSize(v) }
+        if let v = s.width     { computed.item.width  = lengthToFlexSize(v) }
+        if let v = s.height    { computed.item.height = lengthToFlexSize(v) }
+        if let v = s.minWidth  { computed.item.minWidth  = lengthToPx(v) }
+        if let v = s.maxWidth  { computed.item.maxWidth  = lengthToPx(v) }
+        if let v = s.minHeight { computed.item.minHeight = lengthToPx(v) }
+        if let v = s.maxHeight { computed.item.maxHeight = lengthToPx(v) }
 
-        if let v = s.zIndex { computed.item.zIndex = v }
+        if let v = s.zIndex    { computed.item.zIndex = v }
 
         if let v = s.position {
             switch v {
@@ -365,9 +377,31 @@ public enum StyleResolver {
         if let v = s.left   { computed.item.leading  = lengthToPx(v) }
         if let v = s.right  { computed.item.trailing = lengthToPx(v) }
 
-        // `_ = diagnostics` — kept in the signature for symmetry / future
-        // spec rev. Today every Style field is typed and can't yield an
-        // invalid-value warning at this layer.
+        // Visual — box model
+
+        if let v = s.backgroundColor { computed.visual.backgroundColor = v }
+        if let v = s.opacity         { computed.visual.opacity         = v }
+        if let v = s.borderWidth     { computed.visual.borderWidth     = lengthToPx(v) }
+        if let v = s.borderColor     { computed.visual.borderColor     = v }
+        if let v = s.borderStyle     { computed.visual.borderStyle     = v }
+        if let v = s.borderRadius    { computed.visual.borderRadius    = v }
+        if let v = s.margin          { computed.visual.margin          = v }
+
+        // Visual — typography
+
+        if let v = s.fontFamily     { computed.visual.fontFamily     = v }
+        if let v = s.fontSize       { computed.visual.fontSize       = lengthToPx(v) }
+        if let v = s.fontWeight     { computed.visual.fontWeight     = v }
+        if let v = s.fontStyle      { computed.visual.fontStyle      = v }
+        if let v = s.color          { computed.visual.color          = v }
+        if let v = s.textDecoration { computed.visual.textDecoration = v }
+        if let v = s.textAlign      { computed.visual.textAlign      = v }
+        if let v = s.textTransform  { computed.visual.textTransform  = v }
+        if let v = s.lineHeight     { computed.visual.lineHeight     = v }
+        if let v = s.letterSpacing  { computed.visual.letterSpacing  = lengthToPx(v) }
+        if let v = s.textOverflow   { computed.visual.textOverflow   = v }
+        if let v = s.whiteSpace     { computed.visual.whiteSpace     = v }
+
         _ = diagnostics
     }
 

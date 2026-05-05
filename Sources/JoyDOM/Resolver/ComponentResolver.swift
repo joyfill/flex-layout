@@ -35,6 +35,9 @@ public struct ResolvedChild {
     public let id: String
     public let itemStyle: ItemStyle
     public let containerStyle: FlexContainerConfig
+    /// Non-layout CSS (background, border, typography, etc.). Applied by
+    /// the render layer as SwiftUI view modifiers after the view is produced.
+    public let visualStyle: VisualStyle
     public let resolution: Resolution
     public let view: AnyView
     public let nested: [ResolvedChild]
@@ -51,6 +54,7 @@ public struct ResolvedChild {
         id: String,
         itemStyle: ItemStyle,
         containerStyle: FlexContainerConfig = FlexContainerConfig(),
+        visualStyle: VisualStyle = VisualStyle(),
         resolution: Resolution,
         view: AnyView,
         nested: [ResolvedChild] = [],
@@ -59,6 +63,7 @@ public struct ResolvedChild {
         self.id = id
         self.itemStyle = itemStyle
         self.containerStyle = containerStyle
+        self.visualStyle = visualStyle
         self.resolution = resolution
         self.view = view
         self.nested = nested
@@ -250,6 +255,7 @@ public enum ComponentResolver {
                 id: id,
                 itemStyle: leaf.node.computedStyle.item,
                 containerStyle: leaf.node.computedStyle.container,
+                visualStyle: leaf.node.computedStyle.visual,
                 resolution: leaf.resolution,
                 view: leaf.view,
                 nested: nested,

@@ -203,6 +203,7 @@ enum JoyDOMSwiftEmitter {
         case .block:       return ".block"
         case .inlineBlock: return ".inlineBlock"
         case .flex:        return ".flex"
+        case .none:        return ".none"
         }
     }
 
@@ -220,6 +221,7 @@ enum JoyDOMSwiftEmitter {
         case .center:       return ".center"
         case .spaceBetween: return ".spaceBetween"
         case .spaceAround:  return ".spaceAround"
+        case .spaceEvenly:  return ".spaceEvenly"
         }
     }
 
@@ -228,6 +230,7 @@ enum JoyDOMSwiftEmitter {
         case .flexStart: return ".flexStart"
         case .flexEnd:   return ".flexEnd"
         case .center:    return ".center"
+        case .stretch:   return ".stretch"
         }
     }
 

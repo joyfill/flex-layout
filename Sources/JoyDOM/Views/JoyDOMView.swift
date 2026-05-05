@@ -196,13 +196,121 @@ public struct JoyDOMView: View {
         } else {
             rawView = child.view
         }
+        // Apply non-layout visual CSS (background, border, typography, etc.)
+        // before the flex-item wrapper so the decorations sit inside the
+        // item's allocated slot.
+        let withVisual = applyVisual(rawView, visual: child.visualStyle)
         // `visibility: hidden` keeps the flex slot and only suppresses the
         // paint — apply `.hidden()` *before* `.flexItem(...)` so layout
         // still sees the natural size of the underlying view.
         let maybeHidden: AnyView = child.isVisibilityHidden
-            ? AnyView(rawView.hidden())
-            : rawView
+            ? AnyView(withVisual.hidden())
+            : withVisual
         return AnyView(applyItem(maybeHidden, style: child.itemStyle))
+    }
+
+    /// Apply non-layout CSS to a view using SwiftUI view modifiers.
+    ///
+    /// Typography modifiers propagate through SwiftUI's environment, so they
+    /// automatically cascade to `Text` descendants (including those produced
+    /// by `primitive_string` factories in child nodes).
+    private func applyVisual(_ view: AnyView, visual: VisualStyle) -> AnyView {
+        var v: AnyView = view
+
+        // --- Typography (propagates via SwiftUI environment) ---
+
+        if visual.fontFamily != nil || visual.fontSize != nil || visual.fontWeight != nil || visual.fontStyle != nil {
+            let size     = visual.fontSize ?? 17
+            var font: Font = visual.fontFamily.map { .custom($0, size: size) } ?? .system(size: size)
+            if let w = visual.fontWeight {
+                switch w {
+                case .normal:      font = font.weight(.regular)
+                case .bold:        font = font.weight(.bold)
+                case .numeric(let n):
+                    let swiftWeight: Font.Weight
+                    switch n {
+                    case ..<200:   swiftWeight = .ultraLight
+                    case 200..<300: swiftWeight = .thin
+                    case 300..<400: swiftWeight = .light
+                    case 400..<500: swiftWeight = .regular
+                    case 500..<600: swiftWeight = .medium
+                    case 600..<700: swiftWeight = .semibold
+                    case 700..<800: swiftWeight = .bold
+                    case 800..<900: swiftWeight = .heavy
+                    default:        swiftWeight = .black
+                    }
+                    font = font.weight(swiftWeight)
+                }
+            }
+            if visual.fontStyle == .italic { font = font.italic() }
+            v = AnyView(v.font(font))
+        }
+
+        if let hex = visual.color { v = AnyView(v.foregroundColor(Color(hex: hex))) }
+
+        if let align = visual.textAlign {
+            let ta: TextAlignment
+            switch align {
+            case .left:   ta = .leading
+            case .center: ta = .center
+            case .right:  ta = .trailing
+            }
+            v = AnyView(v.multilineTextAlignment(ta))
+        }
+
+        if let ls = visual.letterSpacing { v = AnyView(v.tracking(ls)) }
+
+        if let lh = visual.lineHeight { v = AnyView(v.lineSpacing(CGFloat(lh))) }
+
+        if let to = visual.textOverflow, to == .ellipsis {
+            v = AnyView(v.truncationMode(.tail).lineLimit(1))
+        }
+
+        if let ws = visual.whiteSpace, ws == .nowrap {
+            v = AnyView(v.lineLimit(1))
+        }
+
+        // --- Background & opacity ---
+
+        if let hex = visual.backgroundColor { v = AnyView(v.background(Color(hex: hex))) }
+        if let op  = visual.opacity          { v = AnyView(v.opacity(op)) }
+
+        // --- Border ---
+
+        if let bw = visual.borderWidth, let bc = visual.borderColor,
+           visual.borderStyle == nil || visual.borderStyle == .solid {
+            let color = Color(hex: bc)
+            if let br = visual.borderRadius, case .uniform(let l) = br {
+                let radius = CGFloat(l.value)
+                v = AnyView(v
+                    .clipShape(RoundedRectangle(cornerRadius: radius))
+                    .overlay(RoundedRectangle(cornerRadius: radius).stroke(color, lineWidth: bw))
+                )
+            } else {
+                v = AnyView(v.overlay(Rectangle().stroke(color, lineWidth: bw)))
+            }
+        } else if let br = visual.borderRadius, case .uniform(let l) = br {
+            v = AnyView(v.clipShape(RoundedRectangle(cornerRadius: CGFloat(l.value))))
+        }
+
+        // --- Margin (outer spacing — wrap in a padded view) ---
+
+        if let margin = visual.margin {
+            switch margin {
+            case .uniform(let l):
+                let n = CGFloat(l.value)
+                v = AnyView(v.padding(n))
+            case .sides(let t, let r, let b, let l):
+                v = AnyView(v
+                    .padding(.top, CGFloat(t.value))
+                    .padding(.trailing, CGFloat(r.value))
+                    .padding(.bottom, CGFloat(b.value))
+                    .padding(.leading, CGFloat(l.value))
+                )
+            }
+        }
+
+        return v
     }
 
     // MARK: - Rendering helpers
@@ -323,10 +431,11 @@ public struct JoyDOMView: View {
     }
 
     /// Wraps one resolved child with the `.flexItem(...)` modifier carrying
-    /// every CSS item property. Extracted so `body` stays focused on layout
-    /// assembly.
+    /// every CSS item property. Min/max size constraints are applied as a
+    /// SwiftUI `.frame(...)` after the flex modifier since FlexLayout has no
+    /// native min/max API.
     private func applyItem(_ view: AnyView, style: ItemStyle) -> some View {
-        view.flexItem(
+        let withFlex = view.flexItem(
             grow:      style.grow,
             shrink:    style.shrink,
             basis:     style.basis,
@@ -342,5 +451,16 @@ public struct JoyDOMView: View {
             leading:   style.leading,
             trailing:  style.trailing
         )
+        guard style.minWidth != nil || style.maxWidth != nil ||
+              style.minHeight != nil || style.maxHeight != nil else {
+            return AnyView(withFlex)
+        }
+        return AnyView(withFlex.frame(
+            minWidth:  style.minWidth,
+            maxWidth:  style.maxWidth,
+            minHeight: style.minHeight,
+            maxHeight: style.maxHeight,
+            alignment: .topLeading
+        ))
     }
 }
