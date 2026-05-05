@@ -100,20 +100,6 @@ extension ComponentRegistry {
     }
 }
 
-/// Leaf renderer for `primitive_string` / `primitive_number`. Reads the
-/// `inheritedTextDecoration` environment value an ancestor handed down
-/// (via `JoyDOMView.applyVisual`) and paints the corresponding Text-level
-/// modifier — SwiftUI's container `.underline()` / `.strikethrough()` do
-/// not cascade through `AnyView` boundaries, so the leaf has to opt in.
-internal struct _DecoratedText: View {
-    let text: String
-    @Environment(\.inheritedTextDecoration) private var decoration
-
-    var body: some View {
-        switch decoration {
-        case .none:        Text(text)
-        case .underline:   Text(text).underline()
-        case .lineThrough: Text(text).strikethrough()
-        }
-    }
-}
+// `_DecoratedText` — the leaf renderer used by `primitive_string` /
+// `primitive_number` — lives in `Sources/JoyDOM/Views/Environment/` so
+// the SwiftUI view types stay in the Views layer.

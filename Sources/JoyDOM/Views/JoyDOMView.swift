@@ -220,7 +220,13 @@ public struct JoyDOMView: View {
     /// midpoint, so `449` still resolves to `.regular` while `450`
     /// promotes to `.medium`. Exposed `internal` so tests can pin every
     /// boundary value directly.
+    ///
+    /// CSS Fonts Module Level 4 restricts `font-weight` to `[1, 1000]`.
+    /// Out-of-range inputs clamp silently in release builds (the bands
+    /// extend to ±∞), and trip an `assert` in debug builds so authoring
+    /// mistakes surface during development.
     internal static func swiftFontWeight(forCSSWeight n: Int) -> Font.Weight {
+        assert((1...1000).contains(n), "CSS font-weight must be in [1, 1000], got \(n)")
         switch n {
         case ..<150:  return .ultraLight
         case ..<250:  return .thin
@@ -240,9 +246,15 @@ public struct JoyDOMView: View {
     internal static func lineSpacing(forLineHeight lh: Double, fontSize: CGFloat) -> CGFloat {
         let target = fontSize * CGFloat(lh)
         #if canImport(UIKit)
+        // UIFont.lineHeight = ascender + |descender| + leading.
         let systemLineHeight = UIFont.systemFont(ofSize: fontSize).lineHeight
         #elseif canImport(AppKit)
-        let systemLineHeight = NSFont.systemFont(ofSize: fontSize).boundingRectForFont.height
+        // boundingRectForFont.height is the largest-possible-glyph bound and
+        // overstates the typographic line height by ~15–20%, leaving too
+        // little lineSpacing on macOS. The UIKit equivalent is the sum of
+        // the typographic metrics (descender is negative on AppKit).
+        let f = NSFont.systemFont(ofSize: fontSize)
+        let systemLineHeight = f.ascender - f.descender + f.leading
         #else
         let systemLineHeight = fontSize * 1.2
         #endif

@@ -16,16 +16,6 @@ import AppKit
 /// a refactor can't silently regress to the old approximation.
 final class LineHeightTests: XCTestCase {
 
-    private func systemLineHeight(at fontSize: CGFloat) -> CGFloat {
-        #if canImport(UIKit)
-        return UIFont.systemFont(ofSize: fontSize).lineHeight
-        #elseif canImport(AppKit)
-        return NSFont.systemFont(ofSize: fontSize).boundingRectForFont.height
-        #else
-        return fontSize * 1.2
-        #endif
-    }
-
     func testLineSpacingIsNonNegative() {
         // Even when the requested line-height is below the system's
         // natural leading the formula must clamp to zero — never feed
@@ -35,10 +25,20 @@ final class LineHeightTests: XCTestCase {
     }
 
     func testLineSpacingMatchesTargetMinusSystem() {
-        // Target = fontSize × lh; lineSpacing = max(0, target − system).
+        // Compute the expected system metric here directly — duplicating
+        // the production formula in a helper would mask drift if it
+        // regressed (e.g. back to NSFont.boundingRectForFont.height).
         let fontSize: CGFloat = 16
         let lh: Double = 1.5
-        let expected = max(0, fontSize * CGFloat(lh) - systemLineHeight(at: fontSize))
+        #if canImport(UIKit)
+        let systemMetric = UIFont.systemFont(ofSize: fontSize).lineHeight
+        #elseif canImport(AppKit)
+        let f = NSFont.systemFont(ofSize: fontSize)
+        let systemMetric = f.ascender - f.descender + f.leading
+        #else
+        let systemMetric: CGFloat = fontSize * 1.2
+        #endif
+        let expected = max(0, fontSize * CGFloat(lh) - systemMetric)
         let actual = JoyDOMView.lineSpacing(forLineHeight: lh, fontSize: fontSize)
         XCTAssertEqual(actual, expected, accuracy: 0.0001)
     }

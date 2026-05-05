@@ -27,6 +27,12 @@ import CoreGraphics
 /// Resolves computed style for a single node.
 public enum StyleResolver {
 
+    /// SwiftUI/UIKit body font size — the implicit base when a Style
+    /// references font-relative units (`em`) without an explicit fontSize.
+    /// Centralised so the value can be updated in one place if Apple
+    /// shifts the default (and so tests can pin against it).
+    internal static let defaultFontSize: CGFloat = 17
+
     // MARK: - Public types
 
     /// A minimal ancestor-ref used by the combinator matcher. Constructed by
@@ -446,14 +452,17 @@ public enum StyleResolver {
             // CSS `letter-spacing` accepts either an absolute length (`px`)
             // or a font-relative em multiplier. The renderer wants an
             // absolute points value to feed to `.tracking()`, so resolve
-            // here: `.px` passes through untouched; any other unit (`em`,
-            // bare ratio, etc.) is treated as a multiplier of the resolved
-            // font size (defaulting to the system 17pt when none is set).
-            if v.unit == "px" {
+            // here. Only `px` and `em` (or bare value, treated as em) are
+            // explicitly supported; any other unit string falls back to
+            // `lengthToPx` so future units like `pt` work without scaling.
+            switch v.unit {
+            case "px":
                 computed.visual.letterSpacing = lengthToPx(v)
-            } else {
-                let fontSize = s.fontSize.map { lengthToPx($0) } ?? 17.0
+            case "em", "":
+                let fontSize = s.fontSize.map { lengthToPx($0) } ?? Self.defaultFontSize
                 computed.visual.letterSpacing = CGFloat(v.value) * fontSize
+            default:
+                computed.visual.letterSpacing = lengthToPx(v)
             }
         }
         if let v = s.textOverflow   { computed.visual.textOverflow   = v }
