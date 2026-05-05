@@ -321,15 +321,15 @@ final class SpecGapTests: XCTestCase {
         try roundTrip(Style(textDecoration: .lineThrough))
     }
 
-    // MARK: - NodeProps extras
+    // MARK: - NodeProps extras (JSONValue)
 
     func testNodePropsExtrasRoundTrip() throws {
         let json = #"{"id":"btn","label":"Click me","count":3,"active":true}"#
         let props = try decode(NodeProps.self, from: json)
         XCTAssertEqual(props.id, "btn")
-        XCTAssertEqual(props.extras["label"],  "Click me")
-        XCTAssertEqual(props.extras["count"],  "3")
-        XCTAssertEqual(props.extras["active"], "true")
+        XCTAssertEqual(props.extras["label"],  .string("Click me"))
+        XCTAssertEqual(props.extras["count"],  .number(3))
+        XCTAssertEqual(props.extras["active"], .bool(true))
     }
 
     func testNodePropsExtrasDoNotContainKnownKeys() throws {
@@ -338,21 +338,42 @@ final class SpecGapTests: XCTestCase {
         XCTAssertNil(props.extras["id"])
         XCTAssertNil(props.extras["className"])
         XCTAssertNil(props.extras["style"])
-        XCTAssertEqual(props.extras["custom"], "yes")
+        XCTAssertEqual(props.extras["custom"], .string("yes"))
     }
 
     func testNodePropsExtrasEncodeToJSON() throws {
-        let props = NodeProps(id: "x", extras: ["src": "https://example.com/img.png"])
+        let props = NodeProps(id: "x", extras: ["src": .string("https://example.com/img.png")])
         let data = try JSONEncoder().encode(props)
         let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
         XCTAssertEqual(json?["src"] as? String, "https://example.com/img.png")
+    }
+
+    func testNodePropsExtrasNestedObjectAndArray() throws {
+        let json = #"{"nested":{"key":1},"list":[1,2,3],"nothing":null}"#
+        let props = try decode(NodeProps.self, from: json)
+        XCTAssertEqual(props.extras["nested"], .object(["key": .number(1)]))
+        XCTAssertEqual(props.extras["list"],   .array([.number(1), .number(2), .number(3)]))
+        XCTAssertEqual(props.extras["nothing"], .null)
+        // Round-trip the full NodeProps.
+        try roundTrip(props)
+    }
+
+    func testJSONValueStringValueFlattening() {
+        XCTAssertEqual(JSONValue.string("hello").stringValue, "hello")
+        XCTAssertEqual(JSONValue.number(42).stringValue,      "42")
+        XCTAssertEqual(JSONValue.number(3.14).stringValue,    "3.14")
+        XCTAssertEqual(JSONValue.bool(true).stringValue,      "true")
+        XCTAssertEqual(JSONValue.bool(false).stringValue,     "false")
+        XCTAssertNil(JSONValue.null.stringValue)
+        XCTAssertNil(JSONValue.array([]).stringValue)
+        XCTAssertNil(JSONValue.object([:]).stringValue)
     }
 
     func testNodePropsExtrasFlowThroughToStyleNode() {
         var diags = JoyDiagnostics()
         let spec = Spec(
             layout: Node(type: "img",
-                         props: NodeProps(id: "hero", extras: ["src": "https://example.com/img.png"]))
+                         props: NodeProps(id: "hero", extras: ["src": .string("https://example.com/img.png")]))
         )
         let nodes = StyleTreeBuilder.build(
             layout: spec.layout,
@@ -362,6 +383,36 @@ final class SpecGapTests: XCTestCase {
         )
         let hero = nodes.first(where: { $0.id == "hero" })!
         XCTAssertEqual(hero.props["src"], "https://example.com/img.png")
+    }
+
+    // MARK: - FlexBasisValue
+
+    func testFlexBasisAutoDecodes() throws {
+        let s = try decode(Style.self, from: #"{"flexBasis":"auto"}"#)
+        XCTAssertEqual(s.flexBasis, .auto)
+    }
+
+    func testFlexBasisLengthDecodes() throws {
+        let s = try decode(Style.self, from: #"{"flexBasis":{"value":100,"unit":"px"}}"#)
+        XCTAssertEqual(s.flexBasis, .length(.px(100)))
+    }
+
+    func testFlexBasisAutoRoundTrip() throws {
+        try roundTrip(Style(flexBasis: .auto))
+    }
+
+    func testFlexBasisLengthRoundTrip() throws {
+        try roundTrip(Style(flexBasis: .length(.px(200))))
+    }
+
+    func testFlexBasisAutoMapsToFlexAuto() {
+        let c = resolve(style: Style(flexBasis: .auto))
+        XCTAssertEqual(c.item.basis, .auto)
+    }
+
+    func testFlexBasisLengthMapsToPoints() {
+        let c = resolve(style: Style(flexBasis: .length(.px(120))))
+        XCTAssertEqual(c.item.basis, .points(120))
     }
 
     // MARK: - New element types in DefaultPrimitives

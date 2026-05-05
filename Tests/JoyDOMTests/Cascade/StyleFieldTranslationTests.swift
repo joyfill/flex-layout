@@ -89,11 +89,11 @@ final class StyleFieldTranslationTests: XCTestCase {
     // MARK: - flex-basis
 
     func testFlexBasisPxPoints() {
-        let s = resolve(style: Style(flexBasis: .px(120)))
+        let s = resolve(style: Style(flexBasis: .length(.px(120))))
         XCTAssertEqual(s.item.basis, .points(120))
     }
     func testFlexBasisPercentFraction() {
-        let s = resolve(style: Style(flexBasis: .percent(50)))
+        let s = resolve(style: Style(flexBasis: .length(.percent(50))))
         XCTAssertEqual(s.item.basis, .fraction(0.5))
     }
 

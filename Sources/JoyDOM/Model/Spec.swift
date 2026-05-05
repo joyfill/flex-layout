@@ -88,15 +88,15 @@ public struct NodeProps: Equatable {
     /// rules per the cascade order documented in `DOM/guides/Styles.md`.
     public var style: Style?
     /// Open bag for component-specific props (`[key: string]: unknown` from
-    /// the TS spec). String, number, and boolean JSON values are coerced
-    /// to their string representation for easy consumption by factories.
-    public var extras: [String: String]
+    /// the TS spec). Preserves structured JSON values — arrays, objects,
+    /// numbers, booleans, and null — without coercing them to strings.
+    public var extras: [String: JSONValue]
 
     public init(
         id: String? = nil,
         className: [String]? = nil,
         style: Style? = nil,
-        extras: [String: String] = [:]
+        extras: [String: JSONValue] = [:]
     ) {
         self.id = id
         self.className = className
@@ -147,6 +147,24 @@ public struct Length: Equatable {
     }
 }
 
+/// `flexBasis` is either the keyword `"auto"` or a concrete `Length`.
+///
+/// Swift's type system can't encode this union as a `RawRepresentable` enum
+/// because `Length` isn't a raw value, so we use a custom enum with a manual
+/// `Codable` implementation that tries the string path first.
+public enum FlexBasisValue: Equatable {
+    case auto
+    case length(Length)
+
+    /// Flatten to a string suitable for component-factory `props` dicts.
+    public var stringValue: String {
+        switch self {
+        case .auto: return "auto"
+        case .length(let l): return l.unit == "px" ? "\(l.value)px" : "\(l.value)\(l.unit)"
+        }
+    }
+}
+
 /// Subset of CSS that joy-dom supports. Mirrors `Style` in `DOM/spec.ts`.
 ///
 /// Every field is optional — `Style()` represents "no overrides". The
@@ -169,7 +187,7 @@ public struct Style: Equatable {
     public var flexDirection: Style.FlexDirection?
     public var flexGrow: Double?
     public var flexShrink: Double?
-    public var flexBasis: Length?
+    public var flexBasis: FlexBasisValue?
     public var justifyContent: Style.JustifyContent?
     public var alignItems: Style.AlignItems?
     public var alignSelf: Style.AlignSelf?
@@ -224,7 +242,7 @@ public struct Style: Equatable {
         flexDirection: Style.FlexDirection? = nil,
         flexGrow: Double? = nil,
         flexShrink: Double? = nil,
-        flexBasis: Length? = nil,
+        flexBasis: FlexBasisValue? = nil,
         justifyContent: Style.JustifyContent? = nil,
         alignItems: Style.AlignItems? = nil,
         alignSelf: Style.AlignSelf? = nil,
@@ -816,6 +834,59 @@ extension Style.FontWeight: Codable {
     }
 }
 
+/// Lossless JSON value type for `NodeProps.extras`. Mirrors the
+/// `[key: string]: unknown` escape hatch in the TS spec — preserves
+/// arrays, objects, and null without coercing them to strings.
+public indirect enum JSONValue: Equatable, Codable {
+    case string(String)
+    case number(Double)
+    case bool(Bool)
+    case null
+    case array([JSONValue])
+    case object([String: JSONValue])
+
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.singleValueContainer()
+        // Bool must precede Double — Swift's JSON decoder decodes `true`
+        // as 1.0 if Bool is not tried first.
+        if let b = try? c.decode(Bool.self)               { self = .bool(b);   return }
+        if let s = try? c.decode(String.self)             { self = .string(s); return }
+        if let n = try? c.decode(Double.self)             { self = .number(n); return }
+        if c.decodeNil()                                  { self = .null;      return }
+        if let a = try? c.decode([JSONValue].self)        { self = .array(a);  return }
+        if let o = try? c.decode([String: JSONValue].self){ self = .object(o); return }
+        throw DecodingError.typeMismatch(
+            JSONValue.self,
+            .init(codingPath: decoder.codingPath,
+                  debugDescription: "unexpected JSON type for JSONValue")
+        )
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var c = encoder.singleValueContainer()
+        switch self {
+        case .string(let s): try c.encode(s)
+        case .number(let n): try c.encode(n)
+        case .bool(let b):   try c.encode(b)
+        case .null:          try c.encodeNil()
+        case .array(let a):  try c.encode(a)
+        case .object(let o): try c.encode(o)
+        }
+    }
+
+    /// Flatten to a `String` for component-factory props dicts that expect
+    /// `[String: String]`. Returns `nil` for arrays and objects since they
+    /// can't be meaningfully collapsed to a single string.
+    public var stringValue: String? {
+        switch self {
+        case .string(let s): return s
+        case .number(let n): return n.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(n)) : String(n)
+        case .bool(let b):   return b ? "true" : "false"
+        case .null, .array, .object: return nil
+        }
+    }
+}
+
 /// `NodeProps` requires a custom Codable to capture unknown keys as
 /// `extras` (the `[key: string]: unknown` escape hatch from the TS spec)
 /// while still synthesizing the known fields normally.
@@ -832,11 +903,11 @@ extension NodeProps: Codable {
 
         let any = try decoder.container(keyedBy: AnyCodingKey.self)
         let reserved: Set<String> = ["id", "className", "style"]
-        var bag: [String: String] = [:]
+        var bag: [String: JSONValue] = [:]
         for key in any.allKeys where !reserved.contains(key.stringValue) {
-            if let s = try? any.decode(String.self,  forKey: key) { bag[key.stringValue] = s }
-            else if let n = try? any.decode(Double.self, forKey: key) { bag[key.stringValue] = n.truncatingRemainder(dividingBy: 1) == 0 ? String(Int(n)) : String(n) }
-            else if let b = try? any.decode(Bool.self,   forKey: key) { bag[key.stringValue] = b ? "true" : "false" }
+            if let v = try? any.decode(JSONValue.self, forKey: key) {
+                bag[key.stringValue] = v
+            }
         }
         extras = bag
     }
@@ -849,6 +920,26 @@ extension NodeProps: Codable {
         var any = encoder.container(keyedBy: AnyCodingKey.self)
         for (k, v) in extras {
             try any.encode(v, forKey: AnyCodingKey(k))
+        }
+    }
+}
+
+/// `FlexBasisValue` is either the string `"auto"` or a `Length` object.
+/// We try the string path first so a bare `"auto"` decodes correctly without
+/// accidentally matching the `Length` struct.
+extension FlexBasisValue: Codable {
+    public init(from decoder: Decoder) throws {
+        let c = try decoder.singleValueContainer()
+        if let s = try? c.decode(String.self), s == "auto" { self = .auto; return }
+        self = .length(try Length(from: decoder))
+    }
+    public func encode(to encoder: Encoder) throws {
+        switch self {
+        case .auto:
+            var c = encoder.singleValueContainer()
+            try c.encode("auto")
+        case .length(let l):
+            try l.encode(to: encoder)
         }
     }
 }

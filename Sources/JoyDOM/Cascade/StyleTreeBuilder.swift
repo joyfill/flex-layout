@@ -50,6 +50,7 @@ internal enum StyleTreeBuilder {
         rootID: String,
         rules: [StyleResolver.Rule],
         classNameOverrides: [String: [String]] = [:],
+        extrasOverrides: [String: [String: String]] = [:],
         bindingsByID: [String: String] = [:],
         diagnostics: inout JoyDiagnostics
     ) -> [StyleNode] {
@@ -85,6 +86,7 @@ internal enum StyleTreeBuilder {
             siblingsByParent: &siblingsByParent,
             rules: rules,
             classNameOverrides: classNameOverrides,
+            extrasOverrides: extrasOverrides,
             bindingsByID: bindingsByID,
             output: &output,
             diagnostics: &diagnostics
@@ -106,6 +108,7 @@ internal enum StyleTreeBuilder {
         siblingsByParent: inout [String: [StyleResolver.NodeRef]],
         rules: [StyleResolver.Rule],
         classNameOverrides: [String: [String]],
+        extrasOverrides: [String: [String: String]],
         bindingsByID: [String: String],
         output: inout [StyleNode],
         diagnostics: inout JoyDiagnostics
@@ -135,9 +138,18 @@ internal enum StyleTreeBuilder {
             diagnostics: &diagnostics
         )
 
-        // Merge props: node extras first (component-specific props from the
-        // JSON), then FormState binding path — binding wins on conflict.
-        var props: [String: String] = node.props?.extras ?? [:]
+        // Build props dict for component factories:
+        //   1. Base node extras (JSONValue flattened to String).
+        //   2. Active-breakpoint node override extras (override wins).
+        //   3. FormState binding path (binding always wins).
+        var props: [String: String] = [:]
+        for (k, v) in node.props?.extras ?? [:] {
+            if let s = v.stringValue { props[k] = s }
+        }
+        let authorID = node.props?.id
+        if let authorID, let overrides = extrasOverrides[authorID] {
+            for (k, s) in overrides { props[k] = s }
+        }
         if let path = bindingsByID[id] {
             props["binding"] = path
         }
@@ -183,6 +195,7 @@ internal enum StyleTreeBuilder {
                     siblingsByParent: &siblingsByParent,
                     rules: rules,
                     classNameOverrides: classNameOverrides,
+                    extrasOverrides: extrasOverrides,
                     bindingsByID: bindingsByID,
                     output: &output,
                     diagnostics: &diagnostics

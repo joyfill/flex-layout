@@ -177,7 +177,7 @@ enum JoyDOMSwiftEmitter {
         if let v = s.flexDirection  { lines.append("\(next)flexDirection: \(emitFlexDirection(v))") }
         if let v = s.flexGrow       { lines.append("\(next)flexGrow: \(formatNumber(v))") }
         if let v = s.flexShrink     { lines.append("\(next)flexShrink: \(formatNumber(v))") }
-        if let v = s.flexBasis      { lines.append("\(next)flexBasis: \(emitLength(v))") }
+        if let v = s.flexBasis      { lines.append("\(next)flexBasis: \(emitFlexBasis(v))") }
         if let v = s.justifyContent { lines.append("\(next)justifyContent: \(emitJustifyContent(v))") }
         if let v = s.alignItems     { lines.append("\(next)alignItems: \(emitAlignItems(v))") }
         if let v = s.flexWrap       { lines.append("\(next)flexWrap: \(emitFlexWrap(v))") }
@@ -238,6 +238,15 @@ enum JoyDOMSwiftEmitter {
         switch v {
         case .nowrap: return ".nowrap"
         case .wrap:   return ".wrap"
+        }
+    }
+
+    // MARK: - FlexBasis
+
+    private static func emitFlexBasis(_ v: FlexBasisValue) -> String {
+        switch v {
+        case .auto:          return ".auto"
+        case .length(let l): return ".length(\(emitLength(l)))"
         }
     }
 

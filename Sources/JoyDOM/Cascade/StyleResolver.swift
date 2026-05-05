@@ -341,7 +341,12 @@ public enum StyleResolver {
 
         if let v = s.flexGrow   { computed.item.grow   = CGFloat(v) }
         if let v = s.flexShrink { computed.item.shrink = CGFloat(v) }
-        if let v = s.flexBasis  { computed.item.basis  = lengthToFlexBasis(v) }
+        if let v = s.flexBasis {
+            switch v {
+            case .auto:         computed.item.basis = .auto
+            case .length(let l): computed.item.basis = lengthToFlexBasis(l)
+            }
+        }
         if let v = s.order      { computed.item.order  = v }
 
         if let v = s.alignSelf {

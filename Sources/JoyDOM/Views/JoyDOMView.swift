@@ -260,7 +260,32 @@ public struct JoyDOMView: View {
 
         if let ls = visual.letterSpacing { v = AnyView(v.tracking(ls)) }
 
-        if let lh = visual.lineHeight { v = AnyView(v.lineSpacing(CGFloat(lh))) }
+        if let lh = visual.lineHeight {
+            // CSS line-height is a multiplier of font size; SwiftUI lineSpacing
+            // is the extra space added between lines (additive, not multiplicative).
+            // Derive: extra = fontSize * lineHeight - fontSize.
+            let fontSizePt = visual.fontSize ?? 17
+            let spacing = max(0, fontSizePt * CGFloat(lh) - fontSizePt)
+            v = AnyView(v.lineSpacing(spacing))
+        }
+
+        if let tt = visual.textTransform {
+            switch tt {
+            case .uppercase: v = AnyView(v.environment(\.textCase, .uppercase))
+            case .lowercase: v = AnyView(v.environment(\.textCase, .lowercase))
+            case .none: break
+            }
+        }
+
+        if let td = visual.textDecoration {
+            switch td {
+            // TODO: for proper cascade to Text descendants, use a custom
+            // environment key; for now apply directly (works on Text leaves).
+            case .underline:   v = AnyView(v.underline())
+            case .lineThrough: v = AnyView(v.strikethrough())
+            case .none: break
+            }
+        }
 
         if let to = visual.textOverflow, to == .ellipsis {
             v = AnyView(v.truncationMode(.tail).lineLimit(1))
@@ -275,23 +300,13 @@ public struct JoyDOMView: View {
         if let hex = visual.backgroundColor { v = AnyView(v.background(Color(hex: hex))) }
         if let op  = visual.opacity          { v = AnyView(v.opacity(op)) }
 
-        // --- Border ---
+        // --- Border + border-radius ---
 
-        if let bw = visual.borderWidth, let bc = visual.borderColor,
-           visual.borderStyle == nil || visual.borderStyle == .solid {
-            let color = Color(hex: bc)
-            if let br = visual.borderRadius, case .uniform(let l) = br {
-                let radius = CGFloat(l.value)
-                v = AnyView(v
-                    .clipShape(RoundedRectangle(cornerRadius: radius))
-                    .overlay(RoundedRectangle(cornerRadius: radius).stroke(color, lineWidth: bw))
-                )
-            } else {
-                v = AnyView(v.overlay(Rectangle().stroke(color, lineWidth: bw)))
-            }
-        } else if let br = visual.borderRadius, case .uniform(let l) = br {
-            v = AnyView(v.clipShape(RoundedRectangle(cornerRadius: CGFloat(l.value))))
-        }
+        let hasBorder = visual.borderWidth != nil && visual.borderColor != nil &&
+            (visual.borderStyle == nil || visual.borderStyle == .solid)
+        v = applyBorderRadius(v, radius: visual.borderRadius,
+                              borderColor: hasBorder ? visual.borderColor : nil,
+                              borderWidth: hasBorder ? visual.borderWidth : nil)
 
         // --- Margin (outer spacing — wrap in a padded view) ---
 
@@ -310,6 +325,47 @@ public struct JoyDOMView: View {
             }
         }
 
+        return v
+    }
+
+    /// Apply border and/or border-radius to `view`.
+    ///
+    /// Handles all four combinations:
+    ///   - radius + border  → clip to shape, overlay stroke
+    ///   - radius only      → clip to shape
+    ///   - border only      → overlay plain Rectangle stroke
+    ///   - neither          → no change
+    ///
+    /// Per-corner radii use `UnevenRoundedRectangle` (iOS 16+).
+    private func applyBorderRadius(
+        _ view: AnyView,
+        radius: BorderRadius?,
+        borderColor: String?,
+        borderWidth: CGFloat?
+    ) -> AnyView {
+        let strokeColor = borderColor.map { Color(hex: $0) }
+        guard let radius else {
+            if let sc = strokeColor, let bw = borderWidth {
+                return AnyView(view.overlay(Rectangle().stroke(sc, lineWidth: bw)))
+            }
+            return view
+        }
+        let shape: AnyShape
+        switch radius {
+        case .uniform(let l):
+            shape = AnyShape(RoundedRectangle(cornerRadius: CGFloat(l.value)))
+        case .corners(let tl, let tr, let br, let bl):
+            shape = AnyShape(UnevenRoundedRectangle(
+                topLeadingRadius:     CGFloat(tl?.value ?? 0),
+                bottomLeadingRadius:  CGFloat(bl?.value ?? 0),
+                bottomTrailingRadius: CGFloat(br?.value ?? 0),
+                topTrailingRadius:    CGFloat(tr?.value ?? 0)
+            ))
+        }
+        var v = AnyView(view.clipShape(shape))
+        if let sc = strokeColor, let bw = borderWidth {
+            v = AnyView(v.overlay(shape.stroke(sc, lineWidth: bw)))
+        }
         return v
     }
 
@@ -336,10 +392,18 @@ public struct JoyDOMView: View {
             diagnostics: &diagnostics
         )
         var classNameOverrides: [String: [String]] = [:]
+        var extrasOverrides: [String: [String: String]] = [:]
         if let bp = activeBreakpoint {
             for (id, props) in bp.nodes {
                 if let classes = props.className {
                     classNameOverrides[id] = classes
+                }
+                if !props.extras.isEmpty {
+                    var flat: [String: String] = [:]
+                    for (k, v) in props.extras {
+                        if let s = v.stringValue { flat[k] = s }
+                    }
+                    if !flat.isEmpty { extrasOverrides[id] = flat }
                 }
             }
         }
@@ -350,6 +414,7 @@ public struct JoyDOMView: View {
             rootID: "__joydom_root__",
             rules: rules,
             classNameOverrides: classNameOverrides,
+            extrasOverrides: extrasOverrides,
             bindingsByID: bindingsByID,
             diagnostics: &diagnostics
         )
