@@ -255,4 +255,36 @@ final class StyleFieldTranslationTests: XCTestCase {
     func testDisplayInlineFlexMapsToFlex() {
         XCTAssertEqual(resolve(style: Style(display: .inlineFlex)).display, .flex)
     }
+
+    // MARK: - letter-spacing (Phase 2.2 — em→points conversion)
+
+    func testLetterSpacingPxStaysAbsolute() {
+        // Production payloads send `.px` lengths — those must pass
+        // through untouched so authors get a literal points value.
+        let s = resolve(style: Style(
+            fontSize:      .px(16),
+            letterSpacing: .px(2)
+        ))
+        XCTAssertEqual(s.visual.letterSpacing, 2.0)
+    }
+
+    func testLetterSpacingEmScalesByFontSize() {
+        // Bare/em-style values are font-size relative per CSS:
+        // `0.1em` at 16px font => 1.6 pt of tracking.
+        let s = resolve(style: Style(
+            fontSize:      .px(16),
+            letterSpacing: Length(value: 0.1, unit: "em")
+        ))
+        XCTAssertEqual(Double(s.visual.letterSpacing ?? 0), 1.6, accuracy: 0.0001)
+    }
+
+    func testLetterSpacingEmDefaultsToSeventeenWhenFontSizeUnset() {
+        // Without an explicit font-size the resolver falls back to the
+        // SwiftUI system body size of 17pt so authors still get a sane
+        // ratio.
+        let s = resolve(style: Style(
+            letterSpacing: Length(value: 0.1, unit: "em")
+        ))
+        XCTAssertEqual(Double(s.visual.letterSpacing ?? 0), 1.7, accuracy: 0.0001)
+    }
 }

@@ -442,7 +442,20 @@ public enum StyleResolver {
         if let v = s.textAlign      { computed.visual.textAlign      = v }
         if let v = s.textTransform  { computed.visual.textTransform  = v }
         if let v = s.lineHeight     { computed.visual.lineHeight     = v }
-        if let v = s.letterSpacing  { computed.visual.letterSpacing  = lengthToPx(v) }
+        if let v = s.letterSpacing {
+            // CSS `letter-spacing` accepts either an absolute length (`px`)
+            // or a font-relative em multiplier. The renderer wants an
+            // absolute points value to feed to `.tracking()`, so resolve
+            // here: `.px` passes through untouched; any other unit (`em`,
+            // bare ratio, etc.) is treated as a multiplier of the resolved
+            // font size (defaulting to the system 17pt when none is set).
+            if v.unit == "px" {
+                computed.visual.letterSpacing = lengthToPx(v)
+            } else {
+                let fontSize = s.fontSize.map { lengthToPx($0) } ?? 17.0
+                computed.visual.letterSpacing = CGFloat(v.value) * fontSize
+            }
+        }
         if let v = s.textOverflow   { computed.visual.textOverflow   = v }
         if let v = s.whiteSpace     { computed.visual.whiteSpace     = v }
 

@@ -20,6 +20,11 @@ import Foundation
 import SwiftUI
 import FlexLayout
 import CoreGraphics
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
 
 /// Renders a `Spec` as a live SwiftUI view tree backed by `FlexLayout`.
 ///
@@ -209,6 +214,41 @@ public struct JoyDOMView: View {
         return AnyView(applyItem(maybeHidden, style: child.itemStyle))
     }
 
+    /// Map a numeric CSS `font-weight` (per CSS Fonts Module Level 4) to a
+    /// SwiftUI `Font.Weight`. Each named weight covers a 100-unit band
+    /// centered on its canonical numeric value — the boundary sits at the
+    /// midpoint, so `449` still resolves to `.regular` while `450`
+    /// promotes to `.medium`. Exposed `internal` so tests can pin every
+    /// boundary value directly.
+    internal static func swiftFontWeight(forCSSWeight n: Int) -> Font.Weight {
+        switch n {
+        case ..<150:  return .ultraLight
+        case ..<250:  return .thin
+        case ..<350:  return .light
+        case ..<450:  return .regular
+        case ..<550:  return .medium
+        case ..<650:  return .semibold
+        case ..<750:  return .bold
+        case ..<850:  return .heavy
+        default:      return .black
+        }
+    }
+
+    /// Compute the SwiftUI `lineSpacing` value for a given CSS
+    /// `line-height` multiplier and font size, matching the formula used
+    /// inside `applyVisual`. Exposed `internal` for tests.
+    internal static func lineSpacing(forLineHeight lh: Double, fontSize: CGFloat) -> CGFloat {
+        let target = fontSize * CGFloat(lh)
+        #if canImport(UIKit)
+        let systemLineHeight = UIFont.systemFont(ofSize: fontSize).lineHeight
+        #elseif canImport(AppKit)
+        let systemLineHeight = NSFont.systemFont(ofSize: fontSize).boundingRectForFont.height
+        #else
+        let systemLineHeight = fontSize * 1.2
+        #endif
+        return max(0, target - systemLineHeight)
+    }
+
     /// Apply non-layout CSS to a view using SwiftUI view modifiers.
     ///
     /// Typography modifiers propagate through SwiftUI's environment, so they
@@ -227,19 +267,7 @@ public struct JoyDOMView: View {
                 case .normal:      font = font.weight(.regular)
                 case .bold:        font = font.weight(.bold)
                 case .numeric(let n):
-                    let swiftWeight: Font.Weight
-                    switch n {
-                    case ..<200:   swiftWeight = .ultraLight
-                    case 200..<300: swiftWeight = .thin
-                    case 300..<400: swiftWeight = .light
-                    case 400..<500: swiftWeight = .regular
-                    case 500..<600: swiftWeight = .medium
-                    case 600..<700: swiftWeight = .semibold
-                    case 700..<800: swiftWeight = .bold
-                    case 800..<900: swiftWeight = .heavy
-                    default:        swiftWeight = .black
-                    }
-                    font = font.weight(swiftWeight)
+                    font = font.weight(JoyDOMView.swiftFontWeight(forCSSWeight: n))
                 }
             }
             if visual.fontStyle == .italic { font = font.italic() }
@@ -261,12 +289,14 @@ public struct JoyDOMView: View {
         if let ls = visual.letterSpacing { v = AnyView(v.tracking(ls)) }
 
         if let lh = visual.lineHeight {
-            // CSS line-height is a multiplier of font size; SwiftUI lineSpacing
-            // is the extra space added between lines (additive, not multiplicative).
-            // Derive: extra = fontSize * lineHeight - fontSize.
+            // CSS line-height is a multiplier of font size; SwiftUI's
+            // lineSpacing is the *extra* space added between lines, not the
+            // total line height. `lineSpacing(forLineHeight:fontSize:)`
+            // subtracts the platform font's natural line height (which
+            // already includes default leading) from the target so the
+            // visual gap matches CSS expectations.
             let fontSizePt = visual.fontSize ?? 17
-            let spacing = max(0, fontSizePt * CGFloat(lh) - fontSizePt)
-            v = AnyView(v.lineSpacing(spacing))
+            v = AnyView(v.lineSpacing(JoyDOMView.lineSpacing(forLineHeight: lh, fontSize: fontSizePt)))
         }
 
         if let tt = visual.textTransform {
@@ -278,13 +308,19 @@ public struct JoyDOMView: View {
         }
 
         if let td = visual.textDecoration {
+            // SwiftUI's `.underline()` / `.strikethrough()` only paint on
+            // `Text` itself, not on container `View`s, so the value has to
+            // ride down through the environment and be re-applied at the
+            // text leaf. `_DecoratedText` (the `primitive_string` /
+            // `primitive_number` renderer) reads `inheritedTextDecoration`
+            // and applies the matching modifier to its `Text`.
+            let inherited: InheritedTextDecoration
             switch td {
-            // TODO: for proper cascade to Text descendants, use a custom
-            // environment key; for now apply directly (works on Text leaves).
-            case .underline:   v = AnyView(v.underline())
-            case .lineThrough: v = AnyView(v.strikethrough())
-            case .none: break
+            case .underline:   inherited = .underline
+            case .lineThrough: inherited = .lineThrough
+            case .none:        inherited = .none
             }
+            v = AnyView(v.environment(\.inheritedTextDecoration, inherited))
         }
 
         if let to = visual.textOverflow, to == .ellipsis {

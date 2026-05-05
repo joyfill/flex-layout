@@ -71,13 +71,18 @@ extension ComponentRegistry {
         }
 
         // Internal primitives produced by StyleTreeBuilder for text children.
+        // Both string and number leaves render through `_DecoratedText` so
+        // they can pick up the `inheritedTextDecoration` environment value
+        // an ancestor declared and apply `.underline()` / `.strikethrough()`
+        // directly to the leaf — SwiftUI's container-level decoration
+        // modifiers don't cascade to descendant `Text`.
         registerIfAbsent("primitive_string") { props, _ in
             let value = props.string("value") ?? ""
-            return .custom { Text(value) }
+            return .custom { _DecoratedText(text: value) }
         }
         registerIfAbsent("primitive_number") { props, _ in
             let value = props.string("value") ?? ""
-            return .custom { Text(value) }
+            return .custom { _DecoratedText(text: value) }
         }
         registerIfAbsent("primitive_null") { _, _ in
             .custom { EmptyView() }
@@ -92,5 +97,23 @@ extension ComponentRegistry {
     ) {
         guard self.factory(for: type) == nil else { return }
         register(type, factory: factory)
+    }
+}
+
+/// Leaf renderer for `primitive_string` / `primitive_number`. Reads the
+/// `inheritedTextDecoration` environment value an ancestor handed down
+/// (via `JoyDOMView.applyVisual`) and paints the corresponding Text-level
+/// modifier — SwiftUI's container `.underline()` / `.strikethrough()` do
+/// not cascade through `AnyView` boundaries, so the leaf has to opt in.
+internal struct _DecoratedText: View {
+    let text: String
+    @Environment(\.inheritedTextDecoration) private var decoration
+
+    var body: some View {
+        switch decoration {
+        case .none:        Text(text)
+        case .underline:   Text(text).underline()
+        case .lineThrough: Text(text).strikethrough()
+        }
     }
 }
