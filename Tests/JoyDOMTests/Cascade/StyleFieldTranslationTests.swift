@@ -203,4 +203,54 @@ final class StyleFieldTranslationTests: XCTestCase {
         // `.inline`. Spec'd in the resolver's apply() comment.
         XCTAssertEqual(resolve(style: Style(display: .inlineBlock)).display, .inline)
     }
+
+    // MARK: - Phase 1: spec-enum extensions
+
+    // 1.1 — flex-direction reverse variants
+    func testFlexDirectionRowReverseMapsToFlexLayoutRowReverse() {
+        XCTAssertEqual(resolve(style: Style(flexDirection: .rowReverse)).container.direction, .rowReverse)
+    }
+    func testFlexDirectionColumnReverseMapsToFlexLayoutColumnReverse() {
+        XCTAssertEqual(resolve(style: Style(flexDirection: .columnReverse)).container.direction, .columnReverse)
+    }
+
+    // 1.2 — flex-wrap: wrap-reverse
+    func testFlexWrapWrapReverseMapsToFlexLayoutWrapReverse() {
+        XCTAssertEqual(resolve(style: Style(flexWrap: .wrapReverse)).container.wrap, .wrapReverse)
+    }
+
+    // 1.3 — align-items / align-self: baseline
+    func testAlignItemsBaselineMapsToFlexLayoutBaseline() {
+        XCTAssertEqual(resolve(style: Style(alignItems: .baseline)).container.alignItems, .baseline)
+    }
+    func testAlignSelfBaselineMapsToFlexLayoutBaseline() {
+        XCTAssertEqual(resolve(style: Style(alignSelf: .baseline)).item.alignSelf, .baseline)
+    }
+
+    // 1.4 — align-content
+    func testAlignContentEachValueMapsThrough() {
+        XCTAssertEqual(resolve(style: Style(alignContent: .flexStart)).container.alignContent, .flexStart)
+        XCTAssertEqual(resolve(style: Style(alignContent: .flexEnd)).container.alignContent, .flexEnd)
+        XCTAssertEqual(resolve(style: Style(alignContent: .center)).container.alignContent, .center)
+        XCTAssertEqual(resolve(style: Style(alignContent: .spaceBetween)).container.alignContent, .spaceBetween)
+        XCTAssertEqual(resolve(style: Style(alignContent: .spaceAround)).container.alignContent, .spaceAround)
+        XCTAssertEqual(resolve(style: Style(alignContent: .spaceEvenly)).container.alignContent, .spaceEvenly)
+        XCTAssertEqual(resolve(style: Style(alignContent: .stretch)).container.alignContent, .stretch)
+    }
+
+    // 1.6 — position: fixed / sticky → mapped to absolute (with diagnostic)
+    func testPositionFixedFallsBackToAbsolute() {
+        XCTAssertEqual(resolve(style: Style(position: .fixed)).item.position, .absolute)
+    }
+    func testPositionStickyFallsBackToAbsolute() {
+        XCTAssertEqual(resolve(style: Style(position: .sticky)).item.position, .absolute)
+    }
+
+    // 1.7 — display: inline / inline-flex → mapped to flex/inline today
+    func testDisplayInlineMapsToInline() {
+        XCTAssertEqual(resolve(style: Style(display: .inline)).display, .inline)
+    }
+    func testDisplayInlineFlexMapsToFlex() {
+        XCTAssertEqual(resolve(style: Style(display: .inlineFlex)).display, .flex)
+    }
 }

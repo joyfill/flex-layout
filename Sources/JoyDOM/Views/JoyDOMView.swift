@@ -302,11 +302,13 @@ public struct JoyDOMView: View {
 
         // --- Border + border-radius ---
 
+        let resolvedBorderStyle = visual.borderStyle ?? .solid
         let hasBorder = visual.borderWidth != nil && visual.borderColor != nil &&
-            (visual.borderStyle == nil || visual.borderStyle == .solid)
+            resolvedBorderStyle != .none
         v = applyBorderRadius(v, radius: visual.borderRadius,
                               borderColor: hasBorder ? visual.borderColor : nil,
-                              borderWidth: hasBorder ? visual.borderWidth : nil)
+                              borderWidth: hasBorder ? visual.borderWidth : nil,
+                              borderStyle: hasBorder ? resolvedBorderStyle : nil)
 
         // --- Margin (outer spacing — wrap in a padded view) ---
 
@@ -341,12 +343,18 @@ public struct JoyDOMView: View {
         _ view: AnyView,
         radius: BorderRadius?,
         borderColor: String?,
-        borderWidth: CGFloat?
+        borderWidth: CGFloat?,
+        borderStyle: Style.BorderStyleProp? = nil
     ) -> AnyView {
         let strokeColor = borderColor.map { Color(hex: $0) }
         guard let radius else {
             if let sc = strokeColor, let bw = borderWidth {
-                return AnyView(view.overlay(Rectangle().stroke(sc, lineWidth: bw)))
+                return AnyView(view.overlay(
+                    strokedOverlay(shape: AnyShape(Rectangle()),
+                                   color: sc,
+                                   width: bw,
+                                   style: borderStyle ?? .solid)
+                ))
             }
             return view
         }
@@ -364,9 +372,47 @@ public struct JoyDOMView: View {
         }
         var v = AnyView(view.clipShape(shape))
         if let sc = strokeColor, let bw = borderWidth {
-            v = AnyView(v.overlay(shape.stroke(sc, lineWidth: bw)))
+            v = AnyView(v.overlay(
+                strokedOverlay(shape: shape,
+                               color: sc,
+                               width: bw,
+                               style: borderStyle ?? .solid)
+            ))
         }
         return v
+    }
+
+    /// Build the overlay view that draws a stroke around `shape` using the
+    /// requested CSS `border-style`. `solid` uses the default StrokeStyle;
+    /// `dashed` / `dotted` use a `StrokeStyle` with a dash array; `double`
+    /// stacks two concentric strokes (inner shrunk by 2× line-width) to
+    /// approximate the CSS double-line look.
+    @ViewBuilder
+    private func strokedOverlay(
+        shape: AnyShape,
+        color: Color,
+        width bw: CGFloat,
+        style: Style.BorderStyleProp
+    ) -> some View {
+        switch style {
+        case .none:
+            EmptyView()
+        case .solid:
+            shape.stroke(color, lineWidth: bw)
+        case .dashed:
+            shape.stroke(color, style: StrokeStyle(lineWidth: bw, dash: [bw * 3, bw * 2]))
+        case .dotted:
+            shape.stroke(color, style: StrokeStyle(lineWidth: bw, lineCap: .round, dash: [0.01, bw * 2]))
+        case .double:
+            // CSS `double` is two parallel lines with a gap between them.
+            // Approximate by stacking two strokes of half width: outer at the
+            // shape edge, inner inset by 2× the half width so a visible gap
+            // remains between them.
+            ZStack {
+                shape.stroke(color, lineWidth: bw / 3)
+                shape.stroke(color, lineWidth: bw / 3).padding(bw * 2 / 3)
+            }
+        }
     }
 
     // MARK: - Rendering helpers

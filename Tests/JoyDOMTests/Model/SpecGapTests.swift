@@ -485,4 +485,57 @@ final class SpecGapTests: XCTestCase {
         )
         try roundTrip(spec)
     }
+
+    // MARK: - Phase 1.6 — position: fixed / sticky emit a diagnostic
+
+    /// Helper that runs the cascade with diagnostics so callers can inspect
+    /// the warnings emitted while resolving a specific style.
+    private func resolveCollectingDiagnostics(
+        style: Style
+    ) -> (computed: ComputedStyle, diagnostics: JoyDiagnostics) {
+        var diags = JoyDiagnostics()
+        let spec = Spec(
+            style: ["#x": style],
+            layout: Node(type: "div", props: NodeProps(id: "x"))
+        )
+        let rules = RuleBuilder.buildRules(from: spec, activeBreakpoint: nil, diagnostics: &diags)
+        let nodes = StyleTreeBuilder.build(
+            layout: spec.layout,
+            rootID: "__joydom_root__",
+            rules: rules,
+            diagnostics: &diags
+        )
+        let computed = nodes.first(where: { $0.id == "x" })!.computedStyle
+        return (computed, diags)
+    }
+
+    func testPositionFixedEmitsDiagnostic() {
+        let (_, diags) = resolveCollectingDiagnostics(style: Style(position: .fixed))
+        XCTAssertTrue(
+            diags.warnings.contains { $0.detail.contains("fixed") },
+            "expected a diagnostic mentioning position: fixed"
+        )
+    }
+
+    func testPositionStickyEmitsDiagnostic() {
+        let (_, diags) = resolveCollectingDiagnostics(style: Style(position: .sticky))
+        XCTAssertTrue(
+            diags.warnings.contains { $0.detail.contains("sticky") },
+            "expected a diagnostic mentioning position: sticky"
+        )
+    }
+
+    func testPositionRelativeDoesNotEmitDiagnostic() {
+        let (_, diags) = resolveCollectingDiagnostics(style: Style(position: .relative))
+        XCTAssertFalse(
+            diags.warnings.contains { $0.detail.contains("fixed") || $0.detail.contains("sticky") },
+            "position: relative must not emit a fixed/sticky fallback warning"
+        )
+    }
+
+    func testDisplayInlineDoesNotEmitDiagnostic() {
+        let (_, diags) = resolveCollectingDiagnostics(style: Style(display: .inline))
+        XCTAssertEqual(diags.warnings.count, 0,
+                       "display: inline is a benign block-level fallback; no warning expected")
+    }
 }

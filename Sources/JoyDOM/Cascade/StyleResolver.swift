@@ -256,6 +256,9 @@ public enum StyleResolver {
             case .flex:        computed.display = .flex;  computed.isDisplayNone = false
             case .block:       computed.display = .block; computed.isDisplayNone = false
             case .inlineBlock: computed.display = .inline; computed.isDisplayNone = false
+            case .inline:      computed.display = .inline; computed.isDisplayNone = false
+            // FlexLayout has no inline-flex mode; map to .flex for now.
+            case .inlineFlex:  computed.display = .flex; computed.isDisplayNone = false
             case .none:        computed.isDisplayNone = true
             }
         }
@@ -264,15 +267,18 @@ public enum StyleResolver {
 
         if let v = s.flexDirection {
             switch v {
-            case .row:    computed.container.direction = .row
-            case .column: computed.container.direction = .column
+            case .row:           computed.container.direction = .row
+            case .column:        computed.container.direction = .column
+            case .rowReverse:    computed.container.direction = .rowReverse
+            case .columnReverse: computed.container.direction = .columnReverse
             }
         }
 
         if let v = s.flexWrap {
             switch v {
-            case .nowrap: computed.container.wrap = .nowrap
-            case .wrap:   computed.container.wrap = .wrap
+            case .nowrap:      computed.container.wrap = .nowrap
+            case .wrap:        computed.container.wrap = .wrap
+            case .wrapReverse: computed.container.wrap = .wrapReverse
             }
         }
 
@@ -293,6 +299,19 @@ public enum StyleResolver {
             case .flexEnd:   computed.container.alignItems = .flexEnd
             case .center:    computed.container.alignItems = .center
             case .stretch:   computed.container.alignItems = .stretch
+            case .baseline:  computed.container.alignItems = .baseline
+            }
+        }
+
+        if let v = s.alignContent {
+            switch v {
+            case .flexStart:    computed.container.alignContent = .flexStart
+            case .flexEnd:      computed.container.alignContent = .flexEnd
+            case .center:       computed.container.alignContent = .center
+            case .spaceBetween: computed.container.alignContent = .spaceBetween
+            case .spaceAround:  computed.container.alignContent = .spaceAround
+            case .spaceEvenly:  computed.container.alignContent = .spaceEvenly
+            case .stretch:      computed.container.alignContent = .stretch
             }
         }
 
@@ -356,6 +375,7 @@ public enum StyleResolver {
             case .flexEnd:   computed.item.alignSelf = .flexEnd
             case .center:    computed.item.alignSelf = .center
             case .stretch:   computed.item.alignSelf = .stretch
+            case .baseline:  computed.item.alignSelf = .baseline
             }
         }
 
@@ -374,6 +394,19 @@ public enum StyleResolver {
             switch v {
             case .absolute: computed.item.position = .absolute
             case .relative: computed.item.position = .relative
+            // TODO: SwiftUI lacks native fixed/sticky; treated as absolute.
+            case .fixed:
+                computed.item.position = .absolute
+                diagnostics.warn(JoyWarning(
+                    .other,
+                    "position: fixed is not natively supported; rendered as position: absolute"
+                ))
+            case .sticky:
+                computed.item.position = .absolute
+                diagnostics.warn(JoyWarning(
+                    .other,
+                    "position: sticky is not natively supported; rendered as position: absolute"
+                ))
             }
         }
 
