@@ -1,4 +1,5 @@
 import XCTest
+import SwiftUI
 @testable import JoyDOM
 import FlexLayout
 
@@ -286,5 +287,65 @@ final class StyleFieldTranslationTests: XCTestCase {
             letterSpacing: Length(value: 0.1, unit: "em")
         ))
         XCTAssertEqual(Double(s.visual.letterSpacing ?? 0), 1.7, accuracy: 0.0001)
+    }
+
+    // MARK: - Phase 3: margin moved from VisualStyle to ItemStyle
+
+    func testMarginUniformLandsOnItemNotVisual() {
+        let c = resolve(style: Style(margin: .uniform(.px(12))))
+        guard case .uniform(let l) = c.item.margin else {
+            XCTFail("expected .uniform on item.margin"); return
+        }
+        XCTAssertEqual(l, .px(12))
+    }
+
+    func testMarginPerSideLandsOnItem() {
+        let c = resolve(style: Style(margin: .sides(
+            top: .px(1), right: .px(2), bottom: .px(3), left: .px(4)
+        )))
+        guard case .sides(let t, let r, let b, let l) = c.item.margin else {
+            XCTFail("expected .sides on item.margin"); return
+        }
+        XCTAssertEqual(t, .px(1))
+        XCTAssertEqual(r, .px(2))
+        XCTAssertEqual(b, .px(3))
+        XCTAssertEqual(l, .px(4))
+    }
+
+    // MARK: - Phase 3: min/max width/height round-trip
+
+    func testMinMaxWidthRoundTripIntoItemStyle() {
+        let c = resolve(style: Style(minWidth: .px(200), maxWidth: .px(400)))
+        XCTAssertEqual(c.item.minWidth, 200)
+        XCTAssertEqual(c.item.maxWidth, 400)
+    }
+
+    func testMinMaxHeightRoundTripIntoItemStyle() {
+        let c = resolve(style: Style(minHeight: .px(60), maxHeight: .px(120)))
+        XCTAssertEqual(c.item.minHeight,  60)
+        XCTAssertEqual(c.item.maxHeight, 120)
+    }
+
+    func testMinMaxPropagateThroughFlexEngine() {
+        // End-to-end: Style → ItemStyle → FlexLayout adapter clamps the
+        // resolved frame width. Build a FlexItemInput from the resolved
+        // ItemStyle and run it through FlexEngine.solve.
+        let c = resolve(style: Style(width: .px(100), maxWidth: .px(50)))
+        let item = FlexItemInput(
+            measure:        { _ in .zero },
+            shrink:         0,
+            explicitWidth:  c.item.width,
+            explicitHeight: .points(20),
+            minWidth:       c.item.minWidth.map  { .points($0) },
+            maxWidth:       c.item.maxWidth.map  { .points($0) },
+            minHeight:      c.item.minHeight.map { .points($0) },
+            maxHeight:      c.item.maxHeight.map { .points($0) }
+        )
+        let solution = FlexEngine.solve(
+            config:   .init(direction: .row, alignItems: .flexStart),
+            inputs:   [item],
+            proposal: ProposedViewSize(width: 400, height: 200)
+        )
+        XCTAssertEqual(solution.frames[0].width, 50, accuracy: 0.5)
     }
 }

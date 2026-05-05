@@ -19,6 +19,11 @@ public struct FlexItemModifier: ViewModifier {
     // Extended spec properties
     let width:     FlexSize
     let height:    FlexSize
+    let minWidth:  FlexSize?
+    let maxWidth:  FlexSize?
+    let minHeight: FlexSize?
+    let maxHeight: FlexSize?
+    let margin:    EdgeInsets
     let overflow:  FlexOverflow
     let zIndex:    Int
     let position:  FlexPosition
@@ -30,21 +35,26 @@ public struct FlexItemModifier: ViewModifier {
 
     public func body(content: Content) -> some View {
         content
-            .layoutValue(key: FlexGrowKey.self,     value: grow)
-            .layoutValue(key: FlexShrinkKey.self,   value: shrink)
-            .layoutValue(key: FlexBasisKey.self,     value: basis)
-            .layoutValue(key: AlignSelfKey.self,     value: alignSelf)
-            .layoutValue(key: FlexOrderKey.self,     value: order)
-            .layoutValue(key: FlexWidthKey.self,     value: width)
-            .layoutValue(key: FlexHeightKey.self,    value: height)
-            .layoutValue(key: FlexOverflowKey.self,  value: overflow)
-            .layoutValue(key: FlexZIndexKey.self,    value: zIndex)
-            .layoutValue(key: FlexPositionKey.self,  value: position)
-            .layoutValue(key: FlexTopKey.self,       value: top)
-            .layoutValue(key: FlexBottomKey.self,    value: bottom)
-            .layoutValue(key: FlexLeadingKey.self,   value: leading)
-            .layoutValue(key: FlexTrailingKey.self,  value: trailing)
-            .layoutValue(key: FlexDisplayKey.self,   value: display)
+            .layoutValue(key: FlexGrowKey.self,       value: grow)
+            .layoutValue(key: FlexShrinkKey.self,     value: shrink)
+            .layoutValue(key: FlexBasisKey.self,      value: basis)
+            .layoutValue(key: AlignSelfKey.self,      value: alignSelf)
+            .layoutValue(key: FlexOrderKey.self,      value: order)
+            .layoutValue(key: FlexWidthKey.self,      value: width)
+            .layoutValue(key: FlexHeightKey.self,     value: height)
+            .layoutValue(key: FlexMinWidthKey.self,   value: minWidth)
+            .layoutValue(key: FlexMaxWidthKey.self,   value: maxWidth)
+            .layoutValue(key: FlexMinHeightKey.self,  value: minHeight)
+            .layoutValue(key: FlexMaxHeightKey.self,  value: maxHeight)
+            .layoutValue(key: FlexMarginKey.self,     value: margin)
+            .layoutValue(key: FlexOverflowKey.self,   value: overflow)
+            .layoutValue(key: FlexZIndexKey.self,     value: zIndex)
+            .layoutValue(key: FlexPositionKey.self,   value: position)
+            .layoutValue(key: FlexTopKey.self,        value: top)
+            .layoutValue(key: FlexBottomKey.self,     value: bottom)
+            .layoutValue(key: FlexLeadingKey.self,    value: leading)
+            .layoutValue(key: FlexTrailingKey.self,   value: trailing)
+            .layoutValue(key: FlexDisplayKey.self,    value: display)
     }
 }
 
@@ -131,6 +141,11 @@ public extension View {
         order:     Int          = 0,
         width:     FlexSize     = .auto,
         height:    FlexSize     = .auto,
+        minWidth:  FlexSize?    = nil,
+        maxWidth:  FlexSize?    = nil,
+        minHeight: FlexSize?    = nil,
+        maxHeight: FlexSize?    = nil,
+        margin:    EdgeInsets   = EdgeInsets(),
         overflow:  FlexOverflow = .visible,
         zIndex:    Int          = 0,
         position:  FlexPosition = .relative,
@@ -148,6 +163,11 @@ public extension View {
             order:     order,
             width:     width,
             height:    height,
+            minWidth:  minWidth,
+            maxWidth:  maxWidth,
+            minHeight: minHeight,
+            maxHeight: maxHeight,
+            margin:    margin,
             overflow:  overflow,
             zIndex:    zIndex,
             position:  position,

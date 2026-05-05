@@ -358,22 +358,9 @@ public struct JoyDOMView: View {
                               borderWidth: hasBorder ? visual.borderWidth : nil,
                               borderStyle: hasBorder ? (visual.borderStyle ?? .solid) : nil)
 
-        // --- Margin (outer spacing — wrap in a padded view) ---
-
-        if let margin = visual.margin {
-            switch margin {
-            case .uniform(let l):
-                let n = CGFloat(l.value)
-                v = AnyView(v.padding(n))
-            case .sides(let t, let r, let b, let l):
-                v = AnyView(v
-                    .padding(.top, CGFloat(t.value))
-                    .padding(.trailing, CGFloat(r.value))
-                    .padding(.bottom, CGFloat(b.value))
-                    .padding(.leading, CGFloat(l.value))
-                )
-            }
-        }
+        // Phase 3: `margin` is no longer applied here. FlexLayout's item
+        // pipeline now consumes it as a true flex-item margin, so the
+        // adapter in `applyItem` passes it through `.flexItem(margin:)`.
 
         return v
     }
@@ -584,11 +571,18 @@ public struct JoyDOMView: View {
     }
 
     /// Wraps one resolved child with the `.flexItem(...)` modifier carrying
-    /// every CSS item property. Min/max size constraints are applied as a
-    /// SwiftUI `.frame(...)` after the flex modifier since FlexLayout has no
-    /// native min/max API.
+    /// every CSS item property.
+    ///
+    /// Phase 3: min/max width/height and margin are now resolved by the
+    /// FlexLayout engine itself (see `FlexEngine.computeRawLayout`). The
+    /// adapter passes them through; the previous SwiftUI `.frame()` shim
+    /// for min/max constraints has been removed.
+    ///
+    /// TODO: box-sizing: border-box is not yet enforced here. The
+    /// `width`/`height` values pass through as content-box sizes per CSS
+    /// `box-sizing: content-box` (the initial value).
     private func applyItem(_ view: AnyView, style: ItemStyle) -> some View {
-        let withFlex = view.flexItem(
+        view.flexItem(
             grow:      style.grow,
             shrink:    style.shrink,
             basis:     style.basis,
@@ -596,6 +590,11 @@ public struct JoyDOMView: View {
             order:     style.order,
             width:     style.width,
             height:    style.height,
+            minWidth:  style.minWidth.map  { .points($0) },
+            maxWidth:  style.maxWidth.map  { .points($0) },
+            minHeight: style.minHeight.map { .points($0) },
+            maxHeight: style.maxHeight.map { .points($0) },
+            margin:    Self.edgeInsets(from: style.margin),
             overflow:  style.overflow,
             zIndex:    style.zIndex,
             position:  style.position,
@@ -604,16 +603,24 @@ public struct JoyDOMView: View {
             leading:   style.leading,
             trailing:  style.trailing
         )
-        guard style.minWidth != nil || style.maxWidth != nil ||
-              style.minHeight != nil || style.maxHeight != nil else {
-            return AnyView(withFlex)
+    }
+
+    /// Translate JoyDOM's `Padding` shape (uniform / per-side) into the
+    /// SwiftUI `EdgeInsets` value FlexLayout's `ItemStyle.margin` expects.
+    /// Returns `EdgeInsets()` (zero on all sides) when no margin is set.
+    private static func edgeInsets(from padding: Padding?) -> EdgeInsets {
+        guard let padding else { return EdgeInsets() }
+        switch padding {
+        case .uniform(let l):
+            let n = CGFloat(l.value)
+            return EdgeInsets(top: n, leading: n, bottom: n, trailing: n)
+        case .sides(let t, let r, let b, let l):
+            return EdgeInsets(
+                top:      CGFloat(t.value),
+                leading:  CGFloat(l.value),
+                bottom:   CGFloat(b.value),
+                trailing: CGFloat(r.value)
+            )
         }
-        return AnyView(withFlex.frame(
-            minWidth:  style.minWidth,
-            maxWidth:  style.maxWidth,
-            minHeight: style.minHeight,
-            maxHeight: style.maxHeight,
-            alignment: .topLeading
-        ))
     }
 }

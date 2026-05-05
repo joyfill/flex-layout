@@ -435,7 +435,10 @@ public enum StyleResolver {
         if let v = s.borderColor     { computed.visual.borderColor     = v }
         if let v = s.borderStyle     { computed.visual.borderStyle     = v }
         if let v = s.borderRadius    { computed.visual.borderRadius    = v }
-        if let v = s.margin          { computed.visual.margin          = v }
+        // Phase 3: margin is now a true flex-item property. Stored on
+        // ItemStyle so JoyDOMView's adapter can pass it into FlexLayout's
+        // ItemStyle.margin, which the engine consumes during layout.
+        if let v = s.margin          { computed.item.margin            = v }
 
         // Visual — typography
 
