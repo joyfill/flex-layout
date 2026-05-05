@@ -191,7 +191,8 @@ public enum ComponentResolver {
                         // Field-scoped key wins over the default `binding`
                         // key so one component can bind multiple fields
                         // (e.g. a row that binds both "value" and "checked").
-                        let path = nodeProps["binding.\(field)"] ?? nodeProps["binding"]
+                        let path = nodeProps["binding.\(field)"]?.stringValue
+                                ?? nodeProps["binding"]?.stringValue
                         guard let path else { return .constant("") }
                         return Binding(
                             get: { form.get(path) ?? "" },

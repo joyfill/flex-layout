@@ -16,7 +16,7 @@ final class ComponentResolverTests: XCTestCase {
         id: String,
         parentID: String? = nil,
         schemaType: String? = nil,
-        props: [String: String] = [:]
+        props: [String: JSONValue] = [:]
     ) -> StyleNode {
         StyleNode(
             id: id,
@@ -352,7 +352,7 @@ final class ComponentResolverTests: XCTestCase {
     /// `ComponentProps.values` so `props.string("placeholder")` inside the
     /// factory sees what the schema declared.
     func testSchemaPropsAreForwardedToFactory() {
-        final class PropsCapture { var seen: [String: String] = [:] }
+        final class PropsCapture { var seen: [String: JSONValue] = [:] }
         let captured = PropsCapture()
         let registry = ComponentRegistry()
             .register("text-input") { props, _ in
@@ -364,13 +364,13 @@ final class ComponentResolverTests: XCTestCase {
                 rootNode(),
                 styleNode(id: "name",
                           schemaType: "text-input",
-                          props: ["placeholder": "Full name",
-                                  "binding": "user.name"]),
+                          props: ["placeholder": .string("Full name"),
+                                  "binding": .string("user.name")]),
             ],
             registry: registry
         )
-        XCTAssertEqual(captured.seen["placeholder"], "Full name")
-        XCTAssertEqual(captured.seen["binding"], "user.name")
+        XCTAssertEqual(captured.seen["placeholder"], .string("Full name"))
+        XCTAssertEqual(captured.seen["binding"], .string("user.name"))
     }
 
     /// Props with no registered factory are irrelevant (placeholder
@@ -378,7 +378,7 @@ final class ComponentResolverTests: XCTestCase {
     func testPropsAreIgnoredOnPlaceholderPath() {
         let (res, _) = resolve(nodes: [
             rootNode(),
-            styleNode(id: "mystery", props: ["anything": "ok"]),
+            styleNode(id: "mystery", props: ["anything": .string("ok")]),
         ])
         XCTAssertEqual(res.children.first?.resolution, .placeholder)
     }
@@ -415,7 +415,7 @@ final class ComponentResolverTests: XCTestCase {
             nodes: [
                 rootNode(),
                 styleNode(id: "name", schemaType: "text-input",
-                          props: ["binding": "user.name"]),
+                          props: ["binding": .string("user.name")]),
             ],
             formState: nil
         )
@@ -430,7 +430,7 @@ final class ComponentResolverTests: XCTestCase {
             nodes: [
                 rootNode(),
                 styleNode(id: "name", schemaType: "text-input",
-                          props: ["binding": "user.name"]),
+                          props: ["binding": .string("user.name")]),
             ],
             formState: form
         )
@@ -454,8 +454,8 @@ final class ComponentResolverTests: XCTestCase {
                 rootNode(),
                 styleNode(id: "row", schemaType: "text-input",
                           props: [
-                            "binding":          "default.path",
-                            "binding.checked":  "user.agreed",
+                            "binding":         .string("default.path"),
+                            "binding.checked": .string("user.agreed"),
                           ]),
             ],
             formState: form

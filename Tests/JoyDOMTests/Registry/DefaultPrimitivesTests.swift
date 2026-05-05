@@ -72,7 +72,7 @@ final class DefaultPrimitivesTests: XCTestCase {
         let types = ["div", "p", "primitive_string", "primitive_number", "primitive_null"]
         for type in types {
             let body = r.factory(for: type)?(
-                ComponentProps(["value": "sample"]),
+                ComponentProps(["value": .string("sample")]),
                 ComponentEvents()
             )
             XCTAssertNotNil(body, "factory for '\(type)' must produce a body")

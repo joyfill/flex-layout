@@ -392,18 +392,14 @@ public struct JoyDOMView: View {
             diagnostics: &diagnostics
         )
         var classNameOverrides: [String: [String]] = [:]
-        var extrasOverrides: [String: [String: String]] = [:]
+        var extrasOverrides: [String: [String: JSONValue]] = [:]
         if let bp = activeBreakpoint {
             for (id, props) in bp.nodes {
                 if let classes = props.className {
                     classNameOverrides[id] = classes
                 }
                 if !props.extras.isEmpty {
-                    var flat: [String: String] = [:]
-                    for (k, v) in props.extras {
-                        if let s = v.stringValue { flat[k] = s }
-                    }
-                    if !flat.isEmpty { extrasOverrides[id] = flat }
+                    extrasOverrides[id] = props.extras
                 }
             }
         }
@@ -443,10 +439,8 @@ public struct JoyDOMView: View {
         if let form = formStateRef {
             var keep: Set<String> = []
             for n in nodes {
-                for (key, value) in n.props {
-                    if key == "binding" || key.hasPrefix("binding.") {
-                        keep.insert(value)
-                    }
+                for (key, val) in n.props where key == "binding" || key.hasPrefix("binding.") {
+                    if case .string(let path) = val { keep.insert(path) }
                 }
             }
             form.prune(keeping: keep)

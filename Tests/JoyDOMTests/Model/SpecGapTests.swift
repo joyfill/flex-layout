@@ -373,7 +373,10 @@ final class SpecGapTests: XCTestCase {
         var diags = JoyDiagnostics()
         let spec = Spec(
             layout: Node(type: "img",
-                         props: NodeProps(id: "hero", extras: ["src": .string("https://example.com/img.png")]))
+                         props: NodeProps(id: "hero", extras: [
+                             "src":    .string("https://example.com/img.png"),
+                             "config": .object(["mode": .string("compact")])
+                         ]))
         )
         let nodes = StyleTreeBuilder.build(
             layout: spec.layout,
@@ -382,7 +385,10 @@ final class SpecGapTests: XCTestCase {
             diagnostics: &diags
         )
         let hero = nodes.first(where: { $0.id == "hero" })!
-        XCTAssertEqual(hero.props["src"], "https://example.com/img.png")
+        // Scalar string is preserved.
+        XCTAssertEqual(hero.props["src"], .string("https://example.com/img.png"))
+        // Structured object is preserved losslessly (not dropped).
+        XCTAssertEqual(hero.props["config"], .object(["mode": .string("compact")]))
     }
 
     // MARK: - FlexBasisValue

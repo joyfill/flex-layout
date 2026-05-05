@@ -63,7 +63,7 @@ final class UiActionTests: XCTestCase {
     }
 
     func testActionAccessorReturnsNilWhenValueIsPlainString() {
-        let props = ComponentProps(["onClick": "submit"])
+        let props = ComponentProps(["onClick": .string("submit")])
         XCTAssertNil(props.action("onClick"),
                      "plain string is not a UiAction; expect nil")
     }
@@ -71,20 +71,20 @@ final class UiActionTests: XCTestCase {
     func testActionAccessorReturnsActionWhenValueIsEncodedJSON() {
         let action = UiAction(action: "submit", args: ["form-1"])
         let encoded = action.encodedString()!
-        let props = ComponentProps(["onClick": encoded])
+        let props = ComponentProps(["onClick": .string(encoded)])
         XCTAssertEqual(props.action("onClick"), action)
     }
 
     func testActionAccessorReturnsNilForMalformedJSON() {
-        let props = ComponentProps(["onClick": "{nope"])
+        let props = ComponentProps(["onClick": .string("{nope")])
         XCTAssertNil(props.action("onClick"))
     }
 
     func testActionAccessorIsIndependentPerKey() {
         let action = UiAction(action: "alert", args: ["hi"])
         let props = ComponentProps([
-            "onClick":  action.encodedString()!,
-            "label":    "Click me",
+            "onClick": .string(action.encodedString()!),
+            "label":   .string("Click me"),
         ])
         XCTAssertEqual(props.action("onClick"), action)
         XCTAssertNil(props.action("label"),

@@ -50,7 +50,7 @@ internal enum StyleTreeBuilder {
         rootID: String,
         rules: [StyleResolver.Rule],
         classNameOverrides: [String: [String]] = [:],
-        extrasOverrides: [String: [String: String]] = [:],
+        extrasOverrides: [String: [String: JSONValue]] = [:],
         bindingsByID: [String: String] = [:],
         diagnostics: inout JoyDiagnostics
     ) -> [StyleNode] {
@@ -108,7 +108,7 @@ internal enum StyleTreeBuilder {
         siblingsByParent: inout [String: [StyleResolver.NodeRef]],
         rules: [StyleResolver.Rule],
         classNameOverrides: [String: [String]],
-        extrasOverrides: [String: [String: String]],
+        extrasOverrides: [String: [String: JSONValue]],
         bindingsByID: [String: String],
         output: inout [StyleNode],
         diagnostics: inout JoyDiagnostics
@@ -138,20 +138,17 @@ internal enum StyleTreeBuilder {
             diagnostics: &diagnostics
         )
 
-        // Build props dict for component factories:
-        //   1. Base node extras (JSONValue flattened to String).
+        // Build props dict for component factories (lossless — JSONValue):
+        //   1. Base node extras (full JSONValue, no flattening).
         //   2. Active-breakpoint node override extras (override wins).
-        //   3. FormState binding path (binding always wins).
-        var props: [String: String] = [:]
-        for (k, v) in node.props?.extras ?? [:] {
-            if let s = v.stringValue { props[k] = s }
-        }
+        //   3. FormState binding path stored as .string (binding always wins).
+        var props: [String: JSONValue] = node.props?.extras ?? [:]
         let authorID = node.props?.id
         if let authorID, let overrides = extrasOverrides[authorID] {
-            for (k, s) in overrides { props[k] = s }
+            for (k, v) in overrides { props[k] = v }
         }
         if let path = bindingsByID[id] {
-            props["binding"] = path
+            props["binding"] = .string(path)
         }
         output.append(StyleNode(
             id: id,
@@ -232,10 +229,10 @@ internal enum StyleTreeBuilder {
         diagnostics: inout JoyDiagnostics
     ) {
         let id = syntheticID(for: path)
-        let (schemaType, props): (String, [String: String]) = {
+        let (schemaType, props): (String, [String: JSONValue]) = {
             switch value {
-            case .string(let s): return ("primitive_string", ["value": s])
-            case .number(let n): return ("primitive_number", ["value": formatNumber(n)])
+            case .string(let s): return ("primitive_string", ["value": .string(s)])
+            case .number(let n): return ("primitive_number", ["value": .string(formatNumber(n))])
             case .null:          return ("primitive_null",   [:])
             }
         }()
