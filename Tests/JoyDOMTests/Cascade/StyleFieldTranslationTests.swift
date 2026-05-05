@@ -238,6 +238,8 @@ final class StyleFieldTranslationTests: XCTestCase {
         XCTAssertEqual(resolve(style: Style(alignContent: .stretch)).container.alignContent, .stretch)
     }
 
+    // 1.5 — border-style: no resolver mapping; passes through unchanged — see SpecTests §1.5
+
     // 1.6 — position: fixed / sticky → mapped to absolute (with diagnostic)
     func testPositionFixedFallsBackToAbsolute() {
         XCTAssertEqual(resolve(style: Style(position: .fixed)).item.position, .absolute)

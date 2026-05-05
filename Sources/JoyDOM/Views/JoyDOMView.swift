@@ -302,13 +302,13 @@ public struct JoyDOMView: View {
 
         // --- Border + border-radius ---
 
-        let resolvedBorderStyle = visual.borderStyle ?? .solid
-        let hasBorder = visual.borderWidth != nil && visual.borderColor != nil &&
-            resolvedBorderStyle != .none
+        // `strokedOverlay` is the single enforcement point for `.none` —
+        // it returns an EmptyView, suppressing the stroke.
+        let hasBorder = visual.borderWidth != nil && visual.borderColor != nil
         v = applyBorderRadius(v, radius: visual.borderRadius,
                               borderColor: hasBorder ? visual.borderColor : nil,
                               borderWidth: hasBorder ? visual.borderWidth : nil,
-                              borderStyle: hasBorder ? resolvedBorderStyle : nil)
+                              borderStyle: hasBorder ? (visual.borderStyle ?? .solid) : nil)
 
         // --- Margin (outer spacing — wrap in a padded view) ---
 
@@ -404,10 +404,10 @@ public struct JoyDOMView: View {
         case .dotted:
             shape.stroke(color, style: StrokeStyle(lineWidth: bw, lineCap: .round, dash: [0.01, bw * 2]))
         case .double:
-            // CSS `double` is two parallel lines with a gap between them.
-            // Approximate by stacking two strokes of half width: outer at the
-            // shape edge, inner inset by 2× the half width so a visible gap
-            // remains between them.
+            // CSS `double` = two lines each `bw/3` wide with a `bw/3` gap
+            // between them. Outer stroke sits on the shape edge; inner
+            // stroke is inset by `bw*2/3` (padding reduces the offered
+            // frame, causing the shape to draw smaller).
             ZStack {
                 shape.stroke(color, lineWidth: bw / 3)
                 shape.stroke(color, lineWidth: bw / 3).padding(bw * 2 / 3)

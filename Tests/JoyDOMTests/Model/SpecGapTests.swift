@@ -538,4 +538,12 @@ final class SpecGapTests: XCTestCase {
         XCTAssertEqual(diags.warnings.count, 0,
                        "display: inline is a benign block-level fallback; no warning expected")
     }
+
+    func testDisplayInlineFlexEmitsDiagnostic() {
+        let (_, diags) = resolveCollectingDiagnostics(style: Style(display: .inlineFlex))
+        XCTAssertTrue(
+            diags.warnings.contains { $0.detail.contains("inline-flex") },
+            "display: inline-flex must surface a fallback diagnostic"
+        )
+    }
 }

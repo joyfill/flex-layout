@@ -338,13 +338,9 @@ enum JoyDOMSwiftEmitter {
     }
 
     private static func isEmpty(_ s: Style) -> Bool {
-        s.position == nil && s.display == nil && s.zIndex == nil && s.overflow == nil &&
-        s.top == nil && s.left == nil && s.bottom == nil && s.right == nil &&
-        s.flexDirection == nil && s.flexGrow == nil && s.flexShrink == nil && s.flexBasis == nil &&
-        s.justifyContent == nil && s.alignItems == nil && s.alignSelf == nil &&
-        s.alignContent == nil && s.flexWrap == nil && s.gap == nil &&
-        s.order == nil && s.width == nil && s.height == nil && s.padding == nil &&
-        s.borderStyle == nil
+        // Use Style's synthesized Equatable so visual / typography / sizing
+        // fields can't be silently dropped when new ones are added.
+        s == Style()
     }
 
     /// Escape a string for safe embedding in Swift source. Handles

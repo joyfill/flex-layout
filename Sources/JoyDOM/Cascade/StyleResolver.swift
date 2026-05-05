@@ -257,8 +257,14 @@ public enum StyleResolver {
             case .block:       computed.display = .block; computed.isDisplayNone = false
             case .inlineBlock: computed.display = .inline; computed.isDisplayNone = false
             case .inline:      computed.display = .inline; computed.isDisplayNone = false
-            // FlexLayout has no inline-flex mode; map to .flex for now.
-            case .inlineFlex:  computed.display = .flex; computed.isDisplayNone = false
+            // FlexLayout has no inline-flex mode; warn so consumers debugging
+            // wrap/flow regressions can see the substitution in the log.
+            case .inlineFlex:
+                computed.display = .flex; computed.isDisplayNone = false
+                diagnostics.warn(JoyWarning(
+                    .other,
+                    "display: inline-flex is not supported; rendered as display: flex"
+                ))
             case .none:        computed.isDisplayNone = true
             }
         }
