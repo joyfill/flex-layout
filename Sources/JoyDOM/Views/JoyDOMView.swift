@@ -58,6 +58,12 @@ public struct JoyDOMView: View {
     /// Empty by default — joy-dom payloads stay pure (no iOS-specific
     /// binding tokens leak into the wire format).
     private var bindingsByID: [String: String] = [:]
+    /// Whether the built-in User Agent stylesheet (browser-like
+    /// defaults for `h1`–`h6`) prepends to the cascade. Default
+    /// `true` matches authoring expectations on payloads written
+    /// against a web reference renderer. Disable with
+    /// `.userAgentDefaults(false)` for spec-strict rendering.
+    private var applyUserAgentDefaults: Bool = true
 
     // MARK: - Initialisers
 
@@ -142,6 +148,22 @@ public struct JoyDOMView: View {
         for (id, path) in map {
             copy.bindingsByID[id] = path
         }
+        return copy
+    }
+
+    /// Toggle the built-in User Agent stylesheet. Default `true` —
+    /// `h1`–`h6` resolve to bold and progressively-sized defaults
+    /// (matching browser UA stylesheets), so payloads authored
+    /// against a web reference renderer don't lose their heading
+    /// hierarchy on iOS.
+    ///
+    /// Pass `false` for spec-strict rendering. The joy-dom spec at
+    /// `joyfill/.joy DOM/spec.ts` does not define UA defaults, so
+    /// payloads validated against pure spec shouldn't depend on
+    /// them.
+    public func userAgentDefaults(_ enabled: Bool) -> JoyDOMView {
+        var copy = self
+        copy.applyUserAgentDefaults = enabled
         return copy
     }
 
@@ -457,7 +479,7 @@ public struct JoyDOMView: View {
     /// Separated from `body` so test helpers can exercise the full flow by
     /// simply reading `body`, yet the resolver's factories only run once per
     /// evaluation.
-    private func renderSnapshot() -> ComponentResolver.Resolved {
+    internal func renderSnapshot() -> ComponentResolver.Resolved {
         var diagnostics = JoyDiagnostics()
 
         // Pick the active breakpoint for the current viewport (if any).
@@ -470,7 +492,8 @@ public struct JoyDOMView: View {
         let rules = RuleBuilder.buildRules(
             from: spec,
             activeBreakpoint: activeBreakpoint,
-            diagnostics: &diagnostics
+            diagnostics: &diagnostics,
+            applyUserAgentDefaults: applyUserAgentDefaults
         )
         var classNameOverrides: [String: [String]] = [:]
         var extrasOverrides: [String: [String: JSONValue]] = [:]

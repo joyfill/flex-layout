@@ -36,10 +36,31 @@ internal enum RuleBuilder {
     static func buildRules(
         from spec: Spec,
         activeBreakpoint: Breakpoint?,
-        diagnostics: inout JoyDiagnostics
+        diagnostics: inout JoyDiagnostics,
+        applyUserAgentDefaults: Bool = true
     ) -> [StyleResolver.Rule] {
         var rules: [StyleResolver.Rule] = []
         var sourceOrder = 0
+
+        // 0. User Agent default stylesheet — prepended with
+        //    `sourceOrder = -1` so equal-specificity author type
+        //    selectors (e.g. an author-supplied `h1 { … }`) beat the
+        //    UA rule on source order. Author rules with class/id
+        //    specificity beat UA on specificity. Matches standard
+        //    CSS cascade semantics.
+        if applyUserAgentDefaults {
+            for (selectorKey, style) in UserAgentStyles.rules {
+                let parsed = SelectorParser.parseList(selectorKey, diagnostics: &diagnostics)
+                for selector in parsed {
+                    rules.append(StyleResolver.Rule(
+                        selector: selector,
+                        style: style,
+                        specificity: Specificity.of(selector),
+                        sourceOrder: -1
+                    ))
+                }
+            }
+        }
 
         // 1. Document-level selector rules.
         appendSelectorRules(

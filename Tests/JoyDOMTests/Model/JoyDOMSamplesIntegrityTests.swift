@@ -208,6 +208,78 @@ final class JoyDOMSamplesIntegrityTests: XCTestCase {
         """#, label: "pricing-tiers")
     }
 
+    // MARK: - Visual CSS — UA defaults integration
+    //
+    // Mirrors the `visualCSS` payload in `FlexDemoApp/JoyDOMSamples.swift`
+    // in slimmed-down form: the heading hierarchy plus an author `h1`
+    // override (`fontSize: 28`, `fontWeight: 700`). After running
+    // through `RuleBuilder` + `StyleTreeBuilder`, `h4` should pick up
+    // the UA bold/16 px defaults and `h1` should reflect the author
+    // override (not the UA defaults). This is the regression net for
+    // the "Heading 4 plain on iOS" cross-platform parity bug.
+
+    private static let visualCSSSlice: String = #"""
+    {
+      "version": 1,
+      "style": {
+        "h1": {
+          "fontSize": { "value": 28, "unit": "px" },
+          "fontWeight": 700,
+          "color": "#1A1A2E"
+        }
+      },
+      "breakpoints": [],
+      "layout": {
+        "type": "div",
+        "props": { "id": "root" },
+        "children": [
+          { "type": "h1", "props": { "id": "typo-h1" }, "children": ["Heading 1"] },
+          { "type": "h4", "props": { "id": "typo-h4" }, "children": ["Heading 4"] }
+        ]
+      }
+    }
+    """#
+
+    func testVisualCSSSliceDecodes() {
+        assertDecodes(Self.visualCSSSlice, label: "visual-css")
+    }
+
+    func testVisualCSSSliceUADefaultsAndOverride() {
+        let data = Data(Self.visualCSSSlice.utf8)
+        let spec: Spec
+        do {
+            spec = try JSONDecoder().decode(Spec.self, from: data)
+        } catch {
+            XCTFail("visual-css slice failed to decode: \(error)"); return
+        }
+
+        var diags = JoyDiagnostics()
+        let rules = RuleBuilder.buildRules(
+            from: spec, activeBreakpoint: nil, diagnostics: &diags
+        )
+        let nodes = StyleTreeBuilder.build(
+            layout: spec.layout,
+            rootID: "__joydom_root__",
+            rules: rules,
+            diagnostics: &diags
+        )
+        var byID: [String: ComputedStyle] = [:]
+        for n in nodes { byID[n.id] = n.computedStyle }
+
+        // Unstyled h4 → UA defaults (bold, 16 px). This is the
+        // exact bug the UA stylesheet is fixing.
+        XCTAssertEqual(byID["typo-h4"]?.visual.fontWeight, .bold,
+                       "h4 should resolve to bold via UA defaults")
+        XCTAssertEqual(byID["typo-h4"]?.visual.fontSize, 16,
+                       "h4 should resolve to 16 px via UA defaults")
+
+        // h1 has an author rule that overrides UA — assert author won.
+        XCTAssertEqual(byID["typo-h1"]?.visual.fontSize, 28,
+                       "author h1 fontSize should override UA")
+        XCTAssertEqual(byID["typo-h1"]?.visual.fontWeight, .numeric(700),
+                       "author h1 fontWeight should override UA bold")
+    }
+
     // MARK: - Required-key sanity
 
     /// A `Spec` JSON missing `style` or `breakpoints` must throw —
