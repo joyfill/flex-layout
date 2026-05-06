@@ -257,7 +257,7 @@ final class JoyDOMSamplesIntegrityTests: XCTestCase {
             "#root":            { "flexDirection": "column", "textDecoration": "underline" },
             "#shout":           { "textTransform": "uppercase" },
             "#italic":          { "fontStyle": "italic" },
-            "#tracked":         { "fontSize": { "value": 24, "unit": "px" }, "letterSpacing": { "value": 0.1, "unit": "em" } },
+            "#tracked":         { "fontSize": { "value": 24, "unit": "px" }, "letterSpacing": { "value": 2.4, "unit": "px" } },
             "#w-100":           { "fontWeight": 100 },
             "#w-900":           { "fontWeight": 900 }
           },
@@ -292,9 +292,9 @@ final class JoyDOMSamplesIntegrityTests: XCTestCase {
             "type": "div",
             "props": { "id": "card" },
             "children": [
-              { "type": "card", "props": { "id": "badge",  "label": "NEW" } },
-              { "type": "card", "props": { "id": "ribbon", "label": "RIBBON" } },
-              { "type": "card", "props": { "id": "fixed",  "label": "fixed" } }
+              { "type": "div", "props": { "id": "badge",  "label": "NEW" } },
+              { "type": "div", "props": { "id": "ribbon", "label": "RIBBON" } },
+              { "type": "div", "props": { "id": "fixed",  "label": "fixed" } }
             ]
           }
         }
@@ -328,8 +328,8 @@ final class JoyDOMSamplesIntegrityTests: XCTestCase {
             "type": "div",
             "props": { "id": "root" },
             "children": [
-              { "type": "card", "props": { "id": "bubble", "label": "bubble" } },
-              { "type": "card", "props": { "id": "asym",   "label": "asym" } }
+              { "type": "div", "props": { "id": "bubble", "label": "bubble" } },
+              { "type": "div", "props": { "id": "asym",   "label": "asym" } }
             ]
           }
         }
@@ -354,14 +354,14 @@ final class JoyDOMSamplesIntegrityTests: XCTestCase {
             "type": "div",
             "props": { "id": "wrap" },
             "children": [
-              { "type": "card", "props": { "id": "self-c", "label": "self-end" } },
+              { "type": "div", "props": { "id": "self-c", "label": "self-end" } },
               {
                 "type": "div",
                 "props": { "id": "row-rev" },
                 "children": [
-                  { "type": "card", "props": { "id": "order-a", "label": "A" } },
-                  { "type": "card", "props": { "id": "order-b", "label": "B" } },
-                  { "type": "card", "props": { "id": "order-c", "label": "C" } }
+                  { "type": "div", "props": { "id": "order-a", "label": "A" } },
+                  { "type": "div", "props": { "id": "order-b", "label": "B" } },
+                  { "type": "div", "props": { "id": "order-c", "label": "C" } }
                 ]
               },
               { "type": "div", "props": { "id": "col-rev" } }
@@ -388,11 +388,11 @@ final class JoyDOMSamplesIntegrityTests: XCTestCase {
             "type": "div",
             "props": { "id": "row" },
             "children": [
-              { "type": "card", "props": { "id": "a", "label": "max=50" } },
-              { "type": "card", "props": { "id": "b", "label": "grow" } },
-              { "type": "card", "props": { "id": "c", "label": "grow" } },
-              { "type": "card", "props": { "id": "min-h", "label": "min" } },
-              { "type": "card", "props": { "id": "max-h", "label": "max" } }
+              { "type": "div", "props": { "id": "a", "label": "max=50" } },
+              { "type": "div", "props": { "id": "b", "label": "grow" } },
+              { "type": "div", "props": { "id": "c", "label": "grow" } },
+              { "type": "div", "props": { "id": "min-h", "label": "min" } },
+              { "type": "div", "props": { "id": "max-h", "label": "max" } }
             ]
           }
         }
@@ -421,10 +421,10 @@ final class JoyDOMSamplesIntegrityTests: XCTestCase {
             "type": "div",
             "props": { "id": "row" },
             "children": [
-              { "type": "card", "props": { "id": "m1", "className": ["mg"],   "label": "m=16" } },
-              { "type": "card", "props": { "id": "m2", "className": ["mg"],   "label": "m=16" } },
-              { "type": "card", "props": { "id": "a1", "className": ["asym"], "label": "asym" } },
-              { "type": "card", "props": { "id": "composed", "label": "composed" } }
+              { "type": "div", "props": { "id": "m1", "className": ["mg"],   "label": "m=16" } },
+              { "type": "div", "props": { "id": "m2", "className": ["mg"],   "label": "m=16" } },
+              { "type": "div", "props": { "id": "a1", "className": ["asym"], "label": "asym" } },
+              { "type": "div", "props": { "id": "composed", "label": "composed" } }
             ]
           }
         }

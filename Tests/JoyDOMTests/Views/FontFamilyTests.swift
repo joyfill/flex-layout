@@ -24,10 +24,11 @@ final class FontFamilyTests: XCTestCase {
 
     func testCustomFontFamilyDiffersFromSystemFont() {
         // Font is opaque from outside SwiftUI — there's no public API to
-        // ask "which descriptor does this hold?" — but the description
-        // string differs between the named-provider (custom) and system-
-        // provider (.system) backings, which is enough to pin that the
-        // .custom branch is wired correctly.
+        // ask "which descriptor does this hold?" — so we lean on Font's
+        // own Equatable: a `.custom(...)` font and a `.system(...)` font
+        // at the same size MUST not compare equal. That's a stable signal
+        // and doesn't depend on SwiftUI's stringification format (which
+        // can shift between Xcode releases without an actual regression).
         var custom = VisualStyle()
         custom.fontFamily = "Helvetica Neue"
         custom.fontSize   = 16
@@ -35,25 +36,19 @@ final class FontFamilyTests: XCTestCase {
         var system = VisualStyle()
         system.fontSize = 16
 
-        let customDesc = String(describing: JoyDOMView.font(for: custom))
-        let systemDesc = String(describing: JoyDOMView.font(for: system))
-
-        XCTAssertTrue(customDesc.contains("Named") || customDesc.contains("named"),
-                      "custom font should use a NamedProvider; got \(customDesc)")
-        XCTAssertNotEqual(customDesc, systemDesc,
+        XCTAssertNotEqual(JoyDOMView.font(for: custom),
+                          JoyDOMView.font(for: system),
                           "custom and system fonts must produce different Font values")
     }
 
     func testSystemFallbackWhenFontFamilyAbsent() {
+        // No fontFamily set → helper falls through to .system(size:). Pin
+        // the contract via Font Equatable: the result must equal the
+        // explicit Font.system(size:) we'd construct ourselves.
         var v = VisualStyle()
         v.fontSize = 14
-        let font = JoyDOMView.font(for: v)
-        XCTAssertNotNil(font)
-        let desc = String(describing: font)
-        // SwiftUI's .system(...) goes through SystemProvider — the named
-        // provider must NOT be present in the description.
-        XCTAssertFalse(desc.contains("NamedProvider"),
-                       "system fallback must not use a NamedProvider; got \(desc)")
+        XCTAssertEqual(JoyDOMView.font(for: v), .system(size: 14),
+                       "absent fontFamily must yield Font.system(size:)")
     }
 
     func testEmptyVisualStyleProducesNoFont() {

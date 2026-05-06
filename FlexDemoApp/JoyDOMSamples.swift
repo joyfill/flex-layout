@@ -886,8 +886,8 @@ enum JoyDOMSamples {
               "color": "#16213E"
             },
             "#tracked": {
-              "fontSize": { "value": 24, "unit": "px" },
-              "letterSpacing": { "value": 0.1, "unit": "em" },
+              "fontSize":      { "value": 24,  "unit": "px" },
+              "letterSpacing": { "value": 2.4, "unit": "px" },
               "color": "#3B4FE0"
             },
             ".weights-row": {
@@ -965,17 +965,17 @@ enum JoyDOMSamples {
               "position": "absolute",
               "top":  { "value": 0, "unit": "px" },
               "left": { "value": 0, "unit": "px" },
-              "width":  { "value": 80, "unit": "px" },
-              "height": { "value": 22, "unit": "px" },
+              "width":  { "value": 240, "unit": "px" },
+              "height": { "value": 28,  "unit": "px" },
               "backgroundColor": "#3B4FE0",
               "zIndex": 1
             },
             "#badge": {
               "position": "absolute",
-              "top":   { "value": 8, "unit": "px" },
-              "right": { "value": 8, "unit": "px" },
+              "top":   { "value": 4, "unit": "px" },
+              "right": { "value": 0, "unit": "px" },
               "zIndex": 10,
-              "width":  { "value": 56, "unit": "px" },
+              "width":  { "value": 80, "unit": "px" },
               "height": { "value": 22, "unit": "px" },
               "backgroundColor": "#E94560"
             },
@@ -1135,7 +1135,7 @@ enum JoyDOMSamples {
               "flexDirection": "row",
               "flexWrap": "wrap-reverse",
               "gap": { "value": 8, "unit": "px" },
-              "height": { "value": 80, "unit": "px" }
+              "height": { "value": 130, "unit": "px" }
             }
           },
           "breakpoints": [],
@@ -1213,7 +1213,12 @@ enum JoyDOMSamples {
                 "children": [
                   { "type": "card", "props": { "id": "wr-1", "className": ["wrap-cell"], "label": "1" } },
                   { "type": "card", "props": { "id": "wr-2", "className": ["wrap-cell"], "label": "2" } },
-                  { "type": "card", "props": { "id": "wr-3", "className": ["wrap-cell"], "label": "3" } }
+                  { "type": "card", "props": { "id": "wr-3", "className": ["wrap-cell"], "label": "3" } },
+                  { "type": "card", "props": { "id": "wr-4", "className": ["wrap-cell"], "label": "4" } },
+                  { "type": "card", "props": { "id": "wr-5", "className": ["wrap-cell"], "label": "5" } },
+                  { "type": "card", "props": { "id": "wr-6", "className": ["wrap-cell"], "label": "6" } },
+                  { "type": "card", "props": { "id": "wr-7", "className": ["wrap-cell"], "label": "7" } },
+                  { "type": "card", "props": { "id": "wr-8", "className": ["wrap-cell"], "label": "8" } }
                 ]
               }
             ]

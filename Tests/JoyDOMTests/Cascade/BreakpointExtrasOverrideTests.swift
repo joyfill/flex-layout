@@ -93,19 +93,18 @@ final class BreakpointExtrasOverrideTests: XCTestCase {
         )
         XCTAssertNotNil(active, "empty-conditions breakpoint should activate")
 
-        var extrasOverrides: [String: [String: JSONValue]] = [:]
-        if let bp = active {
-            for (id, props) in bp.nodes where !props.extras.isEmpty {
-                extrasOverrides[id] = props.extras
-            }
-        }
+        // Use the same helper JoyDOMView calls in renderSnapshot — if
+        // production drifts (e.g. a new override field gets added to the
+        // flatten step), this test fails alongside it.
+        let (classNameOverrides, extrasOverrides) =
+            JoyDOMView.flattenBreakpointOverrides(active: active)
 
         let rules = RuleBuilder.buildRules(from: spec, activeBreakpoint: active, diagnostics: &diags)
         let nodes = StyleTreeBuilder.build(
             layout: spec.layout,
             rootID: "__joydom_root__",
             rules: rules,
-            classNameOverrides: [:],
+            classNameOverrides: classNameOverrides,
             extrasOverrides: extrasOverrides,
             diagnostics: &diags
         )
@@ -118,5 +117,31 @@ final class BreakpointExtrasOverrideTests: XCTestCase {
                        "active-breakpoint extras must override base for matching key")
         XCTAssertEqual(props.values["alt"], .string("logo"),
                        "non-overridden base extras must survive the merge")
+    }
+
+    // MARK: - flattenBreakpointOverrides helper (direct contract pin)
+
+    func testFlattenBreakpointOverridesReturnsEmptyForNilBreakpoint() {
+        let (cn, ex) = JoyDOMView.flattenBreakpointOverrides(active: nil)
+        XCTAssertTrue(cn.isEmpty)
+        XCTAssertTrue(ex.isEmpty)
+    }
+
+    func testFlattenBreakpointOverridesSplitsClassNameAndExtras() {
+        let bp = Breakpoint(
+            conditions: [],
+            nodes: [
+                "x": NodeProps(className: ["alpha"], extras: ["src": .string("retina.png")]),
+                "y": NodeProps(className: ["beta"]),
+                "z": NodeProps(extras: ["alt": .string("logo")])
+            ]
+        )
+        let (cn, ex) = JoyDOMView.flattenBreakpointOverrides(active: bp)
+        XCTAssertEqual(cn["x"], ["alpha"])
+        XCTAssertEqual(cn["y"], ["beta"])
+        XCTAssertNil(cn["z"], "z has no className override")
+        XCTAssertEqual(ex["x"], ["src": .string("retina.png")])
+        XCTAssertNil(ex["y"], "y has no extras override")
+        XCTAssertEqual(ex["z"], ["alt": .string("logo")])
     }
 }

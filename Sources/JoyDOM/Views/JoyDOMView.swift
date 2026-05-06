@@ -240,6 +240,32 @@ public struct JoyDOMView: View {
         }
     }
 
+    /// Flatten an active `Breakpoint`'s `nodes[id]` map into the two
+    /// override dictionaries `StyleTreeBuilder.build` consumes —
+    /// `classNameOverrides` (per-id class lists) and `extrasOverrides`
+    /// (per-id extras bags). Returns empty maps when no breakpoint is
+    /// active.
+    ///
+    /// Exposed `internal` so tests can pin the JoyDOMView →
+    /// StyleTreeBuilder hand-off without rebuilding the bridge by hand
+    /// (which would let production drift undetected).
+    internal static func flattenBreakpointOverrides(
+        active: Breakpoint?
+    ) -> (className: [String: [String]], extras: [String: [String: JSONValue]]) {
+        var classNameOverrides: [String: [String]] = [:]
+        var extrasOverrides: [String: [String: JSONValue]] = [:]
+        guard let bp = active else { return (classNameOverrides, extrasOverrides) }
+        for (id, props) in bp.nodes {
+            if let classes = props.className {
+                classNameOverrides[id] = classes
+            }
+            if !props.extras.isEmpty {
+                extrasOverrides[id] = props.extras
+            }
+        }
+        return (classNameOverrides, extrasOverrides)
+    }
+
     /// Construct the SwiftUI `Font` value implied by a `VisualStyle`'s
     /// typography fields, returning `nil` if none of `fontFamily`,
     /// `fontSize`, `fontWeight`, or `fontStyle` are set. Mirrors the
@@ -259,8 +285,10 @@ public struct JoyDOMView: View {
                          ?? .system(size: size)
         if let w = visual.fontWeight {
             switch w {
-            case .normal:        font = font.weight(.regular)
-            case .bold:          font = font.weight(.bold)
+            // .normal == .regular, which is the SwiftUI default — skip
+            // the modifier so we don't emit a no-op `.weight(.regular)`.
+            case .normal:         break
+            case .bold:           font = font.weight(.bold)
             case .numeric(let n): font = font.weight(swiftFontWeight(forCSSWeight: n))
             }
         }
@@ -489,18 +517,9 @@ public struct JoyDOMView: View {
             activeBreakpoint: activeBreakpoint,
             diagnostics: &diagnostics
         )
-        var classNameOverrides: [String: [String]] = [:]
-        var extrasOverrides: [String: [String: JSONValue]] = [:]
-        if let bp = activeBreakpoint {
-            for (id, props) in bp.nodes {
-                if let classes = props.className {
-                    classNameOverrides[id] = classes
-                }
-                if !props.extras.isEmpty {
-                    extrasOverrides[id] = props.extras
-                }
-            }
-        }
+        let (classNameOverrides, extrasOverrides) = JoyDOMView.flattenBreakpointOverrides(
+            active: activeBreakpoint
+        )
 
         // Walk the tree.
         let nodes = StyleTreeBuilder.build(
