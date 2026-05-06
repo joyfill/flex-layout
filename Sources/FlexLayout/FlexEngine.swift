@@ -815,11 +815,28 @@ public enum FlexEngine {
                 if let explicitCross = lineRaw[i].explicitCrossSize {
                     crossSizes[i] = explicitCross
                 } else {
-                    // Propose the resolved main size on the main axis; let the item
-                    // determine its cross size naturally.
-                    let crossProp: ProposedViewSize = isRow
-                        ? ProposedViewSize(width: mainSz, height: nil)
-                        : ProposedViewSize(width: nil, height: mainSz)
+                    // Propose the resolved main size on the main axis. For
+                    // the cross dimension we differ by direction:
+                    //   - ROW container (cross=height): pass `nil` so the
+                    //     item hugs its natural cross size. Text wrapping
+                    //     is already driven by the width (= main) proposal,
+                    //     so passing height isn't needed.
+                    //   - COLUMN container (cross=width): pass the available
+                    //     cross space minus margins so wrapping content
+                    //     (Text, nested flex containers) can size to fit
+                    //     and not return its single-line natural width
+                    //     (which would overflow narrow containers — observed
+                    //     in the visualCSS hero body paragraph at narrow
+                    //     viewports).
+                    let crossProp: ProposedViewSize
+                    if isRow {
+                        crossProp = ProposedViewSize(width: mainSz, height: nil)
+                    } else {
+                        let crossSpace = crossConstraint.map {
+                            max(0, $0 - lineRaw[i].marginCrossStart - lineRaw[i].marginCrossEnd)
+                        }
+                        crossProp = ProposedViewSize(width: crossSpace, height: mainSz)
+                    }
                     let sz        = input.measure(crossProp)
                     crossSizes[i] = isRow ? sz.height : sz.width
                 }
