@@ -207,10 +207,16 @@ struct JoyDOMPasteDemo: View {
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
             if let spec = spec {
+                // Cap the SwiftUI frame to the simulated viewport width so
+                // the slider drives BOTH breakpoint matching and the actual
+                // flex-layout pass. Without this cap the preview pane
+                // always offered the full window width to FlexLayout, so
+                // `flex-wrap` never kicked in regardless of the slider —
+                // making the iOS preview look unresponsive next to web.
                 JoyDOMView(spec: spec, registry: registry)
                     .viewport(viewport)
                     .onEvent("*") { _ in /* swallow for the preview */ }
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                    .frame(maxWidth: max(40, viewport.width), alignment: .topLeading)
                     .padding(12)
                     .background(Color(white: 0.96))
                     .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -218,6 +224,7 @@ struct JoyDOMPasteDemo: View {
                         RoundedRectangle(cornerRadius: 10)
                             .strokeBorder(Color.gray.opacity(0.25))
                     )
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
             } else {
                 Text("(no preview — fix the JSON below)")
                     .font(.caption)
