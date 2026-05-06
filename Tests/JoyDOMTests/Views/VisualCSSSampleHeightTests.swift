@@ -119,16 +119,15 @@ final class VisualCSSSampleHeightTests: XCTestCase {
         throw XCTSkip("No SwiftUI hosting platform available")
         #endif
 
-        // At 280pt viewport with the full visualCSS sample (hero +
-        // stats), expected total height:
-        // - hero section: ~250-350pt (badges, h1 wrapping, body text wrapping)
-        // - stats section: ~250-350pt (h3, three cards stacked one per line)
-        // - margins between: 24pt
-        // Total: ~600-700pt. 1000pt is generous; 2000pt would mean the
-        // bug is back.
+        // The over-claim bug stretched each stat card from its natural
+        // ~74pt content height to the full available cross constraint
+        // (~238pt), which inflated the stats-section by ~3x. A natural-
+        // height layout at 280pt viewport totals ~350pt; the bug
+        // pushed it past 1000pt. Anything over 600pt likely indicates
+        // regression of the cross-axis stretch path.
         XCTAssertLessThan(
-            rendered.height, 1000,
-            "Full visualCSS sample at 280pt rendered \(rendered.height)pt — over-claim height bug is back"
+            rendered.height, 600,
+            "Full visualCSS sample at 280pt rendered \(rendered.height)pt — natural layout should be ~350pt; over-claim bug suspected"
         )
     }
 

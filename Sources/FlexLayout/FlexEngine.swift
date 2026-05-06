@@ -828,6 +828,16 @@ public enum FlexEngine {
                     //     (which would overflow narrow containers — observed
                     //     in the visualCSS hero body paragraph at narrow
                     //     viewports).
+                    //
+                    // Note on spec compliance: CSS Flexbox §9.2 calls for
+                    // symmetric treatment — a row container with a tall-
+                    // natural-cross item (e.g. a vertical list nested in
+                    // a row with `alignItems: stretch` and an explicit
+                    // container height) would benefit from receiving the
+                    // cross constraint too. Today that scenario falls
+                    // through with `nil` and the item returns its single-
+                    // line natural cross. No observed symptoms in current
+                    // payloads, but worth revisiting if such cases surface.
                     let crossProp: ProposedViewSize
                     if isRow {
                         crossProp = ProposedViewSize(width: mainSz, height: nil)

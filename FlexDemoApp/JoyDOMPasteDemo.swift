@@ -216,6 +216,13 @@ struct JoyDOMPasteDemo: View {
                 JoyDOMView(spec: spec, registry: registry)
                     .viewport(viewport)
                     .onEvent("*") { _ in /* swallow for the preview */ }
+                    // 40pt floor protects against the slider's 0-px
+                    // lower bound — anything narrower collapses Text
+                    // descendants to a single ellipsis-truncated glyph,
+                    // which makes the preview unreadable. 40pt is wide
+                    // enough to render at least one character of body
+                    // text at fontSize 14, so the layout stays
+                    // diagnosable as the user drags toward the minimum.
                     .frame(maxWidth: max(40, viewport.width), alignment: .topLeading)
                     .padding(12)
                     .background(Color(white: 0.96))

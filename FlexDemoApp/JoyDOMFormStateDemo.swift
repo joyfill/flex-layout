@@ -77,6 +77,9 @@ struct JoyDOMFormStateDemo: View {
     }
 
     private func canvas(viewport: Viewport) -> some View {
+        // Cap the SwiftUI frame to the simulated viewport width so the
+        // slider drives BOTH breakpoint matching and the actual flex-
+        // layout pass — see JoyDOMPasteDemo.renderPane for the rationale.
         JoyDOMView(spec: spec, registry: registry)
             .viewport(viewport)
             .formState(form)
@@ -87,7 +90,7 @@ struct JoyDOMFormStateDemo: View {
             .onEvent("submit") { event in
                 lastEvent = "submit @ \(event.sourceID) — \(form.snapshot())"
             }
-            .frame(maxWidth: .infinity, alignment: .topLeading)
+            .frame(maxWidth: max(40, viewport.width), alignment: .topLeading)
             .padding(12)
             .background(Color(white: 0.96))
             .clipShape(RoundedRectangle(cornerRadius: 10))
@@ -95,6 +98,7 @@ struct JoyDOMFormStateDemo: View {
                 RoundedRectangle(cornerRadius: 10)
                     .strokeBorder(Color.gray.opacity(0.25))
             )
+            .frame(maxWidth: .infinity, alignment: .topLeading)
     }
 
     private var debug: some View {
