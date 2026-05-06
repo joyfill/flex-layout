@@ -326,6 +326,27 @@ final class StyleFieldTranslationTests: XCTestCase {
         XCTAssertEqual(c.item.maxHeight, 120)
     }
 
+    // MARK: - box-sizing (Phase 4 — round-trip only; layout effect deferred)
+
+    func testBoxSizingBorderBoxRoundTripsThroughCodable() throws {
+        // The layout engine does not yet honor box-sizing (see ComputedStyle
+        // doc comment), but the field is part of the wire spec and must
+        // survive a JSON round-trip so payload authors can ship it ahead of
+        // the layout work landing.
+        let style = Style(boxSizing: .borderBox)
+        let data = try JSONEncoder().encode(style)
+        let decoded = try JSONDecoder().decode(Style.self, from: data)
+        XCTAssertEqual(decoded.boxSizing, .borderBox)
+    }
+
+    func testBoxSizingDecodesFromHyphenatedString() throws {
+        // CSS spelling is `border-box`; ensure the rawValue matches the
+        // wire format authors send.
+        let json = #"{ "boxSizing": "border-box" }"#
+        let decoded = try JSONDecoder().decode(Style.self, from: Data(json.utf8))
+        XCTAssertEqual(decoded.boxSizing, .borderBox)
+    }
+
     func testMinMaxPropagateThroughFlexEngine() {
         // End-to-end: Style → ItemStyle → FlexLayout adapter clamps the
         // resolved frame width. Build a FlexItemInput from the resolved

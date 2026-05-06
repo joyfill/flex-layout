@@ -235,6 +235,79 @@ final class JoyDOMViewIntegrationTests: XCTestCase {
         XCTAssertEqual(x.computedStyle.container.direction, .column)
     }
 
+    // MARK: - Visual style smoke tests (Phase 4 backfill)
+    //
+    // The resolver landed style → ComputedStyle.visual mapping for these
+    // properties earlier; we pin them here as smoke tests so a regression
+    // (typo, dropped case in apply) flags before the visual modifier in
+    // JoyDOMView ever gets a chance to render. Cascading through the full
+    // tree (StyleResolver + StyleTreeBuilder) is closer to a real render
+    // than a Style-only round-trip and catches resolver wiring bugs.
+
+    private func resolvedVisual(for style: Style) -> VisualStyle {
+        var diags = JoyDiagnostics()
+        let spec = Spec(
+            style: ["#x": style],
+            breakpoints: [],
+            layout: Node(type: "div", props: NodeProps(id: "x"))
+        )
+        let rules = RuleBuilder.buildRules(from: spec, activeBreakpoint: nil, diagnostics: &diags)
+        let nodes = StyleTreeBuilder.build(
+            layout: spec.layout,
+            rootID: "__joydom_root__",
+            rules: rules,
+            diagnostics: &diags
+        )
+        return nodes.first(where: { $0.id == "x" })!.computedStyle.visual
+    }
+
+    func testTextAlignReachesVisualStyle() {
+        XCTAssertEqual(resolvedVisual(for: Style(textAlign: .center)).textAlign,  .center)
+        XCTAssertEqual(resolvedVisual(for: Style(textAlign: .left)).textAlign,    .left)
+        XCTAssertEqual(resolvedVisual(for: Style(textAlign: .right)).textAlign,   .right)
+
+        // Body builds without crash for a node carrying textAlign.
+        let spec = Spec(
+            style: ["#x": Style(textAlign: .center)],
+            layout: Node(type: "p", props: NodeProps(id: "x"), children: [.primitive(.string("centered"))])
+        )
+        _ = JoyDOMView(spec: spec).body
+    }
+
+    func testTextTransformReachesVisualStyle() {
+        XCTAssertEqual(resolvedVisual(for: Style(textTransform: .uppercase)).textTransform, .uppercase)
+        XCTAssertEqual(resolvedVisual(for: Style(textTransform: .lowercase)).textTransform, .lowercase)
+        XCTAssertEqual(resolvedVisual(for: Style(textTransform: Style.TextTransform.none)).textTransform, Style.TextTransform.none)
+
+        let spec = Spec(
+            style: ["#x": Style(textTransform: .uppercase)],
+            layout: Node(type: "p", props: NodeProps(id: "x"), children: [.primitive(.string("shout"))])
+        )
+        _ = JoyDOMView(spec: spec).body
+    }
+
+    func testWhiteSpaceReachesVisualStyle() {
+        XCTAssertEqual(resolvedVisual(for: Style(whiteSpace: .nowrap)).whiteSpace, .nowrap)
+        XCTAssertEqual(resolvedVisual(for: Style(whiteSpace: .normal)).whiteSpace, .normal)
+
+        let spec = Spec(
+            style: ["#x": Style(whiteSpace: .nowrap)],
+            layout: Node(type: "p", props: NodeProps(id: "x"), children: [.primitive(.string("nowrap"))])
+        )
+        _ = JoyDOMView(spec: spec).body
+    }
+
+    func testFontStyleItalicReachesVisualStyle() {
+        XCTAssertEqual(resolvedVisual(for: Style(fontStyle: .italic)).fontStyle, .italic)
+        XCTAssertEqual(resolvedVisual(for: Style(fontStyle: .normal)).fontStyle, .normal)
+
+        let spec = Spec(
+            style: ["#x": Style(fontSize: .px(16), fontStyle: .italic)],
+            layout: Node(type: "p", props: NodeProps(id: "x"), children: [.primitive(.string("italic"))])
+        )
+        _ = JoyDOMView(spec: spec).body
+    }
+
     // MARK: - Adversarial inputs don't crash
 
     func testEmptyChildrenArrayDoesNotCrash() {
