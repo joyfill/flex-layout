@@ -33,6 +33,12 @@ public enum Resolution: Equatable {
 /// `FlexLayout(containerStyle) { nested… }`.
 public struct ResolvedChild {
     public let id: String
+    /// The node's schema type (`"div"`, `"img"`, etc.) or `nil` for nodes
+    /// without a declared type. The render layer uses this to gate
+    /// "applies to: replaced elements only" CSS properties — `object-fit`
+    /// and `object-position` should not cascade to descendants from a
+    /// non-replaced parent (CSS Image Module Level 3 §5.4).
+    public let schemaType: String?
     public let itemStyle: ItemStyle
     public let containerStyle: FlexContainerConfig
     /// Non-layout CSS (background, border, typography, etc.). Applied by
@@ -52,6 +58,7 @@ public struct ResolvedChild {
 
     public init(
         id: String,
+        schemaType: String? = nil,
         itemStyle: ItemStyle,
         containerStyle: FlexContainerConfig = FlexContainerConfig(),
         visualStyle: VisualStyle = VisualStyle(),
@@ -61,6 +68,7 @@ public struct ResolvedChild {
         isVisibilityHidden: Bool = false
     ) {
         self.id = id
+        self.schemaType = schemaType
         self.itemStyle = itemStyle
         self.containerStyle = containerStyle
         self.visualStyle = visualStyle
@@ -254,6 +262,7 @@ public enum ComponentResolver {
             }
             return ResolvedChild(
                 id: id,
+                schemaType: leaf.node.schemaType,
                 itemStyle: leaf.node.computedStyle.item,
                 containerStyle: leaf.node.computedStyle.container,
                 visualStyle: leaf.node.computedStyle.visual,
