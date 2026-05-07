@@ -33,6 +33,7 @@ enum JoyDOMSamples {
         flexAlign,
         constraints,
         marginShowcase,
+        breakpointOrder,
     ]
 
     /// Default selection on first open. Matches the demo's prior
@@ -1375,6 +1376,80 @@ enum JoyDOMSamples {
                 ]
               },
               { "type": "card", "props": { "id": "composed", "label": "padding 12 + margin 24" } }
+            ]
+          }
+        }
+        """#
+    )
+
+    // MARK: - Sample 14 — Breakpoint order override
+    //
+    // Spec primary use case for `Breakpoint.style` rules touching `order`:
+    // a row of three labelled cards (A / B / C) with document-level `order:
+    // 1, 2, 3`. A `width >= 768px` breakpoint flips the assignment to `3,
+    // 2, 1`, so at wide widths the visual order becomes C, B, A. Drag the
+    // viewport slider across the boundary to watch the siblings re-order
+    // live. Documented in `DOM/guides/Breakpoints.md` "Custom Breakpoint
+    // Node Ordering".
+
+    static let breakpointOrder = JoyDOMSample(
+        id: "breakpoint-order",
+        label: "Breakpoint · order override at >=768px",
+        json: #"""
+        {
+          "version": 1,
+          "style": {
+            "#root": {
+              "flexDirection": "column",
+              "gap":     { "value": 12, "unit": "px" },
+              "padding": { "value": 16, "unit": "px" }
+            },
+            "#row": {
+              "flexDirection": "row",
+              "gap": { "value": 12, "unit": "px" }
+            },
+            ".card": {
+              "flexGrow": 1,
+              "height":   { "value": 80,  "unit": "px" },
+              "minWidth": { "value": 80,  "unit": "px" },
+              "backgroundColor": "#3B4FE0",
+              "borderRadius":    { "value": 8, "unit": "px" }
+            },
+            "#a": { "order": 1 },
+            "#b": { "order": 2 },
+            "#c": { "order": 3 }
+          },
+          "breakpoints": [
+            {
+              "conditions": [
+                { "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }
+              ],
+              "nodes": {},
+              "style": {
+                "#a": { "order": 3 },
+                "#b": { "order": 2 },
+                "#c": { "order": 1 }
+              }
+            }
+          ],
+          "layout": {
+            "type": "div",
+            "props": { "id": "root" },
+            "children": [
+              {
+                "type": "p",
+                "props": { "id": "title" },
+                "children": ["Drag the viewport across 768px to flip the order"]
+              },
+              {
+                "type": "div",
+                "props": { "id": "row" },
+                "children": [
+                  { "type": "card", "props": { "id": "a", "className": ["card"], "label": "A" } },
+                  { "type": "card", "props": { "id": "b", "className": ["card"], "label": "B" } },
+                  { "type": "card", "props": { "id": "c", "className": ["card"], "label": "C" } }
+                ]
+              }
             ]
           }
         }

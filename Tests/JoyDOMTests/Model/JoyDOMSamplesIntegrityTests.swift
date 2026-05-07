@@ -431,6 +431,91 @@ final class JoyDOMSamplesIntegrityTests: XCTestCase {
         """#, label: "margin-showcase")
     }
 
+    // MARK: - Phase B (SPEC_COMPLIANCE_PLAN) — breakpoint order override
+    //
+    // Mirrors `breakpointOrder` in `FlexDemoApp/JoyDOMSamples.swift`. Beyond
+    // a smoke decode, this asserts the breakpoint flips the resolved
+    // `item.order` of the three siblings — proving the spec's "Custom
+    // Breakpoint Node Ordering" example works end-to-end.
+
+    func testBreakpointOrderSampleDecodesAndRendersFlippedAtWideViewport() {
+        let json = #"""
+        {
+          "version": 1,
+          "style": {
+            "#row": { "flexDirection": "row" },
+            "#a": { "order": 1 },
+            "#b": { "order": 2 },
+            "#c": { "order": 3 }
+          },
+          "breakpoints": [
+            {
+              "conditions": [
+                { "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }
+              ],
+              "nodes": {},
+              "style": {
+                "#a": { "order": 3 },
+                "#b": { "order": 2 },
+                "#c": { "order": 1 }
+              }
+            }
+          ],
+          "layout": {
+            "type": "div",
+            "props": { "id": "row" },
+            "children": [
+              { "type": "div", "props": { "id": "a", "label": "A" } },
+              { "type": "div", "props": { "id": "b", "label": "B" } },
+              { "type": "div", "props": { "id": "c", "label": "C" } }
+            ]
+          }
+        }
+        """#
+
+        let data = Data(json.utf8)
+        let spec: Spec
+        do {
+            spec = try JSONDecoder().decode(Spec.self, from: data)
+        } catch {
+            XCTFail("breakpoint-order failed to decode: \(error)")
+            return
+        }
+        XCTAssertEqual(spec.version, 1)
+
+        // Narrow viewport — declared order applies.
+        var diags = JoyDiagnostics()
+        let narrowRules = RuleBuilder.buildRules(
+            from: spec, activeBreakpoint: nil, diagnostics: &diags
+        )
+        let narrow = StyleTreeBuilder.build(
+            layout: spec.layout,
+            rootID: "__joydom_root__",
+            rules: narrowRules,
+            diagnostics: &diags
+        )
+        XCTAssertEqual(narrow.first(where: { $0.id == "a" })?.computedStyle.item.order, 1)
+        XCTAssertEqual(narrow.first(where: { $0.id == "c" })?.computedStyle.item.order, 3)
+
+        // Wide viewport — `>=768px` breakpoint matches and flips order.
+        let active = BreakpointResolver.active(
+            in: Viewport(width: 1024),
+            breakpoints: spec.breakpoints
+        )
+        XCTAssertNotNil(active, "the >=768px breakpoint must be active at 1024px")
+        let wideRules = RuleBuilder.buildRules(
+            from: spec, activeBreakpoint: active, diagnostics: &diags
+        )
+        let wide = StyleTreeBuilder.build(
+            layout: spec.layout,
+            rootID: "__joydom_root__",
+            rules: wideRules,
+            diagnostics: &diags
+        )
+        XCTAssertEqual(wide.first(where: { $0.id == "a" })?.computedStyle.item.order, 3)
+        XCTAssertEqual(wide.first(where: { $0.id == "c" })?.computedStyle.item.order, 1)
+    }
+
     // MARK: - Required-key sanity
 
     /// A `Spec` JSON missing `style` or `breakpoints` must throw —

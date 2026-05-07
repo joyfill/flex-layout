@@ -162,6 +162,79 @@ final class BreakpointResolverTests: XCTestCase {
 
     // MARK: - Distinguishable breakpoints (sanity)
 
+    // MARK: - End-to-end order override (Phase B of SPEC_COMPLIANCE_PLAN)
+
+    /// Spec: `DOM/guides/Breakpoints.md` "Custom Breakpoint Node Ordering".
+    /// Three siblings carry document-level `order: 1, 2, 3`. A `width >=
+    /// 768px` breakpoint flips them to `order: 3, 2, 1`. The same payload
+    /// resolves differently depending on which breakpoint is active —
+    /// proves the cascade hand-off plus the Phase 1 `order` plumbing.
+    func testBreakpointOrderOverrideAppliesAtMatchingViewport() {
+        let wideOnly = Breakpoint(
+            conditions: [.width(operator: .greaterThanOrEqual, value: 768, unit: .px)],
+            nodes: [:],
+            style: [
+                "#a": Style(order: 3),
+                "#b": Style(order: 2),
+                "#c": Style(order: 1)
+            ]
+        )
+        let spec = Spec(
+            version: 1,
+            style: [
+                "#a": Style(order: 1),
+                "#b": Style(order: 2),
+                "#c": Style(order: 3)
+            ],
+            breakpoints: [wideOnly],
+            layout: Node(type: "div", props: NodeProps(id: "root"), children: [
+                .node(Node(type: "div", props: NodeProps(id: "a"))),
+                .node(Node(type: "div", props: NodeProps(id: "b"))),
+                .node(Node(type: "div", props: NodeProps(id: "c")))
+            ])
+        )
+
+        // Narrow viewport — declared order applies.
+        var diags = JoyDiagnostics()
+        let narrowRules = RuleBuilder.buildRules(
+            from: spec,
+            activeBreakpoint: nil,
+            diagnostics: &diags
+        )
+        let narrowNodes = StyleTreeBuilder.build(
+            layout: spec.layout,
+            rootID: "__joydom_root__",
+            rules: narrowRules,
+            diagnostics: &diags
+        )
+        XCTAssertEqual(narrowNodes.first(where: { $0.id == "a" })?.computedStyle.item.order, 1)
+        XCTAssertEqual(narrowNodes.first(where: { $0.id == "b" })?.computedStyle.item.order, 2)
+        XCTAssertEqual(narrowNodes.first(where: { $0.id == "c" })?.computedStyle.item.order, 3)
+
+        // Wide viewport — breakpoint override flips the order.
+        let active = BreakpointResolver.active(
+            in: Viewport(width: 1024),
+            breakpoints: spec.breakpoints
+        )
+        XCTAssertEqual(active, wideOnly, "the >=768px breakpoint must match a 1024px viewport")
+        let wideRules = RuleBuilder.buildRules(
+            from: spec,
+            activeBreakpoint: active,
+            diagnostics: &diags
+        )
+        let wideNodes = StyleTreeBuilder.build(
+            layout: spec.layout,
+            rootID: "__joydom_root__",
+            rules: wideRules,
+            diagnostics: &diags
+        )
+        XCTAssertEqual(wideNodes.first(where: { $0.id == "a" })?.computedStyle.item.order, 3)
+        XCTAssertEqual(wideNodes.first(where: { $0.id == "b" })?.computedStyle.item.order, 2)
+        XCTAssertEqual(wideNodes.first(where: { $0.id == "c" })?.computedStyle.item.order, 1)
+    }
+
+    // MARK: - Active-breakpoint content sanity
+
     func testActiveBreakpointHasItsContent() {
         // The resolver returns the breakpoint object itself — make sure
         // its `nodes` and `style` make it through (Unit 8 reads them).
