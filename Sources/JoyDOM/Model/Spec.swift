@@ -230,6 +230,14 @@ public struct Style: Equatable {
     public var textOverflow: Style.TextOverflow?
     public var whiteSpace: Style.WhiteSpace?
 
+    // MARK: Image
+    /// `object-fit` — how a replaced element (e.g. `<img>`) scales to its
+    /// content box. Mirrors `Style.objectFit` in `DOM/spec.ts:69`.
+    public var objectFit: Style.ObjectFit?
+    /// `object-position` — alignment of a replaced element within its
+    /// content box. Mirrors `Style.objectPosition` in `DOM/spec.ts:70-73`.
+    public var objectPosition: Style.ObjectPosition?
+
     public init(
         position: Position? = nil,
         display: Display? = nil,
@@ -278,7 +286,9 @@ public struct Style: Equatable {
         lineHeight: Double? = nil,
         letterSpacing: Length? = nil,
         textOverflow: Style.TextOverflow? = nil,
-        whiteSpace: Style.WhiteSpace? = nil
+        whiteSpace: Style.WhiteSpace? = nil,
+        objectFit: Style.ObjectFit? = nil,
+        objectPosition: Style.ObjectPosition? = nil
     ) {
         self.position = position
         self.display = display
@@ -328,6 +338,8 @@ public struct Style: Equatable {
         self.letterSpacing = letterSpacing
         self.textOverflow = textOverflow
         self.whiteSpace = whiteSpace
+        self.objectFit = objectFit
+        self.objectPosition = objectPosition
     }
 }
 
@@ -465,6 +477,42 @@ extension Style {
     public enum WhiteSpace: String, Equatable, Codable {
         case normal
         case nowrap
+    }
+
+    /// `object-fit` — how a replaced element (e.g. `<img>`) is resized to
+    /// fit its content box. Mirrors `Style.objectFit` in `DOM/spec.ts:69`.
+    public enum ObjectFit: String, Equatable, Codable {
+        case fill
+        case contain
+        case cover
+        case none
+    }
+
+    /// `object-position` — alignment of a replaced element within its
+    /// content box. Mirrors `Style.objectPosition` in `DOM/spec.ts:70-73`:
+    /// ```ts
+    /// objectPosition?: {
+    ///   horizontal: 'left' | 'center' | 'right';
+    ///   vertical: 'top' | 'center' | 'bottom';
+    /// };
+    /// ```
+    public struct ObjectPosition: Equatable, Codable {
+        public enum Horizontal: String, Equatable, Codable {
+            case left
+            case center
+            case right
+        }
+        public enum Vertical: String, Equatable, Codable {
+            case top
+            case center
+            case bottom
+        }
+        public var horizontal: Horizontal
+        public var vertical: Vertical
+        public init(horizontal: Horizontal, vertical: Vertical) {
+            self.horizontal = horizontal
+            self.vertical = vertical
+        }
     }
 }
 

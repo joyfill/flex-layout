@@ -457,4 +457,71 @@ final class JoyDOMTests: XCTestCase {
         XCTAssertEqual(json, "inline-flex")
         try roundTrip(Display.inlineFlex)
     }
+
+    // MARK: - object-fit (spec.ts:69)
+
+    func testObjectFitFillRoundTrip() throws {
+        let json = try encodeJSON(Style.ObjectFit.fill) as? String
+        XCTAssertEqual(json, "fill")
+        try roundTrip(Style.ObjectFit.fill)
+    }
+    func testObjectFitContainRoundTrip() throws {
+        let json = try encodeJSON(Style.ObjectFit.contain) as? String
+        XCTAssertEqual(json, "contain")
+        try roundTrip(Style.ObjectFit.contain)
+    }
+    func testObjectFitCoverRoundTrip() throws {
+        let json = try encodeJSON(Style.ObjectFit.cover) as? String
+        XCTAssertEqual(json, "cover")
+        try roundTrip(Style.ObjectFit.cover)
+    }
+    func testObjectFitNoneRoundTrip() throws {
+        let json = try encodeJSON(Style.ObjectFit.none) as? String
+        XCTAssertEqual(json, "none")
+        try roundTrip(Style.ObjectFit.none)
+    }
+
+    func testStyleObjectFitRoundTripsThroughStyleField() throws {
+        // The cascade reads `Style.objectFit` directly off a decoded
+        // payload, so the field has to survive a Style round-trip
+        // independently of the bare enum.
+        try roundTrip(Style(objectFit: .cover))
+    }
+
+    // MARK: - object-position (spec.ts:70-73)
+
+    func testObjectPositionCenterCenterRoundTripJSONShape() throws {
+        let v = Style.ObjectPosition(horizontal: .center, vertical: .center)
+        let dict = try encodeJSON(v) as? [String: String]
+        XCTAssertEqual(dict?["horizontal"], "center")
+        XCTAssertEqual(dict?["vertical"], "center")
+        try roundTrip(v)
+    }
+
+    func testObjectPositionLeftTopRoundTrip() throws {
+        let v = Style.ObjectPosition(horizontal: .left, vertical: .top)
+        try roundTrip(v)
+    }
+
+    func testObjectPositionRightBottomRoundTrip() throws {
+        let v = Style.ObjectPosition(horizontal: .right, vertical: .bottom)
+        try roundTrip(v)
+    }
+
+    func testObjectPositionRightCenterRoundTrip() throws {
+        let v = Style.ObjectPosition(horizontal: .right, vertical: .center)
+        try roundTrip(v)
+    }
+
+    func testObjectPositionDecodesFromCanonicalJSON() throws {
+        let json = #"{"horizontal":"left","vertical":"bottom"}"#
+        let v = try decode(Style.ObjectPosition.self, from: json)
+        XCTAssertEqual(v.horizontal, .left)
+        XCTAssertEqual(v.vertical,   .bottom)
+    }
+
+    func testStyleObjectPositionRoundTripsThroughStyleField() throws {
+        let s = Style(objectPosition: .init(horizontal: .right, vertical: .top))
+        try roundTrip(s)
+    }
 }

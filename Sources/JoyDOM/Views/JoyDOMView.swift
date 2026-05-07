@@ -204,7 +204,7 @@ public struct JoyDOMView: View {
         // Apply non-layout visual CSS (background, border, typography, etc.)
         // before the flex-item wrapper so the decorations sit inside the
         // item's allocated slot.
-        let withVisual = applyVisual(rawView, visual: child.visualStyle)
+        let withVisual = applyVisual(rawView, visual: child.visualStyle, schemaType: child.schemaType)
         // `visibility: hidden` keeps the flex slot and only suppresses the
         // paint — apply `.hidden()` *before* `.flexItem(...)` so layout
         // still sees the natural size of the underlying view.
@@ -327,7 +327,7 @@ public struct JoyDOMView: View {
     /// Typography modifiers propagate through SwiftUI's environment, so they
     /// automatically cascade to `Text` descendants (including those produced
     /// by `primitive_string` factories in child nodes).
-    private func applyVisual(_ view: AnyView, visual: VisualStyle) -> AnyView {
+    private func applyVisual(_ view: AnyView, visual: VisualStyle, schemaType: String? = nil) -> AnyView {
         var v: AnyView = view
 
         // --- Typography (propagates via SwiftUI environment) ---
@@ -391,6 +391,26 @@ public struct JoyDOMView: View {
 
         if let ws = visual.whiteSpace, ws == .nowrap {
             v = AnyView(v.lineLimit(1))
+        }
+
+        // --- Image (object-fit / object-position) ---
+        //
+        // CSS Image Module Level 3 §5.4: object-fit and object-position
+        // "applies to: replaced elements only", "inherited: no". Only inject
+        // the env values when this very node is an <img>, otherwise a
+        // payload like `<div style="objectFit:cover"><img/></div>` would
+        // leak the parent's (meaningless) value into the descendant img.
+        // The `img` factory's `_DOMImage` consumes both via @Environment —
+        // container `.aspectRatio(...)` / `.frame(alignment:)` modifiers
+        // don't reach the inner AsyncImage's image, so the value has to
+        // ride down through the environment for the leaf to see it.
+        if schemaType == "img" {
+            if let of = visual.objectFit {
+                v = AnyView(v.environment(\.inheritedObjectFit, of))
+            }
+            if let op = visual.objectPosition {
+                v = AnyView(v.environment(\.inheritedObjectPosition, op))
+            }
         }
 
         // --- Background & opacity ---
