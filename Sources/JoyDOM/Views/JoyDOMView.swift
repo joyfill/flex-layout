@@ -631,18 +631,34 @@ public struct JoyDOMView: View {
         ownContainer: FlexContainerConfig,
         ownVisual: VisualStyle
     ) -> some View {
+        // CSS Box Sizing Module Level 3 §3: when `box-sizing: border-box`,
+        // every constrained dimension — width, height, AND min/max-{width,
+        // height} — is interpreted as a border-box value. Apply the same
+        // deduction to all six so a `min-width: 100, padding: 10, border:
+        // 2` payload renders at 100px visible (76px content area), not
+        // 124px as it would if we left min/max as raw content-box values.
+        let widthPadTotal  = ownContainer.padding.leading + ownContainer.padding.trailing
+        let heightPadTotal = ownContainer.padding.top + ownContainer.padding.bottom
         let adjustedWidth = Self.adjustForBoxSizing(
             style.width,
             boxSizing: style.boxSizing,
             borderWidth: ownVisual.borderWidth,
-            paddingTotal: ownContainer.padding.leading + ownContainer.padding.trailing
+            paddingTotal: widthPadTotal
         )
         let adjustedHeight = Self.adjustForBoxSizing(
             style.height,
             boxSizing: style.boxSizing,
             borderWidth: ownVisual.borderWidth,
-            paddingTotal: ownContainer.padding.top + ownContainer.padding.bottom
+            paddingTotal: heightPadTotal
         )
+        let adjMinW = Self.adjustForBoxSizing(style.minWidth,  boxSizing: style.boxSizing,
+                                              borderWidth: ownVisual.borderWidth, paddingTotal: widthPadTotal)
+        let adjMaxW = Self.adjustForBoxSizing(style.maxWidth,  boxSizing: style.boxSizing,
+                                              borderWidth: ownVisual.borderWidth, paddingTotal: widthPadTotal)
+        let adjMinH = Self.adjustForBoxSizing(style.minHeight, boxSizing: style.boxSizing,
+                                              borderWidth: ownVisual.borderWidth, paddingTotal: heightPadTotal)
+        let adjMaxH = Self.adjustForBoxSizing(style.maxHeight, boxSizing: style.boxSizing,
+                                              borderWidth: ownVisual.borderWidth, paddingTotal: heightPadTotal)
         return view.flexItem(
             grow:      style.grow,
             shrink:    style.shrink,
@@ -651,10 +667,10 @@ public struct JoyDOMView: View {
             order:     style.order,
             width:     adjustedWidth,
             height:    adjustedHeight,
-            minWidth:  style.minWidth.map  { .points($0) },
-            maxWidth:  style.maxWidth.map  { .points($0) },
-            minHeight: style.minHeight.map { .points($0) },
-            maxHeight: style.maxHeight.map { .points($0) },
+            minWidth:  adjMinW.map { .points($0) },
+            maxWidth:  adjMaxW.map { .points($0) },
+            minHeight: adjMinH.map { .points($0) },
+            maxHeight: adjMaxH.map { .points($0) },
             margin:    Self.edgeInsets(from: style.margin),
             overflow:  style.overflow,
             zIndex:    style.zIndex,
@@ -693,6 +709,24 @@ public struct JoyDOMView: View {
         case .fraction:          return size  // % cannot deduct without container
         case .auto, .minContent: return size  // no explicit dimension to adjust
         }
+    }
+
+    /// `CGFloat?` overload for `min-{width,height}` and `max-{width,height}`
+    /// — the storage type FlexLayout uses for those constraints. Same
+    /// deduction rule as the `FlexSize` overload: only `.borderBox` with a
+    /// non-`nil` value triggers the subtraction. CSS spec mandates that
+    /// box-sizing applies to min/max identically to the base dimension
+    /// (CSS Box Sizing Module Level 3 §3).
+    internal static func adjustForBoxSizing(
+        _ value: CGFloat?,
+        boxSizing: Style.BoxSizing?,
+        borderWidth: CGFloat?,
+        paddingTotal: CGFloat
+    ) -> CGFloat? {
+        guard let value, boxSizing == .borderBox else { return value }
+        let deduction = (borderWidth ?? 0) * 2 + paddingTotal
+        guard deduction > 0 else { return value }
+        return max(0, value - deduction)
     }
 
     /// Translate JoyDOM's `Padding` shape (uniform / per-side) into the

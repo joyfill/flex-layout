@@ -127,6 +127,33 @@ public enum StyleResolver {
         for rule in sorted {
             apply(rule.style, to: &computed, diagnostics: &diagnostics)
         }
+
+        // 4. Post-cascade diagnostics — surface known silent-divergence
+        //    cases now that all fields have aggregated. Today's only check:
+        //    box-sizing: border-box + a fractional width/height with non-zero
+        //    border or padding can't be deducted (we don't know the
+        //    container's resolved px size at cascade time), so the layout
+        //    diverges from web. Authors get a heads-up rather than chasing
+        //    a "it looks fine in the demo" mystery later.
+        if computed.item.boxSizing == .borderBox {
+            let hasBorder = (computed.visual.borderWidth ?? 0) > 0
+            let widthPad = computed.container.padding.leading + computed.container.padding.trailing
+            let heightPad = computed.container.padding.top + computed.container.padding.bottom
+            if (hasBorder || widthPad > 0),
+               case .fraction = computed.item.width {
+                diagnostics.warn(JoyWarning(
+                    .other,
+                    "box-sizing: border-box with a percentage width plus non-zero padding/border can't be deducted at resolve time; rendering may diverge from the web spec for node id '\(id)'"
+                ))
+            }
+            if (hasBorder || heightPad > 0),
+               case .fraction = computed.item.height {
+                diagnostics.warn(JoyWarning(
+                    .other,
+                    "box-sizing: border-box with a percentage height plus non-zero padding/border can't be deducted at resolve time; rendering may diverge from the web spec for node id '\(id)'"
+                ))
+            }
+        }
         return computed
     }
 

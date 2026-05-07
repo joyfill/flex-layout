@@ -250,4 +250,192 @@ final class BoxSizingTests: XCTestCase {
         )
         XCTAssertEqual(effectiveWidth, .fraction(0.5))
     }
+
+    // MARK: - min/max under border-box (CSS Box Sizing Module Level 3 §3)
+
+    func testBorderBoxDeductsMinWidth() {
+        // Spec: min/max-{width,height} are border-box dimensions under
+        // box-sizing: border-box, identical to width/height.
+        let result = JoyDOMView.adjustForBoxSizing(
+            CGFloat?(100),
+            boxSizing: .borderBox,
+            borderWidth: 2,
+            paddingTotal: 20
+        )
+        XCTAssertEqual(result, 76)
+    }
+
+    func testBorderBoxDeductsMaxWidth() {
+        let result = JoyDOMView.adjustForBoxSizing(
+            CGFloat?(200),
+            boxSizing: .borderBox,
+            borderWidth: 4,
+            paddingTotal: 12
+        )
+        XCTAssertEqual(result, 180)
+    }
+
+    func testBorderBoxDeductsMinAndMaxHeight() {
+        // Same arithmetic, height axis: padding total is top+bottom.
+        XCTAssertEqual(
+            JoyDOMView.adjustForBoxSizing(CGFloat?(80), boxSizing: .borderBox,
+                                          borderWidth: 2, paddingTotal: 16),
+            60
+        )
+        XCTAssertEqual(
+            JoyDOMView.adjustForBoxSizing(CGFloat?(150), boxSizing: .borderBox,
+                                          borderWidth: 1, paddingTotal: 8),
+            140
+        )
+    }
+
+    func testContentBoxLeavesMinMaxUntouched() {
+        // Implicit default (boxSizing == nil) is content-box → no deduction.
+        XCTAssertEqual(
+            JoyDOMView.adjustForBoxSizing(CGFloat?(100), boxSizing: nil,
+                                          borderWidth: 2, paddingTotal: 20),
+            100
+        )
+    }
+
+    func testBorderBoxClampsMinMaxAtZero() {
+        // Over-deduction must clamp to 0, not return a negative bound.
+        let result = JoyDOMView.adjustForBoxSizing(
+            CGFloat?(10),
+            boxSizing: .borderBox,
+            borderWidth: 8,
+            paddingTotal: 30
+        )
+        XCTAssertEqual(result, 0)
+    }
+
+    func testBorderBoxLeavesNilMinMaxAlone() {
+        // No constraint set → no value to adjust. Pass-through.
+        let result = JoyDOMView.adjustForBoxSizing(
+            CGFloat?.none,
+            boxSizing: .borderBox,
+            borderWidth: 2,
+            paddingTotal: 20
+        )
+        XCTAssertNil(result)
+    }
+
+    func testBorderBoxConstraintInteractionMinWidthOverridesShrunkenWidth() {
+        // Spec scenario from PR #25 review: payload
+        //   { min-width: 100, width: 50, padding: 20px (each side),
+        //     border: 2, box-sizing: border-box }
+        // Per-axis deduction = border × 2 + padding total
+        //                    = 4 + 40 = 44.
+        //
+        // Web semantics: border-box width = max(50, 100) = 100; visible 100,
+        // content area = 100 − 44 = 56. The min/max bounds clamp the
+        // *border-box* value, not the content-box value.
+        //
+        // After this fix, JoyDOM deducts both `width` and `min-width` by
+        // the same 44, so FlexLayout sees:
+        //   width     = max(0, 50−44) = 6    ← content-box equivalent of 50
+        //   min-width =      100−44   = 56   ← content-box equivalent of 100
+        // FlexLayout clamps width up to 56 (its floor); visible width =
+        // 56 + 44 = 100. ✓ Matches web. The pre-fix code left min-width
+        // as raw 100, which would have rendered visible = 100 + 44 = 144.
+        let c = resolve(style: Style(
+            boxSizing:   .borderBox,
+            width:       .px(50),
+            minWidth:    .px(100),
+            padding:     .uniform(.px(20)),
+            borderWidth: .px(2)
+        ))
+        let widthPad = c.container.padding.leading + c.container.padding.trailing
+        let adjustedWidth = JoyDOMView.adjustForBoxSizing(
+            c.item.width,
+            boxSizing: c.item.boxSizing,
+            borderWidth: c.visual.borderWidth,
+            paddingTotal: widthPad
+        )
+        let adjustedMinWidth = JoyDOMView.adjustForBoxSizing(
+            c.item.minWidth,
+            boxSizing: c.item.boxSizing,
+            borderWidth: c.visual.borderWidth,
+            paddingTotal: widthPad
+        )
+        XCTAssertEqual(adjustedWidth,    .points(6),
+                       "width 50 − 44 deduction = 6 content-box equivalent")
+        XCTAssertEqual(adjustedMinWidth, 56,
+                       "min-width 100 − 44 deduction = 56; FlexLayout clamps width up to this floor")
+    }
+
+    // MARK: - silent-divergence diagnostic for % + border-box + padding/border
+
+    /// Returns the diagnostics produced when resolving `style` against a
+    /// single-node spec. Mirrors the helper used by other cascade-warning
+    /// tests (e.g. position: fixed/sticky, display: inline-flex).
+    private func resolveCollectingDiagnostics(style: Style) -> JoyDiagnostics {
+        var diags = JoyDiagnostics()
+        let rules = RuleBuilder.buildRules(
+            from: Spec(
+                style: ["#x": style],
+                breakpoints: [],
+                layout: Node(type: "div", props: NodeProps(id: "x"))
+            ),
+            activeBreakpoint: nil,
+            diagnostics: &diags
+        )
+        _ = StyleTreeBuilder.build(
+            layout: Node(type: "div", props: NodeProps(id: "x")),
+            rootID: "__joydom_root__",
+            rules: rules,
+            diagnostics: &diags
+        )
+        return diags
+    }
+
+    func testBorderBoxWithPercentWidthAndBorderEmitsDiagnostic() {
+        let diags = resolveCollectingDiagnostics(style: Style(
+            boxSizing:   .borderBox,
+            width:       Length(value: 50, unit: "%"),
+            borderWidth: .px(2)
+        ))
+        XCTAssertTrue(
+            diags.warnings.contains { $0.detail.contains("percentage width") },
+            "% + border-box + non-zero border should warn that deduction can't be applied"
+        )
+    }
+
+    func testBorderBoxWithPercentHeightAndPaddingEmitsDiagnostic() {
+        let diags = resolveCollectingDiagnostics(style: Style(
+            boxSizing: .borderBox,
+            height:    Length(value: 50, unit: "%"),
+            padding:   .uniform(.px(10))
+        ))
+        XCTAssertTrue(
+            diags.warnings.contains { $0.detail.contains("percentage height") },
+            "% + border-box + non-zero padding should warn for height too"
+        )
+    }
+
+    func testBorderBoxWithPercentWidthButNoBorderOrPaddingDoesNotWarn() {
+        // Without border or padding there's nothing to deduct — no
+        // divergence, no warning.
+        let diags = resolveCollectingDiagnostics(style: Style(
+            boxSizing: .borderBox,
+            width:     Length(value: 50, unit: "%")
+        ))
+        XCTAssertFalse(
+            diags.warnings.contains { $0.detail.contains("box-sizing") },
+            "no border/padding to deduct → no divergence warning"
+        )
+    }
+
+    func testContentBoxWithPercentWidthAndBorderDoesNotWarn() {
+        // The diagnostic is specific to border-box; content-box has no
+        // deduction expectation, so a percentage width is well-defined.
+        let diags = resolveCollectingDiagnostics(style: Style(
+            width:       Length(value: 50, unit: "%"),
+            borderWidth: .px(2)
+        ))
+        XCTAssertFalse(
+            diags.warnings.contains { $0.detail.contains("box-sizing") },
+            "content-box is the implicit default; no diagnostic owed"
+        )
+    }
 }
