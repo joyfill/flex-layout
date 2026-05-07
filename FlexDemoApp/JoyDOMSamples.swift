@@ -1630,6 +1630,10 @@ enum JoyDOMSamples {
               "borderColor":  "#C8CFD9",
               "overflow":     "hidden"
             },
+            ".pic": {
+              "width":  { "value": 100, "unit": "%" },
+              "height": { "value": 100, "unit": "%" }
+            },
             "#imgFill":    { "objectFit": "fill" },
             "#imgContain": { "objectFit": "contain" },
             "#imgCover":   { "objectFit": "cover" },
@@ -1656,28 +1660,28 @@ enum JoyDOMSamples {
                 "children": [
                   { "type": "div", "props": { "className": ["cell"] }, "children": [
                     { "type": "div", "props": { "className": ["frame"] }, "children": [
-                      { "type": "img", "props": { "id": "imgFill",
+                      { "type": "img", "props": { "id": "imgFill", "className": ["pic"],
                         "src": "https://picsum.photos/seed/joydom-fit/600/400" } }
                     ]},
                     { "type": "p", "props": { "className": ["caption"] }, "children": ["fill"] }
                   ]},
                   { "type": "div", "props": { "className": ["cell"] }, "children": [
                     { "type": "div", "props": { "className": ["frame"] }, "children": [
-                      { "type": "img", "props": { "id": "imgContain",
+                      { "type": "img", "props": { "id": "imgContain", "className": ["pic"],
                         "src": "https://picsum.photos/seed/joydom-fit/600/400" } }
                     ]},
                     { "type": "p", "props": { "className": ["caption"] }, "children": ["contain"] }
                   ]},
                   { "type": "div", "props": { "className": ["cell"] }, "children": [
                     { "type": "div", "props": { "className": ["frame"] }, "children": [
-                      { "type": "img", "props": { "id": "imgCover",
+                      { "type": "img", "props": { "id": "imgCover", "className": ["pic"],
                         "src": "https://picsum.photos/seed/joydom-fit/600/400" } }
                     ]},
                     { "type": "p", "props": { "className": ["caption"] }, "children": ["cover"] }
                   ]},
                   { "type": "div", "props": { "className": ["cell"] }, "children": [
                     { "type": "div", "props": { "className": ["frame"] }, "children": [
-                      { "type": "img", "props": { "id": "imgNone",
+                      { "type": "img", "props": { "id": "imgNone", "className": ["pic"],
                         "src": "https://picsum.photos/seed/joydom-fit/600/400" } }
                     ]},
                     { "type": "p", "props": { "className": ["caption"] }, "children": ["none"] }
@@ -1725,6 +1729,8 @@ enum JoyDOMSamples {
               "borderColor": "#C8CFD9"
             },
             ".pic": {
+              "width":  { "value": 100, "unit": "%" },
+              "height": { "value": 100, "unit": "%" },
               "objectFit": "cover"
             },
             "#tl": { "objectPosition": { "horizontal": "left",   "vertical": "top"    } },
@@ -1814,6 +1820,8 @@ enum JoyDOMSamples {
               "overflow":        "hidden"
             },
             "#hero": {
+              "width":  { "value": 100, "unit": "%" },
+              "height": { "value": 100, "unit": "%" },
               "objectFit": "cover"
             }
           },

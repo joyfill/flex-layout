@@ -18,17 +18,33 @@ internal struct _DOMImage: View {
     @Environment(\.inheritedObjectPosition) private var pos
 
     var body: some View {
+        // CSS-correct sizing: an `<img>` with no declared width/height
+        // renders at intrinsic dimensions, and `object-fit` only takes
+        // effect when the declared dimensions differ from intrinsic.
+        // Authors using `object-fit` should set explicit width/height
+        // (or 100% × 100%) on the img element via CSS, which JoyDOM
+        // passes to FlexLayout as `.flexItem(width:height:)`.
+        //
+        // Known limitation: for `objectFit: none` (intrinsic-size image
+        // inside a smaller frame), the image anchors at top-leading
+        // regardless of `objectPosition`. Earlier attempts to honour
+        // `objectPosition` here used `Color.clear.overlay(image,
+        // alignment:)` and `GeometryReader { ... }`; both caused the
+        // SwiftUI / FlexLayout integration to renegotiate layout on
+        // every viewport change, hanging the UI. The CSS-canonical
+        // path (declare explicit width/height on the img and use a
+        // sizing object-fit value like `cover`) avoids this entirely;
+        // the `none` + position case will get a proper fix when we add
+        // hosted snapshot tests and can reproduce the layout cycle in
+        // isolation.
         AsyncImage(url: url) { phase in
             switch phase {
             case .success(let image):
                 applyFit(image)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity,
-                           alignment: pos?.alignment ?? .center)
-                    .clipped()
             case .failure:
                 // Visible signal during authoring: a faint gray tint
-                // appears where the image would be. Surfaces broken URLs
-                // immediately rather than silently disappearing.
+                // appears where the image would be. Surfaces broken
+                // URLs immediately rather than silently disappearing.
                 Color.gray.opacity(0.2)
             case .empty:
                 ProgressView()
@@ -36,6 +52,9 @@ internal struct _DOMImage: View {
                 Color.gray.opacity(0.1)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity,
+               alignment: pos?.alignment ?? .center)
+        .clipped()
     }
 
     /// Apply the `object-fit` mode to a SwiftUI `Image`. Spec values:
