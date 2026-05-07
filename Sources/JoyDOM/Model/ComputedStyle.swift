@@ -90,6 +90,10 @@ public struct VisualStyle: Equatable {
     public var textOverflow:    Style.TextOverflow? = nil
     public var whiteSpace:      Style.WhiteSpace? = nil
 
+    // Image (replaced-element rendering — applied by the `img` factory)
+    public var objectFit:       Style.ObjectFit? = nil
+    public var objectPosition:  Style.ObjectPosition? = nil
+
     public init() {}
 }
 

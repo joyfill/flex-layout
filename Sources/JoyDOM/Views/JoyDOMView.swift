@@ -393,6 +393,20 @@ public struct JoyDOMView: View {
             v = AnyView(v.lineLimit(1))
         }
 
+        // --- Image (object-fit / object-position) ---
+        //
+        // The `img` factory's `_DOMImage` consumes both via
+        // `@Environment` — same pattern as `text-decoration` / Text.
+        // Container `.aspectRatio(...)` / `.frame(alignment:)` modifiers
+        // don't reach the inner AsyncImage's image, so the value has to
+        // ride down through the environment.
+        if let of = visual.objectFit {
+            v = AnyView(v.environment(\.inheritedObjectFit, of))
+        }
+        if let op = visual.objectPosition {
+            v = AnyView(v.environment(\.inheritedObjectPosition, op))
+        }
+
         // --- Background & opacity ---
 
         if let hex = visual.backgroundColor { v = AnyView(v.background(Color(hex: hex))) }

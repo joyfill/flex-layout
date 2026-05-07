@@ -53,19 +53,15 @@ extension ComponentRegistry {
         // Inline text container
         registerIfAbsent("span") { _, _ in .custom { EmptyView() } }
 
-        // Image — `src` extra prop drives the URL.
+        // Image — `src` extra prop drives the URL. The leaf view is
+        // `_DOMImage`, which reads `object-fit` / `object-position` from
+        // the SwiftUI environment (handed down by `JoyDOMView.applyVisual`)
+        // and applies the matching `.resizable() + .aspectRatio(...)` and
+        // `.frame(alignment:)` modifiers.
         registerIfAbsent("img") { props, _ in
             let src = props.string("src") ?? ""
             if let url = URL(string: src) {
-                return .custom {
-                    AsyncImage(url: url) { phase in
-                        switch phase {
-                        case .success(let image): image.resizable().scaledToFit()
-                        case .failure:            Color.gray.opacity(0.2)
-                        default:                  Color.gray.opacity(0.1)
-                        }
-                    }
-                }
+                return .custom { _DOMImage(url: url) }
             }
             return .custom { Color.gray.opacity(0.1) }
         }

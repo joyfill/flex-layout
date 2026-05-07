@@ -34,6 +34,8 @@ enum JoyDOMSamples {
         constraints,
         marginShowcase,
         breakpointOrder,
+        backgroundImageWrapper,
+        breakpointVisibility,
     ]
 
     /// Default selection on first open. Matches the demo's prior
@@ -1448,6 +1450,138 @@ enum JoyDOMSamples {
                   { "type": "card", "props": { "id": "a", "className": ["card"], "label": "A" } },
                   { "type": "card", "props": { "id": "b", "className": ["card"], "label": "B" } },
                   { "type": "card", "props": { "id": "c", "className": ["card"], "label": "C" } }
+                ]
+              }
+            ]
+          }
+        }
+        """#
+    )
+
+    // MARK: - Background image wrapper (DOM/guides/BackgroundImages.md)
+
+    /// Spec recipe — joy-dom does NOT support CSS `background-image`.
+    /// Instead authors declare a `position: relative` wrapper, an
+    /// absolutely-pinned `<img>` with `object-fit: cover` at zIndex 0,
+    /// and a sibling content layer at zIndex 1. This sample mirrors the
+    /// recipe in `DOM/guides/BackgroundImages.md` step-for-step so the
+    /// pattern has a tested, runnable reference.
+    static let backgroundImageWrapper = JoyDOMSample(
+        id: "background-image-wrapper",
+        label: "Image · background-image wrapper recipe",
+        json: #"""
+        {
+          "version": 1,
+          "style": {
+            "#wrapper": {
+              "position": "relative",
+              "width":         { "value": 320, "unit": "px" },
+              "height":        { "value": 200, "unit": "px" },
+              "overflow":      "hidden",
+              "borderRadius":  { "value": 12,  "unit": "px" }
+            },
+            "#bg": {
+              "position": "absolute",
+              "top":      { "value": 0, "unit": "px" },
+              "left":     { "value": 0, "unit": "px" },
+              "right":    { "value": 0, "unit": "px" },
+              "bottom":   { "value": 0, "unit": "px" },
+              "zIndex":   0,
+              "objectFit": "cover"
+            },
+            "#content": {
+              "position": "absolute",
+              "top":      { "value": 0, "unit": "px" },
+              "left":     { "value": 0, "unit": "px" },
+              "right":    { "value": 0, "unit": "px" },
+              "bottom":   { "value": 0, "unit": "px" },
+              "zIndex":   1,
+              "padding":  { "value": 16, "unit": "px" },
+              "color":    "#FFFFFF",
+              "flexDirection": "column",
+              "justifyContent": "flex-end"
+            }
+          },
+          "breakpoints": [],
+          "layout": {
+            "type": "div",
+            "props": { "id": "wrapper" },
+            "children": [
+              {
+                "type": "img",
+                "props": {
+                  "id": "bg",
+                  "src": "https://example.com/hero.jpg"
+                }
+              },
+              {
+                "type": "div",
+                "props": { "id": "content" },
+                "children": [
+                  { "type": "p", "props": { "id": "headline" }, "children": ["Background image via wrapper"] }
+                ]
+              }
+            ]
+          }
+        }
+        """#
+    )
+
+    // MARK: - Breakpoint visibility (DOM/guides/Breakpoints.md)
+
+    /// Three sibling slots in a row. At viewports `>=768px` the middle
+    /// slot is hidden via `display: none` — the spec's "Custom
+    /// Breakpoint Node Visibility" recipe in `DOM/guides/Breakpoints.md`.
+    static let breakpointVisibility = JoyDOMSample(
+        id: "breakpoint-visibility",
+        label: "Breakpoint · hide middle slot at >=768px",
+        json: #"""
+        {
+          "version": 1,
+          "style": {
+            "#root": {
+              "flexDirection": "column",
+              "gap":     { "value": 12, "unit": "px" },
+              "padding": { "value": 16, "unit": "px" }
+            },
+            "#row": {
+              "flexDirection": "row",
+              "gap": { "value": 12, "unit": "px" }
+            },
+            ".slot": {
+              "flexGrow": 1,
+              "height":   { "value": 80, "unit": "px" },
+              "backgroundColor": "#3B4FE0",
+              "borderRadius":    { "value": 8, "unit": "px" }
+            }
+          },
+          "breakpoints": [
+            {
+              "conditions": [
+                { "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }
+              ],
+              "nodes": {},
+              "style": {
+                "#middle": { "display": "none" }
+              }
+            }
+          ],
+          "layout": {
+            "type": "div",
+            "props": { "id": "root" },
+            "children": [
+              {
+                "type": "p",
+                "props": { "id": "title" },
+                "children": ["Drag past 768px to hide the middle slot"]
+              },
+              {
+                "type": "div",
+                "props": { "id": "row" },
+                "children": [
+                  { "type": "div", "props": { "id": "left",   "className": ["slot"] } },
+                  { "type": "div", "props": { "id": "middle", "className": ["slot"] } },
+                  { "type": "div", "props": { "id": "right",  "className": ["slot"] } }
                 ]
               }
             ]

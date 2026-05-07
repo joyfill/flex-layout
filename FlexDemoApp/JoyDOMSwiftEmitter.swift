@@ -189,11 +189,38 @@ enum JoyDOMSwiftEmitter {
         if let v = s.width          { lines.append("\(next)width: \(emitLength(v))") }
         if let v = s.height         { lines.append("\(next)height: \(emitLength(v))") }
         if let v = s.padding        { lines.append("\(next)padding: \(emitPadding(v))") }
+        if let v = s.objectFit      { lines.append("\(next)objectFit: \(emitObjectFit(v))") }
+        if let v = s.objectPosition { lines.append("\(next)objectPosition: \(emitObjectPosition(v))") }
 
         if lines.isEmpty {
             return "Style()"
         }
         return "Style(\n\(lines.joined(separator: ",\n"))\n\(indent))"
+    }
+
+    private static func emitObjectFit(_ v: Style.ObjectFit) -> String {
+        switch v {
+        case .fill:    return ".fill"
+        case .contain: return ".contain"
+        case .cover:   return ".cover"
+        case .none:    return ".none"
+        }
+    }
+
+    private static func emitObjectPosition(_ v: Style.ObjectPosition) -> String {
+        let h: String
+        switch v.horizontal {
+        case .left:   h = ".left"
+        case .center: h = ".center"
+        case .right:  h = ".right"
+        }
+        let ver: String
+        switch v.vertical {
+        case .top:    ver = ".top"
+        case .center: ver = ".center"
+        case .bottom: ver = ".bottom"
+        }
+        return "Style.ObjectPosition(horizontal: \(h), vertical: \(ver))"
     }
 
     // MARK: - Style enums

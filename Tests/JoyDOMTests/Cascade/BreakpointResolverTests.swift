@@ -233,6 +233,207 @@ final class BreakpointResolverTests: XCTestCase {
         XCTAssertEqual(wideNodes.first(where: { $0.id == "c" })?.computedStyle.item.order, 1)
     }
 
+    // MARK: - Display-none breakpoint visibility (Breakpoints.md "Custom Breakpoint Node Visibility")
+
+    /// Spec ref: `DOM/guides/Breakpoints.md` "Custom Breakpoint Node
+    /// Visibility". A `width >= 768px` breakpoint applies
+    /// `display: none` to the middle node. At narrow viewports all
+    /// three nodes render; at wide viewports the middle is removed.
+    func testBreakpointDisplayNoneOverrideHidesNode() {
+        let wide = Breakpoint(
+            conditions: [.width(operator: .greaterThanOrEqual, value: 768, unit: .px)],
+            nodes: [:],
+            style: ["#middle": Style(display: Display.none)]
+        )
+        let spec = Spec(
+            version: 1,
+            style: [:],
+            breakpoints: [wide],
+            layout: Node(type: "div", props: NodeProps(id: "root"), children: [
+                .node(Node(type: "div", props: NodeProps(id: "left"))),
+                .node(Node(type: "div", props: NodeProps(id: "middle"))),
+                .node(Node(type: "div", props: NodeProps(id: "right")))
+            ])
+        )
+
+        // Narrow viewport — breakpoint inactive, middle is visible.
+        var diags = JoyDiagnostics()
+        let narrowRules = RuleBuilder.buildRules(
+            from: spec, activeBreakpoint: nil, diagnostics: &diags
+        )
+        let narrow = StyleTreeBuilder.build(
+            layout: spec.layout,
+            rootID: "__joydom_root__",
+            rules: narrowRules,
+            diagnostics: &diags
+        )
+        XCTAssertEqual(narrow.first(where: { $0.id == "middle" })?.computedStyle.isDisplayNone, false)
+
+        // Wide viewport — breakpoint active, middle is display:none.
+        let active = BreakpointResolver.active(
+            in: Viewport(width: 1024),
+            breakpoints: spec.breakpoints
+        )
+        XCTAssertEqual(active, wide)
+        let wideRules = RuleBuilder.buildRules(
+            from: spec, activeBreakpoint: active, diagnostics: &diags
+        )
+        let wideNodes = StyleTreeBuilder.build(
+            layout: spec.layout,
+            rootID: "__joydom_root__",
+            rules: wideRules,
+            diagnostics: &diags
+        )
+        XCTAssertEqual(wideNodes.first(where: { $0.id == "middle" })?.computedStyle.isDisplayNone, true)
+        // Siblings stay visible.
+        XCTAssertEqual(wideNodes.first(where: { $0.id == "left"   })?.computedStyle.isDisplayNone, false)
+        XCTAssertEqual(wideNodes.first(where: { $0.id == "right"  })?.computedStyle.isDisplayNone, false)
+    }
+
+    // MARK: - Deep merge spec example (Breakpoints.md "Merging View Properties")
+
+    /// Spec ref: `DOM/guides/Breakpoints.md` "Merging View Properties
+    /// and Precedence of Resolution With Primary".
+    ///
+    ///   Primary:    `{ color: "red", padding: 8 }`
+    ///   Breakpoint: `{ color: "blue" }`
+    ///   Merged:     `{ color: "blue", padding: 8 }`
+    ///
+    /// Our cascade does this naturally — the breakpoint Style only
+    /// overwrites fields it sets, leaving the primary `padding` intact.
+    func testBreakpointDeepMergePreservesNonOverriddenFields() {
+        let bp = Breakpoint(
+            conditions: [.width(operator: .greaterThanOrEqual, value: 768, unit: .px)],
+            nodes: [:],
+            style: ["#hero": Style(color: "blue")]
+        )
+        let spec = Spec(
+            version: 1,
+            style: ["#hero": Style(padding: .uniform(.px(8)), color: "red")],
+            breakpoints: [bp],
+            layout: Node(type: "div", props: NodeProps(id: "hero"))
+        )
+
+        var diags = JoyDiagnostics()
+        let active = BreakpointResolver.active(
+            in: Viewport(width: 1024),
+            breakpoints: spec.breakpoints
+        )
+        let rules = RuleBuilder.buildRules(
+            from: spec, activeBreakpoint: active, diagnostics: &diags
+        )
+        let nodes = StyleTreeBuilder.build(
+            layout: spec.layout,
+            rootID: "__joydom_root__",
+            rules: rules,
+            diagnostics: &diags
+        )
+        let hero = nodes.first(where: { $0.id == "hero" })!
+        XCTAssertEqual(hero.computedStyle.visual.color, "blue", "breakpoint override wins for color")
+        XCTAssertEqual(hero.computedStyle.container.padding.leading, 8,
+                       "primary's padding survives because the breakpoint didn't set it")
+        XCTAssertEqual(hero.computedStyle.container.padding.trailing, 8)
+        XCTAssertEqual(hero.computedStyle.container.padding.top, 8)
+        XCTAssertEqual(hero.computedStyle.container.padding.bottom, 8)
+    }
+
+    // MARK: - Restore-original (Breakpoints.md "Restore the original …")
+
+    /// Spec ref: `DOM/guides/Breakpoints.md` "Restore the original node
+    /// ordering". When two breakpoints can match, the lower-specificity
+    /// one omits the override entirely so the primary's `order: 5`
+    /// reasserts itself. Our cascade picks the active breakpoint by
+    /// specificity — set up so only `B` (no order override) matches.
+    func testRemovingOrderFromBreakpointRestoresPrimaryOrder() {
+        // Only B matches at the test viewport (portrait + width).
+        // A would only match at landscape, so the cascade picks B.
+        let bpA = Breakpoint(
+            conditions: [
+                .width(operator: .greaterThanOrEqual, value: 768, unit: .px),
+                .orientation(.landscape)
+            ],
+            nodes: [:],
+            style: ["#hero": Style(order: 1)]
+        )
+        let bpB = Breakpoint(
+            conditions: [.width(operator: .greaterThanOrEqual, value: 768, unit: .px)],
+            nodes: [:],
+            style: ["#hero": Style(color: "red")]
+        )
+        let spec = Spec(
+            version: 1,
+            style: ["#hero": Style(order: 5)],
+            breakpoints: [bpA, bpB],
+            layout: Node(type: "div", props: NodeProps(id: "hero"))
+        )
+
+        var diags = JoyDiagnostics()
+        let active = BreakpointResolver.active(
+            in: Viewport(width: 1024, orientation: .portrait),
+            breakpoints: spec.breakpoints
+        )
+        XCTAssertEqual(active, bpB, "B is the only breakpoint that matches a portrait wide viewport")
+        let rules = RuleBuilder.buildRules(
+            from: spec, activeBreakpoint: active, diagnostics: &diags
+        )
+        let nodes = StyleTreeBuilder.build(
+            layout: spec.layout,
+            rootID: "__joydom_root__",
+            rules: rules,
+            diagnostics: &diags
+        )
+        let hero = nodes.first(where: { $0.id == "hero" })!
+        XCTAssertEqual(hero.computedStyle.item.order, 5,
+                       "B doesn't set order — primary's order: 5 must survive")
+        XCTAssertEqual(hero.computedStyle.visual.color, "red",
+                       "B's color: red still applies on top of primary")
+    }
+
+    /// Spec ref: `DOM/guides/Breakpoints.md` "Restore the original node
+    /// visibility". Same shape as the order test but for `display:
+    /// none` — when the active breakpoint omits the field, the primary
+    /// (which doesn't set it either) leaves the node visible.
+    func testRemovingDisplayNoneFromBreakpointRestoresVisibility() {
+        let bpA = Breakpoint(
+            conditions: [
+                .width(operator: .greaterThanOrEqual, value: 768, unit: .px),
+                .orientation(.landscape)
+            ],
+            nodes: [:],
+            style: ["#hero": Style(display: Display.none)]
+        )
+        let bpB = Breakpoint(
+            conditions: [.width(operator: .greaterThanOrEqual, value: 768, unit: .px)],
+            nodes: [:],
+            style: ["#hero": Style(color: "red")]
+        )
+        let spec = Spec(
+            version: 1,
+            style: [:],
+            breakpoints: [bpA, bpB],
+            layout: Node(type: "div", props: NodeProps(id: "hero"))
+        )
+
+        var diags = JoyDiagnostics()
+        let active = BreakpointResolver.active(
+            in: Viewport(width: 1024, orientation: .portrait),
+            breakpoints: spec.breakpoints
+        )
+        XCTAssertEqual(active, bpB)
+        let rules = RuleBuilder.buildRules(
+            from: spec, activeBreakpoint: active, diagnostics: &diags
+        )
+        let nodes = StyleTreeBuilder.build(
+            layout: spec.layout,
+            rootID: "__joydom_root__",
+            rules: rules,
+            diagnostics: &diags
+        )
+        let hero = nodes.first(where: { $0.id == "hero" })!
+        XCTAssertEqual(hero.computedStyle.isDisplayNone, false,
+                       "B doesn't set display — node must be visible")
+    }
+
     // MARK: - Active-breakpoint content sanity
 
     func testActiveBreakpointHasItsContent() {

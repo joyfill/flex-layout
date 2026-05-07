@@ -370,6 +370,34 @@ final class StyleFieldTranslationTests: XCTestCase {
         XCTAssertEqual(effective, .points(76))
     }
 
+    // MARK: - object-fit / object-position (spec.ts:69-73)
+
+    func testObjectFitFillReachesVisualStyle() {
+        XCTAssertEqual(resolve(style: Style(objectFit: .fill)).visual.objectFit, .fill)
+    }
+    func testObjectFitContainReachesVisualStyle() {
+        XCTAssertEqual(resolve(style: Style(objectFit: .contain)).visual.objectFit, .contain)
+    }
+    func testObjectFitCoverReachesVisualStyle() {
+        XCTAssertEqual(resolve(style: Style(objectFit: .cover)).visual.objectFit, .cover)
+    }
+    func testObjectFitNoneReachesVisualStyle() {
+        XCTAssertEqual(resolve(style: Style(objectFit: .none)).visual.objectFit, .none)
+    }
+
+    func testObjectPositionRoundTripsThroughCascade() {
+        let pos = Style.ObjectPosition(horizontal: .right, vertical: .bottom)
+        let c = resolve(style: Style(objectPosition: pos))
+        XCTAssertEqual(c.visual.objectPosition?.horizontal, .right)
+        XCTAssertEqual(c.visual.objectPosition?.vertical,   .bottom)
+    }
+
+    func testObjectPositionCenterCenterReachesVisualStyle() {
+        let pos = Style.ObjectPosition(horizontal: .center, vertical: .center)
+        let c = resolve(style: Style(objectPosition: pos))
+        XCTAssertEqual(c.visual.objectPosition, pos)
+    }
+
     func testMinMaxPropagateThroughFlexEngine() {
         // End-to-end: Style → ItemStyle → FlexLayout adapter clamps the
         // resolved frame width. Build a FlexItemInput from the resolved

@@ -505,6 +505,11 @@ public enum StyleResolver {
         if let v = s.textOverflow   { computed.visual.textOverflow   = v }
         if let v = s.whiteSpace     { computed.visual.whiteSpace     = v }
 
+        // Visual — image (replaced-element scaling + positioning)
+
+        if let v = s.objectFit      { computed.visual.objectFit      = v }
+        if let v = s.objectPosition { computed.visual.objectPosition = v }
+
         _ = diagnostics
     }
 
