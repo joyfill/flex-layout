@@ -1514,7 +1514,7 @@ enum JoyDOMSamples {
                 "type": "img",
                 "props": {
                   "id": "bg",
-                  "src": "https://example.com/hero.jpg"
+                  "src": "https://picsum.photos/seed/joydom-bg/640/400"
                 }
               },
               {
