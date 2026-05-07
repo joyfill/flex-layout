@@ -730,4 +730,188 @@ final class JoyDOMSamplesIntegrityTests: XCTestCase {
             try JSONDecoder().decode(Spec.self, from: Data(bad.utf8))
         )
     }
+
+    // MARK: - object-fit gallery (PR #26 Concern 1: nil → fill default)
+
+    /// Trimmed mirror of `JoyDOMSamples.objectFitGallery.json` — covers
+    /// the four `objectFit` values plus the deliberately-unset case so
+    /// the CSS-default-fill fix has a regression pin.
+    private static let objectFitGalleryJSON = #"""
+    {
+      "version": 1,
+      "style": {
+        "#imgFill":    { "objectFit": "fill" },
+        "#imgContain": { "objectFit": "contain" },
+        "#imgCover":   { "objectFit": "cover" },
+        "#imgNone":    { "objectFit": "none" }
+      },
+      "breakpoints": [],
+      "layout": {
+        "type": "div",
+        "props": { "id": "root" },
+        "children": [
+          { "type": "img", "props": { "id": "imgFill",    "src": "x" } },
+          { "type": "img", "props": { "id": "imgContain", "src": "x" } },
+          { "type": "img", "props": { "id": "imgCover",   "src": "x" } },
+          { "type": "img", "props": { "id": "imgNone",    "src": "x" } },
+          { "type": "img", "props": { "id": "imgUnset",   "src": "x" } }
+        ]
+      }
+    }
+    """#
+
+    func testObjectFitGalleryDecodes() {
+        assertDecodes(Self.objectFitGalleryJSON, label: "object-fit-gallery")
+    }
+
+    /// Pin each enum value to its expected node. The right-most node
+    /// intentionally has NO objectFit set so the CSS-default-fill fix
+    /// (PR #26 review Concern 1) renders correctly. The cascade test
+    /// here proves the value is absent on `imgFill`'s VisualStyle —
+    /// `_DOMImage.applyFit` then maps that nil to `.resizable()`.
+    func testObjectFitGalleryResolvesEachModeIndependently() {
+        let data = Data(Self.objectFitGalleryJSON.utf8)
+        let spec = try! JSONDecoder().decode(Spec.self, from: data)
+        var diags = JoyDiagnostics()
+        let rules = RuleBuilder.buildRules(
+            from: spec, activeBreakpoint: nil, diagnostics: &diags
+        )
+        let nodes = StyleTreeBuilder.build(
+            layout: spec.layout, rootID: "__joydom_root__",
+            rules: rules, diagnostics: &diags
+        )
+        XCTAssertEqual(nodes.first(where: { $0.id == "imgFill"    })?.computedStyle.visual.objectFit, .fill)
+        XCTAssertEqual(nodes.first(where: { $0.id == "imgContain" })?.computedStyle.visual.objectFit, .contain)
+        XCTAssertEqual(nodes.first(where: { $0.id == "imgCover"   })?.computedStyle.visual.objectFit, .cover)
+        XCTAssertEqual(nodes.first(where: { $0.id == "imgNone"    })?.computedStyle.visual.objectFit, Style.ObjectFit.none)
+    }
+
+    // MARK: - object-position 3×3 grid (PR #26)
+
+    /// Trimmed mirror of `JoyDOMSamples.objectPositionGrid.json` — three
+    /// representative cells (corners + center) so each Codable axis of
+    /// `ObjectPosition` is exercised at least once.
+    private static let objectPositionGridJSON = #"""
+    {
+      "version": 1,
+      "style": {
+        "#tl": { "objectPosition": { "horizontal": "left",   "vertical": "top"    } },
+        "#mc": { "objectPosition": { "horizontal": "center", "vertical": "center" } },
+        "#br": { "objectPosition": { "horizontal": "right",  "vertical": "bottom" } }
+      },
+      "breakpoints": [],
+      "layout": {
+        "type": "div",
+        "props": { "id": "root" },
+        "children": [
+          { "type": "img", "props": { "id": "tl", "src": "x" } },
+          { "type": "img", "props": { "id": "mc", "src": "x" } },
+          { "type": "img", "props": { "id": "br", "src": "x" } }
+        ]
+      }
+    }
+    """#
+
+    func testObjectPositionGridDecodes() {
+        assertDecodes(Self.objectPositionGridJSON, label: "object-position-grid")
+    }
+
+    /// Pin a representative subset of the 9 positions. If Codable for
+    /// `ObjectPosition` ever drops a field, this surfaces immediately.
+    func testObjectPositionGridResolvesCornerAndCenterAlignments() {
+        let data = Data(Self.objectPositionGridJSON.utf8)
+        let spec = try! JSONDecoder().decode(Spec.self, from: data)
+        var diags = JoyDiagnostics()
+        let rules = RuleBuilder.buildRules(
+            from: spec, activeBreakpoint: nil, diagnostics: &diags
+        )
+        let nodes = StyleTreeBuilder.build(
+            layout: spec.layout, rootID: "__joydom_root__",
+            rules: rules, diagnostics: &diags
+        )
+        let tl = nodes.first(where: { $0.id == "tl" })!.computedStyle.visual.objectPosition
+        XCTAssertEqual(tl?.horizontal, .left)
+        XCTAssertEqual(tl?.vertical,   .top)
+
+        let mc = nodes.first(where: { $0.id == "mc" })!.computedStyle.visual.objectPosition
+        XCTAssertEqual(mc?.horizontal, .center)
+        XCTAssertEqual(mc?.vertical,   .center)
+
+        let br = nodes.first(where: { $0.id == "br" })!.computedStyle.visual.objectPosition
+        XCTAssertEqual(br?.horizontal, .right)
+        XCTAssertEqual(br?.vertical,   .bottom)
+    }
+
+    // MARK: - responsive hero — breakpoint-driven object-fit (PR #26)
+
+    /// Trimmed mirror of `JoyDOMSamples.responsiveHero.json` — primary
+    /// `cover` switches to `contain` at width >= 768px. Pins that the
+    /// new field participates in deep-merge breakpoint overrides.
+    private static let responsiveHeroJSON = #"""
+    {
+      "version": 1,
+      "style": {
+        "#hero": { "objectFit": "cover" }
+      },
+      "breakpoints": [
+        {
+          "conditions": [
+            { "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }
+          ],
+          "nodes": {},
+          "style": {
+            "#hero": { "objectFit": "contain" }
+          }
+        }
+      ],
+      "layout": {
+        "type": "div",
+        "props": { "id": "root" },
+        "children": [
+          { "type": "img", "props": { "id": "hero", "src": "x" } }
+        ]
+      }
+    }
+    """#
+
+    func testResponsiveHeroDecodes() {
+        assertDecodes(Self.responsiveHeroJSON, label: "responsive-hero")
+    }
+
+    /// Confirm the breakpoint cascade switches `objectFit` from
+    /// `.cover` (narrow) to `.contain` (wide). Pins that the new field
+    /// participates in deep-merge breakpoint overrides identically to
+    /// pre-existing fields.
+    func testResponsiveHeroSwitchesObjectFitAtBreakpoint() {
+        let data = Data(Self.responsiveHeroJSON.utf8)
+        let spec = try! JSONDecoder().decode(Spec.self, from: data)
+        var diags = JoyDiagnostics()
+        let activeAt768 = spec.breakpoints.first
+
+        // Narrow: no breakpoint active → cover.
+        var rules = RuleBuilder.buildRules(
+            from: spec, activeBreakpoint: nil, diagnostics: &diags
+        )
+        var nodes = StyleTreeBuilder.build(
+            layout: spec.layout, rootID: "__joydom_root__",
+            rules: rules, diagnostics: &diags
+        )
+        XCTAssertEqual(
+            nodes.first(where: { $0.id == "hero" })?.computedStyle.visual.objectFit,
+            .cover
+        )
+
+        // Wide: breakpoint active → contain.
+        rules = RuleBuilder.buildRules(
+            from: spec, activeBreakpoint: activeAt768, diagnostics: &diags
+        )
+        nodes = StyleTreeBuilder.build(
+            layout: spec.layout, rootID: "__joydom_root__",
+            rules: rules, diagnostics: &diags
+        )
+        XCTAssertEqual(
+            nodes.first(where: { $0.id == "hero" })?.computedStyle.visual.objectFit,
+            .contain
+        )
+    }
 }

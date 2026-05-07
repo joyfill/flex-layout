@@ -36,6 +36,9 @@ enum JoyDOMSamples {
         breakpointOrder,
         backgroundImageWrapper,
         breakpointVisibility,
+        objectFitGallery,
+        objectPositionGrid,
+        responsiveHero,
     ]
 
     /// Default selection on first open. Matches the demo's prior
@@ -1584,6 +1587,257 @@ enum JoyDOMSamples {
                   { "type": "div", "props": { "id": "right",  "className": ["slot"] } }
                 ]
               }
+            ]
+          }
+        }
+        """#
+    )
+
+    // MARK: - object-fit gallery (PR #26)
+
+    /// Four 140×140 frames in a row, each rendering the SAME 3:2 source
+    /// image with a different `object-fit` mode. Picks up the `nil → fill`
+    /// CSS-default fix (Concern 1 from the PR review): the rightmost
+    /// frame intentionally omits `objectFit` so authors can confirm it
+    /// matches `fill`, not the prior intrinsic-size behaviour.
+    static let objectFitGallery = JoyDOMSample(
+        id: "object-fit-gallery",
+        label: "Image · object-fit modes side-by-side",
+        json: #"""
+        {
+          "version": 1,
+          "style": {
+            "#root": {
+              "flexDirection": "column",
+              "gap":     { "value": 16, "unit": "px" },
+              "padding": { "value": 16, "unit": "px" }
+            },
+            "#row": {
+              "flexDirection": "row",
+              "gap": { "value": 12, "unit": "px" },
+              "alignItems": "flex-start"
+            },
+            ".cell": {
+              "flexDirection": "column",
+              "gap": { "value": 6, "unit": "px" },
+              "alignItems": "center"
+            },
+            ".frame": {
+              "width":  { "value": 140, "unit": "px" },
+              "height": { "value": 140, "unit": "px" },
+              "backgroundColor": "#EEF1F6",
+              "borderWidth":  { "value": 1, "unit": "px" },
+              "borderColor":  "#C8CFD9",
+              "overflow":     "hidden"
+            },
+            "#imgFill":    { "objectFit": "fill" },
+            "#imgContain": { "objectFit": "contain" },
+            "#imgCover":   { "objectFit": "cover" },
+            "#imgNone":    { "objectFit": "none" },
+            ".caption": {
+              "fontSize":   { "value": 12, "unit": "px" },
+              "color":      "#475066",
+              "textAlign":  "center"
+            }
+          },
+          "breakpoints": [],
+          "layout": {
+            "type": "div",
+            "props": { "id": "root" },
+            "children": [
+              {
+                "type": "p",
+                "props": { "id": "title" },
+                "children": ["object-fit modes (source is 3:2 inside a 1:1 frame)"]
+              },
+              {
+                "type": "div",
+                "props": { "id": "row" },
+                "children": [
+                  { "type": "div", "props": { "className": ["cell"] }, "children": [
+                    { "type": "div", "props": { "className": ["frame"] }, "children": [
+                      { "type": "img", "props": { "id": "imgFill",
+                        "src": "https://picsum.photos/seed/joydom-fit/600/400" } }
+                    ]},
+                    { "type": "p", "props": { "className": ["caption"] }, "children": ["fill"] }
+                  ]},
+                  { "type": "div", "props": { "className": ["cell"] }, "children": [
+                    { "type": "div", "props": { "className": ["frame"] }, "children": [
+                      { "type": "img", "props": { "id": "imgContain",
+                        "src": "https://picsum.photos/seed/joydom-fit/600/400" } }
+                    ]},
+                    { "type": "p", "props": { "className": ["caption"] }, "children": ["contain"] }
+                  ]},
+                  { "type": "div", "props": { "className": ["cell"] }, "children": [
+                    { "type": "div", "props": { "className": ["frame"] }, "children": [
+                      { "type": "img", "props": { "id": "imgCover",
+                        "src": "https://picsum.photos/seed/joydom-fit/600/400" } }
+                    ]},
+                    { "type": "p", "props": { "className": ["caption"] }, "children": ["cover"] }
+                  ]},
+                  { "type": "div", "props": { "className": ["cell"] }, "children": [
+                    { "type": "div", "props": { "className": ["frame"] }, "children": [
+                      { "type": "img", "props": { "id": "imgNone",
+                        "src": "https://picsum.photos/seed/joydom-fit/600/400" } }
+                    ]},
+                    { "type": "p", "props": { "className": ["caption"] }, "children": ["none"] }
+                  ]}
+                ]
+              },
+              {
+                "type": "p",
+                "props": { "id": "footer" },
+                "children": ["Right-most: no objectFit set → CSS default fill (post PR #26 fix)"]
+              }
+            ]
+          }
+        }
+        """#
+    )
+
+    // MARK: - object-position 3×3 grid (PR #26)
+
+    /// 3×3 grid of `object-fit: cover` frames, each with a different
+    /// `object-position` so authors see how cropping shifts. The source
+    /// is wider than the frame so all 9 positions produce visibly
+    /// different crops.
+    static let objectPositionGrid = JoyDOMSample(
+        id: "object-position-grid",
+        label: "Image · object-position 3×3 grid",
+        json: #"""
+        {
+          "version": 1,
+          "style": {
+            "#root": {
+              "flexDirection": "column",
+              "gap":     { "value": 12, "unit": "px" },
+              "padding": { "value": 16, "unit": "px" }
+            },
+            ".row": {
+              "flexDirection": "row",
+              "gap": { "value": 8, "unit": "px" }
+            },
+            ".cell": {
+              "width":  { "value": 110, "unit": "px" },
+              "height": { "value": 80,  "unit": "px" },
+              "overflow": "hidden",
+              "borderWidth": { "value": 1, "unit": "px" },
+              "borderColor": "#C8CFD9"
+            },
+            ".pic": {
+              "objectFit": "cover"
+            },
+            "#tl": { "objectPosition": { "horizontal": "left",   "vertical": "top"    } },
+            "#tc": { "objectPosition": { "horizontal": "center", "vertical": "top"    } },
+            "#tr": { "objectPosition": { "horizontal": "right",  "vertical": "top"    } },
+            "#ml": { "objectPosition": { "horizontal": "left",   "vertical": "center" } },
+            "#mc": { "objectPosition": { "horizontal": "center", "vertical": "center" } },
+            "#mr": { "objectPosition": { "horizontal": "right",  "vertical": "center" } },
+            "#bl": { "objectPosition": { "horizontal": "left",   "vertical": "bottom" } },
+            "#bc": { "objectPosition": { "horizontal": "center", "vertical": "bottom" } },
+            "#br": { "objectPosition": { "horizontal": "right",  "vertical": "bottom" } }
+          },
+          "breakpoints": [],
+          "layout": {
+            "type": "div",
+            "props": { "id": "root" },
+            "children": [
+              { "type": "p", "props": {}, "children": ["object-position: 9 alignments × cover"] },
+              { "type": "div", "props": { "className": ["row"] }, "children": [
+                { "type": "div", "props": { "className": ["cell"] }, "children": [
+                  { "type": "img", "props": { "id": "tl", "className": ["pic"],
+                    "src": "https://picsum.photos/seed/joydom-pos/600/400" } } ]},
+                { "type": "div", "props": { "className": ["cell"] }, "children": [
+                  { "type": "img", "props": { "id": "tc", "className": ["pic"],
+                    "src": "https://picsum.photos/seed/joydom-pos/600/400" } } ]},
+                { "type": "div", "props": { "className": ["cell"] }, "children": [
+                  { "type": "img", "props": { "id": "tr", "className": ["pic"],
+                    "src": "https://picsum.photos/seed/joydom-pos/600/400" } } ]}
+              ]},
+              { "type": "div", "props": { "className": ["row"] }, "children": [
+                { "type": "div", "props": { "className": ["cell"] }, "children": [
+                  { "type": "img", "props": { "id": "ml", "className": ["pic"],
+                    "src": "https://picsum.photos/seed/joydom-pos/600/400" } } ]},
+                { "type": "div", "props": { "className": ["cell"] }, "children": [
+                  { "type": "img", "props": { "id": "mc", "className": ["pic"],
+                    "src": "https://picsum.photos/seed/joydom-pos/600/400" } } ]},
+                { "type": "div", "props": { "className": ["cell"] }, "children": [
+                  { "type": "img", "props": { "id": "mr", "className": ["pic"],
+                    "src": "https://picsum.photos/seed/joydom-pos/600/400" } } ]}
+              ]},
+              { "type": "div", "props": { "className": ["row"] }, "children": [
+                { "type": "div", "props": { "className": ["cell"] }, "children": [
+                  { "type": "img", "props": { "id": "bl", "className": ["pic"],
+                    "src": "https://picsum.photos/seed/joydom-pos/600/400" } } ]},
+                { "type": "div", "props": { "className": ["cell"] }, "children": [
+                  { "type": "img", "props": { "id": "bc", "className": ["pic"],
+                    "src": "https://picsum.photos/seed/joydom-pos/600/400" } } ]},
+                { "type": "div", "props": { "className": ["cell"] }, "children": [
+                  { "type": "img", "props": { "id": "br", "className": ["pic"],
+                    "src": "https://picsum.photos/seed/joydom-pos/600/400" } } ]}
+              ]}
+            ]
+          }
+        }
+        """#
+    )
+
+    // MARK: - responsive hero (PR #26)
+
+    /// Single hero image whose `object-fit` flips between viewports via a
+    /// breakpoint — `cover` at narrow widths (full-bleed crop), `contain`
+    /// at `>=768px` (letterboxed). Drag the viewport slider across 768px
+    /// to see the live re-fit. Validates that the new field cascades
+    /// through breakpoint overrides exactly like any other Style field.
+    static let responsiveHero = JoyDOMSample(
+        id: "responsive-hero",
+        label: "Image · object-fit changes at breakpoint",
+        json: #"""
+        {
+          "version": 1,
+          "style": {
+            "#root": {
+              "flexDirection": "column",
+              "gap":     { "value": 12, "unit": "px" },
+              "padding": { "value": 16, "unit": "px" }
+            },
+            "#hint": {
+              "fontSize": { "value": 13, "unit": "px" },
+              "color":    "#475066"
+            },
+            "#frame": {
+              "height":          { "value": 200, "unit": "px" },
+              "width":           { "value": 100, "unit": "%"  },
+              "backgroundColor": "#EEF1F6",
+              "borderWidth":     { "value": 1, "unit": "px" },
+              "borderColor":     "#C8CFD9",
+              "overflow":        "hidden"
+            },
+            "#hero": {
+              "objectFit": "cover"
+            }
+          },
+          "breakpoints": [
+            {
+              "conditions": [
+                { "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }
+              ],
+              "nodes": {},
+              "style": {
+                "#hero": { "objectFit": "contain" }
+              }
+            }
+          ],
+          "layout": {
+            "type": "div",
+            "props": { "id": "root" },
+            "children": [
+              { "type": "p", "props": { "id": "hint" },
+                "children": ["<768px: cover · ≥768px: contain"] },
+              { "type": "div", "props": { "id": "frame" }, "children": [
+                { "type": "img", "props": { "id": "hero",
+                  "src": "https://picsum.photos/seed/joydom-hero/1200/600" } }
+              ]}
             ]
           }
         }
