@@ -326,13 +326,11 @@ final class StyleFieldTranslationTests: XCTestCase {
         XCTAssertEqual(c.item.maxHeight, 120)
     }
 
-    // MARK: - box-sizing (Phase 4 — round-trip only; layout effect deferred)
+    // MARK: - box-sizing (round-trip + Phase A layout enforcement)
 
     func testBoxSizingBorderBoxRoundTripsThroughCodable() throws {
-        // The layout engine does not yet honor box-sizing (see ComputedStyle
-        // doc comment), but the field is part of the wire spec and must
-        // survive a JSON round-trip so payload authors can ship it ahead of
-        // the layout work landing.
+        // The field is part of the wire spec and must survive a JSON
+        // round-trip independent of the cascade. Pinned since Phase 4.
         let style = Style(boxSizing: .borderBox)
         let data = try JSONEncoder().encode(style)
         let decoded = try JSONDecoder().decode(Style.self, from: data)
@@ -345,6 +343,31 @@ final class StyleFieldTranslationTests: XCTestCase {
         let json = #"{ "boxSizing": "border-box" }"#
         let decoded = try JSONDecoder().decode(Style.self, from: Data(json.utf8))
         XCTAssertEqual(decoded.boxSizing, .borderBox)
+    }
+
+    func testBoxSizingBorderBoxFlowsAllTheWayToFlexLayoutAsAdjustedWidth() {
+        // The headline Phase A pipeline check from `SPEC_COMPLIANCE_PLAN.md`:
+        // a payload with `width: 100, padding: 10, borderWidth: 2,
+        // boxSizing: border-box` must feed an effective width of 76 to
+        // FlexLayout (100 − 2×2 − 2×10).
+        let c = resolve(style: Style(
+            boxSizing:   .borderBox,
+            width:       .px(100),
+            padding:     .uniform(.px(10)),
+            borderWidth: .px(2)
+        ))
+        XCTAssertEqual(c.item.boxSizing, .borderBox)
+        XCTAssertEqual(c.item.width, .points(100))
+        XCTAssertEqual(c.visual.borderWidth, 2)
+        XCTAssertEqual(c.container.padding.leading, 10)
+        XCTAssertEqual(c.container.padding.trailing, 10)
+        let effective = JoyDOMView.adjustForBoxSizing(
+            c.item.width,
+            boxSizing: c.item.boxSizing,
+            borderWidth: c.visual.borderWidth,
+            paddingTotal: c.container.padding.leading + c.container.padding.trailing
+        )
+        XCTAssertEqual(effective, .points(76))
     }
 
     func testMinMaxPropagateThroughFlexEngine() {

@@ -400,6 +400,13 @@ public enum StyleResolver {
         if let v = s.minHeight { computed.item.minHeight = lengthToPx(v) }
         if let v = s.maxHeight { computed.item.maxHeight = lengthToPx(v) }
 
+        // box-sizing: border-box flips the meaning of explicit width/height
+        // to include border + padding. The deduction itself lives in the
+        // JoyDOM adapter (`JoyDOMView.adjustForBoxSizing`); we only carry
+        // the typed flag here. Spec only allows `'border-box'`; absence
+        // implies the content-box default.
+        if let v = s.boxSizing { computed.item.boxSizing = v }
+
         if let v = s.zIndex    { computed.item.zIndex = v }
 
         if let v = s.position {

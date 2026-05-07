@@ -23,10 +23,14 @@ import CoreGraphics
 /// available space and item offset). The visual layer no longer wraps the
 /// item in a SwiftUI `.padding()` to fake margin.
 ///
-/// `box-sizing: border-box` is **not** yet enforced in layout — explicit
-/// width/height are still treated as content-box sizes regardless of the
-/// `boxSizing` field on `Style`. Tracked as a follow-up; see Phase 3.3 in
-/// `SPEC_GAP_PLAN.md`.
+/// `box-sizing` controls whether explicit `width`/`height` cover the
+/// content box (CSS default) or the border box (`border-box`). The spec
+/// only allows `'border-box'` as an explicit value; absent the field,
+/// content-box semantics apply and JoyDOM's adapter passes `width` /
+/// `height` straight through to FlexLayout. When `boxSizing == .borderBox`
+/// the adapter deducts the node's own `borderWidth × 2 + paddingMain × 2`
+/// (or cross equivalent) before forwarding the explicit dimension —
+/// FlexLayout itself stays unaware of the property.
 public struct ItemStyle: Equatable {
     public var grow:      CGFloat       = 0
     public var shrink:    CGFloat       = 1
@@ -47,6 +51,11 @@ public struct ItemStyle: Equatable {
     public var bottom:    CGFloat?      = nil
     public var leading:   CGFloat?      = nil
     public var trailing:  CGFloat?      = nil
+    /// Whether explicit `width` / `height` include border + padding
+    /// (`border-box`) or just the content area (the CSS-default
+    /// `content-box`). The spec only allows `'border-box'` as a value;
+    /// `nil` means "use the default" (content-box).
+    public var boxSizing: Style.BoxSizing? = nil
 
     public init() {}
 }

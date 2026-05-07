@@ -211,7 +211,12 @@ public struct JoyDOMView: View {
         let maybeHidden: AnyView = child.isVisibilityHidden
             ? AnyView(withVisual.hidden())
             : withVisual
-        return AnyView(applyItem(maybeHidden, style: child.itemStyle))
+        return AnyView(applyItem(
+            maybeHidden,
+            style: child.itemStyle,
+            ownContainer: child.containerStyle,
+            ownVisual: child.visualStyle
+        ))
     }
 
     /// Map a numeric CSS `font-weight` (per CSS Fonts Module Level 4) to a
@@ -614,18 +619,38 @@ public struct JoyDOMView: View {
     /// adapter passes them through; the previous SwiftUI `.frame()` shim
     /// for min/max constraints has been removed.
     ///
-    /// TODO: box-sizing: border-box is not yet enforced here. The
-    /// `width`/`height` values pass through as content-box sizes per CSS
-    /// `box-sizing: content-box` (the initial value).
-    private func applyItem(_ view: AnyView, style: ItemStyle) -> some View {
-        view.flexItem(
+    /// `box-sizing: border-box` is enforced here (Approach A): when the
+    /// flag is set on this node and an explicit `width` / `height` is
+    /// supplied, deduct the node's own border + padding before handing
+    /// the value to FlexLayout. The engine itself stays unaware of
+    /// box-sizing — payloads without the field behave exactly as before
+    /// (content-box pass-through).
+    private func applyItem(
+        _ view: AnyView,
+        style: ItemStyle,
+        ownContainer: FlexContainerConfig,
+        ownVisual: VisualStyle
+    ) -> some View {
+        let adjustedWidth = Self.adjustForBoxSizing(
+            style.width,
+            boxSizing: style.boxSizing,
+            borderWidth: ownVisual.borderWidth,
+            paddingTotal: ownContainer.padding.leading + ownContainer.padding.trailing
+        )
+        let adjustedHeight = Self.adjustForBoxSizing(
+            style.height,
+            boxSizing: style.boxSizing,
+            borderWidth: ownVisual.borderWidth,
+            paddingTotal: ownContainer.padding.top + ownContainer.padding.bottom
+        )
+        return view.flexItem(
             grow:      style.grow,
             shrink:    style.shrink,
             basis:     style.basis,
             alignSelf: style.alignSelf,
             order:     style.order,
-            width:     style.width,
-            height:    style.height,
+            width:     adjustedWidth,
+            height:    adjustedHeight,
             minWidth:  style.minWidth.map  { .points($0) },
             maxWidth:  style.maxWidth.map  { .points($0) },
             minHeight: style.minHeight.map { .points($0) },
@@ -639,6 +664,35 @@ public struct JoyDOMView: View {
             leading:   style.leading,
             trailing:  style.trailing
         )
+    }
+
+    /// Approach A `box-sizing: border-box` deduction.
+    ///
+    /// When `boxSizing == .borderBox` and an explicit point-valued
+    /// dimension is supplied, subtract `borderWidth × 2 + paddingTotal`
+    /// (where `paddingTotal` is leading + trailing for width, top +
+    /// bottom for height) so the value FlexLayout receives is the
+    /// content-box equivalent. Anything else (`.auto`, `.fraction`,
+    /// `.minContent`) is returned unchanged — `%` cannot be deducted
+    /// without knowing the container's resolved size, so we document
+    /// that limitation rather than guessing.
+    ///
+    /// Exposed `internal` so unit tests can pin the arithmetic without
+    /// rebuilding the entire JoyDOMView pipeline.
+    internal static func adjustForBoxSizing(
+        _ size: FlexSize,
+        boxSizing: Style.BoxSizing?,
+        borderWidth: CGFloat?,
+        paddingTotal: CGFloat
+    ) -> FlexSize {
+        guard boxSizing == .borderBox else { return size }
+        let deduction = (borderWidth ?? 0) * 2 + paddingTotal
+        guard deduction > 0 else { return size }
+        switch size {
+        case .points(let n):     return .points(max(0, n - deduction))
+        case .fraction:          return size  // % cannot deduct without container
+        case .auto, .minContent: return size  // no explicit dimension to adjust
+        }
     }
 
     /// Translate JoyDOM's `Padding` shape (uniform / per-side) into the
