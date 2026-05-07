@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "style": {
+    "#hero-frame": {
+      "position": "relative",
+      "overflow": "hidden",
+      "width":  { "value": 360, "unit": "px" },
+      "height": { "value": 200, "unit": "px" },
+      "borderRadius": { "value": 12, "unit": "px" }
+    },
+    "#hero-bg": {
+      "position": "absolute",
+      "top":    { "value": 0, "unit": "px" },
+      "left":   { "value": 0, "unit": "px" },
+      "right":  { "value": 0, "unit": "px" },
+      "bottom": { "value": 0, "unit": "px" },
+      "objectFit": "cover",
+      "objectPosition": { "horizontal": "center", "vertical": "center" },
+      "zIndex": 0,
+      "opacity": 0.7
+    },
+    "#hero-content": {
+      "position": "absolute",
+      "top":    { "value": 0, "unit": "px" },
+      "left":   { "value": 0, "unit": "px" },
+      "right":  { "value": 0, "unit": "px" },
+      "bottom": { "value": 0, "unit": "px" },
+      "padding": { "value": 24, "unit": "px" },
+      "zIndex": 1,
+      "color": "#FFFFFF",
+      "fontWeight": "bold",
+      "fontSize": { "value": 28, "unit": "px" }
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "hero-frame" },
+    "children": [
+      { "type": "img", "props": { "id": "hero-bg", "src": "https://example.com/photo.jpg" } },
+      { "type": "div", "props": { "id": "hero-content" }, "children": [
+        { "type": "h1", "children": ["Welcome aboard"] }
+      ] }
+    ]
+  }
+}

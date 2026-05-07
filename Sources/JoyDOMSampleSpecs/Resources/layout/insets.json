@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "style": {
+    "#pinned": {
+      "position": "absolute",
+      "top":    { "value": 8,  "unit": "px" },
+      "left":   { "value": 16, "unit": "px" },
+      "bottom": { "value": 8,  "unit": "px" },
+      "right":  { "value": 16, "unit": "px" }
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "frame", "style": { "position": "relative" } },
+    "children": [{ "type": "div", "props": { "id": "pinned" } }]
+  }
+}

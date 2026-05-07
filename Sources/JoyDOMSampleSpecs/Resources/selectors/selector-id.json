@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "style": {
+    "#hero": { "padding": { "value": 32, "unit": "px" }, "backgroundColor": "#0066CC" }
+  },
+  "breakpoints": [],
+  "layout": { "type": "div", "props": { "id": "hero" }, "children": [{ "type": "p", "children": ["Hero!"] }] }
+}

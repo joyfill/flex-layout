@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "style": {},
+  "breakpoints": [
+    {
+      "conditions": [
+        { "op": "not", "condition": { "type": "type", "value": "print" } }
+      ],
+      "nodes": {},
+      "style": { "#root": { "backgroundColor": "#F4F4F4" } }
+    }
+  ],
+  "layout": { "type": "div", "props": { "id": "root" }, "children": [{ "type": "p", "children": ["Anything except print"] }] }
+}

@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "style": {
+    "#start":   { "flexDirection": "row", "justifyContent": "flex-start" },
+    "#end":     { "flexDirection": "row", "justifyContent": "flex-end" },
+    "#center":  { "flexDirection": "row", "justifyContent": "center" },
+    "#between": { "flexDirection": "row", "justifyContent": "space-between" },
+    "#around":  { "flexDirection": "row", "justifyContent": "space-around" },
+    "#evenly":  { "flexDirection": "row", "justifyContent": "space-evenly" }
+  },
+  "breakpoints": [],
+  "layout": { "type": "div", "props": { "id": "start" } }
+}

@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "style": {
+    "div":   { "color": "#666666" },
+    ".card": { "color": "#0066CC" },
+    "#hero": { "color": "#FF0000" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "hero", "className": ["card"] },
+    "children": [{ "type": "p", "children": ["Red wins."] }]
+  }
+}

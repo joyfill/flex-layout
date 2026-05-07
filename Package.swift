@@ -42,10 +42,28 @@ let package = Package(
             ]
         ),
 
+        // ── JoyDOM sample specs — internal target shipping the per-property
+        //     sample JSON payloads (one per spec property) plus the Swift API
+        //     used by both the demo app and tests. NOT exposed as a library
+        //     product so external JoyDOM consumers don't pull the resources.
+        .target(
+            name: "JoyDOMSampleSpecs",
+            dependencies: ["JoyDOM"],
+            path: "Sources/JoyDOMSampleSpecs",
+            resources: [
+                // `.copy` preserves the per-category subdirectory layout in
+                // Bundle.module so files with the same basename across
+                // categories (e.g. sizing/width.json + breakpoints/width.json)
+                // don't collide. The loader uses `subdirectory:` to look them
+                // up by category folder.
+                .copy("Resources")
+            ]
+        ),
+
         // ── Demo app (not a library product; local development only) ───────────
         .executableTarget(
             name: "FlexDemoApp",
-            dependencies: ["FlexLayout", "JoyDOM"],
+            dependencies: ["FlexLayout", "JoyDOM", "JoyDOMSampleSpecs"],
             path: "FlexDemoApp"
         ),
 
@@ -57,7 +75,7 @@ let package = Package(
         ),
         .testTarget(
             name: "JoyDOMTests",
-            dependencies: ["JoyDOM", "FlexLayout"],
+            dependencies: ["JoyDOM", "FlexLayout", "JoyDOMSampleSpecs"],
             path: "Tests/JoyDOMTests"
         ),
     ]

@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "style": {
+    "#normal":     { "fontWeight": "normal" },
+    "#bold":       { "fontWeight": "bold"   },
+    "#w100": { "fontWeight": 100 },
+    "#w200": { "fontWeight": 200 },
+    "#w300": { "fontWeight": 300 },
+    "#w400": { "fontWeight": 400 },
+    "#w500": { "fontWeight": 500 },
+    "#w600": { "fontWeight": 600 },
+    "#w700": { "fontWeight": 700 },
+    "#w800": { "fontWeight": 800 },
+    "#w900": { "fontWeight": 900 }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "id": "normal" }, "children": ["Normal"] },
+      { "type": "p", "props": { "id": "bold"   }, "children": ["Bold"]   },
+      { "type": "p", "props": { "id": "w100"   }, "children": ["100 — Thin"] },
+      { "type": "p", "props": { "id": "w400"   }, "children": ["400 — Regular"] },
+      { "type": "p", "props": { "id": "w700"   }, "children": ["700 — Bold"] },
+      { "type": "p", "props": { "id": "w900"   }, "children": ["900 — Black"] }
+    ]
+  }
+}

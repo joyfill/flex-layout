@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "style": {
+    "#start":    { "flexDirection": "row", "alignItems": "flex-start" },
+    "#end":      { "flexDirection": "row", "alignItems": "flex-end" },
+    "#center":   { "flexDirection": "row", "alignItems": "center" },
+    "#stretch":  { "flexDirection": "row", "alignItems": "stretch" },
+    "#baseline": { "flexDirection": "row", "alignItems": "baseline" }
+  },
+  "breakpoints": [],
+  "layout": { "type": "div", "props": { "id": "start" } }
+}

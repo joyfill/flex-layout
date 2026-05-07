@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "style": {
+    ".bg-card": { "backgroundColor": "#FFFFFF", "padding": { "value": 16, "unit": "px" } },
+    ".inverse": { "backgroundColor": "#000000", "color": "#FFFFFF" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "card", "className": ["bg-card", "inverse"] },
+    "children": [{ "type": "p", "children": ["Inverse wins on shared keys."] }]
+  }
+}

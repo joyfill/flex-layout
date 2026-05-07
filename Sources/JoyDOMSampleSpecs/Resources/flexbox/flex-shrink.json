@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "style": {
+    "#shrink-1":  { "flexShrink": 1, "flexBasis": { "value": 240, "unit": "px" } },
+    "#shrink-2":  { "flexShrink": 2, "flexBasis": { "value": 240, "unit": "px" } },
+    "#no-shrink": { "flexShrink": 0, "flexBasis": { "value": 240, "unit": "px" } }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "row", "style": { "flexDirection": "row", "width": { "value": 320, "unit": "px" } } },
+    "children": [
+      { "type": "div", "props": { "id": "shrink-1"  } },
+      { "type": "div", "props": { "id": "shrink-2"  } },
+      { "type": "div", "props": { "id": "no-shrink" } }
+    ]
+  }
+}

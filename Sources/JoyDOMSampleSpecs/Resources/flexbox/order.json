@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "style": {
+    "#first":  { "order": 1 },
+    "#second": { "order": 2 },
+    "#third":  { "order": 3 }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "row", "style": { "flexDirection": "row" } },
+    "children": [
+      { "type": "div", "props": { "id": "third"  } },
+      { "type": "div", "props": { "id": "first"  } },
+      { "type": "div", "props": { "id": "second" } }
+    ]
+  }
+}

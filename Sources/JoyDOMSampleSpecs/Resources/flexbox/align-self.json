@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "style": {
+    "#auto":     { "alignSelf": "auto" },
+    "#start":    { "alignSelf": "flex-start" },
+    "#end":      { "alignSelf": "flex-end" },
+    "#center":   { "alignSelf": "center" },
+    "#stretch":  { "alignSelf": "stretch" },
+    "#baseline": { "alignSelf": "baseline" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "row", "style": { "flexDirection": "row", "alignItems": "stretch" } },
+    "children": [
+      { "type": "div", "props": { "id": "auto"     } },
+      { "type": "div", "props": { "id": "start"    } },
+      { "type": "div", "props": { "id": "end"      } },
+      { "type": "div", "props": { "id": "center"   } },
+      { "type": "div", "props": { "id": "stretch"  } },
+      { "type": "div", "props": { "id": "baseline" } }
+    ]
+  }
+}

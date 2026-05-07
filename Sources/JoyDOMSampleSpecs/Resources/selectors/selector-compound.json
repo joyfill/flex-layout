@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "style": {
+    "p.cta":          { "color": "#0066CC" },
+    "div.card#hero":  { "borderWidth": { "value": 2, "unit": "px" }, "borderColor": "#0066CC", "borderStyle": "solid" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "hero", "className": ["card"] },
+    "children": [{ "type": "p", "props": { "className": ["cta"] }, "children": ["Buy now"] }]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "style": { "#root": { "backgroundColor": "#222222", "color": "#FFFFFF", "padding": { "value": 16, "unit": "px" } } },
+  "breakpoints": [
+    {
+      "conditions": [{ "type": "type", "value": "print" }],
+      "nodes": {},
+      "style": { "#root": { "backgroundColor": "#FFFFFF", "color": "#000000" } }
+    }
+  ],
+  "layout": { "type": "div", "props": { "id": "root" }, "children": [{ "type": "p", "children": ["Print swaps to ink-friendly tones"] }] }
+}

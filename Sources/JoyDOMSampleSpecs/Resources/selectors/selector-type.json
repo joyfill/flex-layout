@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "style": {
+    "p":  { "color": "#222222", "fontSize": { "value": 16, "unit": "px" } },
+    "h1": { "color": "#000000", "fontSize": { "value": 32, "unit": "px" } }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "h1", "children": ["Heading"] },
+      { "type": "p",  "children": ["Body."]   }
+    ]
+  }
+}

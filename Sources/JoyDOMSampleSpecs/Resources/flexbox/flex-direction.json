@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "style": {
+    "#row":            { "flexDirection": "row" },
+    "#col":            { "flexDirection": "column" },
+    "#row-reverse":    { "flexDirection": "row-reverse" },
+    "#col-reverse":    { "flexDirection": "column-reverse" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "row" },
+    "children": [
+      { "type": "div", "props": { "id": "col"         } },
+      { "type": "div", "props": { "id": "row-reverse" } },
+      { "type": "div", "props": { "id": "col-reverse" } }
+    ]
+  }
+}
