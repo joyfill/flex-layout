@@ -36,22 +36,30 @@ extension ComponentRegistry {
     /// ```
     @discardableResult
     public func withDefaultPrimitives() -> ComponentRegistry {
-        // Block containers — children render through the layout tree.
+        // Block containers — when a node has children, the resolver
+        // replaces the factory output with a nested FlexLayout. When a
+        // node has NO children (e.g. an empty `<div>` styled as a
+        // colored rectangle via `backgroundColor`), the factory output
+        // IS what renders; `EmptyView()` takes zero space and ignores
+        // modifiers, so it would suppress the background / borders /
+        // explicit width-height the cascade just resolved. `Color.clear`
+        // is a flexible-size primitive that respects every modifier
+        // `applyVisual` and `.flexItem(...)` apply on top.
         for type_ in ["div", "span", "section", "article", "header", "footer",
                       "main", "nav", "ul", "ol", "li", "form", "label"] {
             let t = type_
-            registerIfAbsent(t) { _, _ in .custom { EmptyView() } }
+            registerIfAbsent(t) { _, _ in .custom { Color.clear } }
         }
 
         // Text containers — semantic block elements; same passthrough
         // rendering; typography styling cascades via SwiftUI environment.
         for type_ in ["p", "h1", "h2", "h3", "h4", "h5", "h6"] {
             let t = type_
-            registerIfAbsent(t) { _, _ in .custom { EmptyView() } }
+            registerIfAbsent(t) { _, _ in .custom { Color.clear } }
         }
 
         // Inline text container
-        registerIfAbsent("span") { _, _ in .custom { EmptyView() } }
+        registerIfAbsent("span") { _, _ in .custom { Color.clear } }
 
         // Image — `src` extra prop drives the URL. The leaf view is
         // `_DOMImage`, which reads `object-fit` / `object-position` from
