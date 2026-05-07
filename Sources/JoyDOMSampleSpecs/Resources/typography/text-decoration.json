@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "style": {
+    "#none":         { "textDecoration": "none" },
+    "#underline":    { "textDecoration": "underline" },
+    "#line-through": { "textDecoration": "line-through" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "id": "none"         }, "children": ["Plain"]   },
+      { "type": "p", "props": { "id": "underline"    }, "children": ["Linked"]  },
+      { "type": "p", "props": { "id": "line-through" }, "children": ["Removed"] }
+    ]
+  }
+}

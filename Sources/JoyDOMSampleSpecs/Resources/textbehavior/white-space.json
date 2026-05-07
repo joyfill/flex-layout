@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "style": {
+    "#wrap":    { "whiteSpace": "normal" },
+    "#one-line":{ "whiteSpace": "nowrap" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root", "style": { "width": { "value": 200, "unit": "px" } } },
+    "children": [
+      { "type": "p", "props": { "id": "wrap"     }, "children": ["Wraps as needed across multiple lines."] },
+      { "type": "p", "props": { "id": "one-line" }, "children": ["Stays on a single line."] }
+    ]
+  }
+}

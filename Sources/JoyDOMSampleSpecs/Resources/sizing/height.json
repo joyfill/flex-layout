@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "style": {
+    "#tall":    { "height": { "value": 240, "unit": "px" }, "width": { "value": 80, "unit": "px" } },
+    "#half":    { "height": { "value": 50,  "unit": "%"  }, "width": { "value": 80, "unit": "px" } }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root", "style": { "flexDirection": "row", "height": { "value": 240, "unit": "px" } } },
+    "children": [
+      { "type": "div", "props": { "id": "tall" } },
+      { "type": "div", "props": { "id": "half" } }
+    ]
+  }
+}

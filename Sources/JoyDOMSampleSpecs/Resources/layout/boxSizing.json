@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "style": {
+    "#border-box-card": {
+      "boxSizing": "border-box",
+      "width":  { "value": 100, "unit": "px" },
+      "padding": { "value": 8,  "unit": "px" },
+      "borderWidth": { "value": 4, "unit": "px" },
+      "borderColor": "#000000",
+      "borderStyle": "solid"
+    }
+  },
+  "breakpoints": [],
+  "layout": { "type": "div", "props": { "id": "border-box-card" } }
+}

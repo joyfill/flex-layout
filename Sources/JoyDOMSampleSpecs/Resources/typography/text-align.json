@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "style": {
+    "#left":   { "textAlign": "left" },
+    "#center": { "textAlign": "center" },
+    "#right":  { "textAlign": "right" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "id": "left"   }, "children": ["Left aligned"]   },
+      { "type": "p", "props": { "id": "center" }, "children": ["Center aligned"] },
+      { "type": "p", "props": { "id": "right"  }, "children": ["Right aligned"]  }
+    ]
+  }
+}

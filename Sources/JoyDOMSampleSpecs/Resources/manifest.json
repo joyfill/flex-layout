@@ -1,0 +1,432 @@
+{
+  "version": 1,
+  "samples": [
+    {
+      "id": "layout-position",
+      "file": "layout/position.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "absolute and relative positioning side-by-side"
+    },
+    {
+      "id": "layout-display",
+      "file": "layout/display.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "flex container plus a hidden node via display:none"
+    },
+    {
+      "id": "layout-box-sizing",
+      "file": "layout/boxSizing.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "border-box width with padding and border deducted from inner content"
+    },
+    {
+      "id": "layout-z-index",
+      "file": "layout/zIndex.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "Two absolutely-positioned siblings stacked by zIndex"
+    },
+    {
+      "id": "layout-overflow",
+      "file": "layout/overflow.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "All five overflow values: visible, hidden, clip, scroll, auto"
+    },
+    {
+      "id": "layout-insets",
+      "file": "layout/insets.json",
+      "category": "Layout & Positioning",
+      "property": "top/left/bottom/right",
+      "summary": "Absolutely-positioned child pinned to all four edges of its frame"
+    },
+    {
+      "id": "sizing-width",
+      "file": "sizing/width.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "Fixed-px and percentage widths"
+    },
+    {
+      "id": "sizing-height",
+      "file": "sizing/height.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "Fixed-px and percentage heights inside a height-bound parent"
+    },
+    {
+      "id": "sizing-min-max",
+      "file": "sizing/min-max.json",
+      "category": "Sizing",
+      "property": "minWidth/maxWidth/minHeight/maxHeight",
+      "summary": "All four min/max constraints clamping a percentage-sized box"
+    },
+    {
+      "id": "flexbox-flex-direction",
+      "file": "flexbox/flex-direction.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "All four direction values: row, column, row-reverse, column-reverse"
+    },
+    {
+      "id": "flexbox-flex-grow",
+      "file": "flexbox/flex-grow.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "Items growing 0/1/2 to share remaining space"
+    },
+    {
+      "id": "flexbox-flex-shrink",
+      "file": "flexbox/flex-shrink.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "Three siblings with flexShrink 1, 2, and 0 in an under-sized container"
+    },
+    {
+      "id": "flexbox-flex-basis",
+      "file": "flexbox/flex-basis.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "auto, fixed-px, and percentage flex bases"
+    },
+    {
+      "id": "flexbox-justify-content",
+      "file": "flexbox/justify-content.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "All six values: flex-start, flex-end, center, space-between, space-around, space-evenly"
+    },
+    {
+      "id": "flexbox-align-items",
+      "file": "flexbox/align-items.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "All five values: flex-start, flex-end, center, stretch, baseline"
+    },
+    {
+      "id": "flexbox-align-self",
+      "file": "flexbox/align-self.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "All six values overriding the container alignItems"
+    },
+    {
+      "id": "flexbox-flex-wrap",
+      "file": "flexbox/flex-wrap.json",
+      "category": "Flexbox",
+      "property": "flexWrap",
+      "summary": "nowrap, wrap, and wrap-reverse"
+    },
+    {
+      "id": "flexbox-gap",
+      "file": "flexbox/gap.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "Uniform Length and per-axis {c, r} forms of gap"
+    },
+    {
+      "id": "flexbox-order",
+      "file": "flexbox/order.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "Visual reorder of source-position 3-1-2 children"
+    },
+    {
+      "id": "boxmodel-background-color",
+      "file": "boxmodel/background-color.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "Hex backgroundColor on a sized card"
+    },
+    {
+      "id": "boxmodel-opacity",
+      "file": "boxmodel/opacity.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "Three siblings at opacity 1, 0.5, and 0"
+    },
+    {
+      "id": "boxmodel-padding",
+      "file": "boxmodel/padding.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Uniform Length and per-side {top,right,bottom,left} padding"
+    },
+    {
+      "id": "boxmodel-margin",
+      "file": "boxmodel/margin.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "Uniform Length and per-side margin (on flex item)"
+    },
+    {
+      "id": "boxmodel-border-width",
+      "file": "boxmodel/border-width.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "Thin and thick solid borders for visual comparison"
+    },
+    {
+      "id": "boxmodel-border-color",
+      "file": "boxmodel/border-color.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "Two hex border colors on identical frames"
+    },
+    {
+      "id": "boxmodel-border-style",
+      "file": "boxmodel/border-style.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle",
+      "summary": "All five styles: solid, none, dashed, dotted, double"
+    },
+    {
+      "id": "boxmodel-border-radius",
+      "file": "boxmodel/border-radius.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Pill (uniform) and per-corner radii"
+    },
+    {
+      "id": "typography-font-family",
+      "file": "typography/font-family.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Custom fontFamily on a heading"
+    },
+    {
+      "id": "typography-font-size",
+      "file": "typography/font-size.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Three sizes: caption, body, heading"
+    },
+    {
+      "id": "typography-font-weight",
+      "file": "typography/font-weight.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Named and numeric weights from 100 to 900"
+    },
+    {
+      "id": "typography-font-style",
+      "file": "typography/font-style.json",
+      "category": "Typography",
+      "property": "fontStyle",
+      "summary": "Plain and italic paragraphs"
+    },
+    {
+      "id": "typography-color",
+      "file": "typography/color.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "Hex text color on a paragraph"
+    },
+    {
+      "id": "typography-text-decoration",
+      "file": "typography/text-decoration.json",
+      "category": "Typography",
+      "property": "textDecoration",
+      "summary": "All three values: none, underline, line-through"
+    },
+    {
+      "id": "typography-text-align",
+      "file": "typography/text-align.json",
+      "category": "Typography",
+      "property": "textAlign",
+      "summary": "Left, center, right"
+    },
+    {
+      "id": "typography-text-transform",
+      "file": "typography/text-transform.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "none, uppercase, lowercase"
+    },
+    {
+      "id": "typography-line-height",
+      "file": "typography/line-height.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "Tight (1.0), regular (1.4), and loose (1.8) multipliers"
+    },
+    {
+      "id": "typography-letter-spacing",
+      "file": "typography/letter-spacing.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "Px and em letter-spacing values"
+    },
+    {
+      "id": "textbehavior-text-overflow",
+      "file": "textbehavior/text-overflow.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Ellipsis recipe with width-bound parent and nowrap text"
+    },
+    {
+      "id": "textbehavior-white-space",
+      "file": "textbehavior/white-space.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "normal (wraps) vs nowrap (single line)"
+    },
+    {
+      "id": "media-object-fit",
+      "file": "media/object-fit.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "All four values: fill, contain, cover, none"
+    },
+    {
+      "id": "media-object-position",
+      "file": "media/object-position.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "All nine horizontal x vertical pairings"
+    },
+    {
+      "id": "selectors-type",
+      "file": "selectors/selector-type.json",
+      "category": "Selectors",
+      "property": "type selector",
+      "summary": "Bare element-name selectors (p and h1)"
+    },
+    {
+      "id": "selectors-class",
+      "file": "selectors/selector-class.json",
+      "category": "Selectors",
+      "property": ".class selector",
+      "summary": "Single class plus a multi-class card-dark"
+    },
+    {
+      "id": "selectors-id",
+      "file": "selectors/selector-id.json",
+      "category": "Selectors",
+      "property": "#id selector",
+      "summary": "Unique id selector for a hero block"
+    },
+    {
+      "id": "selectors-compound",
+      "file": "selectors/selector-compound.json",
+      "category": "Selectors",
+      "property": "compound selector",
+      "summary": "p.cta and div.card#hero compound forms"
+    },
+    {
+      "id": "cascade-document-breakpoint-inline",
+      "file": "cascade/document-breakpoint-inline.json",
+      "category": "Cascade",
+      "property": "Document → Breakpoint → inline order",
+      "summary": "Three layers stacking with breakpoint per-node override winning"
+    },
+    {
+      "id": "cascade-specificity",
+      "file": "cascade/specificity.json",
+      "category": "Cascade",
+      "property": "specificity",
+      "summary": "#id beats .class beats element on the same field"
+    },
+    {
+      "id": "cascade-multi-class-source-order",
+      "file": "cascade/multi-class-source-order.json",
+      "category": "Cascade",
+      "property": "multi-class source order",
+      "summary": "Later classes in className array win on same-field collisions"
+    },
+    {
+      "id": "breakpoints-width",
+      "file": "breakpoints/width.json",
+      "category": "Breakpoints",
+      "property": "width condition",
+      "summary": "Mobile column vs tablet+ row layout"
+    },
+    {
+      "id": "breakpoints-orientation",
+      "file": "breakpoints/orientation.json",
+      "category": "Breakpoints",
+      "property": "orientation condition",
+      "summary": "Portrait vs landscape padding swap"
+    },
+    {
+      "id": "breakpoints-print",
+      "file": "breakpoints/print.json",
+      "category": "Breakpoints",
+      "property": "print condition",
+      "summary": "Print media swaps to ink-friendly tones"
+    },
+    {
+      "id": "breakpoints-logical-and",
+      "file": "breakpoints/logical-and.json",
+      "category": "Breakpoints",
+      "property": "logical AND",
+      "summary": "Wide AND landscape combined query"
+    },
+    {
+      "id": "breakpoints-logical-or",
+      "file": "breakpoints/logical-or.json",
+      "category": "Breakpoints",
+      "property": "logical OR",
+      "summary": "Narrow OR print combined query"
+    },
+    {
+      "id": "breakpoints-logical-not",
+      "file": "breakpoints/logical-not.json",
+      "category": "Breakpoints",
+      "property": "logical NOT",
+      "summary": "NOT print – matches every screen viewport"
+    },
+    {
+      "id": "breakpoints-per-node-overrides",
+      "file": "breakpoints/per-node-overrides.json",
+      "category": "Breakpoints",
+      "property": "nodes overrides",
+      "summary": "Per-node className and style swap at the wider breakpoint"
+    },
+    {
+      "id": "breakpoints-deep-merge",
+      "file": "breakpoints/deep-merge.json",
+      "category": "Breakpoints",
+      "property": "deep merge",
+      "summary": "Breakpoint overrides color while padding survives from primary"
+    },
+    {
+      "id": "breakpoints-custom-order",
+      "file": "breakpoints/custom-order.json",
+      "category": "Breakpoints",
+      "property": "custom order",
+      "summary": "Per-breakpoint reorder of two siblings"
+    },
+    {
+      "id": "breakpoints-custom-visibility",
+      "file": "breakpoints/custom-visibility.json",
+      "category": "Breakpoints",
+      "property": "custom visibility",
+      "summary": "Header swap: desktop-nav hides on mobile, mobile-menu hides on desktop"
+    },
+    {
+      "id": "breakpoints-classname-swap",
+      "file": "breakpoints/classname-swap.json",
+      "category": "Breakpoints",
+      "property": "className swap",
+      "summary": "Active class list replaced under landscape orientation"
+    },
+    {
+      "id": "patterns-background-image-wrapper",
+      "file": "patterns/background-image-wrapper.json",
+      "category": "Patterns",
+      "property": "background-image wrapper",
+      "summary": "Wrapper + absolutely-positioned img + content layer recreating background-image"
+    },
+    {
+      "id": "patterns-ellipsis",
+      "file": "patterns/ellipsis.json",
+      "category": "Patterns",
+      "property": "ellipsis recipe",
+      "summary": "All four ellipsis pre-conditions in one runnable snippet"
+    }
+  ]
+}

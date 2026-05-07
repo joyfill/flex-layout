@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "style": {
+    "#pill":    { "borderRadius": { "value": 999, "unit": "px" }, "backgroundColor": "#0066CC", "width": { "value": 200, "unit": "px" }, "height": { "value": 40, "unit": "px" } },
+    "#corners": {
+      "borderRadius": {
+        "topLeft":     { "value": 12, "unit": "px" },
+        "topRight":    { "value":  4, "unit": "px" },
+        "bottomRight": { "value": 12, "unit": "px" },
+        "bottomLeft":  { "value":  4, "unit": "px" }
+      },
+      "backgroundColor": "#FF8800",
+      "width": { "value": 200, "unit": "px" },
+      "height": { "value": 60, "unit": "px" }
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "pill" },
+    "children": [{ "type": "div", "props": { "id": "corners" } }]
+  }
+}

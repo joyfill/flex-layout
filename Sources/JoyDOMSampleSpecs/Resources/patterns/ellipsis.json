@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "style": {
+    "#frame": { "width": { "value": 240, "unit": "px" } },
+    "#title": {
+      "overflow": "hidden",
+      "whiteSpace": "nowrap",
+      "textOverflow": "ellipsis"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "frame" },
+    "children": [
+      { "type": "p", "props": { "id": "title" }, "children": ["A very long product title that will get truncated"] }
+    ]
+  }
+}

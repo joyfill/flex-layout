@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "style": {},
+  "breakpoints": [
+    {
+      "conditions": [{ "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }],
+      "nodes": {
+        "headline": {
+          "className": ["headline-tablet"],
+          "style":     { "fontSize": { "value": 32, "unit": "px" } }
+        }
+      },
+      "style": {}
+    }
+  ],
+  "layout": {
+    "type": "h1",
+    "props": {
+      "id": "headline",
+      "className": ["headline-mobile"],
+      "style": { "fontSize": { "value": 24, "unit": "px" } }
+    },
+    "children": ["Responsive heading"]
+  }
+}

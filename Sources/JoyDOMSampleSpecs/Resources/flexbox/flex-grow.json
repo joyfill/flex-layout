@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "style": {
+    "#fixed":  { "flexGrow": 0, "flexShrink": 0, "width": { "value": 80, "unit": "px" } },
+    "#fill":   { "flexGrow": 1, "flexShrink": 1 },
+    "#fast":   { "flexGrow": 2, "flexShrink": 0.5 }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "row", "style": { "flexDirection": "row" } },
+    "children": [
+      { "type": "div", "props": { "id": "fixed" } },
+      { "type": "div", "props": { "id": "fill"  } },
+      { "type": "div", "props": { "id": "fast"  } }
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "style": {
+    "#uniform-gap":    { "flexDirection": "row", "flexWrap": "wrap", "gap": { "value": 12, "unit": "px" } },
+    "#per-axis-gap":   { "flexDirection": "row", "flexWrap": "wrap",
+                          "gap": { "c": { "value": 12, "unit": "px" }, "r": { "value": 24, "unit": "px" } } }
+  },
+  "breakpoints": [],
+  "layout": { "type": "div", "props": { "id": "uniform-gap" } }
+}

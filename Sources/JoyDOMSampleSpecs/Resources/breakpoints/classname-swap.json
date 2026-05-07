@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "style": {
+    ".tone-light": { "backgroundColor": "#FFFFFF", "color": "#222222" },
+    ".tone-dark":  { "backgroundColor": "#111111", "color": "#FFFFFF" }
+  },
+  "breakpoints": [
+    {
+      "conditions": [{ "type": "feature", "name": "orientation", "value": "landscape" }],
+      "nodes": {
+        "panel": { "className": ["tone-dark"] }
+      },
+      "style": {}
+    }
+  ],
+  "layout": {
+    "type": "div",
+    "props": { "id": "panel", "className": ["tone-light"] },
+    "children": [{ "type": "p", "children": ["Landscape goes dark."] }]
+  }
+}

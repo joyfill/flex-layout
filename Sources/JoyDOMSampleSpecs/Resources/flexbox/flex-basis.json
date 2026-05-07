@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "style": {
+    "#auto":     { "flexBasis": "auto" },
+    "#px-basis": { "flexBasis": { "value": 120, "unit": "px" } },
+    "#pct-basis":{ "flexBasis": { "value": 40,  "unit": "%"  } }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "row", "style": { "flexDirection": "row" } },
+    "children": [
+      { "type": "div", "props": { "id": "auto"     } },
+      { "type": "div", "props": { "id": "px-basis" } },
+      { "type": "div", "props": { "id": "pct-basis"} }
+    ]
+  }
+}

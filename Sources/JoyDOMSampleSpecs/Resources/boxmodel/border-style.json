@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "style": {
+    "#solid":  { "borderWidth": { "value": 2, "unit": "px" }, "borderColor": "#000000", "borderStyle": "solid" },
+    "#none":   { "borderWidth": { "value": 2, "unit": "px" }, "borderColor": "#000000", "borderStyle": "none" },
+    "#dashed": { "borderWidth": { "value": 2, "unit": "px" }, "borderColor": "#000000", "borderStyle": "dashed" },
+    "#dotted": { "borderWidth": { "value": 2, "unit": "px" }, "borderColor": "#000000", "borderStyle": "dotted" },
+    "#double": { "borderWidth": { "value": 4, "unit": "px" }, "borderColor": "#000000", "borderStyle": "double" }
+  },
+  "breakpoints": [],
+  "layout": { "type": "div", "props": { "id": "solid" } }
+}

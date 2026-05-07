@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "style": {
+    "#nowrap":       { "flexDirection": "row", "flexWrap": "nowrap" },
+    "#wrap":         { "flexDirection": "row", "flexWrap": "wrap" },
+    "#wrap-reverse": { "flexDirection": "row", "flexWrap": "wrap-reverse" }
+  },
+  "breakpoints": [],
+  "layout": { "type": "div", "props": { "id": "wrap" } }
+}

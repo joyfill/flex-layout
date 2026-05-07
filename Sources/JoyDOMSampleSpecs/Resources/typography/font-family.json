@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "style": {
+    "#headline": { "fontFamily": "Georgia", "fontSize": { "value": 24, "unit": "px" } }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "p",
+    "props": { "id": "headline" },
+    "children": ["Hello, joy-dom!"]
+  }
+}

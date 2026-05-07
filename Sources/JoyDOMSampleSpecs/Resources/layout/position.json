@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "style": {
+    "#absolute-card": { "position": "absolute", "top": { "value": 0, "unit": "px" }, "left": { "value": 0, "unit": "px" } },
+    "#relative-card": { "position": "relative" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "div", "props": { "id": "relative-card" } },
+      { "type": "div", "props": { "id": "absolute-card" } }
+    ]
+  }
+}

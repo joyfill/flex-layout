@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "style": { "#root": { "padding": { "value": 8, "unit": "px" } } },
+  "breakpoints": [
+    {
+      "conditions": [
+        { "type": "feature", "name": "width", "operator": "<", "value": 768, "unit": "px" }
+      ],
+      "nodes": {},
+      "style": { "#root": { "flexDirection": "column" } }
+    },
+    {
+      "conditions": [
+        { "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }
+      ],
+      "nodes": {},
+      "style": { "#root": { "flexDirection": "row" } }
+    }
+  ],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "children": ["A"] },
+      { "type": "p", "children": ["B"] },
+      { "type": "p", "children": ["C"] }
+    ]
+  }
+}

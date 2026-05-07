@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "style": {
+    "#fully-visible": { "opacity": 1, "backgroundColor": "#0066CC", "width": { "value": 80, "unit": "px" }, "height": { "value": 80, "unit": "px" } },
+    "#half":          { "opacity": 0.5, "backgroundColor": "#0066CC", "width": { "value": 80, "unit": "px" }, "height": { "value": 80, "unit": "px" } },
+    "#hidden":        { "opacity": 0, "backgroundColor": "#0066CC", "width": { "value": 80, "unit": "px" }, "height": { "value": 80, "unit": "px" } }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "row", "style": { "flexDirection": "row", "gap": { "value": 8, "unit": "px" } } },
+    "children": [
+      { "type": "div", "props": { "id": "fully-visible" } },
+      { "type": "div", "props": { "id": "half"          } },
+      { "type": "div", "props": { "id": "hidden"        } }
+    ]
+  }
+}

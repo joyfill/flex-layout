@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "style": {
+    "#item": { "color": "#FF0000", "padding": { "value": 12, "unit": "px" } }
+  },
+  "breakpoints": [
+    {
+      "conditions": [{ "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }],
+      "nodes": {},
+      "style": { "#item": { "color": "#0066CC" } }
+    }
+  ],
+  "layout": { "type": "p", "props": { "id": "item" }, "children": ["Color flips, padding stays"] }
+}
