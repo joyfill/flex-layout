@@ -1,0 +1,163 @@
+# Property Coverage Tracker
+
+Live status for the per-property test-coverage walk described in [`Property-Test-Workflow.md`](Property-Test-Workflow.md).
+
+**Status legend**
+
+- ⬜ Not started
+- 🟡 In progress
+- ✅ Done — value-sweep + edge / context / interaction samples + cascade test + snapshot test
+- ⚠️ Done with documented limitation — see Notes column
+- 🔴 Blocker — divergence found that can't be fixed within scope (see Notes)
+
+**Sample-count column** uses `value-sweep / edges / contexts / interactions` counts.
+**Test-count column** is the delta vs. baseline (607 at start of Phase 0).
+
+---
+
+## Phase 0 — Infrastructure
+
+| Item | Status | Note |
+|---|---|---|
+| swift-snapshot-testing dependency | ✅ | Added to Package.swift, JoyDOMTests target |
+| `JoyDOMSnapshotHelpers.swift` | ✅ | `assertJoyDOMSnapshot(spec:)` + JSON overload |
+| Baseline snapshot test | ✅ | `JoyDOMSnapshotBaselineTests.testBaselineSnapshot` |
+| Tracker doc (this file) | ✅ | |
+
+---
+
+## 1. Flexbox (12 properties)
+
+| Property | Status | Samples (sweep/edges/ctx/inter) | Tests delta | Date | Notes |
+|---|---|---|---|---|---|
+| `flexDirection` | ⬜ | 1/0/0/0 | — | — | — |
+| `flexGrow` | ⬜ | 1/0/0/0 | — | — | — |
+| `flexShrink` | ⬜ | 1/0/0/0 | — | — | — |
+| `flexBasis` | ⬜ | 1/0/0/0 | — | — | — |
+| `justifyContent` | ⬜ | 1/0/0/0 | — | — | — |
+| `alignItems` | ⬜ | 1/0/0/0 | — | — | — |
+| `alignSelf` | ⬜ | 1/0/0/0 | — | — | — |
+| `flexWrap` | ⬜ | 1/0/0/0 | — | — | — |
+| `gap`/`rowGap`/`columnGap` | ⬜ | 1/0/0/0 | — | — | — |
+| `order` | ⬜ | 1/0/0/0 | — | — | — |
+
+## 2. Layout & Positioning (9 properties)
+
+| Property | Status | Samples | Tests delta | Date | Notes |
+|---|---|---|---|---|---|
+| `position` | ⬜ | 1/0/0/0 | — | — | — |
+| `display` | ⬜ | 1/0/0/0 | — | — | — |
+| `boxSizing` | ⬜ | 1/0/0/0 | — | — | PR #25 deduction needs visual sample |
+| `zIndex` | ⬜ | 1/0/0/0 | — | — | — |
+| `overflow` | ⬜ | 1/0/0/0 | — | — | — |
+| `top`/`left`/`bottom`/`right` | ⬜ | 1/0/0/0 | — | — | Combined as `insets` |
+
+## 3. Box Model & Visuals (8 properties)
+
+| Property | Status | Samples | Tests delta | Date | Notes |
+|---|---|---|---|---|---|
+| `backgroundColor` | ⬜ | 1/0/0/0 | — | — | — |
+| `opacity` | ⬜ | 1/0/0/0 | — | — | — |
+| `padding` | ⬜ | 1/0/0/0 | — | — | — |
+| `margin` | ⬜ | 1/0/0/0 | — | — | PR #21 true flex margin needs visual proof |
+| `borderWidth` | ⬜ | 1/0/0/0 | — | — | — |
+| `borderColor` | ⬜ | 1/0/0/0 | — | — | — |
+| `borderStyle` | ⬜ | 1/0/0/0 | — | — | Ext dashed/dotted/double have no render tests |
+| `borderRadius` | ⬜ | 1/0/0/0 | — | — | — |
+
+## 4. Sizing (3 properties)
+
+| Property | Status | Samples | Tests delta | Date | Notes |
+|---|---|---|---|---|---|
+| `width` | ⬜ | 1/0/0/0 | — | — | — |
+| `height` | ⬜ | 1/0/0/0 | — | — | — |
+| `min`/`maxWidth` & `min`/`maxHeight` | ⬜ | 1/0/0/0 | — | — | — |
+
+## 5. Typography (10 properties)
+
+| Property | Status | Samples | Tests delta | Date | Notes |
+|---|---|---|---|---|---|
+| `fontFamily` | ⬜ | 1/0/0/0 | — | — | — |
+| `fontSize` | ⬜ | 1/0/0/0 | — | — | — |
+| `fontWeight` | ⬜ | 1/0/0/0 | — | — | CSS Fonts L4 band mapping |
+| `fontStyle` | ⬜ | 1/0/0/0 | — | — | — |
+| `color` | ⬜ | 1/0/0/0 | — | — | — |
+| `textDecoration` | ⬜ | 1/0/0/0 | — | — | Env cascade to Text descendants |
+| `textAlign` | ⬜ | 1/0/0/0 | — | — | — |
+| `textTransform` | ⬜ | 1/0/0/0 | — | — | — |
+| `lineHeight` | ⬜ | 1/0/0/0 | — | — | ⚠️ system-leading subtraction caveat |
+| `letterSpacing` | ⬜ | 1/0/0/0 | — | — | ⚠️ em scaling caveat |
+
+## 6. Text Behavior (2 properties)
+
+| Property | Status | Samples | Tests delta | Date | Notes |
+|---|---|---|---|---|---|
+| `textOverflow` | ⬜ | 1/0/0/0 | — | — | ⚠️ Requires 4 TextStyles.md preconditions |
+| `whiteSpace` | ⬜ | 1/0/0/0 | — | — | — |
+
+## 7. Media (2 properties)
+
+| Property | Status | Samples | Tests delta | Date | Notes |
+|---|---|---|---|---|---|
+| `objectFit` | ⬜ | 1/0/0/0 | — | — | nil → fill (CSS spec default) |
+| `objectPosition` | ⬜ | 1/0/0/0 | — | — | ⚠️ contain/none alignment limitation |
+
+## 8. Selectors (8 capabilities)
+
+| Capability | Status | Samples | Tests delta | Date | Notes |
+|---|---|---|---|---|---|
+| `type` | ⬜ | 1/0/0/0 | — | — | — |
+| `.class` | ⬜ | 1/0/0/0 | — | — | — |
+| `#id` | ⬜ | 1/0/0/0 | — | — | — |
+| Compound (`div.foo#bar`) | ⬜ | 1/0/0/0 | — | — | — |
+| Descendant (` `) | ⬜ | 0/0/0/0 | — | — | Spec extension |
+| Child (`>`) | ⬜ | 0/0/0/0 | — | — | Spec extension |
+| Adjacent sibling (`+`) | ⬜ | 0/0/0/0 | — | — | Spec extension |
+| General sibling (`~`) | ⬜ | 0/0/0/0 | — | — | Spec extension |
+
+## 9. Cascade (3 capabilities)
+
+| Capability | Status | Samples | Tests delta | Date | Notes |
+|---|---|---|---|---|---|
+| Document → Breakpoint → Inline | ⬜ | 1/0/0/0 | — | — | — |
+| Specificity (id > class > type) | ⬜ | 1/0/0/0 | — | — | — |
+| Multi-class source order | ⬜ | 1/0/0/0 | — | — | — |
+
+## 10. Breakpoints (11 capabilities)
+
+| Capability | Status | Samples | Tests delta | Date | Notes |
+|---|---|---|---|---|---|
+| `width` feature | ⬜ | 1/0/0/0 | — | — | — |
+| `orientation` | ⬜ | 1/0/0/0 | — | — | Demo needs toggle |
+| `type: print` | ⬜ | 1/0/0/0 | — | — | Demo needs toggle |
+| Logical `and` | ⬜ | 1/0/0/0 | — | — | — |
+| Logical `or` | ⬜ | 1/0/0/0 | — | — | — |
+| Logical `not` | ⬜ | 1/0/0/0 | — | — | — |
+| Per-node overrides | ⬜ | 1/0/0/0 | — | — | — |
+| Deep merge | ⬜ | 1/0/0/0 | — | — | — |
+| Custom order | ⬜ | 1/0/0/0 | — | — | — |
+| Custom visibility | ⬜ | 1/0/0/0 | — | — | — |
+| className swap | ⬜ | 1/0/0/0 | — | — | — |
+
+## 11. Patterns (2 patterns)
+
+| Pattern | Status | Samples | Tests delta | Date | Notes |
+|---|---|---|---|---|---|
+| `BackgroundImages.md` wrapper | ⬜ | 1/0/0/0 | — | — | — |
+| `TextStyles.md` ellipsis preconditions | ⬜ | 0/0/0/0 | — | — | — |
+
+---
+
+## Bugs surfaced during the walk
+
+(Empty — populated as the walk progresses.)
+
+| ID | Property | Reproducer sample | Expected vs actual | Status |
+|---|---|---|---|---|
+
+## Documented limitations
+
+(Empty — populated as the walk progresses.)
+
+| Property | Limitation | Why deferred | Tracking |
+|---|---|---|---|
