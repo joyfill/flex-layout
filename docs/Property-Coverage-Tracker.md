@@ -30,7 +30,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 
 | Property | Status | Samples (sweep/edges/ctx/inter) | Tests delta | Date | Notes |
 |---|---|---|---|---|---|
-| `flexDirection` | ⬜ | 1/0/0/0 | — | — | — |
+| `flexDirection` | ✅ | 4/1/0/2 | +8 | 2026-05-11 | All 4 values snapshot-tested; default fall-through verified; row×wrap and column-reverse×justify-end interactions captured. 7 snapshot baselines + 1 cascade assertion. No divergences. |
 | `flexGrow` | ⬜ | 1/0/0/0 | — | — | — |
 | `flexShrink` | ⬜ | 1/0/0/0 | — | — | — |
 | `flexBasis` | ⬜ | 1/0/0/0 | — | — | — |
