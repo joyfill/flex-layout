@@ -242,8 +242,7 @@ struct SpecPropertyBrowser: View {
                 }
             }
 
-            TextEditor(text: $jsonText)
-                .font(.system(.caption, design: .monospaced))
+            JSONCodeEditor(text: $jsonText)
                 .frame(minHeight: 240, maxHeight: .infinity)
                 .padding(6)
                 .background(Color(white: 0.97))
@@ -344,3 +343,125 @@ private struct BrowserRow: View {
         .contentShape(Rectangle())
     }
 }
+
+// MARK: - JSON code editor (smart-substitutions-off)
+//
+// SwiftUI's `TextEditor` inherits NSTextView (macOS) and UITextView
+// (iOS) defaults that auto-replace straight quotes with curly quotes
+// (`"` → `"` `"`), straight dashes with em-dashes, and apply other
+// "smart" substitutions that break JSON the moment a user edits it.
+//
+// `JSONCodeEditor` is a platform-thin wrapper around the native text
+// view with every auto-substitution turned off, autocorrect / spell-
+// check disabled, and a monospaced font set. Used in place of
+// `TextEditor` for the JSON pane.
+
+private struct JSONCodeEditor: View {
+    @Binding var text: String
+
+    var body: some View {
+        #if canImport(AppKit)
+        NSTextViewRepresentable(text: $text)
+        #elseif canImport(UIKit)
+        UITextViewRepresentable(text: $text)
+        #else
+        // Fallback for platforms without AppKit/UIKit — we accept the
+        // smart-substitution risk because there's no native text view
+        // to configure.
+        TextEditor(text: $text)
+            .font(.system(.caption, design: .monospaced))
+            .autocorrectionDisabled(true)
+        #endif
+    }
+}
+
+#if canImport(AppKit)
+private struct NSTextViewRepresentable: NSViewRepresentable {
+    @Binding var text: String
+
+    func makeNSView(context: Context) -> NSScrollView {
+        let scrollView = NSTextView.scrollableTextView()
+        let textView = scrollView.documentView as! NSTextView
+        // The whole point of this wrapper — disable every auto
+        // substitution that could mangle JSON.
+        textView.isAutomaticQuoteSubstitutionEnabled  = false
+        textView.isAutomaticDashSubstitutionEnabled   = false
+        textView.isAutomaticTextReplacementEnabled    = false
+        textView.isAutomaticSpellingCorrectionEnabled = false
+        textView.isAutomaticDataDetectionEnabled      = false
+        textView.isAutomaticLinkDetectionEnabled      = false
+        textView.smartInsertDeleteEnabled             = false
+        textView.isRichText                           = false
+        textView.allowsUndo                           = true
+        textView.font = NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
+        textView.delegate = context.coordinator
+        textView.string = text
+        textView.textContainerInset = NSSize(width: 4, height: 4)
+        return scrollView
+    }
+
+    func updateNSView(_ scrollView: NSScrollView, context: Context) {
+        guard let textView = scrollView.documentView as? NSTextView else { return }
+        if textView.string != text {
+            // Programmatic update from the Reset button — replace
+            // contents preserving the user's caret position only if
+            // valid; otherwise reset to start.
+            textView.string = text
+        }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+
+    final class Coordinator: NSObject, NSTextViewDelegate {
+        var parent: NSTextViewRepresentable
+        init(_ parent: NSTextViewRepresentable) { self.parent = parent }
+
+        func textDidChange(_ notification: Notification) {
+            guard let textView = notification.object as? NSTextView else { return }
+            parent.text = textView.string
+        }
+    }
+}
+#endif
+
+#if canImport(UIKit)
+private struct UITextViewRepresentable: UIViewRepresentable {
+    @Binding var text: String
+
+    func makeUIView(context: Context) -> UITextView {
+        let textView = UITextView()
+        // Disable iOS keyboard's smart substitutions + autocorrect.
+        textView.autocapitalizationType   = .none
+        textView.autocorrectionType       = .no
+        textView.smartQuotesType          = .no
+        textView.smartDashesType          = .no
+        textView.smartInsertDeleteType    = .no
+        textView.spellCheckingType        = .no
+        textView.font = UIFont.monospacedSystemFont(ofSize: 12, weight: .regular)
+        textView.delegate = context.coordinator
+        textView.text = text
+        textView.isEditable = true
+        textView.isScrollEnabled = true
+        textView.backgroundColor = .clear
+        textView.textContainerInset = UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4)
+        return textView
+    }
+
+    func updateUIView(_ textView: UITextView, context: Context) {
+        if textView.text != text {
+            textView.text = text
+        }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+
+    final class Coordinator: NSObject, UITextViewDelegate {
+        var parent: UITextViewRepresentable
+        init(_ parent: UITextViewRepresentable) { self.parent = parent }
+
+        func textViewDidChange(_ textView: UITextView) {
+            parent.text = textView.text
+        }
+    }
+}
+#endif
