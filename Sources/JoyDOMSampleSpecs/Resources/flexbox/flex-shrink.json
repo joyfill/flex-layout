@@ -1,18 +1,30 @@
 {
   "version": 1,
   "style": {
-    "#shrink-1":  { "flexShrink": 1, "flexBasis": { "value": 240, "unit": "px" } },
-    "#shrink-2":  { "flexShrink": 2, "flexBasis": { "value": 240, "unit": "px" } },
-    "#no-shrink": { "flexShrink": 0, "flexBasis": { "value": 240, "unit": "px" } }
+    "#root": {
+      "flexDirection": "row",
+      "padding": { "value": 16, "unit": "px" },
+      "gap":     { "value": 8,  "unit": "px" },
+      "width":   { "value": 320, "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    },
+    ".box": {
+      "height": { "value": 60, "unit": "px" },
+      "borderRadius": { "value": 4, "unit": "px" },
+      "flexBasis": { "value": 160, "unit": "px" }
+    },
+    "#a": { "backgroundColor": "#EF4444", "flexShrink": 0 },
+    "#b": { "backgroundColor": "#10B981", "flexShrink": 1 },
+    "#c": { "backgroundColor": "#3B82F6", "flexShrink": 2 }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "row", "style": { "flexDirection": "row", "width": { "value": 320, "unit": "px" } } },
+    "props": { "id": "root" },
     "children": [
-      { "type": "div", "props": { "id": "shrink-1"  } },
-      { "type": "div", "props": { "id": "shrink-2"  } },
-      { "type": "div", "props": { "id": "no-shrink" } }
+      { "type": "div", "props": { "id": "a", "className": ["box"] } },
+      { "type": "div", "props": { "id": "b", "className": ["box"] } },
+      { "type": "div", "props": { "id": "c", "className": ["box"] } }
     ]
   }
 }

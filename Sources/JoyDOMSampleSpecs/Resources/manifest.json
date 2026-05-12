@@ -6,10 +6,10 @@
       "file": "flexbox/flex-direction.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "All four direction values: row, column, row-reverse, column-reverse",
+      "summary": "row of 4 colored boxes (overview) \u2014 A \u2192 B \u2192 C \u2192 D horizontally",
       "snapshot": {
-        "viewportWidth": 600,
-        "height": 240
+        "viewportWidth": 400,
+        "height": 100
       }
     },
     {
@@ -83,7 +83,7 @@
       "file": "flexbox/flex-direction-with-justify-end.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "interaction: column-reverse + justifyContent: flex-end stacks from the bottom edge",
+      "summary": "interaction: column-reverse + justifyContent: flex-end stacks at the top edge (reversed main-end)",
       "snapshot": {
         "viewportWidth": 200,
         "height": 280
@@ -259,63 +259,99 @@
       "file": "flexbox/flex-grow.json",
       "category": "Flexbox",
       "property": "flexGrow",
-      "summary": "Items growing 0/1/2 to share remaining space"
+      "summary": "row with flexGrow 1/1/2 \u2014 red and green equal width, blue double-width",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 100
+      }
     },
     {
       "id": "flexbox-flex-shrink",
       "file": "flexbox/flex-shrink.json",
       "category": "Flexbox",
       "property": "flexShrink",
-      "summary": "Three siblings with flexShrink 1, 2, and 0 in an under-sized container"
+      "summary": "3 items basis 160 in a 320-wide container \u2014 flexShrink 0/1/2 distributes overflow",
+      "snapshot": {
+        "viewportWidth": 360,
+        "height": 100
+      }
     },
     {
       "id": "flexbox-flex-basis",
       "file": "flexbox/flex-basis.json",
       "category": "Flexbox",
       "property": "flexBasis",
-      "summary": "auto, fixed-px, and percentage flex bases"
+      "summary": "row with explicit flexBasis (60px / 120px / 30%) \u2014 initial sizes before flex",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 100
+      }
     },
     {
       "id": "flexbox-justify-content",
       "file": "flexbox/justify-content.json",
       "category": "Flexbox",
       "property": "justifyContent",
-      "summary": "All six values: flex-start, flex-end, center, space-between, space-around, space-evenly"
+      "summary": "row + justifyContent: space-between \u2014 boxes pinned to start, middle, end",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 100
+      }
     },
     {
       "id": "flexbox-align-items",
       "file": "flexbox/align-items.json",
       "category": "Flexbox",
       "property": "alignItems",
-      "summary": "All five values: flex-start, flex-end, center, stretch, baseline"
+      "summary": "row + alignItems: center with 3 different-height boxes (40/70/100) \u2014 all vertically centered",
+      "snapshot": {
+        "viewportWidth": 320,
+        "height": 160
+      }
     },
     {
       "id": "flexbox-align-self",
       "file": "flexbox/align-self.json",
       "category": "Flexbox",
       "property": "alignSelf",
-      "summary": "All six values overriding the container alignItems"
+      "summary": "row, middle child has alignSelf: flex-end \u2014 drops to the bottom of the container",
+      "snapshot": {
+        "viewportWidth": 320,
+        "height": 160
+      }
     },
     {
       "id": "flexbox-flex-wrap",
       "file": "flexbox/flex-wrap.json",
       "category": "Flexbox",
       "property": "flexWrap",
-      "summary": "nowrap, wrap, and wrap-reverse"
+      "summary": "row + flexWrap: wrap \u2014 6 boxes overflow to a second line",
+      "snapshot": {
+        "viewportWidth": 360,
+        "height": 160
+      }
     },
     {
       "id": "flexbox-gap",
       "file": "flexbox/gap.json",
       "category": "Flexbox",
       "property": "gap",
-      "summary": "Uniform Length and per-axis {c, r} forms of gap"
+      "summary": "row + gap: 24px \u2014 visible 24-pt spacing between boxes",
+      "snapshot": {
+        "viewportWidth": 380,
+        "height": 100
+      }
     },
     {
       "id": "flexbox-order",
       "file": "flexbox/order.json",
       "category": "Flexbox",
       "property": "order",
-      "summary": "Visual reorder of source-position 3-1-2 children"
+      "summary": "3 boxes declared a/b/c with order 3/1/2 \u2014 visual order is b \u2192 c \u2192 a",
+      "snapshot": {
+        "viewportWidth": 320,
+        "height": 100
+      }
     },
     {
       "id": "layout-position",
