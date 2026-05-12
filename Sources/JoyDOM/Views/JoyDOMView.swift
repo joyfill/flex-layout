@@ -200,14 +200,30 @@ public struct JoyDOMView: View {
     ///    if declared. These live in ``ItemStyle`` because non-root nodes
     ///    consume them via the parent flex container; the document root
     ///    has no parent container, so without this step they'd silently
-    ///    drop. Only `.points` (fixed px) is honored here — `.fraction`
-    ///    (CSS percentage) and `.minContent` need a GeometryReader to
-    ///    resolve against the SwiftUI viewport and fall through to
-    ///    viewport-fill as a TODO.
+    ///    drop. Both `.points` (fixed px) and `.fraction` (CSS percentage)
+    ///    are honored — `.fraction` is resolved against the SwiftUI
+    ///    parent's bounds via the surrounding ``GeometryReader``, matching
+    ///    CSS where root percentages resolve against the viewport / initial
+    ///    containing block. `.minContent` falls through to the viewport-fill
+    ///    branch as a TODO.
     /// 3. An outer flexible frame expands any *un-pinned* axis to fill
     ///    the SwiftUI viewport, with the inner view aligned `.topLeading`
     ///    so unsized roots match HTML's origin (and so sized roots sit
     ///    at the top-left instead of SwiftUI's centered default).
+    ///
+    /// Percentage support uses a `GeometryReader` only when the root
+    /// declares a `.fraction` dimension — otherwise we return the
+    /// straight frame chain. GeometryReader fills its parent's
+    /// available space, which would break content-hugging behavior for
+    /// `.auto`-sized roots (caught by `VisualCSSSampleHeightTests` —
+    /// the test measures `fittingSize` and expects it to grow as the
+    /// viewport narrows; a GeometryReader-wrapped view always reports
+    /// the offered height, decoupling height from content).
+    ///
+    /// The branch is keyed on `.fraction` because that's the only case
+    /// that needs the parent's bounds to compute a concrete pixel
+    /// value. `.points` is intrinsic; `.auto` / `.minContent` defer to
+    /// the FlexLayout's natural sizing.
     private func renderRoot(_ root: ResolvedChild) -> some View {
         let rawView: AnyView
         if root.isContainer {
@@ -228,23 +244,82 @@ public struct JoyDOMView: View {
             ? AnyView(withVisual.hidden())
             : withVisual
 
-        let explicitW = JoyDOMView.fixedPoints(from: root.itemStyle.width)
-        let explicitH = JoyDOMView.fixedPoints(from: root.itemStyle.height)
+        let widthIsFraction  = JoyDOMView.isFraction(root.itemStyle.width)
+        let heightIsFraction = JoyDOMView.isFraction(root.itemStyle.height)
 
-        return maybeHidden
-            .frame(width: explicitW, height: explicitH, alignment: .topLeading)
-            .frame(
-                maxWidth: .infinity,
-                maxHeight: .infinity,
-                alignment: .topLeading
-            )
+        return Group {
+            if widthIsFraction || heightIsFraction {
+                // Anchor `.fraction` values against the SwiftUI parent's
+                // bounds — the same containing block CSS uses for root
+                // percentages. The synthetic flex outer used to play
+                // this role before Fix A; the GeometryReader restores
+                // it without re-introducing the flex-item semantics.
+                GeometryReader { proxy in
+                    let resolvedW = JoyDOMView.resolveRootDimension(
+                        from: root.itemStyle.width,
+                        container: proxy.size.width
+                    )
+                    let resolvedH = JoyDOMView.resolveRootDimension(
+                        from: root.itemStyle.height,
+                        container: proxy.size.height
+                    )
+                    maybeHidden
+                        .frame(width: resolvedW, height: resolvedH, alignment: .topLeading)
+                        .frame(
+                            maxWidth: .infinity,
+                            maxHeight: .infinity,
+                            alignment: .topLeading
+                        )
+                }
+            } else {
+                // Common path: `.points` or `.auto`. The straight frame
+                // chain hugs content on auto axes and pins explicit
+                // pixel sizes — same behavior shipped in PR #34.
+                let explicitW = JoyDOMView.fixedPoints(from: root.itemStyle.width)
+                let explicitH = JoyDOMView.fixedPoints(from: root.itemStyle.height)
+                maybeHidden
+                    .frame(width: explicitW, height: explicitH, alignment: .topLeading)
+                    .frame(
+                        maxWidth: .infinity,
+                        maxHeight: .infinity,
+                        alignment: .topLeading
+                    )
+            }
+        }
     }
 
-    /// Extract a fixed-point dimension from a ``FlexSize``, returning `nil`
-    /// for `.auto`, `.fraction`, and `.minContent` (cases that can't be
-    /// resolved to a single px value without container context). Used by
-    /// ``renderRoot(_:)`` to translate the root's own `width`/`height`
-    /// into a SwiftUI `.frame`.
+    /// Resolve the root's own `width`/`height` FlexSize against the
+    /// SwiftUI parent's bounds for that axis. Used by the fraction
+    /// branch of ``renderRoot(_:)``.
+    ///
+    /// - `.points(p)` → `p` (fixed px, no container needed)
+    /// - `.fraction(f)` → `container * f` (CSS `%`)
+    /// - `.auto` / `.minContent` → `nil` (caller falls through to
+    ///   viewport-fill via `.frame(maxWidth: .infinity, ...)`)
+    private static func resolveRootDimension(
+        from size: FlexSize,
+        container: CGFloat
+    ) -> CGFloat? {
+        switch size {
+        case .points(let p):    return p
+        case .fraction(let f):  return container * f
+        case .auto, .minContent: return nil
+        }
+    }
+
+    /// `true` iff `size` is `.fraction(_)`. Used to gate the
+    /// GeometryReader branch in ``renderRoot(_:)`` — only roots that
+    /// actually need parent-bounds resolution pay the
+    /// "fills available space" cost.
+    private static func isFraction(_ size: FlexSize) -> Bool {
+        if case .fraction = size { return true }
+        return false
+    }
+
+    /// Extract a fixed-point dimension from a ``FlexSize``, returning
+    /// `nil` for `.auto`, `.fraction`, and `.minContent`. Used by the
+    /// non-fraction branch of ``renderRoot(_:)`` to translate the
+    /// root's own `width`/`height` into a SwiftUI `.frame`.
     private static func fixedPoints(from size: FlexSize) -> CGFloat? {
         if case .points(let p) = size { return p }
         return nil
