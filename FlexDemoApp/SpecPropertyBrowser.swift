@@ -112,9 +112,13 @@ struct SpecPropertyBrowser: View {
                 Divider()
                 widthSlider
                 Divider()
-                preview(for: sample)
-                    .frame(maxHeight: .infinity)
+                // JSON editor at the top (where authors keep typing
+                // attention), live preview underneath — same flow as
+                // JoyDOMPasteDemo so users moving between the two demos
+                // see a consistent layout.
                 editor(for: sample)
+                    .frame(maxHeight: .infinity)
+                preview(for: sample)
                     .frame(maxHeight: .infinity)
                 if let decodeError {
                     errorBanner(decodeError)
@@ -187,28 +191,45 @@ struct SpecPropertyBrowser: View {
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
 
+            // The visible preview container is capped at the simulated
+            // viewport width AND wears the background/border. That makes
+            // the slider visibly drive the container's size, not just
+            // the layout of contents inside an otherwise full-width
+            // gray surface. Matches JoyDOMPasteDemo's renderPane.
+            //
+            // The outer `.frame(maxWidth: .infinity, alignment: .topLeading)`
+            // anchors the capped container to the left of the detail
+            // pane so the empty space sits on the right — you can see
+            // the difference between simulated viewport and the actual
+            // demo window width at a glance.
             let viewport = Viewport(width: simulatedWidth)
-            ScrollView {
-                if let spec = lastValidSpec {
-                    JoyDOMView(spec: spec)
-                        .viewport(viewport)
-                        .onEvent("*") { _ in }
-                        .frame(maxWidth: max(40, viewport.width), alignment: .topLeading)
-                        .padding(12)
-                        .frame(maxWidth: .infinity, alignment: .topLeading)
-                } else {
-                    Text("(failed to decode \(sample.id))")
-                        .font(.caption)
-                        .foregroundStyle(.red)
-                        .frame(maxWidth: .infinity, minHeight: 80)
-                }
+            if let spec = lastValidSpec {
+                JoyDOMView(spec: spec)
+                    .viewport(viewport)
+                    .onEvent("*") { _ in }
+                    // 40-pt floor — the slider's lower bound is 200 today
+                    // but kept for parity with PasteDemo's safety net.
+                    .frame(maxWidth: max(40, viewport.width), alignment: .topLeading)
+                    .padding(12)
+                    .background(Color(white: 0.96))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .strokeBorder(Color.gray.opacity(0.25))
+                    )
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+            } else {
+                Text("(failed to decode \(sample.id))")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .frame(maxWidth: .infinity, minHeight: 80)
+                    .background(Color(white: 0.96))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .strokeBorder(Color.gray.opacity(0.25))
+                    )
             }
-            .background(Color(white: 0.96))
-            .clipShape(RoundedRectangle(cornerRadius: 10))
-            .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .strokeBorder(Color.gray.opacity(0.25))
-            )
         }
     }
 
