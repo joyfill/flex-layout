@@ -1,8 +1,10 @@
-// SpecPropertyBrowser — sidebar-driven browser over every property
+// SpecPropertyBrowser — sidebar-driven playground over every property
 // sample shipped in the `JoyDOMSampleSpecs` target. Picking a row in
-// the sidebar decodes the sample JSON, renders it through
-// `JoyDOMView` at the simulated viewport width, and exposes the raw
-// JSON in a collapsible disclosure for copy / inspection.
+// the sidebar loads the sample JSON into an editable `TextEditor`;
+// every keystroke re-decodes the text and live-updates the preview.
+// On decode failure the last valid spec keeps rendering and an error
+// banner surfaces the parse error so the preview never flashes empty
+// between edits.
 //
 // Mirrors the visual style of `JoyDOMPasteDemo` for the viewport
 // slider so the two modes feel familiar.
@@ -11,14 +13,37 @@ import SwiftUI
 import JoyDOM
 import JoyDOMSampleSpecs
 
+#if canImport(AppKit)
+import AppKit
+#endif
+#if canImport(UIKit)
+import UIKit
+#endif
+
 struct SpecPropertyBrowser: View {
 
     // MARK: - Owned state
 
     @State private var selectedSampleID: String =
         SpecPropertySamples.all.first?.id ?? ""
-    @State private var simulatedWidth: CGFloat = 600
-    @State private var showJSON: Bool = false
+    @State private var simulatedWidth: CGFloat = 800
+
+    /// Editable JSON the preview re-decodes on every change.
+    @State private var jsonText: String =
+        SpecPropertySamples.all.first?.json ?? ""
+
+    /// Last successfully-decoded `Spec`. Holds the preview steady while
+    /// the editor contains a transient parse error mid-keystroke.
+    @State private var lastValidSpec: Spec? = {
+        guard let json = SpecPropertySamples.all.first?.json,
+              let spec = try? JSONDecoder().decode(Spec.self, from: Data(json.utf8))
+        else { return nil }
+        return spec
+    }()
+
+    /// `nil` when `jsonText` parses cleanly; otherwise the most recent
+    /// decoder error's `localizedDescription`.
+    @State private var decodeError: String? = nil
 
     // MARK: - Body
 
@@ -82,17 +107,38 @@ struct SpecPropertyBrowser: View {
     @ViewBuilder
     private var detail: some View {
         if let sample = SpecPropertySamples.sample(withID: selectedSampleID) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    header(for: sample)
-                    Divider()
-                    widthSlider
-                    Divider()
-                    preview(for: sample)
-                    jsonDisclosure(for: sample)
+            VStack(alignment: .leading, spacing: 16) {
+                header(for: sample)
+                Divider()
+                widthSlider
+                Divider()
+                preview(for: sample)
+                    .frame(maxHeight: .infinity)
+                editor(for: sample)
+                    .frame(maxHeight: .infinity)
+                if let decodeError {
+                    errorBanner(decodeError)
                 }
-                .padding(24)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(24)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .onChange(of: selectedSampleID) { _ in
+                // Reset the editor whenever the user navigates to a
+                // different template — the previous edits stay scoped
+                // to the previous sample.
+                jsonText = sample.json
+                decodeOrSurfaceError(jsonText)
+            }
+            .onChange(of: jsonText) { newValue in
+                decodeOrSurfaceError(newValue)
+            }
+            .onAppear {
+                // Bootstrap `lastValidSpec` for samples loaded after
+                // first render (e.g. when the app launches with a
+                // selection that differs from the initial state).
+                if lastValidSpec == nil {
+                    decodeOrSurfaceError(jsonText)
+                }
             }
         } else {
             Text("Pick a sample from the sidebar.")
@@ -142,55 +188,119 @@ struct SpecPropertyBrowser: View {
                 .foregroundStyle(.secondary)
 
             let viewport = Viewport(width: simulatedWidth)
-            if let spec = decode(sample.json) {
-                JoyDOMView(spec: spec)
-                    .viewport(viewport)
-                    .onEvent("*") { _ in }
-                    .frame(maxWidth: max(40, viewport.width), alignment: .topLeading)
-                    .padding(12)
-                    .background(Color(white: 0.96))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 10)
-                            .strokeBorder(Color.gray.opacity(0.25))
-                    )
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
-            } else {
-                Text("(failed to decode \(sample.id))")
-                    .font(.caption)
-                    .foregroundStyle(.red)
-                    .frame(maxWidth: .infinity, minHeight: 80)
-                    .background(Color(white: 0.96))
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+            ScrollView {
+                if let spec = lastValidSpec {
+                    JoyDOMView(spec: spec)
+                        .viewport(viewport)
+                        .onEvent("*") { _ in }
+                        .frame(maxWidth: max(40, viewport.width), alignment: .topLeading)
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .topLeading)
+                } else {
+                    Text("(failed to decode \(sample.id))")
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                        .frame(maxWidth: .infinity, minHeight: 80)
+                }
             }
+            .background(Color(white: 0.96))
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+            .overlay(
+                RoundedRectangle(cornerRadius: 10)
+                    .strokeBorder(Color.gray.opacity(0.25))
+            )
         }
     }
 
-    private func jsonDisclosure(for sample: SpecPropertySample) -> some View {
-        DisclosureGroup(isExpanded: $showJSON) {
-            ScrollView(.horizontal) {
-                Text(sample.json)
-                    .font(.system(.caption, design: .monospaced))
-                    .padding(10)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+    @ViewBuilder
+    private func editor(for sample: SpecPropertySample) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 12) {
+                Text("JSON")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                Button("Reset to template") {
+                    jsonText = sample.json
+                    decodeOrSurfaceError(jsonText)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                Button("Copy") {
+                    copyToPasteboard(jsonText)
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+                Spacer()
+                if decodeError == nil {
+                    Text("valid")
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(.green)
+                } else {
+                    Text("invalid")
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(.red)
+                }
             }
-            .background(Color(white: 0.97))
-            .clipShape(RoundedRectangle(cornerRadius: 8))
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .strokeBorder(Color.gray.opacity(0.25))
-            )
-        } label: {
-            Text("Show JSON")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
+
+            TextEditor(text: $jsonText)
+                .font(.system(.caption, design: .monospaced))
+                .frame(minHeight: 240, maxHeight: .infinity)
+                .padding(6)
+                .background(Color(white: 0.97))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .strokeBorder(
+                            decodeError == nil
+                                ? Color.gray.opacity(0.25)
+                                : Color.red.opacity(0.55)
+                        )
+                )
         }
+    }
+
+    private func errorBanner(_ message: String) -> some View {
+        HStack(alignment: .top, spacing: 8) {
+            Text("Decode error:")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.red)
+            Text(message)
+                .font(.system(.caption, design: .monospaced))
+                .foregroundStyle(.red.opacity(0.9))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .textSelection(.enabled)
+        }
+        .padding(10)
+        .background(Color.red.opacity(0.08))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .strokeBorder(Color.red.opacity(0.35))
+        )
     }
 
     // MARK: - Helpers
 
-    private func decode(_ json: String) -> Spec? {
-        try? JSONDecoder().decode(Spec.self, from: Data(json.utf8))
+    /// Try to decode `text` as a `Spec`. On success refresh
+    /// `lastValidSpec` and clear any banner; on failure keep the
+    /// previously rendered spec and surface the error.
+    private func decodeOrSurfaceError(_ text: String) {
+        do {
+            let spec = try JSONDecoder().decode(Spec.self, from: Data(text.utf8))
+            lastValidSpec = spec
+            decodeError = nil
+        } catch {
+            decodeError = error.localizedDescription
+        }
+    }
+
+    private func copyToPasteboard(_ s: String) {
+        #if canImport(AppKit)
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(s, forType: .string)
+        #elseif canImport(UIKit)
+        UIPasteboard.general.string = s
+        #endif
     }
 }
 
