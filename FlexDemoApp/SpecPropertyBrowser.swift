@@ -309,11 +309,27 @@ private struct BrowserRow: View {
     let isSelected: Bool
 
     var body: some View {
-        HStack(alignment: .top, spacing: 8) {
+        HStack(alignment: .top, spacing: 6) {
+            // Overview rows render flush; variant rows shift right and
+            // show a small leader so multiple test cases under the same
+            // property group visually instead of looking like duplicates.
+            if sample.variantLabel != nil {
+                Text("↳")
+                    .font(.system(.caption2, design: .monospaced))
+                    .foregroundStyle(isSelected ? .white.opacity(0.6) : .secondary)
+                    .padding(.leading, 12)
+                    .padding(.top, 2)
+            }
             VStack(alignment: .leading, spacing: 1) {
-                Text(sample.property)
-                    .font(.system(.caption, design: .monospaced))
-                    .foregroundStyle(isSelected ? .white : .primary)
+                if let variant = sample.variantLabel {
+                    Text(variant)
+                        .font(.system(.caption, design: .monospaced))
+                        .foregroundStyle(isSelected ? .white : .primary)
+                } else {
+                    Text(sample.property)
+                        .font(.system(.caption, design: .monospaced))
+                        .foregroundStyle(isSelected ? .white : .primary)
+                }
                 Text(sample.summary)
                     .font(.caption2)
                     .foregroundStyle(isSelected ? .white.opacity(0.85) : .secondary)
