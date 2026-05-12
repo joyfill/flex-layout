@@ -2,74 +2,60 @@
   "version": 1,
   "samples": [
     {
-      "id": "layout-position",
-      "file": "layout/position.json",
-      "category": "Layout & Positioning",
-      "property": "position",
-      "summary": "absolute and relative positioning side-by-side"
-    },
-    {
-      "id": "layout-display",
-      "file": "layout/display.json",
-      "category": "Layout & Positioning",
-      "property": "display",
-      "summary": "flex container plus a hidden node via display:none"
-    },
-    {
-      "id": "layout-box-sizing",
-      "file": "layout/boxSizing.json",
-      "category": "Layout & Positioning",
-      "property": "boxSizing",
-      "summary": "border-box width with padding and border deducted from inner content"
-    },
-    {
-      "id": "layout-z-index",
-      "file": "layout/zIndex.json",
-      "category": "Layout & Positioning",
-      "property": "zIndex",
-      "summary": "Two absolutely-positioned siblings stacked by zIndex"
-    },
-    {
-      "id": "layout-overflow",
-      "file": "layout/overflow.json",
-      "category": "Layout & Positioning",
-      "property": "overflow",
-      "summary": "All five overflow values: visible, hidden, clip, scroll, auto"
-    },
-    {
-      "id": "layout-insets",
-      "file": "layout/insets.json",
-      "category": "Layout & Positioning",
-      "property": "top/left/bottom/right",
-      "summary": "Absolutely-positioned child pinned to all four edges of its frame"
-    },
-    {
-      "id": "sizing-width",
-      "file": "sizing/width.json",
-      "category": "Sizing",
-      "property": "width",
-      "summary": "Fixed-px and percentage widths"
-    },
-    {
-      "id": "sizing-height",
-      "file": "sizing/height.json",
-      "category": "Sizing",
-      "property": "height",
-      "summary": "Fixed-px and percentage heights inside a height-bound parent"
-    },
-    {
-      "id": "sizing-min-max",
-      "file": "sizing/min-max.json",
-      "category": "Sizing",
-      "property": "minWidth/maxWidth/minHeight/maxHeight",
-      "summary": "All four min/max constraints clamping a percentage-sized box"
-    },
-    {
       "id": "flexbox-flex-direction",
       "file": "flexbox/flex-direction.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "All four direction values: row, column, row-reverse, column-reverse"
+    },
+    {
+      "id": "flexbox-flex-direction-row",
+      "file": "flexbox/flex-direction-row.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "row: children flow A → B → C → D horizontally"
+    },
+    {
+      "id": "flexbox-flex-direction-column",
+      "file": "flexbox/flex-direction-column.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "column: children flow A → B → C → D vertically"
+    },
+    {
+      "id": "flexbox-flex-direction-row-reverse",
+      "file": "flexbox/flex-direction-row-reverse.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "row-reverse (iOS ext): visual order D → C → B → A horizontally"
+    },
+    {
+      "id": "flexbox-flex-direction-column-reverse",
+      "file": "flexbox/flex-direction-column-reverse.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "column-reverse (iOS ext): visual order D → C → B → A vertically"
+    },
+    {
+      "id": "flexbox-flex-direction-default",
+      "file": "flexbox/flex-direction-default.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "flexDirection omitted: falls through to FlexContainerConfig default"
+    },
+    {
+      "id": "flexbox-flex-direction-with-wrap",
+      "file": "flexbox/flex-direction-with-wrap.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "interaction: row + flexWrap: wrap with 6 children that overflow to a second line"
+    },
+    {
+      "id": "flexbox-flex-direction-with-justify-end",
+      "file": "flexbox/flex-direction-with-justify-end.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "interaction: column-reverse + justifyContent: flex-end stacks from the bottom edge"
     },
     {
       "id": "flexbox-flex-grow",
@@ -133,6 +119,48 @@
       "category": "Flexbox",
       "property": "order",
       "summary": "Visual reorder of source-position 3-1-2 children"
+    },
+    {
+      "id": "layout-position",
+      "file": "layout/position.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "absolute and relative positioning side-by-side"
+    },
+    {
+      "id": "layout-display",
+      "file": "layout/display.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "flex container plus a hidden node via display:none"
+    },
+    {
+      "id": "layout-box-sizing",
+      "file": "layout/boxSizing.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "border-box width with padding and border deducted from inner content"
+    },
+    {
+      "id": "layout-z-index",
+      "file": "layout/zIndex.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "Two absolutely-positioned siblings stacked by zIndex"
+    },
+    {
+      "id": "layout-overflow",
+      "file": "layout/overflow.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "All five overflow values: visible, hidden, clip, scroll, auto"
+    },
+    {
+      "id": "layout-insets",
+      "file": "layout/insets.json",
+      "category": "Layout & Positioning",
+      "property": "top/left/bottom/right",
+      "summary": "Absolutely-positioned child pinned to all four edges of its frame"
     },
     {
       "id": "boxmodel-background-color",
@@ -259,6 +287,27 @@
       "category": "Typography",
       "property": "letterSpacing",
       "summary": "Px and em letter-spacing values"
+    },
+    {
+      "id": "sizing-width",
+      "file": "sizing/width.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "Fixed-px and percentage widths"
+    },
+    {
+      "id": "sizing-height",
+      "file": "sizing/height.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "Fixed-px and percentage heights inside a height-bound parent"
+    },
+    {
+      "id": "sizing-min-max",
+      "file": "sizing/min-max.json",
+      "category": "Sizing",
+      "property": "minWidth/maxWidth/minHeight/maxHeight",
+      "summary": "All four min/max constraints clamping a percentage-sized box"
     },
     {
       "id": "textbehavior-text-overflow",

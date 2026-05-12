@@ -40,6 +40,15 @@ public struct SpecPropertySample: Identifiable, Equatable {
 
     /// Raw JSON payload, decode-runnable as a JoyDOM `Spec`.
     public let json: String
+
+    /// Non-nil when this sample is a variant of an "overview" sample
+    /// with the same (category, property). Set to the id-suffix that
+    /// differentiates the variant from its overview, e.g. `"row"` for
+    /// `flexbox-flex-direction-row` whose overview is
+    /// `flexbox-flex-direction`. Drives the sidebar's indented-row
+    /// rendering so multiple test cases under the same property are
+    /// visually grouped instead of looking like duplicates.
+    public let variantLabel: String?
 }
 
 /// Public registry of every property sample shipped in this target.
@@ -112,14 +121,38 @@ public enum SpecPropertySamples {
         var samples: [SpecPropertySample] = []
         samples.reserveCapacity(manifest.samples.count)
 
+        // First-seen sample for a (category, property) pair is the
+        // "overview" — every later entry sharing that pair is a variant
+        // whose id begins with the overview id followed by a hyphen.
+        // Extract the trailing suffix as a human-readable variant label
+        // (e.g. `flexbox-flex-direction-with-wrap` → `with-wrap`).
+        var overviewIDByPropertyKey: [String: String] = [:]
+
         for entry in manifest.samples {
             guard let json = loadSampleJSON(file: entry.file) else { continue }
+            let key = "\(entry.category)|\(entry.property)"
+            let variantLabel: String?
+            if let overviewID = overviewIDByPropertyKey[key] {
+                let prefix = "\(overviewID)-"
+                if entry.id.hasPrefix(prefix) {
+                    variantLabel = String(entry.id.dropFirst(prefix.count))
+                } else {
+                    // Manifest doesn't follow the overview-variant id
+                    // convention. Treat as overview-shaped so the row
+                    // renders sensibly instead of with an empty label.
+                    variantLabel = nil
+                }
+            } else {
+                overviewIDByPropertyKey[key] = entry.id
+                variantLabel = nil
+            }
             samples.append(SpecPropertySample(
                 id: entry.id,
                 category: entry.category,
                 property: entry.property,
                 summary: entry.summary,
-                json: json
+                json: json,
+                variantLabel: variantLabel
             ))
         }
         return samples

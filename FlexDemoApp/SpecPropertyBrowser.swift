@@ -112,9 +112,13 @@ struct SpecPropertyBrowser: View {
                 Divider()
                 widthSlider
                 Divider()
-                preview(for: sample)
-                    .frame(maxHeight: .infinity)
+                // JSON editor at the top (where authors keep typing
+                // attention), live preview underneath — same flow as
+                // JoyDOMPasteDemo so users moving between the two demos
+                // see a consistent layout.
                 editor(for: sample)
+                    .frame(maxHeight: .infinity)
+                preview(for: sample)
                     .frame(maxHeight: .infinity)
                 if let decodeError {
                     errorBanner(decodeError)
@@ -187,28 +191,45 @@ struct SpecPropertyBrowser: View {
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
 
+            // The visible preview container is capped at the simulated
+            // viewport width AND wears the background/border. That makes
+            // the slider visibly drive the container's size, not just
+            // the layout of contents inside an otherwise full-width
+            // gray surface. Matches JoyDOMPasteDemo's renderPane.
+            //
+            // The outer `.frame(maxWidth: .infinity, alignment: .topLeading)`
+            // anchors the capped container to the left of the detail
+            // pane so the empty space sits on the right — you can see
+            // the difference between simulated viewport and the actual
+            // demo window width at a glance.
             let viewport = Viewport(width: simulatedWidth)
-            ScrollView {
-                if let spec = lastValidSpec {
-                    JoyDOMView(spec: spec)
-                        .viewport(viewport)
-                        .onEvent("*") { _ in }
-                        .frame(maxWidth: max(40, viewport.width), alignment: .topLeading)
-                        .padding(12)
-                        .frame(maxWidth: .infinity, alignment: .topLeading)
-                } else {
-                    Text("(failed to decode \(sample.id))")
-                        .font(.caption)
-                        .foregroundStyle(.red)
-                        .frame(maxWidth: .infinity, minHeight: 80)
-                }
+            if let spec = lastValidSpec {
+                JoyDOMView(spec: spec)
+                    .viewport(viewport)
+                    .onEvent("*") { _ in }
+                    // 40-pt floor — the slider's lower bound is 200 today
+                    // but kept for parity with PasteDemo's safety net.
+                    .frame(maxWidth: max(40, viewport.width), alignment: .topLeading)
+                    .padding(12)
+                    .background(Color(white: 0.96))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .strokeBorder(Color.gray.opacity(0.25))
+                    )
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+            } else {
+                Text("(failed to decode \(sample.id))")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .frame(maxWidth: .infinity, minHeight: 80)
+                    .background(Color(white: 0.96))
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .strokeBorder(Color.gray.opacity(0.25))
+                    )
             }
-            .background(Color(white: 0.96))
-            .clipShape(RoundedRectangle(cornerRadius: 10))
-            .overlay(
-                RoundedRectangle(cornerRadius: 10)
-                    .strokeBorder(Color.gray.opacity(0.25))
-            )
         }
     }
 
@@ -242,8 +263,7 @@ struct SpecPropertyBrowser: View {
                 }
             }
 
-            TextEditor(text: $jsonText)
-                .font(.system(.caption, design: .monospaced))
+            JSONCodeEditor(text: $jsonText)
                 .frame(minHeight: 240, maxHeight: .infinity)
                 .padding(6)
                 .background(Color(white: 0.97))
@@ -309,11 +329,27 @@ private struct BrowserRow: View {
     let isSelected: Bool
 
     var body: some View {
-        HStack(alignment: .top, spacing: 8) {
+        HStack(alignment: .top, spacing: 6) {
+            // Overview rows render flush; variant rows shift right and
+            // show a small leader so multiple test cases under the same
+            // property group visually instead of looking like duplicates.
+            if sample.variantLabel != nil {
+                Text("↳")
+                    .font(.system(.caption2, design: .monospaced))
+                    .foregroundStyle(isSelected ? .white.opacity(0.6) : .secondary)
+                    .padding(.leading, 12)
+                    .padding(.top, 2)
+            }
             VStack(alignment: .leading, spacing: 1) {
-                Text(sample.property)
-                    .font(.system(.caption, design: .monospaced))
-                    .foregroundStyle(isSelected ? .white : .primary)
+                if let variant = sample.variantLabel {
+                    Text(variant)
+                        .font(.system(.caption, design: .monospaced))
+                        .foregroundStyle(isSelected ? .white : .primary)
+                } else {
+                    Text(sample.property)
+                        .font(.system(.caption, design: .monospaced))
+                        .foregroundStyle(isSelected ? .white : .primary)
+                }
                 Text(sample.summary)
                     .font(.caption2)
                     .foregroundStyle(isSelected ? .white.opacity(0.85) : .secondary)
@@ -328,3 +364,125 @@ private struct BrowserRow: View {
         .contentShape(Rectangle())
     }
 }
+
+// MARK: - JSON code editor (smart-substitutions-off)
+//
+// SwiftUI's `TextEditor` inherits NSTextView (macOS) and UITextView
+// (iOS) defaults that auto-replace straight quotes with curly quotes
+// (`"` → `"` `"`), straight dashes with em-dashes, and apply other
+// "smart" substitutions that break JSON the moment a user edits it.
+//
+// `JSONCodeEditor` is a platform-thin wrapper around the native text
+// view with every auto-substitution turned off, autocorrect / spell-
+// check disabled, and a monospaced font set. Used in place of
+// `TextEditor` for the JSON pane.
+
+private struct JSONCodeEditor: View {
+    @Binding var text: String
+
+    var body: some View {
+        #if canImport(AppKit)
+        NSTextViewRepresentable(text: $text)
+        #elseif canImport(UIKit)
+        UITextViewRepresentable(text: $text)
+        #else
+        // Fallback for platforms without AppKit/UIKit — we accept the
+        // smart-substitution risk because there's no native text view
+        // to configure.
+        TextEditor(text: $text)
+            .font(.system(.caption, design: .monospaced))
+            .autocorrectionDisabled(true)
+        #endif
+    }
+}
+
+#if canImport(AppKit)
+private struct NSTextViewRepresentable: NSViewRepresentable {
+    @Binding var text: String
+
+    func makeNSView(context: Context) -> NSScrollView {
+        let scrollView = NSTextView.scrollableTextView()
+        let textView = scrollView.documentView as! NSTextView
+        // The whole point of this wrapper — disable every auto
+        // substitution that could mangle JSON.
+        textView.isAutomaticQuoteSubstitutionEnabled  = false
+        textView.isAutomaticDashSubstitutionEnabled   = false
+        textView.isAutomaticTextReplacementEnabled    = false
+        textView.isAutomaticSpellingCorrectionEnabled = false
+        textView.isAutomaticDataDetectionEnabled      = false
+        textView.isAutomaticLinkDetectionEnabled      = false
+        textView.smartInsertDeleteEnabled             = false
+        textView.isRichText                           = false
+        textView.allowsUndo                           = true
+        textView.font = NSFont.monospacedSystemFont(ofSize: 12, weight: .regular)
+        textView.delegate = context.coordinator
+        textView.string = text
+        textView.textContainerInset = NSSize(width: 4, height: 4)
+        return scrollView
+    }
+
+    func updateNSView(_ scrollView: NSScrollView, context: Context) {
+        guard let textView = scrollView.documentView as? NSTextView else { return }
+        if textView.string != text {
+            // Programmatic update from the Reset button — replace
+            // contents preserving the user's caret position only if
+            // valid; otherwise reset to start.
+            textView.string = text
+        }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+
+    final class Coordinator: NSObject, NSTextViewDelegate {
+        var parent: NSTextViewRepresentable
+        init(_ parent: NSTextViewRepresentable) { self.parent = parent }
+
+        func textDidChange(_ notification: Notification) {
+            guard let textView = notification.object as? NSTextView else { return }
+            parent.text = textView.string
+        }
+    }
+}
+#endif
+
+#if canImport(UIKit)
+private struct UITextViewRepresentable: UIViewRepresentable {
+    @Binding var text: String
+
+    func makeUIView(context: Context) -> UITextView {
+        let textView = UITextView()
+        // Disable iOS keyboard's smart substitutions + autocorrect.
+        textView.autocapitalizationType   = .none
+        textView.autocorrectionType       = .no
+        textView.smartQuotesType          = .no
+        textView.smartDashesType          = .no
+        textView.smartInsertDeleteType    = .no
+        textView.spellCheckingType        = .no
+        textView.font = UIFont.monospacedSystemFont(ofSize: 12, weight: .regular)
+        textView.delegate = context.coordinator
+        textView.text = text
+        textView.isEditable = true
+        textView.isScrollEnabled = true
+        textView.backgroundColor = .clear
+        textView.textContainerInset = UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4)
+        return textView
+    }
+
+    func updateUIView(_ textView: UITextView, context: Context) {
+        if textView.text != text {
+            textView.text = text
+        }
+    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+
+    final class Coordinator: NSObject, UITextViewDelegate {
+        var parent: UITextViewRepresentable
+        init(_ parent: UITextViewRepresentable) { self.parent = parent }
+
+        func textViewDidChange(_ textView: UITextView) {
+            parent.text = textView.text
+        }
+    }
+}
+#endif
