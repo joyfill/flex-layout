@@ -169,10 +169,85 @@ public struct JoyDOMView: View {
 
     public var body: some View {
         let snapshot = renderSnapshot()
-        return FlexLayout(snapshot.rootStyle.container) {
-            childrenView(snapshot.children)
+        // The user's top-level element IS the document root. The resolver
+        // exposes a synthetic `__joydom_root__` cascade anchor whose style
+        // is always empty defaults; wrapping the user's root in another
+        // FlexLayout(default-config) — as we used to — turned the user's
+        // <div> into a flex ITEM of that outer container. With the default
+        // `direction: row, alignItems: stretch`, the user's root then
+        // hugged content on the main axis (width) and stretched on the
+        // cross axis (height), producing an asymmetric box that matches
+        // neither CSS block nor flex-container semantics for a document
+        // root.
+        //
+        // Fix: render the user's root directly. `Spec.layout` is a single
+        // `Node`, so `snapshot.children` has at most one entry — the user
+        // root. Empty spec → empty view.
+        guard let root = snapshot.children.first else {
+            return AnyView(EmptyView())
         }
-        .flexOverflow(snapshot.rootStyle.container.overflow)
+        return AnyView(renderRoot(root))
+    }
+
+    /// Render the document root. Similar to ``render(_:)`` but without the
+    /// ``applyItem(_:style:ownContainer:ownVisual:)`` wrap (there's no
+    /// outer flex container to lay it out into).
+    ///
+    /// Sizing model — three-step frame chain that mirrors CSS block roots:
+    /// 1. ``applyVisual`` paints background / borders on the FlexLayout at
+    ///    its natural reported size.
+    /// 2. An explicit-size frame honors the root's own `width`/`height`
+    ///    if declared. These live in ``ItemStyle`` because non-root nodes
+    ///    consume them via the parent flex container; the document root
+    ///    has no parent container, so without this step they'd silently
+    ///    drop. Only `.points` (fixed px) is honored here — `.fraction`
+    ///    (CSS percentage) and `.minContent` need a GeometryReader to
+    ///    resolve against the SwiftUI viewport and fall through to
+    ///    viewport-fill as a TODO.
+    /// 3. An outer flexible frame expands any *un-pinned* axis to fill
+    ///    the SwiftUI viewport, with the inner view aligned `.topLeading`
+    ///    so unsized roots match HTML's origin (and so sized roots sit
+    ///    at the top-left instead of SwiftUI's centered default).
+    private func renderRoot(_ root: ResolvedChild) -> some View {
+        let rawView: AnyView
+        if root.isContainer {
+            let inner = FlexLayout(root.containerStyle) {
+                self.childrenView(root.nested)
+            }
+            .flexOverflow(root.containerStyle.overflow)
+            rawView = AnyView(inner)
+        } else {
+            rawView = root.view
+        }
+        let withVisual = applyVisual(
+            rawView,
+            visual: root.visualStyle,
+            schemaType: root.schemaType
+        )
+        let maybeHidden: AnyView = root.isVisibilityHidden
+            ? AnyView(withVisual.hidden())
+            : withVisual
+
+        let explicitW = JoyDOMView.fixedPoints(from: root.itemStyle.width)
+        let explicitH = JoyDOMView.fixedPoints(from: root.itemStyle.height)
+
+        return maybeHidden
+            .frame(width: explicitW, height: explicitH, alignment: .topLeading)
+            .frame(
+                maxWidth: .infinity,
+                maxHeight: .infinity,
+                alignment: .topLeading
+            )
+    }
+
+    /// Extract a fixed-point dimension from a ``FlexSize``, returning `nil`
+    /// for `.auto`, `.fraction`, and `.minContent` (cases that can't be
+    /// resolved to a single px value without container context). Used by
+    /// ``renderRoot(_:)`` to translate the root's own `width`/`height`
+    /// into a SwiftUI `.frame`.
+    private static func fixedPoints(from size: FlexSize) -> CGFloat? {
+        if case .points(let p) = size { return p }
+        return nil
     }
 
     /// Build the `ForEach` over one level of resolved children. Separated so
