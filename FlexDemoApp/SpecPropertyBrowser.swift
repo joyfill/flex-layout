@@ -24,18 +24,24 @@ struct SpecPropertyBrowser: View {
 
     // MARK: - Owned state
 
+    // The browser uses `.allWithDiscovered` so any JSON dropped into a
+    // property folder (e.g. `Resources/flexbox/flex-direction/foo.json`)
+    // appears in the sidebar automatically — no manifest editing
+    // required for iteration. Manifest entries still own metadata
+    // (summary, viewport hints); unmanifested files render with a
+    // placeholder summary until an entry is authored.
     @State private var selectedSampleID: String =
-        SpecPropertySamples.all.first?.id ?? ""
+        SpecPropertySamples.allWithDiscovered.first?.id ?? ""
     @State private var simulatedWidth: CGFloat = 800
 
     /// Editable JSON the preview re-decodes on every change.
     @State private var jsonText: String =
-        SpecPropertySamples.all.first?.json ?? ""
+        SpecPropertySamples.allWithDiscovered.first?.json ?? ""
 
     /// Last successfully-decoded `Spec`. Holds the preview steady while
     /// the editor contains a transient parse error mid-keystroke.
     @State private var lastValidSpec: Spec? = {
-        guard let json = SpecPropertySamples.all.first?.json,
+        guard let json = SpecPropertySamples.allWithDiscovered.first?.json,
               let spec = try? JSONDecoder().decode(Spec.self, from: Data(json.utf8))
         else { return nil }
         return spec
@@ -70,7 +76,7 @@ struct SpecPropertyBrowser: View {
                 .padding(.horizontal, 14)
                 .padding(.top, 16)
                 .padding(.bottom, 6)
-            Text("\(SpecPropertySamples.all.count) samples · \(SpecPropertySamples.byCategory.count) categories")
+            Text("\(SpecPropertySamples.allWithDiscovered.count) samples · \(SpecPropertySamples.byCategoryWithDiscovered.count) categories")
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, 14)
@@ -80,7 +86,7 @@ struct SpecPropertyBrowser: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
-                    ForEach(SpecPropertySamples.byCategory, id: \.category) { bucket in
+                    ForEach(SpecPropertySamples.byCategoryWithDiscovered, id: \.category) { bucket in
                         VStack(alignment: .leading, spacing: 4) {
                             Text(bucket.category.uppercased())
                                 .font(.caption2.weight(.semibold))
