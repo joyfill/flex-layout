@@ -77,6 +77,7 @@ extension XCTestCase {
                 precision: precision,
                 perceptualPrecision: perceptualPrecision
             ),
+            named: name,
             record: record,
             file: file,
             testName: testName,
@@ -92,6 +93,7 @@ extension XCTestCase {
                 perceptualPrecision: perceptualPrecision,
                 size: size
             ),
+            named: name,
             record: record,
             file: file,
             testName: testName,

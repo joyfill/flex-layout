@@ -49,6 +49,28 @@ public struct SpecPropertySample: Identifiable, Equatable {
     /// rendering so multiple test cases under the same property are
     /// visually grouped instead of looking like duplicates.
     public let variantLabel: String?
+
+    /// Optional viewport + height hints for snapshot testing. The
+    /// generic per-category bundle-snapshot test reads these to pick a
+    /// thoughtful canvas size per sample (wider for rows, taller for
+    /// columns, default 800×600 when absent). Encoded in the manifest
+    /// under the optional `"snapshot": { "viewportWidth": …, "height": … }`
+    /// key per entry.
+    public let snapshotConfig: SnapshotConfig?
+
+    /// Per-sample snapshot canvas hint.
+    public struct SnapshotConfig: Equatable, Codable {
+        public let viewportWidth: Double
+        public let height: Double
+
+        /// Default 800×600 when the sample doesn't ship its own hint.
+        public static let `default` = SnapshotConfig(viewportWidth: 800, height: 600)
+
+        public init(viewportWidth: Double, height: Double) {
+            self.viewportWidth = viewportWidth
+            self.height = height
+        }
+    }
 }
 
 /// Public registry of every property sample shipped in this target.
@@ -91,6 +113,9 @@ public enum SpecPropertySamples {
         let category: String
         let property: String
         let summary: String
+        /// Optional — generic snapshot-test reads this to pick a per-sample
+        /// canvas size. Absent → use `SpecPropertySample.SnapshotConfig.default`.
+        let snapshot: SpecPropertySample.SnapshotConfig?
     }
 
     private struct Manifest: Decodable {
@@ -152,7 +177,8 @@ public enum SpecPropertySamples {
                 property: entry.property,
                 summary: entry.summary,
                 json: json,
-                variantLabel: variantLabel
+                variantLabel: variantLabel,
+                snapshotConfig: entry.snapshot
             ))
         }
         return samples

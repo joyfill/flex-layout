@@ -6,161 +6,253 @@
       "file": "flexbox/flex-direction.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "All four direction values: row, column, row-reverse, column-reverse"
+      "summary": "All four direction values: row, column, row-reverse, column-reverse",
+      "snapshot": {
+        "viewportWidth": 600,
+        "height": 240
+      }
     },
     {
       "id": "flexbox-flex-direction-row",
       "file": "flexbox/flex-direction-row.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "row: children flow A → B → C → D horizontally"
+      "summary": "row: children flow A \u2192 B \u2192 C \u2192 D horizontally",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 120
+      }
     },
     {
       "id": "flexbox-flex-direction-column",
       "file": "flexbox/flex-direction-column.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "column: children flow A → B → C → D vertically"
+      "summary": "column: children flow A \u2192 B \u2192 C \u2192 D vertically",
+      "snapshot": {
+        "viewportWidth": 120,
+        "height": 360
+      }
     },
     {
       "id": "flexbox-flex-direction-row-reverse",
       "file": "flexbox/flex-direction-row-reverse.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "row-reverse (iOS ext): visual order D → C → B → A horizontally"
+      "summary": "row-reverse (iOS ext): visual order D \u2192 C \u2192 B \u2192 A horizontally",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 120
+      }
     },
     {
       "id": "flexbox-flex-direction-column-reverse",
       "file": "flexbox/flex-direction-column-reverse.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "column-reverse (iOS ext): visual order D → C → B → A vertically"
+      "summary": "column-reverse (iOS ext): visual order D \u2192 C \u2192 B \u2192 A vertically",
+      "snapshot": {
+        "viewportWidth": 120,
+        "height": 360
+      }
     },
     {
       "id": "flexbox-flex-direction-default",
       "file": "flexbox/flex-direction-default.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "flexDirection omitted: falls through to FlexContainerConfig default"
+      "summary": "flexDirection omitted: falls through to FlexContainerConfig default",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 360
+      }
     },
     {
       "id": "flexbox-flex-direction-with-wrap",
       "file": "flexbox/flex-direction-with-wrap.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "interaction: row + flexWrap: wrap with 6 children that overflow to a second line"
+      "summary": "interaction: row + flexWrap: wrap with 6 children that overflow to a second line",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 220
+      }
     },
     {
       "id": "flexbox-flex-direction-with-justify-end",
       "file": "flexbox/flex-direction-with-justify-end.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "interaction: column-reverse + justifyContent: flex-end stacks from the bottom edge"
+      "summary": "interaction: column-reverse + justifyContent: flex-end stacks from the bottom edge",
+      "snapshot": {
+        "viewportWidth": 200,
+        "height": 280
+      }
     },
     {
       "id": "flexbox-flex-direction-empty",
       "file": "flexbox/flex-direction-empty.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "edge case: container with no children — verifies empty-flex layout doesn't crash"
+      "summary": "edge case: container with no children \u2014 verifies empty-flex layout doesn't crash",
+      "snapshot": {
+        "viewportWidth": 320,
+        "height": 100
+      }
     },
     {
       "id": "flexbox-flex-direction-single-child",
       "file": "flexbox/flex-direction-single-child.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "edge case: single child — lays out at the leading edge of the container"
+      "summary": "edge case: single child \u2014 lays out at the leading edge of the container",
+      "snapshot": {
+        "viewportWidth": 240,
+        "height": 120
+      }
     },
     {
       "id": "flexbox-flex-direction-with-align-items",
       "file": "flexbox/flex-direction-with-align-items.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "interaction: row + alignItems: center with mixed-height children → all centered on cross axis"
+      "summary": "interaction: row + alignItems: center with mixed-height children \u2192 all centered on cross axis",
+      "snapshot": {
+        "viewportWidth": 320,
+        "height": 160
+      }
     },
     {
       "id": "flexbox-flex-direction-with-align-self",
       "file": "flexbox/flex-direction-with-align-self.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "interaction: row + middle child overrides via alignSelf: flex-end → drops to the bottom"
+      "summary": "interaction: row + middle child overrides via alignSelf: flex-end \u2192 drops to the bottom",
+      "snapshot": {
+        "viewportWidth": 320,
+        "height": 160
+      }
     },
     {
       "id": "flexbox-flex-direction-with-gap",
       "file": "flexbox/flex-direction-with-gap.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "interaction: row + gap: 16px → visible 16px spacing between children"
+      "summary": "interaction: row + gap: 16px \u2192 visible 16px spacing between children",
+      "snapshot": {
+        "viewportWidth": 320,
+        "height": 120
+      }
     },
     {
       "id": "flexbox-flex-direction-with-order",
       "file": "flexbox/flex-direction-with-order.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "interaction: row + per-child order property → visual sequence differs from declaration order"
+      "summary": "interaction: row + per-child order property \u2192 visual sequence differs from declaration order",
+      "snapshot": {
+        "viewportWidth": 320,
+        "height": 120
+      }
     },
     {
       "id": "flexbox-flex-direction-with-grow",
       "file": "flexbox/flex-direction-with-grow.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "interaction: row + flexGrow 1/1/2 distributes free space → third child is double-width"
+      "summary": "interaction: row + flexGrow 1/1/2 distributes free space \u2192 third child is double-width",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 120
+      }
     },
     {
       "id": "flexbox-flex-direction-with-basis",
       "file": "flexbox/flex-direction-with-basis.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "interaction: row + flexBasis variants (auto / px / %) → mixed initial sizes"
+      "summary": "interaction: row + flexBasis variants (auto / px / %) \u2192 mixed initial sizes",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 120
+      }
     },
     {
       "id": "flexbox-flex-direction-column-with-wrap",
       "file": "flexbox/flex-direction-column-with-wrap.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "interaction: column + flexWrap: wrap → children overflow vertically and wrap to a second column"
+      "summary": "interaction: column + flexWrap: wrap \u2192 children overflow vertically and wrap to a second column",
+      "snapshot": {
+        "viewportWidth": 260,
+        "height": 240
+      }
     },
     {
       "id": "flexbox-flex-direction-responsive",
       "file": "flexbox/flex-direction-responsive.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "responsive flip: column at narrow widths, row at ≥768px (drag viewport slider through 768 to see)"
+      "summary": "responsive flip: column at narrow widths, row at \u2265768px (drag viewport slider through 768 to see)",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 260
+      }
     },
     {
       "id": "flexbox-flex-direction-nested",
       "file": "flexbox/flex-direction-nested.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "outer row + inner columns → two-tier flex layout, common card-with-sections shape"
+      "summary": "outer row + inner columns \u2192 two-tier flex layout, common card-with-sections shape",
+      "snapshot": {
+        "viewportWidth": 360,
+        "height": 160
+      }
     },
     {
       "id": "flexbox-flex-direction-in-absolute",
       "file": "flexbox/flex-direction-in-absolute.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "flexDirection inside a position: absolute child — pinned to relative parent's inset"
+      "summary": "flexDirection inside a position: absolute child \u2014 pinned to relative parent's inset",
+      "snapshot": {
+        "viewportWidth": 360,
+        "height": 200
+      }
     },
     {
       "id": "flexbox-flex-direction-in-fixed-width",
       "file": "flexbox/flex-direction-in-fixed-width.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "fixed-width parent (250px) shrinks 3 × 100px children to fit via default flexShrink"
+      "summary": "fixed-width parent (250px) shrinks 3 \u00d7 100px children to fit via default flexShrink",
+      "snapshot": {
+        "viewportWidth": 280,
+        "height": 120
+      }
     },
     {
       "id": "flexbox-flex-direction-class-selector",
       "file": "flexbox/flex-direction-class-selector.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "flexDirection applied via .class selector on two siblings — both render identically"
+      "summary": "flexDirection applied via .class selector on two siblings \u2014 both render identically",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 220
+      }
     },
     {
       "id": "flexbox-flex-direction-inline",
       "file": "flexbox/flex-direction-inline.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "flexDirection set inline via node.props.style — no selector rule needed"
+      "summary": "flexDirection set inline via node.props.style \u2014 no selector rule needed",
+      "snapshot": {
+        "viewportWidth": 320,
+        "height": 120
+      }
     },
     {
       "id": "flexbox-flex-grow",
@@ -474,7 +566,7 @@
       "id": "cascade-document-breakpoint-inline",
       "file": "cascade/document-breakpoint-inline.json",
       "category": "Cascade",
-      "property": "Document → Breakpoint → inline order",
+      "property": "Document \u2192 Breakpoint \u2192 inline order",
       "summary": "Three layers stacking with breakpoint per-node override winning"
     },
     {
@@ -531,7 +623,7 @@
       "file": "breakpoints/logical-not.json",
       "category": "Breakpoints",
       "property": "logical NOT",
-      "summary": "NOT print – matches every screen viewport"
+      "summary": "NOT print \u2013 matches every screen viewport"
     },
     {
       "id": "breakpoints-per-node-overrides",
