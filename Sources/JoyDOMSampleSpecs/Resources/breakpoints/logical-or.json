@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "style": {},
+  "breakpoints": [
+    {
+      "conditions": [
+        {
+          "op": "or",
+          "conditions": [
+            { "type": "feature", "name": "width", "operator": "<", "value": 480, "unit": "px" },
+            { "type": "type",    "value": "print" }
+          ]
+        }
+      ],
+      "nodes": {},
+      "style": { "#root": { "flexDirection": "column", "backgroundColor": "#FFF0E0" } }
+    }
+  ],
+  "layout": { "type": "div", "props": { "id": "root" }, "children": [{ "type": "p", "children": ["Narrow OR print"] }] }
+}

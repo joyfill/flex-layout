@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "style": {
+    "#card": { "backgroundColor": "#FF8800", "width": { "value": 200, "unit": "px" }, "height": { "value": 80, "unit": "px" } }
+  },
+  "breakpoints": [],
+  "layout": { "type": "div", "props": { "id": "card" } }
+}

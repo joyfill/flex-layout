@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "style": {
+    "#visible": { "overflow": "visible" },
+    "#hidden":  { "overflow": "hidden" },
+    "#clip":    { "overflow": "clip" },
+    "#scroll":  { "overflow": "scroll" },
+    "#auto":    { "overflow": "auto" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "div", "props": { "id": "visible" } },
+      { "type": "div", "props": { "id": "hidden"  } },
+      { "type": "div", "props": { "id": "clip"    } },
+      { "type": "div", "props": { "id": "scroll"  } },
+      { "type": "div", "props": { "id": "auto"    } }
+    ]
+  }
+}

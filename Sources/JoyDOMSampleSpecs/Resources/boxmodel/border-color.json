@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "style": {
+    "#crimson": { "borderWidth": { "value": 3, "unit": "px" }, "borderColor": "#CC0033", "borderStyle": "solid", "width": { "value": 100, "unit": "px" }, "height": { "value": 60, "unit": "px" } },
+    "#azure":   { "borderWidth": { "value": 3, "unit": "px" }, "borderColor": "#0066CC", "borderStyle": "solid", "width": { "value": 100, "unit": "px" }, "height": { "value": 60, "unit": "px" } }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "row", "style": { "flexDirection": "row", "gap": { "value": 12, "unit": "px" } } },
+    "children": [
+      { "type": "div", "props": { "id": "crimson" } },
+      { "type": "div", "props": { "id": "azure"   } }
+    ]
+  }
+}

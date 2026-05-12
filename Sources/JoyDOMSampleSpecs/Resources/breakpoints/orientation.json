@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "style": { "#root": { "padding": { "value": 8, "unit": "px" } } },
+  "breakpoints": [
+    {
+      "conditions": [
+        { "type": "feature", "name": "orientation", "value": "landscape" }
+      ],
+      "nodes": {},
+      "style": { "#root": { "padding": { "value": 16, "unit": "px" }, "backgroundColor": "#E0F0FF" } }
+    },
+    {
+      "conditions": [
+        { "type": "feature", "name": "orientation", "value": "portrait" }
+      ],
+      "nodes": {},
+      "style": { "#root": { "padding": { "value": 8, "unit": "px" }, "backgroundColor": "#FFF0E0" } }
+    }
+  ],
+  "layout": { "type": "div", "props": { "id": "root" }, "children": [{ "type": "p", "children": ["Orientation-aware"] }] }
+}

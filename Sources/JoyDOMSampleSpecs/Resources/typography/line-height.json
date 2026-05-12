@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "style": {
+    "#tight":   { "fontSize": { "value": 16, "unit": "px" }, "lineHeight": 1.0 },
+    "#regular": { "fontSize": { "value": 16, "unit": "px" }, "lineHeight": 1.4 },
+    "#loose":   { "fontSize": { "value": 16, "unit": "px" }, "lineHeight": 1.8 }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "id": "tight"   }, "children": ["Tight line-height. The quick brown fox jumps over the lazy dog."] },
+      { "type": "p", "props": { "id": "regular" }, "children": ["Regular line-height. The quick brown fox jumps over the lazy dog."] },
+      { "type": "p", "props": { "id": "loose"   }, "children": ["Loose line-height. The quick brown fox jumps over the lazy dog."] }
+    ]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "style": {
+    "#fixed":   { "width": { "value": 200, "unit": "px" } },
+    "#fluid":   { "width": { "value": 100, "unit": "%"  } }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root", "style": { "flexDirection": "row" } },
+    "children": [
+      { "type": "div", "props": { "id": "fixed" } },
+      { "type": "div", "props": { "id": "fluid" } }
+    ]
+  }
+}

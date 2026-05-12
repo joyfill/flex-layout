@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "style": {
+    "#none":      { "textTransform": "none" },
+    "#upper":     { "textTransform": "uppercase" },
+    "#lower":     { "textTransform": "lowercase" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "id": "none"  }, "children": ["MixED Case"] },
+      { "type": "p", "props": { "id": "upper" }, "children": ["MixED Case"] },
+      { "type": "p", "props": { "id": "lower" }, "children": ["MixED Case"] }
+    ]
+  }
+}

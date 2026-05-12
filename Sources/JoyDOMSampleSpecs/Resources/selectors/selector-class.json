@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "style": {
+    ".card":      { "padding": { "value": 16, "unit": "px" }, "backgroundColor": "#FFFFFF" },
+    ".card-dark": { "backgroundColor": "#222222", "color": "#FFFFFF" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "row", "style": { "flexDirection": "row" } },
+    "children": [
+      { "type": "div", "props": { "id": "a", "className": ["card"] } },
+      { "type": "div", "props": { "id": "b", "className": ["card", "card-dark"] } }
+    ]
+  }
+}

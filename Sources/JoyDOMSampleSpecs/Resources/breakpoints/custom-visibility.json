@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "style": {},
+  "breakpoints": [
+    {
+      "conditions": [{ "type": "feature", "name": "width", "operator": "<", "value": 768, "unit": "px" }],
+      "nodes": {
+        "desktop-nav":  { "style": { "display": "none" } }
+      },
+      "style": {}
+    },
+    {
+      "conditions": [{ "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }],
+      "nodes": {
+        "mobile-menu":  { "style": { "display": "none" } }
+      },
+      "style": {}
+    }
+  ],
+  "layout": {
+    "type": "div",
+    "props": { "id": "header", "style": { "flexDirection": "row" } },
+    "children": [
+      { "type": "div",  "props": { "id": "desktop-nav" }, "children": [{ "type": "p", "children": ["Desktop nav"] }] },
+      { "type": "span", "props": { "id": "mobile-menu" }, "children": ["Menu"] }
+    ]
+  }
+}

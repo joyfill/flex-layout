@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "style": {
+    "#brand": { "color": "#0066CC" }
+  },
+  "breakpoints": [],
+  "layout": { "type": "p", "props": { "id": "brand" }, "children": ["Brand-coloured."] }
+}

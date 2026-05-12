@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "style": {
+    "#tl": { "objectFit": "cover", "objectPosition": { "horizontal": "left",   "vertical": "top"    } },
+    "#tc": { "objectFit": "cover", "objectPosition": { "horizontal": "center", "vertical": "top"    } },
+    "#tr": { "objectFit": "cover", "objectPosition": { "horizontal": "right",  "vertical": "top"    } },
+    "#cl": { "objectFit": "cover", "objectPosition": { "horizontal": "left",   "vertical": "center" } },
+    "#cc": { "objectFit": "cover", "objectPosition": { "horizontal": "center", "vertical": "center" } },
+    "#cr": { "objectFit": "cover", "objectPosition": { "horizontal": "right",  "vertical": "center" } },
+    "#bl": { "objectFit": "cover", "objectPosition": { "horizontal": "left",   "vertical": "bottom" } },
+    "#bc": { "objectFit": "cover", "objectPosition": { "horizontal": "center", "vertical": "bottom" } },
+    "#br": { "objectFit": "cover", "objectPosition": { "horizontal": "right",  "vertical": "bottom" } }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "img",
+    "props": {
+      "id": "tl",
+      "src": "https://example.com/photo.jpg",
+      "style": { "width": { "value": 240, "unit": "px" }, "height": { "value": 160, "unit": "px" } }
+    }
+  }
+}

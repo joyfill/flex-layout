@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "style": {},
+  "breakpoints": [
+    {
+      "conditions": [
+        {
+          "op": "and",
+          "conditions": [
+            { "type": "feature", "name": "width",       "operator": ">=", "value": 768, "unit": "px" },
+            { "type": "feature", "name": "orientation", "value": "landscape" }
+          ]
+        }
+      ],
+      "nodes": {},
+      "style": { "#root": { "flexDirection": "row", "backgroundColor": "#E0F0FF" } }
+    }
+  ],
+  "layout": { "type": "div", "props": { "id": "root" }, "children": [{ "type": "p", "children": ["Wide AND landscape"] }] }
+}

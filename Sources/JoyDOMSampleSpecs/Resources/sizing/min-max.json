@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "style": {
+    "#elastic": {
+      "width":     { "value": 50,  "unit": "%"  },
+      "minWidth":  { "value": 120, "unit": "px" },
+      "maxWidth":  { "value": 480, "unit": "px" },
+      "height":    { "value": 50,  "unit": "%"  },
+      "minHeight": { "value": 80,  "unit": "px" },
+      "maxHeight": { "value": 320, "unit": "px" }
+    }
+  },
+  "breakpoints": [],
+  "layout": { "type": "div", "props": { "id": "elastic" } }
+}

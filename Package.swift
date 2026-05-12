@@ -20,6 +20,17 @@ let package = Package(
             targets: ["JoyDOM"]
         ),
     ],
+    dependencies: [
+        // Test-only: snapshot testing. SwiftUI unit tests against `some View`
+        // returns are opaque — they can't catch visual regressions like the
+        // ones that surfaced in PRs #20, #21, #26. snapshot-testing renders
+        // a view to a bitmap, diffs against a committed baseline, and fails
+        // on any pixel-level change.
+        .package(
+            url: "https://github.com/pointfreeco/swift-snapshot-testing",
+            from: "1.17.0"
+        ),
+    ],
     targets: [
         // ── Library ────────────────────────────────────────────────────────────
         .target(
@@ -42,10 +53,28 @@ let package = Package(
             ]
         ),
 
+        // ── JoyDOM sample specs — internal target shipping the per-property
+        //     sample JSON payloads (one per spec property) plus the Swift API
+        //     used by both the demo app and tests. NOT exposed as a library
+        //     product so external JoyDOM consumers don't pull the resources.
+        .target(
+            name: "JoyDOMSampleSpecs",
+            dependencies: ["JoyDOM"],
+            path: "Sources/JoyDOMSampleSpecs",
+            resources: [
+                // `.copy` preserves the per-category subdirectory layout in
+                // Bundle.module so files with the same basename across
+                // categories (e.g. sizing/width.json + breakpoints/width.json)
+                // don't collide. The loader uses `subdirectory:` to look them
+                // up by category folder.
+                .copy("Resources")
+            ]
+        ),
+
         // ── Demo app (not a library product; local development only) ───────────
         .executableTarget(
             name: "FlexDemoApp",
-            dependencies: ["FlexLayout", "JoyDOM"],
+            dependencies: ["FlexLayout", "JoyDOM", "JoyDOMSampleSpecs"],
             path: "FlexDemoApp"
         ),
 
@@ -57,7 +86,12 @@ let package = Package(
         ),
         .testTarget(
             name: "JoyDOMTests",
-            dependencies: ["JoyDOM", "FlexLayout"],
+            dependencies: [
+                "JoyDOM",
+                "FlexLayout",
+                "JoyDOMSampleSpecs",
+                .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+            ],
             path: "Tests/JoyDOMTests"
         ),
     ]

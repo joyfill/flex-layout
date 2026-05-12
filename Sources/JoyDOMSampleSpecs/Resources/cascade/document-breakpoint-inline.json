@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "style": {
+    "#headline": { "color": "#222222", "fontSize": { "value": 24, "unit": "px" } }
+  },
+  "breakpoints": [
+    {
+      "conditions": [{ "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }],
+      "nodes": {
+        "headline": { "style": { "color": "#0066CC" } }
+      },
+      "style": {
+        "#headline": { "fontSize": { "value": 32, "unit": "px" } }
+      }
+    }
+  ],
+  "layout": {
+    "type": "h1",
+    "props": {
+      "id": "headline",
+      "style": { "fontFamily": "Georgia" }
+    },
+    "children": ["Cascade demo"]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "style": {
+    "#normal":  { "fontStyle": "normal" },
+    "#italic":  { "fontStyle": "italic" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "id": "normal" }, "children": ["Plain"]  },
+      { "type": "p", "props": { "id": "italic" }, "children": ["Italic"] }
+    ]
+  }
+}

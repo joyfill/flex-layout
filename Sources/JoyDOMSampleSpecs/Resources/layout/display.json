@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "style": {
+    "#flex-row":     { "display": "flex", "flexDirection": "row" },
+    "#hidden-node":  { "display": "none" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "flex-row" },
+    "children": [
+      { "type": "div", "props": { "id": "hidden-node" } },
+      { "type": "p", "children": ["Visible sibling"] }
+    ]
+  }
+}
