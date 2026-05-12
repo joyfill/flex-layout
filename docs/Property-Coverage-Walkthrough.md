@@ -18,14 +18,24 @@ moving on).
 
 ## Principles (apply throughout)
 
+- **The JoyDOM CSS spec defines the scope.** Only test values and property
+  combinations the [JoyDOM CSS spec](https://github.com/j0yhq/joy-dom/blob/main/apps/website/content/docs/css.mdx)
+  declares supported. Iceberg things the iOS / FlexLayout primitive happens
+  to handle (`row-reverse`, `column-reverse`, future native-only knobs)
+  are explicitly out of scope for cross-platform coverage and live in a
+  sibling `*-ios-ext/` folder with their own test method. The spec is what
+  JS and Kotlin runtimes will mirror; any sample that exercises behavior
+  beyond the spec produces an iOS-only artifact that JS/Kotlin can never
+  match — exactly the opposite of what these tests are for.
 - **Baselines are immutable artifacts.** Do not promote a snapshot to baseline
   until the sample *and* the implementation are both verified correct. Once
   promoted, a baseline only changes via an explicit, reviewed intent-to-update.
   Locking baselines too early creates a treadmill where bugs hide behind
   passing tests.
 - **Triage every issue.** Tag as `bug-in-impl` (fix JoyDOM), `bug-in-sample`
-  (patch JSON), or `documented-limitation` (Tracker note) **before** fixing.
-  This keeps commits scoped and reviewable.
+  (patch JSON), `out-of-scope` (move to `*-ios-ext/`), or
+  `documented-limitation` (Tracker note) **before** fixing. This keeps commits
+  scoped and reviewable.
 - **The rendering script is deterministic.** Same input → same pixels. No
   `Date()`, async ordering, random IDs, or fonts that vary by host. Re-renders
   must produce clean diffs, not noise — otherwise step 7's churn is
@@ -41,13 +51,29 @@ moving on).
 
 ### 1. Scope the property
 
-**1a.** Read the CSS spec section for the property + the corresponding row in
-[`Spec-Property-Reference.md`](Spec-Property-Reference.md). Note any
-JoyDOM-specific extensions or documented limitations.
+**1a. Read the spec — the canonical one.** Fetch the property's row from the
+[JoyDOM CSS spec](https://github.com/j0yhq/joy-dom/blob/main/apps/website/content/docs/css.mdx)
+(the `.mdx` table is the source of truth). The accepted values listed in the
+`Type` column define the **complete** set of cases this property is allowed
+to exercise. Anything the iOS FlexLayout primitive *could* render but the
+spec doesn't list (e.g. `flexDirection: 'row-reverse'`) is **out of scope**
+for the cross-platform sample set.
 
-**1b.** Enumerate use cases across these buckets. Most properties produce
-15–25 samples total; fewer if the value set is narrow (e.g. `boxSizing`
-only has 2 values).
+Also read the corresponding row in
+[`Spec-Property-Reference.md`](Spec-Property-Reference.md) for JoyDOM-specific
+notes and any documented limitations.
+
+```bash
+# Quick fetch when offline / for inclusion in PR descriptions:
+gh api repos/j0yhq/joy-dom/contents/apps/website/content/docs/css.mdx \
+  --jq '.content' | base64 -d | grep -A2 "^| <prop>"
+```
+
+**1b. Enumerate use cases — bounded by the spec.** Cross every spec-allowed
+value with the bucket list below. Skip any combination whose value isn't in
+the spec. Most spec-bounded properties produce 15–25 samples total; fewer if
+the value set is narrow (e.g. `boxSizing` only has one allowed value:
+`'border-box'`).
 
 | Bucket | Examples | Filename pattern |
 |---|---|---|
@@ -62,16 +88,30 @@ only has 2 values).
 For interactions, pick only combinations that produce a **visually distinct,
 non-obvious result**. Skip pairs that just "obviously work".
 
-**Gate:** A written list of sample filenames before any JSON is authored.
+**1c. iOS extensions (if any).** If the iOS implementation supports values the
+JoyDOM spec doesn't list (e.g. `row-reverse`, `column-reverse`), enumerate
+those separately. They get their own folder, their own test method, and
+**do not appear** in the cross-platform Notion table. See Step 2 for layout.
+
+**Gate:** A written list of sample filenames, split into two groups: in-scope
+(spec-aligned) and ios-ext (if any).
 
 ---
 
 ### 2. Author sample JSONs
 
-Each JSON lands at:
+Spec-aligned samples (the cross-platform ones) land at:
 ```
 Sources/JoyDOMSampleSpecs/Resources/flexbox/<prop-kebab>/<sample-kebab>.json
 ```
+
+iOS-only extension samples (Step 1c) — if any — land at:
+```
+Sources/JoyDOMSampleSpecs/Resources/flexbox/<prop-kebab>-ios-ext/<sample-kebab>.json
+```
+
+The two folders are siblings. The snapshot helper's prefix filter
+(`hasPrefix("flexbox/<prop-kebab>/")`) keeps them separated automatically.
 
 #### Design rules
 
@@ -117,7 +157,8 @@ errors** — every failure must be addressed before rendering.
 
 ### 4. Add manifest entries
 
-For each JSON, add to `Sources/JoyDOMSampleSpecs/Resources/manifest.json`:
+For each spec-aligned JSON, add to
+`Sources/JoyDOMSampleSpecs/Resources/manifest.json`:
 
 ```json
 {
@@ -132,6 +173,22 @@ For each JSON, add to `Sources/JoyDOMSampleSpecs/Resources/manifest.json`:
   }
 }
 ```
+
+For an iOS-only extension JSON (Step 1c / Step 2 second folder):
+
+```json
+{
+  "id": "flexbox-<prop-kebab>-ios-ext-<sample-kebab>",
+  "file": "flexbox/<prop-kebab>-ios-ext/<sample-kebab>.json",
+  "category": "Flexbox",
+  "property": "<propCamelCase>-iOSExt",
+  "summary": "iOS-ext <value>: <description> (not in JoyDOM spec; covered only by the iOS FlexLayout primitive)",
+  "snapshot": { ... }
+}
+```
+
+The `-iOSExt` suffix on `property` and the "not in spec" preamble on
+`summary` make the boundary explicit when scanning the manifest.
 
 #### Picking viewport size
 
@@ -149,13 +206,32 @@ passes.
 
 ### 5. Render & screenshot (the script)
 
-#### Wire up the test method
+#### Wire up the test methods
 
-In `Tests/JoyDOMTests/PropertyCoverage/Flexbox/flexbox.swift`:
+In `Tests/JoyDOMTests/PropertyCoverage/Flexbox/flexbox.swift`, add the
+spec-aligned method:
 
 ```swift
 func test<PropCamelCase>() {
     assertSnapshotsForSamples(in: "flexbox/<prop-kebab>")
+}
+```
+
+If iOS extensions exist (Step 1c), add a sibling method that walks the
+`*-ios-ext/` folder — this is the regression seam for iOS-only behavior
+that shouldn't bleed into cross-platform coverage:
+
+```swift
+/// iOS-only extensions of `<prop>` (e.g. `row-reverse`, `column-reverse`).
+///
+/// These values are NOT in the JoyDOM CSS spec (which restricts
+/// `<prop>` to `<spec-values>`), but the underlying FlexLayout primitive
+/// supports them. Kept in a sibling folder so the iOS code path stays
+/// regression-tested without polluting the cross-platform sample set —
+/// JS/Kotlin runtimes won't implement these and shouldn't compare against
+/// the corresponding baselines.
+func test<PropCamelCase>IosExt() {
+    assertSnapshotsForSamples(in: "flexbox/<prop-kebab>-ios-ext")
 }
 ```
 
@@ -354,19 +430,27 @@ bottom; limitations get rows in "Documented limitations."
 
 New database under the [JoyDom property comparison parent page](https://www.notion.so/joyfill/35edef37c9a080da8bc8d0c06cd30c67).
 
+> **Only spec-aligned samples go in this table.** The table represents what
+> JS, Kotlin, and Swift runtimes must all produce identical pixels for. iOS-only
+> extension samples (`*-ios-ext/`) do **not** appear here. If you want to
+> document them for the iOS team, create them as standalone child pages under
+> the parent page — that's where the `flexDirection` walk parked
+> `row-reverse` and `column-reverse` after the scope split.
+
 #### Schema
 
 ```sql
 CREATE TABLE (
   "Template" TITLE,
-  "iOS UI" FILES,
+  "Swift" FILES,
   "JS" RICH_TEXT,
   "Kotlin" RICH_TEXT
 )
 ```
 
 - `Template` — sample's basename
-- `iOS UI` — hot-linked GitHub raw URL to the PNG
+- `Swift` — hot-linked GitHub raw URL to the iOS-rendered PNG (column may also
+  be called "iOS UI" in older databases — both refer to the same artifact)
 - `JS` / `Kotlin` — placeholders for other-language parity content the team
   fills in later
 
@@ -462,8 +546,9 @@ each row's body.
 
 ## What we found running this on `flexDirection`
 
-Two implementation bugs and one sample-design issue, captured here as a
-reality check: a typical first walk surfaces ~1–3 such findings. Expect them.
+Two implementation bugs, one sample-design issue, and one scope mismatch,
+captured here as a reality check: a typical first walk surfaces 2–4 such
+findings. Expect them.
 
 1. **Synthetic-root wrap** (commit `16496105`) — the resolver's
    `__joydom_root__` cascade anchor was being rendered as a real flex
@@ -483,3 +568,16 @@ reality check: a typical first walk surfaces ~1–3 such findings. Expect them.
    `gap: 8` was invisible because the CSS-default `align-content: stretch`
    redistributed 50px of cross-axis space between rows. Patched with explicit
    `alignContent: flex-start`. **Tag:** `bug-in-sample`.
+
+4. **Out-of-spec values (`row-reverse`, `column-reverse`)** (commit
+   `620ea4d7`) — three samples used `flexDirection` values the iOS FlexLayout
+   primitive supports but the [JoyDOM CSS spec](https://github.com/j0yhq/joy-dom/blob/main/apps/website/content/docs/css.mdx)
+   restricts to `'row' | 'column'`. Caught by cross-referencing every sample's
+   property values against the spec table after the initial walk. Moved 2
+   samples to `flex-direction-ios-ext/` (kept iOS regression coverage but out
+   of the cross-platform set); rewrote `with-justify-end.json` to use
+   spec-valid `column` instead of `column-reverse`. Notion table now reflects
+   only the 22 spec-aligned rows; the 2 reverse-direction pages live as
+   standalone children of the parent Notion page. **Tag:** `out-of-scope`.
+   **The "test only what the spec supports" principle in this doc is the
+   prevention for next time.**
