@@ -35,22 +35,22 @@
       }
     },
     {
-      "id": "flexbox-flex-direction-row-reverse",
-      "file": "flexbox/flex-direction/row-reverse.json",
+      "id": "flexbox-flex-direction-ios-ext-row-reverse",
+      "file": "flexbox/flex-direction-ios-ext/row-reverse.json",
       "category": "Flexbox",
-      "property": "flexDirection",
-      "summary": "row-reverse (iOS ext): visual order D \u2192 C \u2192 B \u2192 A horizontally",
+      "property": "flexDirection-iOSExt",
+      "summary": "iOS-ext row-reverse: visual order D \u2192 C \u2192 B \u2192 A horizontally (not in JoyDOM spec; covered only by the iOS FlexLayout primitive)",
       "snapshot": {
         "viewportWidth": 400,
         "height": 120
       }
     },
     {
-      "id": "flexbox-flex-direction-column-reverse",
-      "file": "flexbox/flex-direction/column-reverse.json",
+      "id": "flexbox-flex-direction-ios-ext-column-reverse",
+      "file": "flexbox/flex-direction-ios-ext/column-reverse.json",
       "category": "Flexbox",
-      "property": "flexDirection",
-      "summary": "column-reverse (iOS ext): visual order D \u2192 C \u2192 B \u2192 A vertically",
+      "property": "flexDirection-iOSExt",
+      "summary": "iOS-ext column-reverse: visual order D \u2192 C \u2192 B \u2192 A vertically (not in JoyDOM spec; covered only by the iOS FlexLayout primitive)",
       "snapshot": {
         "viewportWidth": 120,
         "height": 360
@@ -83,7 +83,7 @@
       "file": "flexbox/flex-direction/with-justify-end.json",
       "category": "Flexbox",
       "property": "flexDirection",
-      "summary": "interaction: column-reverse + justifyContent: flex-end stacks at the top edge (reversed main-end)",
+      "summary": "interaction: column + justifyContent: flex-end packs items at the bottom (main-end)",
       "snapshot": {
         "viewportWidth": 200,
         "height": 280

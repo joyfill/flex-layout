@@ -21,6 +21,18 @@ final class FlexboxSnapshotTests: XCTestCase {
         assertSnapshotsForSamples(in: "flexbox/flex-direction")
     }
 
+    /// iOS-only extensions of `flexDirection` (`row-reverse`, `column-reverse`).
+    ///
+    /// These values are NOT in the JoyDOM CSS spec (which restricts
+    /// `flexDirection` to `'row' | 'column'`), but the underlying FlexLayout
+    /// primitive supports them. Kept in a sibling folder so the iOS code path
+    /// stays regression-tested without polluting the cross-platform sample set —
+    /// JS/Kotlin runtimes won't implement these and shouldn't compare against
+    /// the corresponding baselines.
+    func testFlexDirectionIosExt() {
+        assertSnapshotsForSamples(in: "flexbox/flex-direction-ios-ext")
+    }
+
     func testFlexGrow() {
         assertSnapshotsForSamples(in: "flexbox/flex-grow")
     }

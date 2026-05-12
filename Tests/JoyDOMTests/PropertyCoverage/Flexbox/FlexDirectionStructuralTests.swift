@@ -85,13 +85,18 @@ final class FlexDirectionStructuralTests: XCTestCase {
         XCTAssertEqual(try node("root", in: nodes).computedStyle.container.direction, .column)
     }
 
-    func test_flexDirection_rowReverse_resolvesToRowReverseDirection() throws {
-        let (_, nodes, _) = try resolved("flexbox-flex-direction-row-reverse")
+    // iOS-only extensions. The JoyDOM CSS spec restricts `flexDirection` to
+    // `'row' | 'column'`, so these samples live in `flex-direction-ios-ext/`
+    // and don't ship to cross-platform consumers. Kept here to regression-pin
+    // the underlying FlexLayout primitive (which does support reversal).
+
+    func test_flexDirection_iosExt_rowReverse_resolvesToRowReverseDirection() throws {
+        let (_, nodes, _) = try resolved("flexbox-flex-direction-ios-ext-row-reverse")
         XCTAssertEqual(try node("root", in: nodes).computedStyle.container.direction, .rowReverse)
     }
 
-    func test_flexDirection_columnReverse_resolvesToColumnReverseDirection() throws {
-        let (_, nodes, _) = try resolved("flexbox-flex-direction-column-reverse")
+    func test_flexDirection_iosExt_columnReverse_resolvesToColumnReverseDirection() throws {
+        let (_, nodes, _) = try resolved("flexbox-flex-direction-ios-ext-column-reverse")
         XCTAssertEqual(try node("root", in: nodes).computedStyle.container.direction, .columnReverse)
     }
 
@@ -115,10 +120,10 @@ final class FlexDirectionStructuralTests: XCTestCase {
         XCTAssertEqual(root.wrap, .wrap)
     }
 
-    func test_flexDirection_withJustifyEnd_columnReverseAndJustifyFlexEnd() throws {
+    func test_flexDirection_withJustifyEnd_columnAndJustifyFlexEnd() throws {
         let (_, nodes, _) = try resolved("flexbox-flex-direction-with-justify-end")
         let root = try node("root", in: nodes).computedStyle.container
-        XCTAssertEqual(root.direction, .columnReverse)
+        XCTAssertEqual(root.direction, .column)
         XCTAssertEqual(root.justifyContent, .flexEnd)
     }
 
