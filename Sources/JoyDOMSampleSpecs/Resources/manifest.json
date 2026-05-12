@@ -58,6 +58,111 @@
       "summary": "interaction: column-reverse + justifyContent: flex-end stacks from the bottom edge"
     },
     {
+      "id": "flexbox-flex-direction-empty",
+      "file": "flexbox/flex-direction-empty.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "edge case: container with no children — verifies empty-flex layout doesn't crash"
+    },
+    {
+      "id": "flexbox-flex-direction-single-child",
+      "file": "flexbox/flex-direction-single-child.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "edge case: single child — lays out at the leading edge of the container"
+    },
+    {
+      "id": "flexbox-flex-direction-with-align-items",
+      "file": "flexbox/flex-direction-with-align-items.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "interaction: row + alignItems: center with mixed-height children → all centered on cross axis"
+    },
+    {
+      "id": "flexbox-flex-direction-with-align-self",
+      "file": "flexbox/flex-direction-with-align-self.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "interaction: row + middle child overrides via alignSelf: flex-end → drops to the bottom"
+    },
+    {
+      "id": "flexbox-flex-direction-with-gap",
+      "file": "flexbox/flex-direction-with-gap.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "interaction: row + gap: 16px → visible 16px spacing between children"
+    },
+    {
+      "id": "flexbox-flex-direction-with-order",
+      "file": "flexbox/flex-direction-with-order.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "interaction: row + per-child order property → visual sequence differs from declaration order"
+    },
+    {
+      "id": "flexbox-flex-direction-with-grow",
+      "file": "flexbox/flex-direction-with-grow.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "interaction: row + flexGrow 1/1/2 distributes free space → third child is double-width"
+    },
+    {
+      "id": "flexbox-flex-direction-with-basis",
+      "file": "flexbox/flex-direction-with-basis.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "interaction: row + flexBasis variants (auto / px / %) → mixed initial sizes"
+    },
+    {
+      "id": "flexbox-flex-direction-column-with-wrap",
+      "file": "flexbox/flex-direction-column-with-wrap.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "interaction: column + flexWrap: wrap → children overflow vertically and wrap to a second column"
+    },
+    {
+      "id": "flexbox-flex-direction-responsive",
+      "file": "flexbox/flex-direction-responsive.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "responsive flip: column at narrow widths, row at ≥768px (drag viewport slider through 768 to see)"
+    },
+    {
+      "id": "flexbox-flex-direction-nested",
+      "file": "flexbox/flex-direction-nested.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "outer row + inner columns → two-tier flex layout, common card-with-sections shape"
+    },
+    {
+      "id": "flexbox-flex-direction-in-absolute",
+      "file": "flexbox/flex-direction-in-absolute.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "flexDirection inside a position: absolute child — pinned to relative parent's inset"
+    },
+    {
+      "id": "flexbox-flex-direction-in-fixed-width",
+      "file": "flexbox/flex-direction-in-fixed-width.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "fixed-width parent (250px) shrinks 3 × 100px children to fit via default flexShrink"
+    },
+    {
+      "id": "flexbox-flex-direction-class-selector",
+      "file": "flexbox/flex-direction-class-selector.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "flexDirection applied via .class selector on two siblings — both render identically"
+    },
+    {
+      "id": "flexbox-flex-direction-inline",
+      "file": "flexbox/flex-direction-inline.json",
+      "category": "Flexbox",
+      "property": "flexDirection",
+      "summary": "flexDirection set inline via node.props.style — no selector rule needed"
+    },
+    {
       "id": "flexbox-flex-grow",
       "file": "flexbox/flex-grow.json",
       "category": "Flexbox",
