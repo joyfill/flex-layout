@@ -2,9 +2,12 @@
 
 How to take a single CSS property (e.g. `flexGrow`, `padding`, `objectFit`) from
 "empty `overview.json` stub" to "fully verified with snapshot baselines, Notion
-table, tracker entry, bugs fixed/flagged." This is the literal sequence we ran
-for `flexDirection` — distilled into a checklist so the next property doesn't
-require re-deriving the workflow.
+table, tracker entry, bugs fixed/flagged."
+
+This is the literal sequence we ran for `flexDirection` — distilled into a
+checklist so the next property doesn't require re-deriving the workflow. Each
+step has a **goal** and a **gate** (the concrete artifact that must exist before
+moving on).
 
 > **Pairs with**
 > - [`Property-Coverage-Tracker.md`](Property-Coverage-Tracker.md) — live status
@@ -13,132 +16,108 @@ require re-deriving the workflow.
 
 ---
 
-## TL;DR
+## Principles (apply throughout)
 
-```
-1. Branch off main
-2. Author variant JSONs under Sources/JoyDOMSampleSpecs/Resources/flexbox/<prop>/
-3. Add manifest entries (each with snapshot.viewportWidth/height)
-4. Add a test method to FlexboxSnapshotTests
-5. Record baselines (SNAPSHOT_TESTING_RECORD=1 swift test --filter ...)
-6. Walk each sample: predict from spec → pixel-sample baseline → diff
-7. File bugs found into Tracker; fix in same branch if cheap, separate PR if not
-8. Re-record baselines after any fix or sample patch
-9. Push, then create Notion table for the property (script TBD or follow manual steps)
-10. Update Tracker row to ✅ with sample counts and tests delta
-```
-
----
-
-## Step 1 — Pick the property & open a branch
-
-Pick the next ⬜ row in the Tracker. Branch name:
-
-```bash
-git checkout main && git pull
-git checkout -b test/<prop-kebab>-l2-l3
-# e.g. test/flex-grow-l2-l3
-```
-
-Stay on this branch through the whole walk. Commit incrementally:
-samples first, then test wiring, then per-bug-fix commits, then sample patches.
+- **Baselines are immutable artifacts.** Do not promote a snapshot to baseline
+  until the sample *and* the implementation are both verified correct. Once
+  promoted, a baseline only changes via an explicit, reviewed intent-to-update.
+  Locking baselines too early creates a treadmill where bugs hide behind
+  passing tests.
+- **Triage every issue.** Tag as `bug-in-impl` (fix JoyDOM), `bug-in-sample`
+  (patch JSON), or `documented-limitation` (Tracker note) **before** fixing.
+  This keeps commits scoped and reviewable.
+- **The rendering script is deterministic.** Same input → same pixels. No
+  `Date()`, async ordering, random IDs, or fonts that vary by host. Re-renders
+  must produce clean diffs, not noise — otherwise step 7's churn is
+  indistinguishable from real changes.
+- **Spec is the source of truth, not the current renderer.** Every expected
+  output prediction anchors in CSS / JoyDOM spec semantics, never in "what
+  JoyDOM currently does." Any divergence is either a sample-design issue or an
+  implementation bug — that's exactly what the walk is designed to surface.
 
 ---
 
-## Step 2 — Author variant JSONs
+## Steps
 
-For each property, produce a **coverage matrix**: every meaningful value, edge
-case, context, and interaction. The flex-direction set (23 samples) is the
-reference template. The categories below should produce 15–25 samples for most
-properties — fewer if the value set is narrow (e.g. `boxSizing` only has 2).
+### 1. Scope the property
 
-### 2a. Value sweep (one sample per declared value)
+**1a.** Read the CSS spec section for the property + the corresponding row in
+[`Spec-Property-Reference.md`](Spec-Property-Reference.md). Note any
+JoyDOM-specific extensions or documented limitations.
 
-If the property has enumerated values (`row | row-reverse | column | column-reverse`),
-each gets its own JSON. For numeric properties (`flexGrow: 0..∞`) pick 2-3
-representative values (`0`, `1`, `2` say).
+**1b.** Enumerate use cases across these buckets. Most properties produce
+15–25 samples total; fewer if the value set is narrow (e.g. `boxSizing`
+only has 2 values).
 
-File naming: `<value>.json` — e.g. `row.json`, `column-reverse.json`. Use
-kebab-case for multi-word enum values (`row-reverse`, not `rowReverse`).
+| Bucket | Examples | Filename pattern |
+|---|---|---|
+| Value sweep | every enum value, or 2–3 representative numbers | `row.json`, `column.json`, `<value>.json` |
+| Defaults | property omitted entirely (verifies CSS-spec fallback) | `default.json` |
+| Edges | empty children, single child, deep nesting, "showcase" | `empty.json`, `single-child.json`, `nested.json`, `overview.json` |
+| Authoring style | inline via `node.props.style`; class selector | `inline.json`, `class-selector.json` |
+| Context | `position: absolute`; constrained parent width | `in-absolute.json`, `in-fixed-width.json` |
+| Interactions | combinations with other Flexbox properties | `with-wrap.json`, `with-gap.json`, `with-grow.json`, etc. |
+| Responsive | breakpoint flip | `responsive.json` (+ `responsive-wide.png` from a second test method) |
 
-### 2b. Defaults baseline
+For interactions, pick only combinations that produce a **visually distinct,
+non-obvious result**. Skip pairs that just "obviously work".
 
-`default.json` — the property is **omitted entirely**. Lets the walk verify the
-fallback path matches the CSS spec default (and surfaces any divergence in
-JoyDOM's `FlexContainerConfig` / `ItemStyle` defaults).
+**Gate:** A written list of sample filenames before any JSON is authored.
 
-### 2c. Edge cases (`<edge>.json`)
+---
 
-Off the top of the head — adapt per property:
+### 2. Author sample JSONs
 
-- `empty.json` — container has no children
-- `single-child.json` — exactly one child (no gap visible, no align interactions)
-- `nested.json` — property applied at two depths
-- `overview.json` — a "showcase" version. Useful as the canonical entry in
-  property-grouping tools (the demo app, this Notion table). Often functionally
-  identical to one of the value-sweep samples.
+Each JSON lands at:
+```
+Sources/JoyDOMSampleSpecs/Resources/flexbox/<prop-kebab>/<sample-kebab>.json
+```
 
-### 2d. Authoring style variants
+#### Design rules
 
-- `inline.json` — property set via `node.props.style` (inline) instead of the
-  document-level selector map. Verifies inline path doesn't drop the property.
-- `class-selector.json` — property set on a `.class` matching multiple siblings.
-  Verifies the rule applies to each, not just the first.
-
-### 2e. Context variants (`in-<context>.json`)
-
-- `in-absolute.json` — the property's element is `position: absolute` inside a
-  `position: relative` parent. Verifies the property still applies when laid
-  out outside the normal flow.
-- `in-fixed-width.json` — parent has explicit `width`, forcing flex-shrink /
-  overflow interactions.
-
-### 2f. Interactions (`with-<other>.json`)
-
-For every other Flexbox property the current one could reasonably combine with,
-add one `with-<other>.json`. For `flexDirection` we had:
-
-- `with-wrap.json`, `with-gap.json`, `with-justify-end.json`,
-  `with-align-items.json`, `with-align-self.json`, `with-grow.json`,
-  `with-basis.json`, `with-order.json`
-
-Don't be exhaustive — pick combinations that produce a **visually distinct**
-layout you couldn't predict from the parts. Skip combinations that just
-"obviously work".
-
-### 2g. Responsive / breakpoint (`responsive.json`)
-
-Property changes value at a breakpoint. Adds one extra "viewport" dimension to
-the property's coverage. Pair with a manifest entry that captures the narrow
-viewport; for the wide viewport, add a separate test method (see Step 5) — we
-can't yet declare multiple snapshot configs per sample (limitation in the
-manifest schema; see `JoyDOMSampleSpecs/SpecPropertySample.swift`).
-
-### Sample design rules
-
-- **One concept per sample.** A `with-grow.json` that also sets `justify-content`
-  hides which thing the snapshot proves.
-- **Make the property visually dominant.** If `gap: 8` is buried under a 50px
-  `alignContent: stretch` redistribution, the row-gap declaration is invisible
-  (this is exactly what we caught in `flex-direction/with-wrap.json` and patched
-  with explicit `alignContent: flex-start`).
+- **One concept per sample.** A `with-grow.json` that also tweaks
+  `justify-content` hides which thing the snapshot proves.
+- **Make the property visually dominant.** If a CSS default swallows the
+  declaration (e.g. `align-content: stretch` redistributing space and hiding
+  a `gap: 8`), the snapshot doesn't prove anything. Caught this in
+  `flex-direction/with-wrap.json` — patched it with explicit
+  `alignContent: flex-start` so the row-gap actually shows.
 - **Use the standard color palette** for predictability:
-  - `#EF4444` red `#a`/`#l1`/etc.
-  - `#10B981` green `#b`/`#l2`
-  - `#3B82F6` blue `#c`/`#r1`
-  - `#F59E0B` amber `#d`/`#r2`
+  - `#EF4444` red `#a` / `#l1`
+  - `#10B981` green `#b` / `#l2`
+  - `#3B82F6` blue `#c` / `#r1`
+  - `#F59E0B` amber `#d` / `#r2`
   - `#F3F4F6` gray root background
   - `#E5E7EB` darker gray for nested-container backgrounds
-- **Use the standard box class** `.box` with `width: 60, height: 60,
-  borderRadius: 4` as the default child shape, unless the sample specifically
-  needs different dimensions.
+- **Use the standard `.box` class** (`width: 60, height: 60, borderRadius: 4`)
+  as the default child shape unless the sample specifically needs different
+  dimensions.
+
+See the [Appendix](#appendix--reusable-snippets) for copy-paste starters.
+
+**Gate:** Every filename from Step 1 has a JSON.
 
 ---
 
-## Step 3 — Add manifest entries
+### 3. Schema validation
 
-Every JSON needs an entry in
-`Sources/JoyDOMSampleSpecs/Resources/manifest.json` with:
+Run the existing validator over every new sample:
+
+```bash
+swift test --filter "SpecPropertySamplesTests"
+```
+
+This decodes each sample as a `Spec` and reports missing keys, malformed
+breakpoints, unknown property names. **No `try? JSONDecoder()` swallowing
+errors** — every failure must be addressed before rendering.
+
+**Gate:** Validator passes for all samples in the new property's folder.
+
+---
+
+### 4. Add manifest entries
+
+For each JSON, add to `Sources/JoyDOMSampleSpecs/Resources/manifest.json`:
 
 ```json
 {
@@ -154,29 +133,25 @@ Every JSON needs an entry in
 }
 ```
 
-### Picking viewport size
+#### Picking viewport size
 
-- Width should be **just enough** to make the layout obvious. A row of 4×60px
-  boxes with 8px gaps and 16px padding totals 296px — `viewportWidth: 400` gives
-  comfortable margin without dwarfing the content.
-- Height usually matches the content's natural extent for row layouts (~120),
-  more for column layouts (~360).
-- For breakpoint-flip samples, the **narrow** viewport goes here; the wide one
-  is captured by the separate `<Prop>ResponsiveWide` test method.
+- Width: just enough to make the layout obvious. A row of 4×60px boxes
+  totals ~296px → `viewportWidth: 400` leaves comfortable margin without
+  dwarfing content.
+- Height: matches natural extent — ~120 for row layouts, ~360 for column.
+- For breakpoint-flip samples, the **narrow** viewport goes here; the wide
+  viewport is captured by a separate `<Prop>ResponsiveWide` test method.
 
-### Summary string conventions
-
-- Plain English. Avoid jargon.
-- Mention which axis/direction the sample exercises if not obvious from the
-  filename.
-- For responsive samples, mention the breakpoint threshold and what flips.
+**Gate:** Every JSON has a manifest entry. `SpecPropertySamplesTests` still
+passes.
 
 ---
 
-## Step 4 — Wire up the test method
+### 5. Render & screenshot (the script)
 
-In `Tests/JoyDOMTests/PropertyCoverage/Flexbox/flexbox.swift`, add one method
-per property:
+#### Wire up the test method
+
+In `Tests/JoyDOMTests/PropertyCoverage/Flexbox/flexbox.swift`:
 
 ```swift
 func test<PropCamelCase>() {
@@ -184,10 +159,7 @@ func test<PropCamelCase>() {
 }
 ```
 
-The helper auto-discovers every sample in the directory and snapshots each at
-the manifest-declared viewport. **No per-sample test method needed.**
-
-For a responsive sample's wide-viewport second snapshot, add a dedicated method:
+For a responsive sample's wide-viewport second snapshot, add:
 
 ```swift
 func test<PropCamelCase>ResponsiveWide() throws {
@@ -208,171 +180,181 @@ func test<PropCamelCase>ResponsiveWide() throws {
 }
 ```
 
----
-
-## Step 5 — Record baselines
+#### Run the rendering script
 
 ```bash
 SNAPSHOT_TESTING_RECORD=1 swift test --filter "FlexboxSnapshotTests/test<PropCamelCase>"
 ```
 
-First run fails (recorded baselines = "no baseline before, fail by design"). Run
-again to verify all green:
+This is **the script** — don't write a new one. The flow is deterministic
+(same JSON → same pixels) and idempotent (re-running overwrites cleanly).
+
+Recorded files land at:
+```
+Tests/JoyDOMTests/PropertyCoverage/Flexbox/__Snapshots__/flexbox/<prop-kebab>/<sample>.png
+```
+
+Pure 1:1 mirror of the JSON tree — no method-name prefix, no counter suffix.
+
+> **These are NOT baselines yet.** They're screenshots for review. Baselines
+> get promoted in Step 9.
+
+**Gate:** PNG files exist for every sample in the new property's folder.
+
+---
+
+### 6. AI review pass
+
+For each sample, the AI:
+
+1. Reads the JSON
+2. **Predicts expected layout from CSS spec semantics** — first principles,
+   not "what JoyDOM currently does." Writes out child positions, axis
+   behavior, color order, free-space distribution.
+3. Reads the screenshot
+4. **Pixel-samples for precision** (Python + PIL):
+
+   ```python
+   from PIL import Image
+   img = Image.open('Tests/.../sample.png')
+   pixels = img.load()
+   # Pixel coords = viewport coords × 2 (retina)
+   for x, y, label in [(92, 92, 'red box center'), ...]:
+       print(f'  ({x},{y}) {label}: {pixels[x, y]}')
+   ```
+
+   Standard palette reference:
+   - `#EF4444` red → `(232, 44, 53)`
+   - `#10B981` green → `(27, 174, 110)`
+   - `#3B82F6` blue → `(47, 105, 243)`
+   - `#F59E0B` amber → `(240, 141, 14)`
+   - `#F3F4F6` gray bg → `(240, 241, 244)`
+   - `#E5E7EB` darker gray → `(223, 225, 230)` (~6 unit color profile shift,
+     within snapshot precision tolerance)
+   - `(0, 0, 0, 0)` = transparent (outside root box)
+
+5. **Produces a triaged list.** Each sample's verdict + rationale:
+   - ✅ `match` — prediction = actual
+   - ⚠️ `bug-in-sample` — works but doesn't demonstrate the property
+   - 🔴 `bug-in-impl` — diverges from CSS spec semantics
+   - ⚠️ `documented-limitation` — known JoyDOM caveat (link to Tracker row)
+
+**Gate:** Every sample has a verdict with rationale captured somewhere
+durable (PR description, issue, scratchpad doc).
+
+---
+
+### 7. Human review pass
+
+Walk every sample manually, focused on what AI typically misses:
+
+- **Sample design weakness** — the layout technically works but doesn't
+  visually demonstrate the property (AI tends to rubber-stamp these).
+- **Cross-axis surprises** — color profile shifts, subpixel rounding,
+  font-host variability.
+- **Intent vs. spec** — does the visual match what someone *authoring* this
+  spec would expect? Sometimes the spec-correct rendering is bewildering and
+  the sample should be redesigned to make the property's effect clearer.
+
+Append findings to the triaged list from Step 6. Don't fix yet — just triage.
+
+**Gate:** Combined AI + human issue list, fully triaged with one of the four
+tags above.
+
+---
+
+### 8. Fix all issues
+
+Work through the triaged list. **Group commits by category** so the diff
+narrates the work:
+
+```
+fix(view|engine|resolver|registry): <one-line summary>     # bug-in-impl
+fix(samples): <one-line summary>                            # bug-in-sample
+docs(tracker): <prop> limitation — <one-line>               # documented-limitation
+```
+
+#### Investigation pattern for `bug-in-impl`
+
+1. Reproduce in isolation (the failing snapshot is a great repro).
+2. Trace pixel → spec → resolver → engine → SwiftUI layout chain. The bug
+   is usually in one specific link.
+3. Add temporary instrumentation (`print(...)` in FlexEngine etc.) if
+   needed. **Remove before committing.**
+4. After **any** fix, re-render via Step 5's script (not manually) and check
+   the diff matches your expectation.
+5. Run the **full** test suite (`swift test`, no filter) — bugs in shared
+   code can regress other properties.
+
+If a bug is too deep for this PR (requires cross-module refactoring, has
+unclear scope), spawn a separate task. Don't let one deep dive sink the
+property's coverage PR.
+
+**Gate:** Triaged list fully resolved. `swift test` (no filter) passes
+cleanly. Re-rendered screenshots match new expectations from Step 6.
+
+---
+
+### 9. Promote to baselines (lock in)
+
+The screenshots from Step 8's final re-render become the official UI test
+baselines. The test method from Step 5 already wraps each sample — at this
+point, all those tests pass without the `SNAPSHOT_TESTING_RECORD` flag.
 
 ```bash
 swift test --filter "FlexboxSnapshotTests/test<PropCamelCase>"
 ```
 
-Recorded files land at:
-
-```
-Tests/JoyDOMTests/PropertyCoverage/Flexbox/__Snapshots__/flexbox/<prop-kebab>/<sample>.png
-```
-
-This is a pure 1:1 mirror of the JSON tree — no method-name prefix, no
-counter suffix. (See `Tests/JoyDOMTests/Snapshot/JoyDOMSnapshotHelpers.swift`
-for the path-controlled helper that makes this work.)
+**Gate:** The property's test method passes on a clean checkout, no recording
+flag, no manual intervention.
 
 ---
 
-## Step 6 — Walk each sample
-
-This is where bugs surface. For **each** baseline, in some logical order
-(simplest first; defaults → variants → interactions → contexts):
-
-### 6a. Read the JSON & predict the layout
-
-Don't peek at the image yet. Write out (in your head or on paper) the expected
-result:
-
-- Where each child sits (viewport x/y bounds)
-- Which axis fills, which hugs
-- What gaps/padding produce
-- Which colors are at which positions
-
-Anchor every prediction in **CSS-spec semantics**. JoyDOM is supposed to match
-web behavior; any deviation between your prediction (= CSS) and the snapshot
-(= JoyDOM) is either a sample-design issue or an implementation bug. The walk
-exists to surface those.
-
-### 6b. Look at the snapshot
-
-Read the PNG with the `Read` tool. Visual eyeball check — does the colored-box
-arrangement match what you predicted?
-
-### 6c. Pixel-sample for precision
-
-Eyeballing is lossy. For each box, sample the center pixel; for boundaries
-(gaps, padding) sample known coordinates. Use Python+PIL:
-
-```python
-from PIL import Image
-img = Image.open('Tests/.../sample.png')
-pixels = img.load()
-print(f'Size: {img.size}')        # 2× viewport at retina
-# Pixel coords = viewport coords × 2
-for x, y, label in [(92, 92, 'red box center'), ...]:
-    print(f'  ({x},{y}) {label}: {pixels[x, y]}')
-```
-
-The standard color palette:
-- `#EF4444` red → `(232, 44, 53)`
-- `#10B981` green → `(27, 174, 110)`
-- `#3B82F6` blue → `(47, 105, 243)`
-- `#F59E0B` amber → `(240, 141, 14)`
-- `#F3F4F6` gray bg → `(240, 241, 244)`
-- `#E5E7EB` darker gray → `(223, 225, 230)` (color profile shifts ~6 units in
-  Display P3 rendering — within snapshot precision tolerance)
-- `(0, 0, 0, 0)` = transparent (outside root box)
-
-### 6d. Verdict — three outcomes
-
-- **✅ Match.** Prediction = pixel-sampled actual. Move to next sample.
-- **⚠️ Sample-design issue.** The sample is technically working but doesn't
-  visually demonstrate the property because of an unrelated default (e.g.
-  `align-content: stretch` swallowing the row-gap). Patch the sample, re-record,
-  commit with a `fix(samples):` message.
-- **🔴 Implementation bug.** JoyDOM produces a result that doesn't match CSS
-  defaults. Trace the root cause through `JoyDOMView` → `ComponentResolver` →
-  `StyleResolver` → `FlexEngine`. Fix or document.
-
----
-
-## Step 7 — Surfacing & fixing bugs
-
-When step 6 surfaces a divergence:
-
-1. **Reproduce in isolation.** A failing snapshot is a great repro — keep it
-   pinned.
-2. **Trace the root cause.** Always go from the rendered pixel back to the
-   spec → style resolution → flex engine → SwiftUI layout chain. The bug is
-   usually in one specific link, even if it manifests across many samples.
-3. **Add temporary instrumentation if needed.** For the `with-basis.json`
-   investigation we added a `print(...)` in `FlexEngine.swift` to read out
-   `basisMain` / `naturalSize` mid-layout. Critically: **remove the print
-   before committing.**
-4. **Fix in the same branch if it's cheap and orthogonal.** Both bugs we found
-   during the flex-direction walk (`root sizing asymmetry`, `empty-div 10px
-   intrinsic`) were small, single-file changes that didn't widen the PR scope.
-5. **Spawn a separate task if it's deep** (e.g. requires refactoring across
-   multiple modules, or affects unrelated tests). Don't let a deep dive
-   sink the property's coverage PR.
-6. **Document every limitation** that you accept rather than fix. Add a row to
-   the Tracker's "Documented limitations" table at the bottom.
-
-### After any fix or sample patch
-
-```bash
-swift test                    # full suite — confirm no regressions
-SNAPSHOT_TESTING_RECORD=1 swift test --filter "FlexboxSnapshotTests/test<PropCamelCase>"   # re-record affected
-swift test --filter "FlexboxSnapshotTests/test<PropCamelCase>"   # verify clean rerun
-git add -A && git commit -m "fix(...): one-line summary"
-```
-
-Commit each fix as a separate commit so the diff and the explanation stay
-proximate. Don't squash all the bug fixes into one mega-commit.
-
----
-
-## Step 8 — Push & open PR
+### 10. Push, PR, merge
 
 ```bash
 git push -u origin test/<prop-kebab>-l2-l3
-gh pr create --title "Test/<prop-kebab> property coverage" --body "..."
+gh pr create --title "Test/<prop-kebab> property coverage" --body "<see below>"
 ```
 
-PR body should list:
-
-- Number of samples added
+PR body must include:
+- Sample count by bucket (value sweep / edges / contexts / interactions)
 - Bugs found and fixed (link each commit)
-- Sample patches with rationale
-- Known limitations deferred (with Tracker rows linked)
+- Sample patches with rationale (link each commit)
+- Known limitations deferred (link Tracker rows)
 - One-line summary of the property's verified behavior
+
+After merge to `main`, **capture the merge commit SHA**:
+```bash
+git rev-parse main
+```
+
+This is what the Notion image URLs will pin against in Step 12.
+
+**Gate:** PR merged. Merge SHA captured.
 
 ---
 
-## Step 9 — Update the Tracker
+### 11. Update Tracker
 
-In `docs/Property-Coverage-Tracker.md`, flip the property's row from ⬜ to ✅
-(or ⚠️ if a limitation was documented). Fill in:
+Flip the property's row in `docs/Property-Coverage-Tracker.md` from ⬜ to ✅
+(or ⚠️ if limitations were documented). Fill in:
 
 - **Samples** column: `value-sweep / edges / contexts / interactions` count
 - **Tests delta** column: rough count of new test methods (usually +1 or +2)
 - **Date** column: today's date
-- **Notes** column: anything noteworthy (bugs surfaced, limitations, sample
-  design quirks)
+- **Notes** column: noteworthy bugs surfaced, limitations, sample-design quirks
+
+Bug entries get rows in the "Bugs surfaced during the walk" table at the
+bottom; limitations get rows in "Documented limitations."
 
 ---
 
-## Step 10 — Notion table
+### 12. Create Notion table
 
-This step is currently manual; a regenerator script is on the TODO. For now,
-mirror the `flex-direction samples` database structure: see [this Notion page](https://www.notion.so/joyfill/35edef37c9a080da8bc8d0c06cd30c67) for the canonical example.
+New database under the [JoyDom property comparison parent page](https://www.notion.so/joyfill/35edef37c9a080da8bc8d0c06cd30c67).
 
-### 10a. Create a new database
-
-Title: `<prop-kebab> samples`. Parent: same parent page as `flex-direction
-samples`. Schema:
+#### Schema
 
 ```sql
 CREATE TABLE (
@@ -383,65 +365,54 @@ CREATE TABLE (
 )
 ```
 
-`Template` is the sample's basename; `iOS UI` is a hot-linked GitHub raw URL
-to the PNG; `JS`/`Kotlin` columns are placeholders for other-language parity
-content the team will fill in later.
+- `Template` — sample's basename
+- `iOS UI` — hot-linked GitHub raw URL to the PNG
+- `JS` / `Kotlin` — placeholders for other-language parity content the team
+  fills in later
 
-### 10b. Build the GitHub raw URL base
-
-The branch SHA pins the snapshot at a stable revision. After your PR lands:
-
-```bash
-git rev-parse HEAD   # capture this SHA before regenerating URLs
-```
-
-URL pattern:
+#### Image URL pattern
 
 ```
-https://raw.githubusercontent.com/j0yhq/flexbox-swift/<SHA>/Tests/JoyDOMTests/PropertyCoverage/Flexbox/__Snapshots__/flexbox/<prop-kebab>/<sample>.png
+https://raw.githubusercontent.com/j0yhq/flexbox-swift/<MERGE-SHA>/Tests/JoyDOMTests/PropertyCoverage/Flexbox/__Snapshots__/flexbox/<prop-kebab>/<sample>.png
 ```
 
-> **Pin to commit SHAs, not branch names.** Branch names with slashes
-> (e.g. `test/flex-direction-l2-l3-continued`) break GitHub's raw URL format
-> (slashes get treated as path segments). Commit SHAs are always single-segment
-> and never get rebased away.
+> **Pin to the merge commit SHA from Step 10**, not the branch name. Branch
+> names with slashes (`test/flex-direction-l2-l3-continued`) break GitHub's
+> raw URL format; rebased/deleted branches lose history. Merge SHAs are
+> stable forever.
 
-### 10c. Create one row per sample
+#### Row contents
 
-Each row's properties:
-
+Properties:
 - `Template`: sample basename (e.g. `"row"`)
-- `iOS UI`: just the URL string (Notion auto-wraps to a file attachment).
+- `iOS UI`: just the URL string (Notion auto-wraps to a file attachment)
 
-Each row's page body:
-
+Page body (markdown):
 ```markdown
 ![<sample>.png](<github-raw-url>)
 
 ```json
-{... the JSON spec content ...}
+{... full JSON spec ...}
 ```
 ```
 
-(Embedding the image in the page body lets the reader see it inline when
-clicking the row, without expanding the FILES column.)
-
-For the responsive-wide variant, include a note explaining the viewport size
-trigger:
-
+For the responsive-wide variant, include a viewport note:
 ```markdown
 _Note: same JSON as `responsive`, rendered at viewport <W>×<H> to trigger
 the `<breakpoint>` flip._
 ```
 
-### 10d. Order the rows
+#### Row order
 
-Same as the walk order in step 6: defaults → variants → interactions →
+Same as the walk order in Steps 6/7: defaults → variants → interactions →
 contexts → special.
+
+**Gate:** One row per sample, image previews loading, JSON code blocks in
+each row's body.
 
 ---
 
-## Appendix — Common patterns to copy
+## Appendix — Reusable snippets
 
 ### Standard root container
 
@@ -483,34 +454,32 @@ contexts → special.
 ```json
 "#a": { "backgroundColor": "#EF4444" },
 "#b": { "backgroundColor": "#10B981" },
-"#c": { "backgroundColor": "#3B82F6" }
+"#c": { "backgroundColor": "#3B82F6" },
+"#d": { "backgroundColor": "#F59E0B" }
 ```
 
 ---
 
 ## What we found running this on `flexDirection`
 
-Two implementation bugs and one sample design issue, captured here as a
-reality check on what the walk surfaces (this is not a typical "everything
-passed" outcome — expect bugs the first few times):
+Two implementation bugs and one sample-design issue, captured here as a
+reality check: a typical first walk surfaces ~1–3 such findings. Expect them.
 
-1. **Synthetic-root wrap** (PR commit `16496105`) — the resolver's
+1. **Synthetic-root wrap** (commit `16496105`) — the resolver's
    `__joydom_root__` cascade anchor was being rendered as a real flex
    container, turning the user's `<div id="root">` into a flex item that
    hugged width and stretched height. Caught by `default.json` showing
    gray = 296×360 (asymmetric) instead of CSS-block-expected 400×360.
+   **Tag:** `bug-in-impl`.
 
-2. **Empty-div 10px intrinsic** (PR commit `0cb97cf1`) — the default `<div>`
+2. **Empty-div 10px intrinsic** (commit `0cb97cf1`) — the default `<div>`
    factory returned naked `Color.clear`, whose SwiftUI
    `intrinsicContentSize` is `(10, 10)`. Caught by `with-basis.json` where
    box `a` (auto basis, empty div, no width) showed a 10px red sliver
    instead of being 0-wide invisible. Fixed by `Color.clear.frame(idealWidth:
-   0, idealHeight: 0)`.
+   0, idealHeight: 0)`. **Tag:** `bug-in-impl`.
 
-3. **Sample-design — alignContent default** (PR commit `adf3409c`) — the
-   `with-wrap.json` sample's `gap: 8` was invisible because the CSS-default
-   `align-content: stretch` redistributed 50px of cross-axis space *between*
-   the rows. Patched the sample with explicit `alignContent: flex-start`.
-
-Whatever the next property is, expect to surface 1–3 similar findings. The
-walk is doing its job.
+3. **`with-wrap` alignContent default** (commit `adf3409c`) — the sample's
+   `gap: 8` was invisible because the CSS-default `align-content: stretch`
+   redistributed 50px of cross-axis space between rows. Patched with explicit
+   `alignContent: flex-start`. **Tag:** `bug-in-sample`.
