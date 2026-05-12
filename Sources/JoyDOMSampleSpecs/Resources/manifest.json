@@ -3,7 +3,7 @@
   "samples": [
     {
       "id": "flexbox-flex-direction",
-      "file": "flexbox/flex-direction.json",
+      "file": "flexbox/flex-direction/overview.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "row of 4 colored boxes (overview) \u2014 A \u2192 B \u2192 C \u2192 D horizontally",
@@ -14,7 +14,7 @@
     },
     {
       "id": "flexbox-flex-direction-row",
-      "file": "flexbox/flex-direction-row.json",
+      "file": "flexbox/flex-direction/row.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "row: children flow A \u2192 B \u2192 C \u2192 D horizontally",
@@ -25,7 +25,7 @@
     },
     {
       "id": "flexbox-flex-direction-column",
-      "file": "flexbox/flex-direction-column.json",
+      "file": "flexbox/flex-direction/column.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "column: children flow A \u2192 B \u2192 C \u2192 D vertically",
@@ -36,7 +36,7 @@
     },
     {
       "id": "flexbox-flex-direction-row-reverse",
-      "file": "flexbox/flex-direction-row-reverse.json",
+      "file": "flexbox/flex-direction/row-reverse.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "row-reverse (iOS ext): visual order D \u2192 C \u2192 B \u2192 A horizontally",
@@ -47,7 +47,7 @@
     },
     {
       "id": "flexbox-flex-direction-column-reverse",
-      "file": "flexbox/flex-direction-column-reverse.json",
+      "file": "flexbox/flex-direction/column-reverse.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "column-reverse (iOS ext): visual order D \u2192 C \u2192 B \u2192 A vertically",
@@ -58,7 +58,7 @@
     },
     {
       "id": "flexbox-flex-direction-default",
-      "file": "flexbox/flex-direction-default.json",
+      "file": "flexbox/flex-direction/default.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "flexDirection omitted: falls through to FlexContainerConfig default",
@@ -69,7 +69,7 @@
     },
     {
       "id": "flexbox-flex-direction-with-wrap",
-      "file": "flexbox/flex-direction-with-wrap.json",
+      "file": "flexbox/flex-direction/with-wrap.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "interaction: row + flexWrap: wrap with 6 children that overflow to a second line",
@@ -80,7 +80,7 @@
     },
     {
       "id": "flexbox-flex-direction-with-justify-end",
-      "file": "flexbox/flex-direction-with-justify-end.json",
+      "file": "flexbox/flex-direction/with-justify-end.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "interaction: column-reverse + justifyContent: flex-end stacks at the top edge (reversed main-end)",
@@ -91,7 +91,7 @@
     },
     {
       "id": "flexbox-flex-direction-empty",
-      "file": "flexbox/flex-direction-empty.json",
+      "file": "flexbox/flex-direction/empty.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "edge case: container with no children \u2014 verifies empty-flex layout doesn't crash",
@@ -102,7 +102,7 @@
     },
     {
       "id": "flexbox-flex-direction-single-child",
-      "file": "flexbox/flex-direction-single-child.json",
+      "file": "flexbox/flex-direction/single-child.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "edge case: single child \u2014 lays out at the leading edge of the container",
@@ -113,7 +113,7 @@
     },
     {
       "id": "flexbox-flex-direction-with-align-items",
-      "file": "flexbox/flex-direction-with-align-items.json",
+      "file": "flexbox/flex-direction/with-align-items.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "interaction: row + alignItems: center with mixed-height children \u2192 all centered on cross axis",
@@ -124,7 +124,7 @@
     },
     {
       "id": "flexbox-flex-direction-with-align-self",
-      "file": "flexbox/flex-direction-with-align-self.json",
+      "file": "flexbox/flex-direction/with-align-self.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "interaction: row + middle child overrides via alignSelf: flex-end \u2192 drops to the bottom",
@@ -135,7 +135,7 @@
     },
     {
       "id": "flexbox-flex-direction-with-gap",
-      "file": "flexbox/flex-direction-with-gap.json",
+      "file": "flexbox/flex-direction/with-gap.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "interaction: row + gap: 16px \u2192 visible 16px spacing between children",
@@ -146,7 +146,7 @@
     },
     {
       "id": "flexbox-flex-direction-with-order",
-      "file": "flexbox/flex-direction-with-order.json",
+      "file": "flexbox/flex-direction/with-order.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "interaction: row + per-child order property \u2192 visual sequence differs from declaration order",
@@ -157,7 +157,7 @@
     },
     {
       "id": "flexbox-flex-direction-with-grow",
-      "file": "flexbox/flex-direction-with-grow.json",
+      "file": "flexbox/flex-direction/with-grow.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "interaction: row + flexGrow 1/1/2 distributes free space \u2192 third child is double-width",
@@ -168,7 +168,7 @@
     },
     {
       "id": "flexbox-flex-direction-with-basis",
-      "file": "flexbox/flex-direction-with-basis.json",
+      "file": "flexbox/flex-direction/with-basis.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "interaction: row + flexBasis variants (auto / px / %) \u2192 mixed initial sizes",
@@ -179,7 +179,7 @@
     },
     {
       "id": "flexbox-flex-direction-column-with-wrap",
-      "file": "flexbox/flex-direction-column-with-wrap.json",
+      "file": "flexbox/flex-direction/column-with-wrap.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "interaction: column + flexWrap: wrap \u2192 children overflow vertically and wrap to a second column",
@@ -190,7 +190,7 @@
     },
     {
       "id": "flexbox-flex-direction-responsive",
-      "file": "flexbox/flex-direction-responsive.json",
+      "file": "flexbox/flex-direction/responsive.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "responsive flip: column at narrow widths, row at \u2265768px (drag viewport slider through 768 to see)",
@@ -201,7 +201,7 @@
     },
     {
       "id": "flexbox-flex-direction-nested",
-      "file": "flexbox/flex-direction-nested.json",
+      "file": "flexbox/flex-direction/nested.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "outer row + inner columns \u2192 two-tier flex layout, common card-with-sections shape",
@@ -212,7 +212,7 @@
     },
     {
       "id": "flexbox-flex-direction-in-absolute",
-      "file": "flexbox/flex-direction-in-absolute.json",
+      "file": "flexbox/flex-direction/in-absolute.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "flexDirection inside a position: absolute child \u2014 pinned to relative parent's inset",
@@ -223,7 +223,7 @@
     },
     {
       "id": "flexbox-flex-direction-in-fixed-width",
-      "file": "flexbox/flex-direction-in-fixed-width.json",
+      "file": "flexbox/flex-direction/in-fixed-width.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "fixed-width parent (250px) shrinks 3 \u00d7 100px children to fit via default flexShrink",
@@ -234,7 +234,7 @@
     },
     {
       "id": "flexbox-flex-direction-class-selector",
-      "file": "flexbox/flex-direction-class-selector.json",
+      "file": "flexbox/flex-direction/class-selector.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "flexDirection applied via .class selector on two siblings \u2014 both render identically",
@@ -245,7 +245,7 @@
     },
     {
       "id": "flexbox-flex-direction-inline",
-      "file": "flexbox/flex-direction-inline.json",
+      "file": "flexbox/flex-direction/inline.json",
       "category": "Flexbox",
       "property": "flexDirection",
       "summary": "flexDirection set inline via node.props.style \u2014 no selector rule needed",
@@ -256,7 +256,7 @@
     },
     {
       "id": "flexbox-flex-grow",
-      "file": "flexbox/flex-grow.json",
+      "file": "flexbox/flex-grow/overview.json",
       "category": "Flexbox",
       "property": "flexGrow",
       "summary": "row with flexGrow 1/1/2 \u2014 red and green equal width, blue double-width",
@@ -267,7 +267,7 @@
     },
     {
       "id": "flexbox-flex-shrink",
-      "file": "flexbox/flex-shrink.json",
+      "file": "flexbox/flex-shrink/overview.json",
       "category": "Flexbox",
       "property": "flexShrink",
       "summary": "3 items basis 160 in a 320-wide container \u2014 flexShrink 0/1/2 distributes overflow",
@@ -278,7 +278,7 @@
     },
     {
       "id": "flexbox-flex-basis",
-      "file": "flexbox/flex-basis.json",
+      "file": "flexbox/flex-basis/overview.json",
       "category": "Flexbox",
       "property": "flexBasis",
       "summary": "row with explicit flexBasis (60px / 120px / 30%) \u2014 initial sizes before flex",
@@ -289,7 +289,7 @@
     },
     {
       "id": "flexbox-justify-content",
-      "file": "flexbox/justify-content.json",
+      "file": "flexbox/justify-content/overview.json",
       "category": "Flexbox",
       "property": "justifyContent",
       "summary": "row + justifyContent: space-between \u2014 boxes pinned to start, middle, end",
@@ -300,7 +300,7 @@
     },
     {
       "id": "flexbox-align-items",
-      "file": "flexbox/align-items.json",
+      "file": "flexbox/align-items/overview.json",
       "category": "Flexbox",
       "property": "alignItems",
       "summary": "row + alignItems: center with 3 different-height boxes (40/70/100) \u2014 all vertically centered",
@@ -311,7 +311,7 @@
     },
     {
       "id": "flexbox-align-self",
-      "file": "flexbox/align-self.json",
+      "file": "flexbox/align-self/overview.json",
       "category": "Flexbox",
       "property": "alignSelf",
       "summary": "row, middle child has alignSelf: flex-end \u2014 drops to the bottom of the container",
@@ -322,7 +322,7 @@
     },
     {
       "id": "flexbox-flex-wrap",
-      "file": "flexbox/flex-wrap.json",
+      "file": "flexbox/flex-wrap/overview.json",
       "category": "Flexbox",
       "property": "flexWrap",
       "summary": "row + flexWrap: wrap \u2014 6 boxes overflow to a second line",
@@ -333,7 +333,7 @@
     },
     {
       "id": "flexbox-gap",
-      "file": "flexbox/gap.json",
+      "file": "flexbox/gap/overview.json",
       "category": "Flexbox",
       "property": "gap",
       "summary": "row + gap: 24px \u2014 visible 24-pt spacing between boxes",
@@ -344,7 +344,7 @@
     },
     {
       "id": "flexbox-order",
-      "file": "flexbox/order.json",
+      "file": "flexbox/order/overview.json",
       "category": "Flexbox",
       "property": "order",
       "summary": "3 boxes declared a/b/c with order 3/1/2 \u2014 visual order is b \u2192 c \u2192 a",

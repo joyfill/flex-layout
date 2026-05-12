@@ -185,15 +185,16 @@ public enum SpecPropertySamples {
     }
 
     /// Read a sample file under the bundle. The manifest stores paths
-    /// like `"flexbox/flex-direction.json"`, so we split into the
-    /// subdirectory + base name pair `Bundle.module.url(...)` expects.
+    /// like `"flexbox/flex-direction/row.json"` (property-scoped
+    /// subdirectories), so split on the LAST `/` to keep the full
+    /// nested directory path. `Bundle.module.url(subdirectory:)` accepts
+    /// multi-level paths verbatim.
     private static func loadSampleJSON(file: String) -> String? {
-        let parts = file.split(separator: "/", maxSplits: 1).map(String.init)
         let subdirectory: String
         let basenameWithExt: String
-        if parts.count == 2 {
-            subdirectory = "Resources/\(parts[0])"
-            basenameWithExt = parts[1]
+        if let lastSlash = file.lastIndex(of: "/") {
+            subdirectory = "Resources/\(file[..<lastSlash])"
+            basenameWithExt = String(file[file.index(after: lastSlash)...])
         } else {
             subdirectory = "Resources"
             basenameWithExt = file
