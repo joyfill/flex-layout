@@ -57,7 +57,15 @@ extension XCTestCase {
         testName: String = #function,
         line: UInt = #line
     ) {
-        let view = JoyDOMView(spec: spec)
+        // `ComponentRegistry.shared` is empty by design — apps register
+        // their own primitives at startup. Tests need an explicit
+        // `withDefaultPrimitives()`-populated registry; without it,
+        // every `<div>`/`<p>`/etc. falls through to PlaceholderBox and
+        // the snapshot pins the placeholder's `[#id]` text instead of
+        // the real rendered output (caught visually during PR #34 manual
+        // review). A fresh registry per render keeps tests isolated.
+        let registry = ComponentRegistry().withDefaultPrimitives()
+        let view = JoyDOMView(spec: spec, registry: registry)
             .viewport(.init(width: viewportWidth))
             .frame(width: viewportWidth, height: height)
 
