@@ -38,6 +38,12 @@ public struct SpecPropertySample: Identifiable, Equatable {
     /// One-line description of what the sample exercises.
     public let summary: String
 
+    /// Relative path inside `Resources/`, e.g.
+    /// `"flexbox/flex-direction/row.json"`. Lets the snapshot helper
+    /// pair each JSON with a baseline of the same leaf name without
+    /// hard-coding the directory layout in test code.
+    public let file: String
+
     /// Raw JSON payload, decode-runnable as a JoyDOM `Spec`.
     public let json: String
 
@@ -176,6 +182,7 @@ public enum SpecPropertySamples {
                 category: entry.category,
                 property: entry.property,
                 summary: entry.summary,
+                file: entry.file,
                 json: json,
                 variantLabel: variantLabel,
                 snapshotConfig: entry.snapshot

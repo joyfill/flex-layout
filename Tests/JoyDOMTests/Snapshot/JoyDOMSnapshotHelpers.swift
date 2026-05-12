@@ -21,6 +21,7 @@ import XCTest
 import SnapshotTesting
 import SwiftUI
 @testable import JoyDOM
+import JoyDOMSampleSpecs
 
 #if canImport(UIKit)
 import UIKit
@@ -29,6 +30,53 @@ import AppKit
 #endif
 
 extension XCTestCase {
+
+    /// Iterate every `SpecPropertySample` whose manifest `file` lives
+    /// under `directory` and snapshot each one. The baseline name for
+    /// every sample equals its JSON's basename without the `.json`
+    /// suffix, so the snapshot tree mirrors the JSON tree leaf-for-leaf.
+    ///
+    /// Example — calling `assertSnapshotsForSamples(in: "flexbox/flex-direction")`
+    /// from a `testFlexDirection()` method produces baselines at
+    /// `__Snapshots__/<TestClass>/testFlexDirection.<variant>.png` matching
+    /// each `<variant>.json` in the directory.
+    func assertSnapshotsForSamples(
+        in directory: String,
+        file: StaticString = #filePath,
+        testName: String = #function,
+        line: UInt = #line
+    ) {
+        let prefix = directory.hasSuffix("/") ? directory : "\(directory)/"
+        let scoped = SpecPropertySamples.all.filter { $0.file.hasPrefix(prefix) }
+        XCTAssertFalse(
+            scoped.isEmpty,
+            "no JoyDOMSampleSpecs entries found under '\(directory)' — manifest order or path regressed",
+            file: file,
+            line: line
+        )
+        for sample in scoped {
+            // Convert the relative path to the snapshot's `named:`
+            // identifier. We use ONLY the JSON's basename so baselines
+            // sit flat under the test method, named identically to the
+            // sample's JSON filename (e.g. `row.json` → `row.png`).
+            let basename = sample.file
+                .components(separatedBy: "/").last ?? sample.file
+            let snapshotName = basename.hasSuffix(".json")
+                ? String(basename.dropLast(".json".count))
+                : basename
+            let cfg = sample.snapshotConfig ?? .default
+            assertJoyDOMSnapshot(
+                json: sample.json,
+                viewportWidth: CGFloat(cfg.viewportWidth),
+                height: CGFloat(cfg.height),
+                named: snapshotName,
+                file: file,
+                testName: testName,
+                line: line
+            )
+        }
+    }
+
     /// Render a JoyDOM Spec at a fixed viewport width and snapshot it.
     ///
     /// - Parameters:
