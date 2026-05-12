@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "flexDirection": "row",
+      "width":  { "value": 300, "unit": "px" },
+      "height": { "value": 80,  "unit": "px" },
+      "backgroundColor": "#F3F4F6",
+      "borderRadius":    { "value": 4, "unit": "px" }
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": []
+  }
+}

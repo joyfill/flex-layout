@@ -40,26 +40,48 @@ extension ComponentRegistry {
         // replaces the factory output with a nested FlexLayout. When a
         // node has NO children (e.g. an empty `<div>` styled as a
         // colored rectangle via `backgroundColor`), the factory output
-        // IS what renders; `EmptyView()` takes zero space and ignores
-        // modifiers, so it would suppress the background / borders /
-        // explicit width-height the cascade just resolved. `Color.clear`
-        // is a flexible-size primitive that respects every modifier
-        // `applyVisual` and `.flexItem(...)` apply on top.
+        // IS what renders. We need a primitive that:
+        //
+        //   1. Has zero ideal/intrinsic size so an empty `<div>` with no
+        //      explicit width and `flex-basis: auto` resolves to 0 wide
+        //      (CSS-correct — content size of an empty element is 0).
+        //      Naked `Color.clear` reports `intrinsicContentSize: (10, 10)`,
+        //      so a row of empty divs would each render as a 10×10 sliver
+        //      (caught visually in `flex-direction/with-basis.json` — box
+        //      `a` was rendering at 10px wide instead of 0).
+        //   2. Still expands to fill when a parent proposes a finite size
+        //      (flex-grow, explicit width on the element, or cross-axis
+        //      stretch).
+        //   3. Respects every `applyVisual` / `applyItem` modifier on top
+        //      (background, borders, frame, clipShape) — rules out
+        //      `EmptyView()` which takes zero space *and* ignores modifiers.
+        //
+        // `Color.clear.frame(idealWidth: 0, idealHeight: 0)` satisfies all
+        // three: the explicit ideal of 0 overrides Color's intrinsic
+        // contribution to the unconstrained-axis fallback, and the
+        // surrounding `.frame` still accepts background/clipShape/etc.
+        // applied after.
         for type_ in ["div", "span", "section", "article", "header", "footer",
                       "main", "nav", "ul", "ol", "li", "form", "label"] {
             let t = type_
-            registerIfAbsent(t) { _, _ in .custom { Color.clear } }
+            registerIfAbsent(t) { _, _ in
+                .custom { Color.clear.frame(idealWidth: 0, idealHeight: 0) }
+            }
         }
 
         // Text containers — semantic block elements; same passthrough
         // rendering; typography styling cascades via SwiftUI environment.
         for type_ in ["p", "h1", "h2", "h3", "h4", "h5", "h6"] {
             let t = type_
-            registerIfAbsent(t) { _, _ in .custom { Color.clear } }
+            registerIfAbsent(t) { _, _ in
+                .custom { Color.clear.frame(idealWidth: 0, idealHeight: 0) }
+            }
         }
 
         // Inline text container
-        registerIfAbsent("span") { _, _ in .custom { Color.clear } }
+        registerIfAbsent("span") { _, _ in
+            .custom { Color.clear.frame(idealWidth: 0, idealHeight: 0) }
+        }
 
         // Image — `src` extra prop drives the URL. The leaf view is
         // `_DOMImage`, which reads `object-fit` / `object-position` from
