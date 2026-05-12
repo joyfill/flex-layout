@@ -123,6 +123,20 @@ public enum SpecPropertySamples {
         groupByCategory(allWithDiscovered)
     }()
 
+    /// Two-level grouping: category → property → samples. The sidebar
+    /// renders one category header per outer entry, one property header
+    /// per inner entry, and each property's samples as `↳ <basename>`
+    /// rows underneath. Every sample appears as a variant — the
+    /// property name surfaces only as a non-clickable header, never
+    /// folded into a sample row (avoids the
+    /// "where did row-reverse go?" UX trap when a property has no
+    /// dedicated overview.json).
+    public typealias PropertyGroup = (property: String, samples: [SpecPropertySample])
+    public typealias CategoryGroup = (category: String, properties: [PropertyGroup])
+    public static let byCategoryAndPropertyWithDiscovered: [CategoryGroup] = {
+        groupByCategoryAndProperty(allWithDiscovered)
+    }()
+
     /// Lookup by id. `nil` if the id doesn't match a bundled sample.
     public static func sample(withID id: String) -> SpecPropertySample? {
         all.first(where: { $0.id == id })
@@ -167,14 +181,61 @@ public enum SpecPropertySamples {
                 samplesByProperty[s.property, default: []].append(s)
             }
             let reordered: [SpecPropertySample] = propertyOrder.flatMap { prop -> [SpecPropertySample] in
+                // Every sample now carries a variantLabel (file
+                // basename). Within a property, sort alphabetically
+                // with `overview` first when present so the canonical
+                // demo appears at the top.
                 let group = samplesByProperty[prop] ?? []
-                let overviews = group.filter { $0.variantLabel == nil }
-                let variants = group
-                    .filter { $0.variantLabel != nil }
-                    .sorted { ($0.variantLabel ?? "") < ($1.variantLabel ?? "") }
-                return overviews + variants
+                return group.sorted { lhs, rhs in
+                    let l = lhs.variantLabel ?? lhs.id
+                    let r = rhs.variantLabel ?? rhs.id
+                    if l == "overview" && r != "overview" { return true }
+                    if r == "overview" && l != "overview" { return false }
+                    return l < r
+                }
             }
             return (category: category, samples: reordered)
+        }
+    }
+
+    /// Same two-level bucketing as `groupByCategory` but exposing the
+    /// inner property structure to the caller. Used by the sidebar to
+    /// render headers + variant rows without re-deriving the property
+    /// boundaries from a flat list.
+    private static func groupByCategoryAndProperty(
+        _ samples: [SpecPropertySample]
+    ) -> [CategoryGroup] {
+        var categoryOrder: [String] = []
+        var samplesByCategory: [String: [SpecPropertySample]] = [:]
+        for sample in samples {
+            if samplesByCategory[sample.category] == nil {
+                categoryOrder.append(sample.category)
+            }
+            samplesByCategory[sample.category, default: []].append(sample)
+        }
+
+        return categoryOrder.map { category in
+            let catSamples = samplesByCategory[category] ?? []
+            var propertyOrder: [String] = []
+            var samplesByProperty: [String: [SpecPropertySample]] = [:]
+            for s in catSamples {
+                if samplesByProperty[s.property] == nil {
+                    propertyOrder.append(s.property)
+                }
+                samplesByProperty[s.property, default: []].append(s)
+            }
+            let propertyGroups: [PropertyGroup] = propertyOrder.map { prop in
+                let group = samplesByProperty[prop] ?? []
+                let sorted = group.sorted { lhs, rhs in
+                    let l = lhs.variantLabel ?? lhs.id
+                    let r = rhs.variantLabel ?? rhs.id
+                    if l == "overview" && r != "overview" { return true }
+                    if r == "overview" && l != "overview" { return false }
+                    return l < r
+                }
+                return (property: prop, samples: sorted)
+            }
+            return (category: category, properties: propertyGroups)
         }
     }
 
@@ -184,24 +245,23 @@ public enum SpecPropertySamples {
     /// The manifest implicitly defines the universe of folders the demo
     /// cares about (`flexbox/flex-direction/`, `flexbox/flex-grow/`, …).
     /// For each such folder we scan `Bundle.module` and add any
-    /// unmanifested `.json` files as variants of that property's
-    /// overview. The fall-through `variantLabel` makes them indent
-    /// nicely in the sidebar under the manifested overview, matching
-    /// the visual treatment of a "real" variant.
+    /// unmanifested `.json` files as variants.
     private static func discoverUnmanifestedSamples(
         against manifested: [SpecPropertySample]
     ) -> [SpecPropertySample] {
         let manifestedFiles = Set(manifested.map { $0.file })
 
-        // Folder → metadata derived from the first manifest entry for
-        // that folder (the "overview" — `variantLabel == nil`).
+        // Folder → metadata derived from the first manifested sample
+        // for that folder. Every sample carries category/property; the
+        // first one we see for a given folder defines the inherited
+        // metadata for any auto-discovered siblings.
         struct FolderMeta {
             let category: String
             let property: String
-            let overviewID: String
+            let firstSeenID: String
         }
         var folderMeta: [String: FolderMeta] = [:]
-        for sample in manifested where sample.variantLabel == nil {
+        for sample in manifested {
             let parts = sample.file.split(separator: "/")
             guard parts.count >= 2 else { continue }
             let folder = parts.dropLast().joined(separator: "/")
@@ -209,7 +269,7 @@ public enum SpecPropertySamples {
                 folderMeta[folder] = FolderMeta(
                     category: sample.category,
                     property: sample.property,
-                    overviewID: sample.id
+                    firstSeenID: sample.id
                 )
             }
         }
@@ -227,7 +287,7 @@ public enum SpecPropertySamples {
                 guard let data = try? Data(contentsOf: url),
                       let json = String(data: data, encoding: .utf8) else { continue }
                 discovered.append(SpecPropertySample(
-                    id: "\(meta.overviewID)-\(basename)",
+                    id: "\(meta.firstSeenID)-\(basename)",
                     category: meta.category,
                     property: meta.property,
                     summary: "(auto-discovered) \(basename)",
@@ -284,36 +344,26 @@ public enum SpecPropertySamples {
         var samples: [SpecPropertySample] = []
         samples.reserveCapacity(manifest.samples.count)
 
-        // First-seen sample for a (category, property) pair is the
-        // "overview" — every later entry sharing that pair is a variant
-        // labelled by its file basename (e.g. `column-reverse.json` →
-        // `column-reverse`).
+        // Every sample's `variantLabel` is its file basename. Earlier
+        // versions tried to elect one "overview" per (category,
+        // property) pair (variantLabel = nil) and treat the rest as
+        // variants — that broke when a property had no canonical
+        // overview file (e.g. flexDirection-iOSExt's row-reverse +
+        // column-reverse pair). The "synthetic overview" lost its
+        // value name in the sidebar (you'd see "flexDirection-iOSExt"
+        // instead of "row-reverse") and the selection / detail flow
+        // got tangled when the synthetic overview was selected.
         //
-        // Earlier this matched id prefixes (`<overview-id>-<suffix>`),
-        // but that broke for property families whose value-sweep
-        // samples have unrelated ids — e.g. iOS-ext where the first
-        // entry's id is `flexbox-flex-direction-ios-ext-row-reverse`
-        // and the second is `flexbox-flex-direction-ios-ext-column-reverse`
-        // (no shared prefix beyond the property root). The id-prefix
-        // path silently classed every non-prefixed sample as another
-        // overview and the sidebar rendered two "flexDirection-iOSExt"
-        // headings stacked, visually orphaning subsequent variants.
-        // File basename is the unambiguous variant id every sample
-        // actually has.
-        var seenPropertyKey: Set<String> = []
+        // Treating every sample as a labelled variant — with the
+        // property name surfaced separately as a non-clickable header
+        // in `byCategoryAndPropertyWithDiscovered` — is structurally
+        // simpler and reads consistently in the sidebar regardless of
+        // whether an overview.json exists.
 
         for entry in manifest.samples {
             guard let json = loadSampleJSON(file: entry.file) else { continue }
-            let key = "\(entry.category)|\(entry.property)"
-            let variantLabel: String?
-            if seenPropertyKey.contains(key) {
-                let basename = ((entry.file as NSString).lastPathComponent as NSString)
-                    .deletingPathExtension
-                variantLabel = basename
-            } else {
-                seenPropertyKey.insert(key)
-                variantLabel = nil
-            }
+            let basename = ((entry.file as NSString).lastPathComponent as NSString)
+                .deletingPathExtension
             samples.append(SpecPropertySample(
                 id: entry.id,
                 category: entry.category,
@@ -321,7 +371,7 @@ public enum SpecPropertySamples {
                 summary: entry.summary,
                 file: entry.file,
                 json: json,
-                variantLabel: variantLabel,
+                variantLabel: basename,
                 snapshotConfig: entry.snapshot
             ))
         }

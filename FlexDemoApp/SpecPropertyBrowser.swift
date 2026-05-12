@@ -86,19 +86,36 @@ struct SpecPropertyBrowser: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
-                    ForEach(SpecPropertySamples.byCategoryWithDiscovered, id: \.category) { bucket in
+                    // Two-level grouping: category (FLEXBOX, TYPOGRAPHY, …)
+                    // → property (flexDirection, flexGrow, …) → variant
+                    // rows (↳ row, ↳ column, …). The property line is a
+                    // header label, not a clickable row — every sample is
+                    // a `↳ <basename>` row beneath it, so values like
+                    // `row-reverse` always have their own visible row
+                    // regardless of whether an `overview.json` exists for
+                    // the property.
+                    ForEach(SpecPropertySamples.byCategoryAndPropertyWithDiscovered, id: \.category) { catGroup in
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(bucket.category.uppercased())
+                            Text(catGroup.category.uppercased())
                                 .font(.caption2.weight(.semibold))
                                 .foregroundStyle(.secondary)
                                 .padding(.horizontal, 10)
                                 .padding(.top, 4)
-                            ForEach(bucket.samples) { sample in
-                                BrowserRow(
-                                    sample: sample,
-                                    isSelected: selectedSampleID == sample.id
-                                )
-                                .onTapGesture { selectedSampleID = sample.id }
+                            ForEach(catGroup.properties, id: \.property) { propGroup in
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(propGroup.property)
+                                        .font(.system(.caption, design: .monospaced).weight(.semibold))
+                                        .foregroundStyle(.primary)
+                                        .padding(.horizontal, 10)
+                                        .padding(.top, 6)
+                                    ForEach(propGroup.samples) { sample in
+                                        BrowserRow(
+                                            sample: sample,
+                                            isSelected: selectedSampleID == sample.id
+                                        )
+                                        .onTapGesture { selectedSampleID = sample.id }
+                                    }
+                                }
                             }
                         }
                     }
@@ -132,12 +149,22 @@ struct SpecPropertyBrowser: View {
             }
             .padding(24)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-            .onChange(of: selectedSampleID) { _ in
+            .onChange(of: selectedSampleID) { newID in
                 // Reset the editor whenever the user navigates to a
                 // different template — the previous edits stay scoped
                 // to the previous sample.
-                jsonText = sample.json
-                decodeOrSurfaceError(jsonText)
+                //
+                // Look up the new sample fresh from the new id instead
+                // of the captured `sample` binding. The if-let above
+                // captures `sample` at view-construction time; SwiftUI's
+                // `.onChange` reuses the closure across body re-renders,
+                // so reading `sample.json` here reads the OLD selection
+                // (caught visually as: click `column-reverse`, see
+                // header update but jsonText stays on `row-reverse`).
+                if let newSample = SpecPropertySamples.sample(withID: newID) {
+                    jsonText = newSample.json
+                    decodeOrSurfaceError(jsonText)
+                }
             }
             .onChange(of: jsonText) { newValue in
                 decodeOrSurfaceError(newValue)
@@ -336,26 +363,19 @@ private struct BrowserRow: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 6) {
-            // Overview rows render flush; variant rows shift right and
-            // show a small leader so multiple test cases under the same
-            // property group visually instead of looking like duplicates.
-            if sample.variantLabel != nil {
-                Text("↳")
-                    .font(.system(.caption2, design: .monospaced))
-                    .foregroundStyle(isSelected ? .white.opacity(0.6) : .secondary)
-                    .padding(.leading, 12)
-                    .padding(.top, 2)
-            }
+            // Every sample now renders as a variant row beneath its
+            // property header — the `↳` leader is unconditional. The
+            // property header itself is rendered separately in the
+            // sidebar's outer loop, not by BrowserRow.
+            Text("↳")
+                .font(.system(.caption2, design: .monospaced))
+                .foregroundStyle(isSelected ? .white.opacity(0.6) : .secondary)
+                .padding(.leading, 12)
+                .padding(.top, 2)
             VStack(alignment: .leading, spacing: 1) {
-                if let variant = sample.variantLabel {
-                    Text(variant)
-                        .font(.system(.caption, design: .monospaced))
-                        .foregroundStyle(isSelected ? .white : .primary)
-                } else {
-                    Text(sample.property)
-                        .font(.system(.caption, design: .monospaced))
-                        .foregroundStyle(isSelected ? .white : .primary)
-                }
+                Text(sample.variantLabel ?? sample.id)
+                    .font(.system(.caption, design: .monospaced))
+                    .foregroundStyle(isSelected ? .white : .primary)
                 Text(sample.summary)
                     .font(.caption2)
                     .foregroundStyle(isSelected ? .white.opacity(0.85) : .secondary)
