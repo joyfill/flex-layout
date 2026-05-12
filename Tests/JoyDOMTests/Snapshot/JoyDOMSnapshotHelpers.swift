@@ -32,18 +32,24 @@ import AppKit
 extension XCTestCase {
 
     /// Iterate every `SpecPropertySample` whose manifest `file` lives
-    /// under `directory` and snapshot each one. The baseline name for
-    /// every sample equals its JSON's basename without the `.json`
-    /// suffix, so the snapshot tree mirrors the JSON tree leaf-for-leaf.
+    /// under `directory` and snapshot each one. Baseline paths mirror
+    /// the JSON tree leaf-for-leaf:
     ///
-    /// Example — calling `assertSnapshotsForSamples(in: "flexbox/flex-direction")`
-    /// from a `testFlexDirection()` method produces baselines at
-    /// `__Snapshots__/<TestClass>/testFlexDirection.<variant>.png` matching
-    /// each `<variant>.json` in the directory.
+    ///     Sources/.../flexbox/flex-direction/row.json
+    ///     →
+    ///     Tests/.../Flexbox/__Snapshots__/flexbox/flex-direction/row.png
+    ///
+    /// Implementation note — swift-snapshot-testing's high-level
+    /// `assertSnapshot` derives the snapshot directory from the test
+    /// file's path and won't honor slashes in `testName:` (they get
+    /// sanitized to hyphens). We use the lower-level `verifySnapshot`
+    /// and pass an absolute `snapshotDirectory:` we build from the
+    /// sample's `file` field, then push the JSON basename through
+    /// `testName:` so the filename comes out as just `<basename>.png`
+    /// without the usual `<method>.<named>` prefix dance.
     func assertSnapshotsForSamples(
         in directory: String,
         file: StaticString = #filePath,
-        testName: String = #function,
         line: UInt = #line
     ) {
         let prefix = directory.hasSuffix("/") ? directory : "\(directory)/"
@@ -54,24 +60,36 @@ extension XCTestCase {
             file: file,
             line: line
         )
+        // Compute the absolute `__Snapshots__` root directory: it sits
+        // next to the calling test source file. `#filePath` is absolute
+        // at compile time, so we can drop the basename and append
+        // `__Snapshots__`.
+        let testFilePath = "\(file)"
+        let testFileDir = (testFilePath as NSString).deletingLastPathComponent
+        let snapshotsRoot = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__")
+
         for sample in scoped {
-            // Convert the relative path to the snapshot's `named:`
-            // identifier. We use ONLY the JSON's basename so baselines
-            // sit flat under the test method, named identically to the
-            // sample's JSON filename (e.g. `row.json` → `row.png`).
-            let basename = sample.file
-                .components(separatedBy: "/").last ?? sample.file
-            let snapshotName = basename.hasSuffix(".json")
-                ? String(basename.dropLast(".json".count))
-                : basename
+            // sample.file = "flexbox/flex-direction/row.json"
+            // Split into directory portion + basename so we can:
+            //   - put __Snapshots__/flexbox/flex-direction as snapshotDirectory
+            //   - pass `row` as testName → filename row.png
+            let withoutJson = sample.file.hasSuffix(".json")
+                ? String(sample.file.dropLast(".json".count))
+                : sample.file
+            let sampleDir = (withoutJson as NSString).deletingLastPathComponent
+            let basename = (withoutJson as NSString).lastPathComponent
+            let snapshotDirectory = (snapshotsRoot as NSString)
+                .appendingPathComponent(sampleDir)
+
             let cfg = sample.snapshotConfig ?? .default
             assertJoyDOMSnapshot(
                 json: sample.json,
                 viewportWidth: CGFloat(cfg.viewportWidth),
                 height: CGFloat(cfg.height),
-                named: snapshotName,
+                snapshotDirectory: snapshotDirectory,
+                snapshotName: basename,
                 file: file,
-                testName: testName,
                 line: line
             )
         }
@@ -190,6 +208,175 @@ extension XCTestCase {
         } catch {
             XCTFail(
                 "JoyDOM snapshot helper: JSON failed to decode as Spec: \(error)",
+                file: file,
+                line: line
+            )
+        }
+    }
+
+    // MARK: - Path-controlled snapshot (exact filename, mirrors JSON layout)
+
+    /// Render JSON → image and diff against a baseline at an EXACT path.
+    ///
+    /// Why this exists alongside the `verifySnapshot`-based helpers:
+    /// swift-snapshot-testing always composes filenames as
+    /// `<testName>.<identifier>.<ext>` (identifier = a counter or the
+    /// sanitized `named:` value). There is no parameter combo that yields
+    /// a bare `row.png` — you always get `row.1.png` or `.row.png`.
+    ///
+    /// To get a clean directory mirror of the JSON tree (the user's
+    /// stated requirement — `row.json` → `row.png`, no suffix), we bypass
+    /// `verifySnapshot`'s composition and drive the strategy directly:
+    /// render via `Snapshotting.image`, encode via `Diffing.toData`,
+    /// then read/write/diff the file ourselves at the exact target path.
+    ///
+    /// Re-record: set the `SNAPSHOT_TESTING_RECORD` env var or pass
+    /// `record: true`. Missing baselines auto-record on first run and
+    /// fail the test (same pattern as `assertSnapshot`).
+    func assertJoyDOMSnapshot(
+        json: String,
+        viewportWidth: CGFloat,
+        height: CGFloat,
+        precision: Float = 0.99,
+        perceptualPrecision: Float = 0.97,
+        snapshotDirectory: String,
+        snapshotName: String,
+        record: Bool = false,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        // 1. Decode spec
+        let spec: Spec
+        do {
+            spec = try JSONDecoder().decode(Spec.self, from: Data(json.utf8))
+        } catch {
+            XCTFail(
+                "JoyDOM snapshot helper: JSON failed to decode as Spec: \(error)",
+                file: file,
+                line: line
+            )
+            return
+        }
+
+        // 2. Build view (same registry-with-primitives dance as the
+        //    main overload — see PR #34 review).
+        let registry = ComponentRegistry().withDefaultPrimitives()
+        let view = JoyDOMView(spec: spec, registry: registry)
+            .viewport(.init(width: viewportWidth))
+            .frame(width: viewportWidth, height: height)
+        let size = CGSize(width: viewportWidth, height: height)
+
+        // 3. Pick platform strategy + host controller
+        #if canImport(UIKit)
+        let host = UIHostingController(rootView: view)
+        host.view.frame = CGRect(origin: .zero, size: size)
+        let strategy: Snapshotting<UIViewController, UIImage> = .image(
+            precision: precision,
+            perceptualPrecision: perceptualPrecision
+        )
+        #elseif canImport(AppKit)
+        let host = NSHostingController(rootView: view)
+        host.view.frame = CGRect(origin: .zero, size: size)
+        let strategy: Snapshotting<NSViewController, NSImage> = .image(
+            precision: precision,
+            perceptualPrecision: perceptualPrecision,
+            size: size
+        )
+        #endif
+
+        // 4. Render synchronously via the strategy's Async pipeline.
+        //    swift-snapshot-testing's `Async<Format>` doesn't expose a
+        //    blocking get; we bridge with an XCTestExpectation.
+        var rendered: Any?  // UIImage or NSImage
+        let took = XCTestExpectation(description: "JoyDOM snapshot render")
+        strategy.snapshot(host).run { value in
+            rendered = value
+            took.fulfill()
+        }
+        let result = XCTWaiter.wait(for: [took], timeout: 5)
+        guard result == .completed, let image = rendered else {
+            XCTFail(
+                "JoyDOM snapshot helper: render timed out or failed",
+                file: file,
+                line: line
+            )
+            return
+        }
+
+        // 5. Resolve target file path
+        let ext = strategy.pathExtension ?? "png"
+        let dirURL = URL(fileURLWithPath: snapshotDirectory, isDirectory: true)
+        let targetURL = dirURL
+            .appendingPathComponent(snapshotName)
+            .appendingPathExtension(ext)
+
+        let fm = FileManager.default
+        do {
+            try fm.createDirectory(
+                at: dirURL,
+                withIntermediateDirectories: true
+            )
+        } catch {
+            XCTFail(
+                "JoyDOM snapshot helper: failed to create snapshot dir \(snapshotDirectory): \(error)",
+                file: file,
+                line: line
+            )
+            return
+        }
+
+        // 6. Resolve typed image for the strategy's Diffing<Format>.
+        #if canImport(UIKit)
+        guard let typedImage = image as? UIImage else {
+            XCTFail("JoyDOM snapshot helper: image type mismatch", file: file, line: line)
+            return
+        }
+        #elseif canImport(AppKit)
+        guard let typedImage = image as? NSImage else {
+            XCTFail("JoyDOM snapshot helper: image type mismatch", file: file, line: line)
+            return
+        }
+        #endif
+
+        // 7. Record or diff
+        let envRecord = ProcessInfo.processInfo.environment["SNAPSHOT_TESTING_RECORD"] != nil
+        let baselineExists = fm.fileExists(atPath: targetURL.path)
+        let shouldRecord = record || envRecord || !baselineExists
+
+        if shouldRecord {
+            let data = strategy.diffing.toData(typedImage)
+            do {
+                try data.write(to: targetURL)
+            } catch {
+                XCTFail(
+                    "JoyDOM snapshot helper: failed to write baseline \(targetURL.path): \(error)",
+                    file: file,
+                    line: line
+                )
+                return
+            }
+            if !baselineExists {
+                XCTFail(
+                    "Recorded new baseline at \(targetURL.path). Re-run to verify.",
+                    file: file,
+                    line: line
+                )
+            }
+            return
+        }
+
+        guard let existingData = try? Data(contentsOf: targetURL) else {
+            XCTFail(
+                "JoyDOM snapshot helper: failed to read baseline \(targetURL.path)",
+                file: file,
+                line: line
+            )
+            return
+        }
+        let existing = strategy.diffing.fromData(existingData)
+        if let (failureMessage, _) = strategy.diffing.diffV2(existing, typedImage) {
+            XCTFail(
+                "Snapshot mismatch at \(targetURL.path):\n\(failureMessage)",
                 file: file,
                 line: line
             )

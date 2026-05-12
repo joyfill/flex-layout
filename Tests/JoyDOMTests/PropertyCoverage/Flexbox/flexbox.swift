@@ -70,11 +70,19 @@ final class FlexboxSnapshotTests: XCTestCase {
             SpecPropertySamples.sample(withID: "flexbox-flex-direction-responsive"),
             "responsive sample missing from JoyDOMSampleSpecs bundle"
         )
+        // Land at `__Snapshots__/flexbox/flex-direction/responsive-wide.png`
+        // next to its `responsive.png` sibling, using the path-controlled
+        // overload so we get an exact filename (no library-inserted
+        // `<testName>.<id>.png` suffix dance).
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/flexbox/flex-direction")
         assertJoyDOMSnapshot(
             json: sample.json,
             viewportWidth: 900,
             height: 140,
-            named: "responsive-wide"
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
         )
     }
 }
