@@ -1895,7 +1895,144 @@
       "file": "layout/box-sizing/overview.json",
       "category": "Layout & Positioning",
       "property": "boxSizing",
-      "summary": "border-box width with padding and border deducted from inner content"
+      "summary": "side-by-side: border-box vs content-box cards with identical declared width/padding/border so the deduction is unambiguous",
+      "snapshot": { "viewportWidth": 400, "height": 160 }
+    },
+    {
+      "id": "layout-box-sizing-border-box",
+      "file": "layout/box-sizing/border-box.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "border-box mode: outer 120 with padding 16 + border 4 → content area 80 fits an 80x80 inner exactly",
+      "snapshot": { "viewportWidth": 240, "height": 160 }
+    },
+    {
+      "id": "layout-box-sizing-content-box-default",
+      "file": "layout/box-sizing/content-box-default.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "content-box default (boxSizing omitted): width 120 is the content area; outer expands to 160 with padding+border",
+      "snapshot": { "viewportWidth": 240, "height": 200 }
+    },
+    {
+      "id": "layout-box-sizing-equal-outer-size",
+      "file": "layout/box-sizing/equal-outer-size.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "border-box width 120 vs content-box width 80 (both +padding 16, border 4) yield the same outer 120 box",
+      "snapshot": { "viewportWidth": 320, "height": 160 }
+    },
+    {
+      "id": "layout-box-sizing-width-only-px",
+      "file": "layout/box-sizing/width-only-px.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "no padding or border: border-box and content-box render identically — nothing to deduct",
+      "snapshot": { "viewportWidth": 280, "height": 140 }
+    },
+    {
+      "id": "layout-box-sizing-width-padding",
+      "file": "layout/box-sizing/width-padding.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "width 100, padding 16: border-box content area = 68; content-box content area = 100 (outer = 132)",
+      "snapshot": { "viewportWidth": 320, "height": 160 }
+    },
+    {
+      "id": "layout-box-sizing-width-padding-border",
+      "file": "layout/box-sizing/width-padding-border.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "width 100, padding 16, border 4: border-box content area = 60; content-box content area = 100 (outer = 140)",
+      "snapshot": { "viewportWidth": 320, "height": 160 }
+    },
+    {
+      "id": "layout-box-sizing-empty",
+      "file": "layout/box-sizing/empty.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "border-box card with no children — bounds are still set by the box-sizing deduction",
+      "snapshot": { "viewportWidth": 240, "height": 120 }
+    },
+    {
+      "id": "layout-box-sizing-single-child",
+      "file": "layout/box-sizing/single-child.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "single child sized exactly to the border-box content area (outer 140 - padding 32 - border 8 = 100)",
+      "snapshot": { "viewportWidth": 240, "height": 140 }
+    },
+    {
+      "id": "layout-box-sizing-inline",
+      "file": "layout/box-sizing/inline.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "boxSizing declared via node.props.style (inline) — same deduction as class-based",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "layout-box-sizing-class-selector",
+      "file": "layout/box-sizing/class-selector.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "boxSizing applied via .border-box class selector composed onto a .card",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "layout-box-sizing-in-flex-row",
+      "file": "layout/box-sizing/in-flex-row.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "three cards on a flex row sized via flexBasis 120 — boxSizing alternates and changes content area without changing outer",
+      "snapshot": { "viewportWidth": 460, "height": 160 }
+    },
+    {
+      "id": "layout-box-sizing-in-fixed-width",
+      "file": "layout/box-sizing/in-fixed-width.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "fixed 380px container, two width-140 cards: border-box fits in 140, content-box swells to 180",
+      "snapshot": { "viewportWidth": 420, "height": 160 }
+    },
+    {
+      "id": "layout-box-sizing-with-flex-grow",
+      "file": "layout/box-sizing/with-flex-grow.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "flexGrow distributes free space over the final flex base size — boxSizing affects starting base but grow distribution is symmetric",
+      "snapshot": { "viewportWidth": 440, "height": 160 }
+    },
+    {
+      "id": "layout-box-sizing-with-flex-shrink",
+      "file": "layout/box-sizing/with-flex-shrink.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "flexShrink against a 300px container: border-box and content-box cards shrink from different effective starting widths",
+      "snapshot": { "viewportWidth": 340, "height": 160 }
+    },
+    {
+      "id": "layout-box-sizing-with-min-max",
+      "file": "layout/box-sizing/with-min-max.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "border-box with minWidth (clamps up) and maxWidth (clamps down) — clamp is applied to the outer (border-box) size",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "layout-box-sizing-nested",
+      "file": "layout/box-sizing/nested.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "three nested border-box containers (outer 200x160, middle 160x120, inner 120x80) — deduction applies at every level independently",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-box-sizing-responsive",
+      "file": "layout/box-sizing/responsive.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "narrow viewport renders as content-box (default); width>=768px breakpoint flips to border-box — same JSON, different outer size",
+      "snapshot": { "viewportWidth": 360, "height": 200 }
     },
     {
       "id": "layout-z-index",
