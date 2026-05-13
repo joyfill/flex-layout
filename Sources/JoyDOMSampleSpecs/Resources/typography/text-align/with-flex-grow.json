@@ -9,11 +9,15 @@
       "backgroundColor": "#F3F4F6"
     },
     "#a": {
+      "display": "flex",
+      "flexDirection": "column",
       "width": { "value": 80, "unit": "px" },
       "backgroundColor": "#E5E7EB",
       "padding": { "value": 8, "unit": "px" }
     },
     "#b": {
+      "display": "flex",
+      "flexDirection": "column",
       "flexGrow": 1,
       "backgroundColor": "#E5E7EB",
       "padding": { "value": 8, "unit": "px" }
@@ -35,10 +39,10 @@
     "props": { "id": "root" },
     "children": [
       { "type": "div", "props": { "id": "a" }, "children": [
-        { "type": "p", "props": { "id": "label" }, "children": ["Label"] }
+        { "type": "p", "props": { "id": "label" }, "children": ["Item label that wraps onto another line."] }
       ] },
       { "type": "div", "props": { "id": "b" }, "children": [
-        { "type": "p", "props": { "id": "value" }, "children": ["Right-aligned value"] }
+        { "type": "p", "props": { "id": "value" }, "children": ["Right-aligned value text that is long enough to wrap onto multiple lines so the alignment is visible across wrapped lines."] }
       ] }
     ]
   }

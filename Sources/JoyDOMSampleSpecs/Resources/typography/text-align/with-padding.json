@@ -2,10 +2,14 @@
   "version": 1,
   "style": {
     "#root": {
+      "display": "flex",
+      "flexDirection": "column",
       "padding": { "value": 16, "unit": "px" },
       "backgroundColor": "#F3F4F6"
     },
     "#card": {
+      "display": "flex",
+      "flexDirection": "column",
       "padding": { "value": 32, "unit": "px" },
       "backgroundColor": "#E5E7EB"
     },
