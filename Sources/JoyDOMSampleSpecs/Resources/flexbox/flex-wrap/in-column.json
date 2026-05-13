@@ -7,7 +7,7 @@
       "flexWrap": "wrap",
       "padding": { "value": 16, "unit": "px" },
       "gap":     { "value": 8,  "unit": "px" },
-      "width":   { "value": 320, "unit": "px" },
+      "width":   { "value": 200, "unit": "px" },
       "height":  { "value": 220, "unit": "px" },
       "backgroundColor": "#F3F4F6"
     },
