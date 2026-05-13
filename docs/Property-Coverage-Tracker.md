@@ -58,7 +58,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | Property | Status | Samples | Tests delta | Date | Notes |
 |---|---|---|---|---|---|
 | `backgroundColor` | ⬜ | 1/0/0/0 | — | — | — |
-| `opacity` | ⬜ | 1/0/0/0 | — | — | — |
+| `opacity` | ✅ | 6/3/2/3 | +19 baselines | 2026-05-14 | 18 samples + responsive-wide method; AI walk found zero impl bugs and zero sample-design issues; value sweep 0/0.25/0.5/0.75/1 verified visually (color intensity scales linearly with opacity over gray bg); default (omitted) renders byte-identical to `opacity: 1` per CSS spec fallback; `overlap-stacking` proves CSS alpha-blend (opaque red beneath opacity-0.5 blue → purple in overlap region); opacity on parent container (`single-child`, `on-nested-container`) visually fades the whole subtree as a group (CSS group-opacity semantics); opacity affects fill + border + text uniformly (`with-border`, `on-text-content`); opacity does not affect layout (`with-flex-grow` items keep equal flex-grow widths regardless of opacity); responsive breakpoint flip (0.25 below 768px → 1.0 at ≥768px) verified via `testOpacityResponsiveWide` |
 | `padding` | ⬜ | 1/0/0/0 | — | — | — |
 | `margin` | ⬜ | 1/0/0/0 | — | — | PR #21 true flex margin needs visual proof |
 | `borderWidth` | ⬜ | 1/0/0/0 | — | — | — |
