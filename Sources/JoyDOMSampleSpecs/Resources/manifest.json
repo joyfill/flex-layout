@@ -4127,11 +4127,148 @@
       "snapshot": { "viewportWidth": 320, "height": 120 }
     },
     {
-      "id": "typography-font-family",
+      "id": "typography-font-family-overview",
       "file": "typography/font-family/overview.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Custom fontFamily on a heading"
+      "summary": "Showcase: Georgia headline, Helvetica Neue body, Menlo code",
+      "snapshot": { "viewportWidth": 480, "height": 200 }
+    },
+    {
+      "id": "typography-font-family-default",
+      "file": "typography/font-family/default.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Default: fontFamily omitted, falls back to system font",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-family-system",
+      "file": "typography/font-family/system.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Value sweep: explicit 'System' family",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-family-serif",
+      "file": "typography/font-family/serif.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Value sweep: 'Times New Roman' (serif)",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-family-sans-serif",
+      "file": "typography/font-family/sans-serif.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Value sweep: 'Helvetica' (sans-serif)",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-family-monospace",
+      "file": "typography/font-family/monospace.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Value sweep: 'Menlo' (monospace)",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-family-courier",
+      "file": "typography/font-family/courier.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Value sweep: 'Courier' (classic monospace)",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-family-georgia",
+      "file": "typography/font-family/georgia.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Value sweep: 'Georgia' (specific named family)",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-family-helvetica-neue",
+      "file": "typography/font-family/helvetica-neue.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Value sweep: 'Helvetica Neue' (multi-word family name)",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-family-invalid-fallback",
+      "file": "typography/font-family/invalid-fallback.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Fallback: unknown family name resolves via CoreText fallback chain to system",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-family-inline",
+      "file": "typography/font-family/inline.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Authoring: inline style on node props",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-family-class-selector",
+      "file": "typography/font-family/class-selector.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Authoring: class selector applies fontFamily",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-family-with-font-size",
+      "file": "typography/font-family/with-font-size.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Interaction × fontSize: Georgia at 12 / 20 / 32 px",
+      "snapshot": { "viewportWidth": 480, "height": 200 }
+    },
+    {
+      "id": "typography-font-family-with-font-weight",
+      "file": "typography/font-family/with-font-weight.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Interaction × fontWeight: Helvetica Neue regular / bold / 300 / 700",
+      "snapshot": { "viewportWidth": 480, "height": 220 }
+    },
+    {
+      "id": "typography-font-family-with-color",
+      "file": "typography/font-family/with-color.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Interaction × color: Georgia heading in blue",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-family-nested",
+      "file": "typography/font-family/nested.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Nested: SwiftUI .font() env on #root cascades to children; #override resets to Menlo",
+      "snapshot": { "viewportWidth": 480, "height": 140 }
+    },
+    {
+      "id": "typography-font-family-multiple-paragraphs",
+      "file": "typography/font-family/multiple-paragraphs.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Three sibling paragraphs in Georgia / Helvetica / Menlo",
+      "snapshot": { "viewportWidth": 480, "height": 160 }
+    },
+    {
+      "id": "typography-font-family-responsive",
+      "file": "typography/font-family/responsive.json",
+      "category": "Typography",
+      "property": "fontFamily",
+      "summary": "Breakpoint flip: Georgia at narrow viewport, Menlo when width >= 768px",
+      "snapshot": { "viewportWidth": 320, "height": 80 }
     },
     {
       "id": "typography-font-size-overview",
