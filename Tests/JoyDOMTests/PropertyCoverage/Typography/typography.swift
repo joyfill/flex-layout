@@ -155,4 +155,33 @@ final class TypographySnapshotTests: XCTestCase {
             snapshotName: "responsive-wide"
         )
     }
+
+    // MARK: - letterSpacing
+
+    func testLetterSpacing() {
+        assertSnapshotsForSamples(in: "typography/letter-spacing")
+    }
+
+    /// Wide-viewport companion to `typography/letter-spacing/responsive.json`.
+    ///
+    /// The manifest entry pins the narrow viewport (`400x120`) which renders
+    /// `letterSpacing: 0px` (tight). This method re-renders the same JSON at
+    /// the wide viewport (`820x120`) so the `width>=768px` breakpoint flips
+    /// `letterSpacing` to `6px` — visibly wider tracking on the same line.
+    func testLetterSpacingResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "typography-letter-spacing-responsive"),
+            "letter-spacing responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/typography/letter-spacing")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 820,
+            height: 120,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
