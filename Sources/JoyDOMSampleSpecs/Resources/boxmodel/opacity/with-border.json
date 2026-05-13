@@ -11,11 +11,14 @@
     ".box": {
       "width":  { "value": 60, "unit": "px" },
       "height": { "value": 60, "unit": "px" },
-      "borderRadius": { "value": 4, "unit": "px" }
+      "borderRadius": { "value": 4, "unit": "px" },
+      "borderWidth": { "value": 4, "unit": "px" },
+      "borderStyle": "solid",
+      "borderColor": "#111827"
     },
     "#a": { "backgroundColor": "#EF4444", "opacity": 1 },
-    "#b": { "backgroundColor": "#10B981", "opacity": 0.5 },
-    "#c": { "backgroundColor": "#3B82F6", "opacity": 0 }
+    "#b": { "backgroundColor": "#EF4444", "opacity": 0.5 },
+    "#c": { "backgroundColor": "#EF4444", "opacity": 0.25 }
   },
   "breakpoints": [],
   "layout": {

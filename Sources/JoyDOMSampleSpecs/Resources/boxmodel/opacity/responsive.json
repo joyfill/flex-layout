@@ -11,13 +11,24 @@
     ".box": {
       "width":  { "value": 60, "unit": "px" },
       "height": { "value": 60, "unit": "px" },
-      "borderRadius": { "value": 4, "unit": "px" }
-    },
-    "#a": { "backgroundColor": "#EF4444", "opacity": 1 },
-    "#b": { "backgroundColor": "#10B981", "opacity": 0.5 },
-    "#c": { "backgroundColor": "#3B82F6", "opacity": 0 }
+      "borderRadius": { "value": 4, "unit": "px" },
+      "backgroundColor": "#EF4444",
+      "opacity": 0.25
+    }
   },
-  "breakpoints": [],
+  "breakpoints": [
+    {
+      "conditions": [
+        { "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }
+      ],
+      "nodes": {},
+      "style": {
+        ".box": {
+          "opacity": 1
+        }
+      }
+    }
+  ],
   "layout": {
     "type": "div",
     "props": { "id": "root" },
