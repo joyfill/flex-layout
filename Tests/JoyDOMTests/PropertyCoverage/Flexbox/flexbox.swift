@@ -136,6 +136,27 @@ final class FlexboxSnapshotTests: XCTestCase {
     /// breakpoint flips `.box` to `flexShrink: 0`, letting items keep
     /// their natural 120px width with free space at the end. This method
     /// captures the wide-viewport branch.
+    /// `justify-content/responsive.json` declares the NARROW canvas
+    /// (flex-start: boxes pinned to start). The >=768px breakpoint flips
+    /// `#root` to `justifyContent: center`, packing them mid-axis. This
+    /// method captures the wide-viewport branch.
+    func testJustifyContentResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "flexbox-justify-content-responsive"),
+            "justify-content responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/flexbox/justify-content")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 900,
+            height: 100,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
+
     func testFlexShrinkResponsiveWide() throws {
         let sample = try XCTUnwrap(
             SpecPropertySamples.sample(withID: "flexbox-flex-shrink-responsive"),

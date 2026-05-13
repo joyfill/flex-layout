@@ -706,6 +706,226 @@
       }
     },
     {
+      "id": "flexbox-justify-content-flex-start",
+      "file": "flexbox/justify-content/flex-start.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "value sweep: flex-start packs items at the main-axis start",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-justify-content-flex-end",
+      "file": "flexbox/justify-content/flex-end.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "value sweep: flex-end packs items at the main-axis end",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-justify-content-center",
+      "file": "flexbox/justify-content/center.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "value sweep: center packs items in the middle of the main axis",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-justify-content-space-between",
+      "file": "flexbox/justify-content/space-between.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "value sweep: space-between pins first/last to edges, distributes equal gaps between items",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-justify-content-space-around",
+      "file": "flexbox/justify-content/space-around.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "value sweep: space-around \u2014 each item has equal space on both sides (edges get half-gap)",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-justify-content-space-evenly",
+      "file": "flexbox/justify-content/space-evenly.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "value sweep: space-evenly \u2014 equal gaps including before first and after last item",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-justify-content-default",
+      "file": "flexbox/justify-content/default.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "default: justifyContent omitted \u2014 CSS spec fallback is flex-start",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-justify-content-empty",
+      "file": "flexbox/justify-content/empty.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "edge: empty container with space-between \u2014 no items to distribute",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 120
+      }
+    },
+    {
+      "id": "flexbox-justify-content-single-child",
+      "file": "flexbox/justify-content/single-child.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "edge: single child with center \u2014 only positioning matters (no distribution between items)",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-justify-content-two-items",
+      "file": "flexbox/justify-content/two-items.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "edge: two items with space-around \u2014 illustrates space-around vs space-between divergence at low item count",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-justify-content-inline",
+      "file": "flexbox/justify-content/inline.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "authoring: justifyContent declared inline via node.props.style on root",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-justify-content-class-selector",
+      "file": "flexbox/justify-content/class-selector.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "authoring: justifyContent applied via .row-center class selector on the root container",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-justify-content-in-column",
+      "file": "flexbox/justify-content/in-column.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "context: column direction \u2014 justifyContent now operates on the vertical (main) axis",
+      "snapshot": {
+        "viewportWidth": 200,
+        "height": 400
+      }
+    },
+    {
+      "id": "flexbox-justify-content-in-fixed-width",
+      "file": "flexbox/justify-content/in-fixed-width.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "context: narrower fixed-width container \u2014 less free space, space-between gaps shrink proportionally",
+      "snapshot": {
+        "viewportWidth": 300,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-justify-content-with-grow",
+      "file": "flexbox/justify-content/with-grow.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "interaction: with flexGrow:1 on items \u2014 no free space remains, justifyContent has no visible effect",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-justify-content-with-wrap",
+      "file": "flexbox/justify-content/with-wrap.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "interaction: flexWrap:wrap \u2014 justifyContent applies per-line to remaining free space on each row",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 200
+      }
+    },
+    {
+      "id": "flexbox-justify-content-with-gap",
+      "file": "flexbox/justify-content/with-gap.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "interaction: gap consumed first, then center distributes remaining free space",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-justify-content-with-flex-basis-percent",
+      "file": "flexbox/justify-content/with-flex-basis-percent.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "interaction: flexBasis 20% items \u2014 space-between distributes the remaining 40% across the gaps",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-justify-content-nested",
+      "file": "flexbox/justify-content/nested.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "edge: nested flex containers — outer uses flex-end, inner uses space-between (independent main-axis distribution)",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-justify-content-responsive",
+      "file": "flexbox/justify-content/responsive.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "responsive: flex-start at narrow viewport; >=768px breakpoint flips to center",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
       "id": "flexbox-align-items",
       "file": "flexbox/align-items/overview.json",
       "category": "Flexbox",
