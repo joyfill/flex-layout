@@ -852,8 +852,8 @@
       "file": "flexbox/align-self/with-wrap.json",
       "category": "Flexbox",
       "property": "alignSelf",
-      "summary": "interaction: flexWrap: wrap \u2014 alignSelf applies within each flex line",
-      "snapshot": { "viewportWidth": 280, "height": 200 }
+      "summary": "interaction: flexWrap: wrap \u2014 alignSelf: flex-end shifts shorter items to the bottom of each flex line",
+      "snapshot": { "viewportWidth": 240, "height": 220 }
     },
     {
       "id": "flexbox-align-self-with-different-heights",
