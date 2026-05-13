@@ -24,4 +24,31 @@ import JoyDOMSampleSpecs
 final class TypographySnapshotTests: XCTestCase {
     // Walkers append their test methods below as each Typography
     // property's coverage walk lands.
+
+    // MARK: - color
+
+    func testColor() {
+        assertSnapshotsForSamples(in: "typography/color")
+    }
+
+    /// `typography/color/responsive.json` declares the NARROW canvas (viewport
+    /// <768px → red text). This method renders the same JSON at the wide
+    /// canvas (≥768px → blue text) so both branches of the breakpoint are
+    /// baseline-locked.
+    func testColorResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "typography-color-responsive"),
+            "color responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/typography/color")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 900,
+            height: 80,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
