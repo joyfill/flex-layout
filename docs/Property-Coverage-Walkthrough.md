@@ -144,6 +144,19 @@ The two folders are siblings. The snapshot helper's prefix filter
   a `gap: 8`), the snapshot doesn't prove anything. Caught this in
   `flex-direction/with-wrap.json` — patched it with explicit
   `alignContent: flex-start` so the row-gap actually shows.
+- **For cross-axis properties (`alignItems`, `alignSelf`), at least one sample
+  must have varied cross-axis item dimensions.** If every item has the same
+  cross-axis size, the cross-axis line size equals each item's size and the
+  alignment override has nothing to align *against* — the snapshot collapses
+  to flex-start regardless of declared value. Surfaced by `alignSelf/with-wrap.json`
+  (originally 4 equal-height boxes, fixed to mixed heights — see "What we
+  learned running parallel walkers" below).
+- **Container dimensions must fit inside the snapshot viewport.** A
+  container wider than `viewportWidth` (or taller than `height`) will be
+  clipped at the viewport edge, hiding the property's effect off-canvas.
+  Surfaced by `flexWrap/in-column.json` (originally 320px container on a
+  240px viewport — clipped the wrapped second column). Step 4's grep recipe
+  catches this before recording.
 - **Avoid class names that lexically collide with CSS keywords.** `.fixed`,
   `.sticky`, `.absolute`, `.inline`, `.block`, `.dashed`, etc. as class names
   trip up greps that screen for out-of-spec values (e.g. `position: "fixed"`)
@@ -242,7 +255,34 @@ against your new JSONs to catch missing `display: flex` and any out-of-spec
 values (`row-reverse`, `wrap-reverse`, `alignContent`, etc.) before they
 become baselines.
 
-**Gate:** Validator passes for all samples; allowlist grep produces no hits.
+#### Container-fits-viewport sanity check
+
+Each sample's root container width/height must be ≤ the manifest's
+`viewportWidth` / `height`. Otherwise the container clips at the viewport
+edge and the off-canvas portion isn't tested. Quick Python check:
+
+```bash
+python3 <<'EOF'
+import json, glob
+m = json.load(open('Sources/JoyDOMSampleSpecs/Resources/manifest.json'))
+for s in m['samples']:
+    if not s['file'].startswith('flexbox/<prop-kebab>/'): continue
+    spec = json.load(open(f"Sources/JoyDOMSampleSpecs/Resources/{s['file']}"))
+    root = spec.get('style', {}).get('#root', {})
+    w = root.get('width', {}).get('value') if isinstance(root.get('width'), dict) else None
+    h = root.get('height', {}).get('value') if isinstance(root.get('height'), dict) else None
+    vw, vh = s['snapshot']['viewportWidth'], s['snapshot']['height']
+    if w and w > vw: print(f"  CLIP: {s['file']} width={w} > viewport={vw}")
+    if h and h > vh: print(f"  CLIP: {s['file']} height={h} > viewport={vh}")
+EOF
+```
+
+Empty output = clean. Any printed line is a sample whose container is
+larger than its snapshot viewport — fix before recording. (Surfaced this
+on `flexWrap/in-column.json` which originally had a 320px container in a
+240px viewport.)
+
+**Gate:** Validator passes for all samples; allowlist grep produces no hits; container-fits-viewport check is clean.
 
 ---
 
@@ -331,6 +371,16 @@ For each sample, the AI:
    behavior, color order, free-space distribution.
 3. Reads the screenshot
 4. **Pixel-samples for precision** (Python + PIL).
+
+   > **Harness caveat:** in some Claude-Code sandboxes `python3 --version`
+   > works but `python3 <script>` is blocked by permissions. Three walkers
+   > in the parallel-walker batch (`alignItems`, `alignSelf`, `flexBasis`)
+   > hit this. If you're in that mode: **multimodal `Read` on each PNG is
+   > an accepted fallback for integer-positioned predictions** (most flex
+   > samples produce integer widths because the FlexEngine rounds box
+   > sizes to the nearest pixel). Use the predicted positions as a guide
+   > and compare visually. ±2px subpixel tolerance for visual review vs.
+   > ±1px for PIL. Document which mode you used in your AI-review verdict.
 
    **Preferred technique: colored-run scan** — scans a horizontal (or
    vertical) line through the rendered boxes and auto-detects each colored
@@ -522,8 +572,18 @@ PR body must include:
 - One-line summary of the property's verified behavior
 - Confirmation that the [allowlist grep](JoyDOM-Spec-Allowlist.md#quick-sanity-check-for-a-finished-sample)
   passed (display:flex present everywhere, no out-of-spec values)
+- Note that Notion URLs pin to the branch HEAD SHA (Step 11) and will need
+  a post-merge re-pin if the source branch is deleted (see Step 10c)
 
-#### 10c. Capture merge SHA
+> **Stop at PR-open. Do NOT self-merge.** When the walk runs as a background
+> agent, leave the merge to the human reviewer. Parallel walkers create
+> overlapping edits to `manifest.json`, `flexbox.swift`, and the tracker —
+> merging is the human's serialization point for conflict resolution. The
+> `flexWrap` walker in the May-13 parallel batch self-merged and produced
+> a one-off out-of-sequence main commit; every other walker correctly
+> stopped at PR-open.
+
+#### 10c. Capture merge SHA + restore branch SHA for Notion durability
 
 After merge to `main`, **capture the merge commit SHA**:
 
@@ -531,10 +591,31 @@ After merge to `main`, **capture the merge commit SHA**:
 git checkout main && git pull --ff-only origin main && git rev-parse main
 ```
 
-This is what the Notion image URLs will pin against in Step 11. Branch HEAD
-SHAs are NOT durable (rebases / deletions lose history); only merge SHAs are.
+This is the merge commit SHA — use it for PR-body references and post-merge
+audits.
 
-**Gate:** PR merged. Merge SHA captured. Tracker reflects the new ✅.
+**For Notion image URL durability**, your DB pins to whichever SHA was the
+branch HEAD when the agent created the DB. If your branch is:
+- **Rebased before merge** (force-pushed during conflict resolution) — the
+  pre-rebase HEAD SHA gets replaced on the remote and the Notion URL breaks.
+- **Squash-merged with `--delete-branch`** — the branch HEAD SHA becomes
+  unreachable on the remote when the branch is deleted; Notion URLs break.
+
+The fix is to push the original SHA back as a `-pinned` ref so GitHub keeps
+the commit reachable:
+
+```bash
+# After the rebase/merge dust settles, restore the SHA the Notion DB references:
+git push origin <original-branch-head-sha>:refs/heads/test/<prop>-coverage-pinned
+```
+
+Or, simpler: **don't pass `--delete-branch` and don't rebase**. If the PR
+merges clean and the branch sticks around at its original SHA, no post-merge
+pin is needed (the `justifyContent` PR #44 went this route on May 13).
+
+**Gate:** PR merged. Merge SHA captured. Tracker reflects the new ✅. If the
+branch was rebased or deleted, a `-pinned` ref points at the SHA the Notion
+DB images reference (verify by clicking through one image preview in Notion).
 
 ---
 
@@ -607,8 +688,38 @@ the `<breakpoint>` flip._
 Same as the walk order in Steps 6/7: defaults → variants → interactions →
 contexts → special.
 
+#### Idempotency — check for existing pages before bulk-create
+
+`notion-create-pages` can return what looks like a cached response (or a
+successful-but-orphaned create). If you retry, you may end up with two
+copies of every page. The `order` DB in the May-13 batch ended up with
+**40 pages where 20 were expected** because the walker retried after a
+spurious failure. To prevent:
+
+```
+1. Run notion-search on the data source URL before any bulk create.
+2. If the result count is non-zero, compare Template names against your
+   planned row list and only create the missing ones.
+3. If you must retry a partial create, query first to learn which
+   Templates already landed.
+```
+
+Duplicates are cosmetic — both copies render correctly — but they clutter
+the DB and make per-row updates harder. If you spot duplicates after the
+fact, leave them; the MCP doesn't expose a delete-page tool.
+
+#### Sub-agent permission caveat
+
+If you delegate the DB rebase/update to a sub-agent via the `Agent` tool,
+**the sub-agent does NOT inherit the parent's auto-approve permission
+state**. `notion-update-page` will be denied. Do bulk Notion ops in the
+parent context, or pre-authorize the sub-agent's tools via
+`.claude/settings.json` (see `update-config` skill). Surfaced during the
+May-13 batch: an order-DB rebase sub-agent hit `Permission denied` on
+every update-page call.
+
 **Gate:** One row per sample, image previews loading, JSON code blocks in
-each row's body.
+each row's body. No duplicate rows.
 
 ---
 
@@ -750,3 +861,79 @@ easy to cut:
 **Tag distribution:** 0 `bug-in-impl`, 0 `bug-in-sample`, 0 `out-of-scope`,
 0 `documented-limitation` — but **7 `process-improvement`** findings, all
 folded back into this document.
+
+---
+
+## What we learned running 7 parallel walkers (2026-05-13)
+
+Seven coverage walks (`flexBasis`, `justifyContent`, `alignItems`, `alignSelf`,
+`flexWrap`, `gap`/`rowGap`/`columnGap`, `order`) fired in parallel as
+background agents, each producing a PR + Notion DB. Combined output:
+**~140 new sample JSONs, 6 PRs opened, 6 Notion DBs created, 0 implementation
+bugs surfaced**. The walks themselves were clean; the parallelism uncovered
+process gaps.
+
+1. **Python harness blocks `python3 <script>` in some sandboxes.** Three of
+   seven walkers (`alignItems`, `alignSelf`, `flexBasis`) reported that
+   `python3 --version` was permitted but executing a script wasn't, blocking
+   the canonical PIL colored-run scan. They fell back to multimodal `Read`
+   inspection of PNGs against numerical predictions — equivalent rigor for
+   integer-positioned samples, lower precision for subpixel. Step 6 now
+   explicitly accepts that fallback (±2px tolerance).
+
+2. **Cross-axis sample sizing must vary across items.** `alignSelf/with-wrap.json`
+   originally used four equal-height boxes. With all flex lines at the same
+   cross-axis size, `alignSelf` had nothing to align *against* — the override
+   collapsed to flex-start regardless of declared value. Caught during AI
+   review; fixed by mixing 80px and 40px heights. Step 2 design rules now
+   require varied cross-axis dimensions for cross-axis property samples.
+
+3. **Container must fit inside the snapshot viewport.** `flexWrap/in-column.json`
+   declared a 320px container on a 240px viewport — the second wrapped column
+   was clipped off-canvas. Step 4 now has a Python grep that scans manifest
+   entries and flags container ≥ viewport mismatches.
+
+4. **Notion image URLs break after rebase + squash-merge + branch delete.**
+   Every walker pinned its DB to the branch HEAD SHA at create time. The
+   merge sequence on May 13 surfaced three failure modes:
+   - **Squash-merge with `--delete-branch`** removes the branch tip, GitHub
+     loses the original SHA on remote → image URLs 404.
+   - **Rebase + force-push during conflict resolution** replaces the original
+     branch HEAD on remote → original SHA unreachable on remote.
+   - **Clean merge without rebase or branch delete** (PR #44) — branch
+     stays at original SHA → URLs keep working.
+
+   The fix codified in Step 10c: `git push origin <orig-sha>:refs/heads/<branch>-pinned`
+   restores the SHA on remote as a separate ref. Applied to PRs #42, #43,
+   #45, #47, #48 during the May-13 merge cycle.
+
+5. **Agent self-merge breaks the human serialization point.** The `flexWrap`
+   walker self-merged its PR (#46). The other six correctly stopped at
+   PR-open. Step 10b now explicitly forbids agent self-merge — parallel
+   walkers create overlapping edits to `manifest.json` / `flexbox.swift` /
+   tracker, and the human needs to control merge ordering to resolve
+   conflicts.
+
+6. **Sub-agents don't inherit parent's auto-approve permissions.** A focused
+   sub-agent spawned mid-merge-cycle to rebase Notion URLs hit
+   `Permission denied` on every `notion-update-page` call. Sub-agent
+   sandboxes are independent. Step 11 now flags this — do bulk Notion ops
+   in the parent context (or pre-authorize tools in
+   `.claude/settings.json`).
+
+7. **Notion `create-pages` can duplicate on retry.** The `order` DB ended
+   up with **40 pages where 20 were expected** because the walker retried
+   after what looked like a failed create. Step 11 now requires a
+   `notion-search` pass over the data source before bulk-creating, and
+   only adding missing Template names.
+
+8. **`rowGap` / `columnGap` are writing-mode-oriented, not flex-axis-oriented.**
+   Common misprediction. In `flexDirection: column`, `rowGap` becomes the
+   main-axis (vertical) spacing; `columnGap` is a no-op in a column flex
+   container with no wrap. Verified by the gap walker; documented in the
+   Spec-Allowlist gap row.
+
+**Tag distribution across the 7 walkers:** 0 `bug-in-impl`, 2 `bug-in-sample`
+(both auto-detected during the walker's own AI review and patched before
+PR-open), 0 `out-of-scope`, 0 `documented-limitation` — but **8 process-
+improvement findings** (this section + the changes referenced above).
