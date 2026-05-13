@@ -850,6 +850,12 @@ public struct JoyDOMView: View {
             leading:   style.leading,
             trailing:  style.trailing
         )
+        // CSS §9.9 stacking: hint SwiftUI's compositor so higher-zIndex
+        // siblings paint in front of lower-zIndex siblings. `.flexItem(...)`
+        // above stores zIndex on a LayoutValueKey for the engine's bookkeeping,
+        // but the compositor uses its own modifier — chain `.zIndex()` here so
+        // both layers agree.
+        .zIndex(Double(style.zIndex))
     }
 
     /// Approach A `box-sizing: border-box` deduction.
