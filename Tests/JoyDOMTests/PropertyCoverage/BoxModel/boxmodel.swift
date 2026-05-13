@@ -122,4 +122,30 @@ final class BoxModelSnapshotTests: XCTestCase {
             snapshotName: "responsive-wide"
         )
     }
+
+    // MARK: - borderColor
+
+    func testBorderColor() {
+        assertSnapshotsForSamples(in: "boxmodel/border-color")
+    }
+
+    /// `border-color/responsive.json` declares the NARROW canvas (red
+    /// border). The ≥768px breakpoint flips the border to blue. This
+    /// method captures the wide-viewport branch.
+    func testBorderColorResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "boxmodel-border-color-responsive"),
+            "border-color responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/boxmodel/border-color")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 900,
+            height: 140,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
