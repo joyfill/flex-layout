@@ -62,7 +62,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `padding` | ⬜ | 1/0/0/0 | — | — | — |
 | `margin` | ⬜ | 1/0/0/0 | — | — | PR #21 true flex margin needs visual proof |
 | `borderWidth` | ⬜ | 1/0/0/0 | — | — | — |
-| `borderColor` | ⬜ | 1/0/0/0 | — | — | — |
+| `borderColor` | ✅ | 4/3/2/3 | +18 baselines | 2026-05-14 | 16 samples + responsive-wide method; AI walk found zero impl bugs; hex sweep (red/green/blue/black) verified; default behavior documented; `same-as-background` proves border becomes invisible against same-color background; thin (1px) and thick borders render correctly; border + borderRadius combination produces curved border; recovered from a walker that hit an API error mid-Step 3 (samples + manifest were authored but uncommitted) |
 | `borderStyle` | ⬜ | 1/0/0/0 | — | — | Ext dashed/dotted/double have no render tests |
 | `borderRadius` | ⬜ | 1/0/0/0 | — | — | — |
 
