@@ -4134,11 +4134,172 @@
       "summary": "Custom fontFamily on a heading"
     },
     {
-      "id": "typography-font-size",
+      "id": "typography-font-size-overview",
       "file": "typography/font-size/overview.json",
       "category": "Typography",
       "property": "fontSize",
-      "summary": "Three sizes: caption, body, heading"
+      "summary": "Three sizes: caption (12px), body (16px), heading (32px)",
+      "snapshot": { "viewportWidth": 480, "height": 180 }
+    },
+    {
+      "id": "typography-font-size-px-8",
+      "file": "typography/font-size/px-8.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Value sweep: 8px text",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-size-px-12",
+      "file": "typography/font-size/px-12.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Value sweep: 12px text",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-size-px-14",
+      "file": "typography/font-size/px-14.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Value sweep: 14px text",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-size-px-16",
+      "file": "typography/font-size/px-16.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Value sweep: 16px text (CSS spec default)",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-size-px-18",
+      "file": "typography/font-size/px-18.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Value sweep: 18px text",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-size-px-24",
+      "file": "typography/font-size/px-24.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Value sweep: 24px text",
+      "snapshot": { "viewportWidth": 480, "height": 100 }
+    },
+    {
+      "id": "typography-font-size-px-36",
+      "file": "typography/font-size/px-36.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Value sweep: 36px heading",
+      "snapshot": { "viewportWidth": 480, "height": 120 }
+    },
+    {
+      "id": "typography-font-size-px-64",
+      "file": "typography/font-size/px-64.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Value sweep: 64px display",
+      "snapshot": { "viewportWidth": 480, "height": 160 }
+    },
+    {
+      "id": "typography-font-size-default",
+      "file": "typography/font-size/default.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "fontSize omitted — verifies CSS spec default (16px)",
+      "snapshot": { "viewportWidth": 480, "height": 80 }
+    },
+    {
+      "id": "typography-font-size-very-small",
+      "file": "typography/font-size/very-small.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Edge: 1px barely-legible",
+      "snapshot": { "viewportWidth": 480, "height": 60 }
+    },
+    {
+      "id": "typography-font-size-very-large",
+      "file": "typography/font-size/very-large.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Edge: 96px display-scale text",
+      "snapshot": { "viewportWidth": 480, "height": 200 }
+    },
+    {
+      "id": "typography-font-size-single-character",
+      "file": "typography/font-size/single-character.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Edge: single character at 48px",
+      "snapshot": { "viewportWidth": 200, "height": 120 }
+    },
+    {
+      "id": "typography-font-size-inline-style",
+      "file": "typography/font-size/inline-style.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Authoring: fontSize via node.props.style inline",
+      "snapshot": { "viewportWidth": 480, "height": 100 }
+    },
+    {
+      "id": "typography-font-size-class-selector",
+      "file": "typography/font-size/class-selector.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Authoring: fontSize via .class selector",
+      "snapshot": { "viewportWidth": 480, "height": 100 }
+    },
+    {
+      "id": "typography-font-size-with-line-height",
+      "file": "typography/font-size/with-line-height.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Interaction: 20px text × lineHeight 1.6",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "typography-font-size-with-font-weight",
+      "file": "typography/font-size/with-font-weight.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Interaction: 28px text × fontWeight 700",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
+    },
+    {
+      "id": "typography-font-size-with-font-family",
+      "file": "typography/font-size/with-font-family.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Interaction: 26px text × fontFamily Georgia",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
+    },
+    {
+      "id": "typography-font-size-with-color",
+      "file": "typography/font-size/with-color.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Interaction: 24px text × color #0066CC",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
+    },
+    {
+      "id": "typography-font-size-in-flex-container",
+      "file": "typography/font-size/in-flex-container.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Three paragraphs with different fontSize values laid out in a row flex container",
+      "snapshot": { "viewportWidth": 480, "height": 120 }
+    },
+    {
+      "id": "typography-font-size-responsive",
+      "file": "typography/font-size/responsive.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Breakpoint flip: 14px at narrow viewport, 32px when width >= 768px",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
     },
     {
       "id": "typography-font-weight",
