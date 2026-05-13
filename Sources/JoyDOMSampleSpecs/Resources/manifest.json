@@ -2324,11 +2324,148 @@
       "snapshot": { "viewportWidth": 360, "height": 200 }
     },
     {
-      "id": "layout-z-index",
+      "id": "layout-z-index-overview",
       "file": "layout/z-index/overview.json",
       "category": "Layout & Positioning",
       "property": "zIndex",
-      "summary": "Two absolutely-positioned siblings stacked by zIndex"
+      "summary": "Three overlapping absolutely-positioned tiles with mixed zIndex stacking (red:1, blue:2, green:3 — green on top)",
+      "snapshot": { "viewportWidth": 320, "height": 220 }
+    },
+    {
+      "id": "layout-z-index-zero",
+      "file": "layout/z-index/zero.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "Two overlapping positioned siblings both at zIndex 0 — later sibling (green) paints on top",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-z-index-positive",
+      "file": "layout/z-index/positive.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "Two overlapping positioned siblings: red z:1, green z:2 — green renders on top",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-z-index-negative",
+      "file": "layout/z-index/negative.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "Negative zIndex pushes element behind sibling: green z:-1 sits behind red z:0",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-z-index-mixed-signs",
+      "file": "layout/z-index/mixed-signs.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "Four overlapping tiles stacked by zIndex -1, 0, 1, 2 (red behind, amber on top)",
+      "snapshot": { "viewportWidth": 360, "height": 200 }
+    },
+    {
+      "id": "layout-z-index-large-values",
+      "file": "layout/z-index/large-values.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "Large zIndex values (10, 100, 1000) — only relative ordering matters; magnitude is irrelevant",
+      "snapshot": { "viewportWidth": 320, "height": 200 }
+    },
+    {
+      "id": "layout-z-index-default",
+      "file": "layout/z-index/default.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "Default (omitted) zIndex on overlapping positioned siblings — equivalent to 0/0, later sibling on top",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-z-index-empty",
+      "file": "layout/z-index/empty.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "Empty root with zIndex declared — verifies decode and no children to stack",
+      "snapshot": { "viewportWidth": 280, "height": 160 }
+    },
+    {
+      "id": "layout-z-index-single-child",
+      "file": "layout/z-index/single-child.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "Single positioned child with zIndex — nothing to stack against",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-z-index-no-position-no-effect",
+      "file": "layout/z-index/no-position-no-effect.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "Three in-flow flex items with zIndex declared but no position — per CSS spec, zIndex has no effect on non-positioned elements",
+      "snapshot": { "viewportWidth": 280, "height": 120 }
+    },
+    {
+      "id": "layout-z-index-inline",
+      "file": "layout/z-index/inline.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "Inline node.props.style authoring of zIndex on overlapping positioned siblings",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-z-index-class-selector",
+      "file": "layout/z-index/class-selector.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "zIndex applied via class selectors (.behind / .front) on positioned tiles",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-z-index-in-absolute-parent",
+      "file": "layout/z-index/in-absolute-parent.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "zIndex on tiles whose containing block is itself an absolutely-positioned parent",
+      "snapshot": { "viewportWidth": 320, "height": 220 }
+    },
+    {
+      "id": "layout-z-index-in-relative-parent",
+      "file": "layout/z-index/in-relative-parent.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "zIndex on tiles inside a relatively-positioned card (typical containing block setup)",
+      "snapshot": { "viewportWidth": 320, "height": 200 }
+    },
+    {
+      "id": "layout-z-index-with-overflow-hidden",
+      "file": "layout/z-index/with-overflow-hidden.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "High zIndex tile (z:999) still clips at parent's overflow:hidden boundary — zIndex doesn't escape clipping",
+      "snapshot": { "viewportWidth": 280, "height": 180 }
+    },
+    {
+      "id": "layout-z-index-with-opacity",
+      "file": "layout/z-index/with-opacity.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "Top tile (z:2) with opacity 0.6 — red below shows through green",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-z-index-same-zindex-source-order",
+      "file": "layout/z-index/same-zindex-source-order.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "Three tiles all at zIndex:1 — equal zIndex falls back to source order (blue paints last on top)",
+      "snapshot": { "viewportWidth": 320, "height": 200 }
+    },
+    {
+      "id": "layout-z-index-responsive",
+      "file": "layout/z-index/responsive.json",
+      "category": "Layout & Positioning",
+      "property": "zIndex",
+      "summary": "Responsive zIndex flip: narrow green z:1 (on top), wide (>=768px) green z:-1 (behind)",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
     },
     {
       "id": "layout-overflow",

@@ -5,33 +5,33 @@
       "display": "flex",
       "position": "relative",
       "width":   { "value": 280, "unit": "px" },
-      "height":  { "value": 180, "unit": "px" },
+      "height":  { "value": 160, "unit": "px" },
       "padding": { "value": 16,  "unit": "px" },
       "backgroundColor": "#F3F4F6"
     },
     ".tile": {
       "position": "absolute",
-      "width":  { "value": 130, "unit": "px" },
-      "height": { "value": 130, "unit": "px" },
+      "width":  { "value": 110, "unit": "px" },
+      "height": { "value": 110, "unit": "px" },
       "borderRadius": { "value": 4, "unit": "px" }
     },
     "#a": {
       "top":  { "value": 16, "unit": "px" },
       "left": { "value": 16, "unit": "px" },
       "backgroundColor": "#EF4444",
-      "zIndex": 1
+      "zIndex": 10
     },
     "#b": {
-      "top":  { "value": 22, "unit": "px" },
+      "top":  { "value": 24, "unit": "px" },
       "left": { "value": 70, "unit": "px" },
       "backgroundColor": "#10B981",
-      "zIndex": 3
+      "zIndex": 100
     },
     "#c": {
-      "top":  { "value": 28, "unit": "px" },
+      "top":  { "value": 32, "unit": "px" },
       "left": { "value": 130, "unit": "px" },
       "backgroundColor": "#3B82F6",
-      "zIndex": 2
+      "zIndex": 1000
     }
   },
   "breakpoints": [],
