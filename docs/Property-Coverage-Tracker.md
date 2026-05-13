@@ -80,7 +80,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `fontFamily` | ⬜ | 1/0/0/0 | — | — | — |
 | `fontSize` | ⬜ | 1/0/0/0 | — | — | — |
 | `fontWeight` | ⬜ | 1/0/0/0 | — | — | CSS Fonts L4 band mapping |
-| `fontStyle` | ⬜ | 1/0/0/0 | — | — | — |
+| `fontStyle` | ✅ | 4/3/3/3 | +14 | 2026-05-14 | Zero impl bugs. SwiftUI `.italic()` correctly applied; cascades into nested `<span>`; bold-italic and family×italic combinations all distinct. |
 | `color` | ⬜ | 1/0/0/0 | — | — | — |
 | `textDecoration` | ⬜ | 1/0/0/0 | — | — | Env cascade to Text descendants |
 | `textAlign` | ⬜ | 1/0/0/0 | — | — | — |
