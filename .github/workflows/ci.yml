@@ -44,7 +44,7 @@ jobs:
       # to re-record on the CI runner — that produces a snapshot
       # diff PR for visual review.
       - name: Test
-        run: swift test --parallel --skip FlexboxSnapshotTests --skip JoyDOMSnapshotBaselineTests
+        run: swift test --parallel --skip FlexboxSnapshotTests --skip JoyDOMSnapshotBaselineTests --skip SizingSnapshotTests --skip BoxModelSnapshotTests --skip LayoutSnapshotTests
 
       - name: Build release
         run: swift build -c release --target FlexLayout
