@@ -50,7 +50,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `boxSizing` | ✅ | 2/3/2/3 | +18 baselines | 2026-05-13 | 18 samples (overview rewritten as side-by-side comparison) + responsive-wide method; AI walk found zero impl bugs, 1 sample-design fix (`equal-outer-size` originally only equalized width, patched to also equalize height); visual proof for PR #25 — `border-box` deducts `borderWidth*2 + paddingMain*2` from FlexLayout-supplied size, while `content-box` (default when omitted) leaves outer = declared + padding + border; `equal-outer-size` proves border-box width=120 and content-box width=80 (+ padding 16 + border 4) both yield identical 120×120 outer; `width-padding-border` is the canonical numerical proof; nested.json shows deduction applies independently at every nesting level; responsive breakpoint flip (content-box ↔ border-box at width>=768px) confirmed |
 | `zIndex` | ⬜ | 1/0/0/0 | — | — | — |
 | `overflow` | ⬜ | 1/0/0/0 | — | — | — |
-| `top`/`left`/`bottom`/`right` | ⬜ | 1/0/0/0 | — | — | Combined as `insets` |
+| `top`/`left`/`bottom`/`right` | ⚠️ | 4/3/3/4 | +21 baselines | 2026-05-13 | 21 samples + responsive-wide method; ONE tracker row covers 4 CSS properties (top, left, bottom, right) all exercised under `layout/insets/`; AI walk found zero impl bugs but 1 `documented-limitation`: JoyDOM-swift applies insets only when `position: absolute` (relative + top/left is no-op — see `position-relative-shifts.json`). CSS invariants verified: absolute child anchors to nearest positioned ancestor (relative or absolute); falls through to root when no positioned ancestor exists; over-constrained `all-four` stretches a width-less/height-less child to fill the inset rectangle; negative insets escape the parent box; overflow:hidden parent clips off-canvas portion |
 
 ## 3. Box Model & Visuals (8 properties)
 
@@ -157,7 +157,6 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 
 ## Documented limitations
 
-(Empty — populated as the walk progresses.)
-
 | Property | Limitation | Why deferred | Tracking |
 |---|---|---|---|
+| `top`/`left`/`bottom`/`right` on `position: relative` | Insets are only applied to absolutely-positioned items; on `position: relative` they are a no-op (CSS spec says the element shifts from its in-flow position by the inset amount without affecting siblings). | FlexEngine consumes the insets fields only for the absolute-positioning pass (see `FlexEngine.swift` `103` "only meaningful when `position == .absolute`"). Relative-shift would need a separate translate at layout time. | `layout/insets/position-relative-shifts.json` is the regression seam |
