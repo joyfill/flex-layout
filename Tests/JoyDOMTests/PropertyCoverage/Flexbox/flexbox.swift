@@ -53,6 +53,19 @@ final class FlexboxSnapshotTests: XCTestCase {
         assertSnapshotsForSamples(in: "flexbox/align-items")
     }
 
+    /// iOS-only extensions of `alignItems` (`baseline`).
+    ///
+    /// `baseline` is NOT in the JoyDOM CSS spec (which restricts
+    /// `alignItems` to `'flex-start' | 'flex-end' | 'center' | 'stretch'`),
+    /// but the underlying FlexLayout primitive supports it. Kept in a
+    /// sibling folder so the iOS code path stays regression-tested without
+    /// polluting the cross-platform sample set — JS/Kotlin runtimes won't
+    /// implement these and shouldn't compare against the corresponding
+    /// baselines.
+    func testAlignItemsIosExt() {
+        assertSnapshotsForSamples(in: "flexbox/align-items-ios-ext")
+    }
+
     func testAlignSelf() {
         assertSnapshotsForSamples(in: "flexbox/align-self")
     }
@@ -124,6 +137,28 @@ final class FlexboxSnapshotTests: XCTestCase {
     /// breakpoint flips `.box` to `flexShrink: 0`, letting items keep
     /// their natural 120px width with free space at the end. This method
     /// captures the wide-viewport branch.
+    /// `align-items/responsive.json` declares the NARROW canvas
+    /// (alignItems: flex-start, boxes pinned to the top). The ≥768px
+    /// breakpoint flips the root to `alignItems: flex-end`, dropping the
+    /// boxes to the bottom of the 140px-tall container. This method
+    /// captures the wide-viewport branch.
+    func testAlignItemsResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "flexbox-align-items-responsive"),
+            "align-items responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/flexbox/align-items")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 900,
+            height: 140,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
+
     func testFlexShrinkResponsiveWide() throws {
         let sample = try XCTUnwrap(
             SpecPropertySamples.sample(withID: "flexbox-flex-shrink-responsive"),
