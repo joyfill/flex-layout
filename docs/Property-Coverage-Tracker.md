@@ -59,7 +59,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 |---|---|---|---|---|---|
 | `backgroundColor` | ⬜ | 1/0/0/0 | — | — | — |
 | `opacity` | ⬜ | 1/0/0/0 | — | — | — |
-| `padding` | ⬜ | 1/0/0/0 | — | — | — |
+| `padding` | ✅ | 4/3/2/6 | +23 baselines | 2026-05-14 | 23 samples (overview rewritten as side-by-side uniform vs per-side showcase) + responsive-wide; AI walk found zero impl bugs, zero sample-design issues — 25/25 ✅ match on first record. Coverage: uniform `Length` sweep (0/4/16/32), per-side object form (top/right/bottom/left-only + vertical-horizontal + all-different), defaults (verifies 0), edges (empty, single-child, large-padding-narrow-container which correctly collapses content area to 0 inside a 100×200 border-box with 60px padding each side), authoring parity (inline vs class-selector byte-equivalent), boxSizing interaction (with-content-box: declared 100×60 + padding 16 → outer 132×92; with-border-box: declared 132×92 + padding 16 → same outer 132×92 with content 100×60 — verifies border-box deduction), visual layering (with-background-color paints bg under padding; with-border puts padding inside the 4px border edge; with-flex-children shrinks main-axis grow distribution by 2×20=40px), nested.json (parity vs flex-shrink + box-sizing walks), responsive 8 → 32 breakpoint flip at width≥768px |
 | `margin` | ⬜ | 1/0/0/0 | — | — | PR #21 true flex margin needs visual proof |
 | `borderWidth` | ⬜ | 1/0/0/0 | — | — | — |
 | `borderColor` | ⬜ | 1/0/0/0 | — | — | — |
