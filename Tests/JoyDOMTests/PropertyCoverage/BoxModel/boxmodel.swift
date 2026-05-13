@@ -20,4 +20,31 @@ import JoyDOMSampleSpecs
 final class BoxModelSnapshotTests: XCTestCase {
     // Walkers append their test methods below as each Box Model &
     // Visuals property's coverage walk lands.
+
+    func testBorderWidth() {
+        assertSnapshotsForSamples(in: "boxmodel/border-width")
+    }
+
+    /// Wide-viewport companion to `boxmodel/border-width/responsive.json`.
+    ///
+    /// The manifest entry pins the narrow viewport (`320x140`) which renders
+    /// the 1px border. This method re-renders the same JSON at the wide
+    /// viewport (`800x140`) so the `width>=768px` breakpoint flips borderWidth
+    /// to 10px.
+    func testBorderWidthResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "boxmodel-border-width-responsive"),
+            "responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/boxmodel/border-width")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 800,
+            height: 140,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
