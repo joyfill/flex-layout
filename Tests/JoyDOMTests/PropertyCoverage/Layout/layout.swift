@@ -22,4 +22,32 @@ import JoyDOMSampleSpecs
 final class LayoutSnapshotTests: XCTestCase {
     // Walkers append their test methods below as each Layout & Positioning
     // property's coverage walk lands.
+
+    func testBoxSizing() {
+        assertSnapshotsForSamples(in: "layout/box-sizing")
+    }
+
+    /// Wide-viewport companion to `layout/box-sizing/responsive.json`.
+    ///
+    /// The manifest entry pins the narrow viewport (`360x200`) which renders
+    /// the default content-box mode. This method re-renders the same JSON at
+    /// the wide viewport (`820x200`) so the `width>=768px` breakpoint flips
+    /// `boxSizing` to `border-box` — the same outer width 120 now includes
+    /// padding+border inside.
+    func testBoxSizingResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "layout-box-sizing-responsive"),
+            "responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/layout/box-sizing")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 820,
+            height: 200,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
