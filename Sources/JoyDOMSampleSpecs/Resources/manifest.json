@@ -2816,11 +2816,140 @@
       "summary": "Uniform Length and per-side margin (on flex item)"
     },
     {
-      "id": "boxmodel-border-width",
+      "id": "boxmodel-border-width-overview",
       "file": "boxmodel/border-width/overview.json",
       "category": "Box Model & Visuals",
       "property": "borderWidth",
-      "summary": "Thin and thick solid borders for visual comparison"
+      "summary": "Showcase: four 60x60 boxes with borderWidth 0 / 1 / 4 / 12 in red/green/blue/amber",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-width-zero",
+      "file": "boxmodel/border-width/zero.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "Value sweep: borderWidth 0px on three boxes — no visible border even though color+style are set",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-width-thin",
+      "file": "boxmodel/border-width/thin.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "Value sweep: borderWidth 1px on three solid-black-bordered colored boxes",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-width-medium",
+      "file": "boxmodel/border-width/medium.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "Value sweep: borderWidth 4px on three solid-black-bordered colored boxes",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-width-thick",
+      "file": "boxmodel/border-width/thick.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "Value sweep: borderWidth 12px on three boxes — under content-box, outer widens to 84px each",
+      "snapshot": { "viewportWidth": 360, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-width-default",
+      "file": "boxmodel/border-width/default.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "CSS-default behavior: borderWidth omitted entirely → 0 → no visible border (verifies absence-of-property fallback)",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-width-empty",
+      "file": "boxmodel/border-width/empty.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "Edge: empty bordered container (no children) — verifies border paints around an empty box",
+      "snapshot": { "viewportWidth": 240, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-width-single-child",
+      "file": "boxmodel/border-width/single-child.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "Edge: single child with 6px solid border — verifies border rendering on a lone flex item",
+      "snapshot": { "viewportWidth": 240, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-width-no-color-no-render",
+      "file": "boxmodel/border-width/no-color-no-render.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "Edge: borderWidth 8px with NO borderColor set — documents actual rendering when color is omitted",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-width-inline",
+      "file": "boxmodel/border-width/inline.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "Authoring: inline borderWidth via node.props.style — three boxes at 2/6/10px",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-width-class-selector",
+      "file": "boxmodel/border-width/class-selector.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "Authoring: borderWidth via .thin (1px) / .thick (8px) class selectors, alternating across three boxes",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-width-with-content-box",
+      "file": "boxmodel/border-width/with-content-box.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "Context: content-box (CSS default) — width 120 + 8px border ⇒ outer 136 (border adds to outer)",
+      "snapshot": { "viewportWidth": 200, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-width-with-border-box",
+      "file": "boxmodel/border-width/with-border-box.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "Context: border-box — outer width 120 includes the 8px border ⇒ content area is 104×64 (border deducted)",
+      "snapshot": { "viewportWidth": 200, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-width-with-border-radius",
+      "file": "boxmodel/border-width/with-border-radius.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "Interaction: 6px border with radii 4/20/40 — border curves at corners (last is fully pill-shaped)",
+      "snapshot": { "viewportWidth": 360, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-width-with-background-color",
+      "file": "boxmodel/border-width/with-background-color.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "Interaction: 8px border + radius 8 + backgroundColor — fill paints inside the border, not under it",
+      "snapshot": { "viewportWidth": 360, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-width-with-flex-grow",
+      "file": "boxmodel/border-width/with-flex-grow.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "Interaction: flexGrow:1 with 6px border on each item — border eats into grown inner content area",
+      "snapshot": { "viewportWidth": 440, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-width-responsive",
+      "file": "boxmodel/border-width/responsive.json",
+      "category": "Box Model & Visuals",
+      "property": "borderWidth",
+      "summary": "Responsive: 1px below 768; flips to 10px at width>=768 (paired with responsive-wide test method)",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
     },
     {
       "id": "boxmodel-border-color",
