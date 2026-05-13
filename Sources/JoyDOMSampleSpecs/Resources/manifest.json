@@ -904,6 +904,17 @@
       }
     },
     {
+      "id": "flexbox-justify-content-nested",
+      "file": "flexbox/justify-content/nested.json",
+      "category": "Flexbox",
+      "property": "justifyContent",
+      "summary": "edge: nested flex containers — outer uses flex-end, inner uses space-between (independent main-axis distribution)",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 100
+      }
+    },
+    {
       "id": "flexbox-justify-content-responsive",
       "file": "flexbox/justify-content/responsive.json",
       "category": "Flexbox",
