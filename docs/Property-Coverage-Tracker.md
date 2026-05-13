@@ -85,7 +85,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `textDecoration` | ⬜ | 1/0/0/0 | — | — | Env cascade to Text descendants |
 | `textAlign` | ⬜ | 1/0/0/0 | — | — | — |
 | `textTransform` | ⬜ | 1/0/0/0 | — | — | — |
-| `lineHeight` | ⬜ | 1/0/0/0 | — | — | ⚠️ system-leading subtraction caveat |
+| `lineHeight` | ✅ | 6/4/2/7 | +21 | 2026-05-14 | system-leading subtraction confirmed correct (UIKit `UIFont.lineHeight` / AppKit ascender-descender-leading); `lineHeight 1.0` and ``< 1.0`` clamp lineSpacing to 0; verified via `system-leading-verify.json` (visible gap ratios match `1.5 → ~6px` / `2.0 → ~16px` at fontSize 20). Zero impl bugs. |
 | `letterSpacing` | ⬜ | 1/0/0/0 | — | — | ⚠️ em scaling caveat |
 
 ## 6. Text Behavior (2 properties)
