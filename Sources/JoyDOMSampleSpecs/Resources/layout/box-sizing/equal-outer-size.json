@@ -10,7 +10,6 @@
     },
     ".card": {
       "display": "flex",
-      "width":  { "value": 120, "unit": "px" },
       "height": { "value": 120, "unit": "px" },
       "padding": { "value": 16, "unit": "px" },
       "borderWidth": { "value": 4, "unit": "px" },
@@ -20,17 +19,12 @@
     },
     "#border-box": {
       "boxSizing": "border-box",
+      "width":  { "value": 120, "unit": "px" },
       "backgroundColor": "#EF4444"
     },
     "#content-box": {
+      "width":  { "value": 80, "unit": "px" },
       "backgroundColor": "#10B981"
-    },
-    ".inner": {
-      "display": "flex",
-      "width":  { "value": 40, "unit": "px" },
-      "height": { "value": 40, "unit": "px" },
-      "backgroundColor": "#FBBF24",
-      "borderRadius": { "value": 2, "unit": "px" }
     }
   },
   "breakpoints": [],
@@ -38,16 +32,8 @@
     "type": "div",
     "props": { "id": "root" },
     "children": [
-      {
-        "type": "div",
-        "props": { "id": "border-box", "className": ["card"] },
-        "children": [{ "type": "div", "props": { "id": "inner-b", "className": ["inner"] } }]
-      },
-      {
-        "type": "div",
-        "props": { "id": "content-box", "className": ["card"] },
-        "children": [{ "type": "div", "props": { "id": "inner-c", "className": ["inner"] } }]
-      }
+      { "type": "div", "props": { "id": "border-box", "className": ["card"] } },
+      { "type": "div", "props": { "id": "content-box", "className": ["card"] } }
     ]
   }
 }

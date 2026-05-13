@@ -10,12 +10,9 @@
     },
     ".card": {
       "display": "flex",
-      "width":  { "value": 120, "unit": "px" },
-      "height": { "value": 120, "unit": "px" },
+      "width":  { "value": 100, "unit": "px" },
+      "height": { "value": 100, "unit": "px" },
       "padding": { "value": 16, "unit": "px" },
-      "borderWidth": { "value": 4, "unit": "px" },
-      "borderColor": "#111827",
-      "borderStyle": "solid",
       "borderRadius": { "value": 4, "unit": "px" }
     },
     "#border-box": {
@@ -29,8 +26,7 @@
       "display": "flex",
       "width":  { "value": 40, "unit": "px" },
       "height": { "value": 40, "unit": "px" },
-      "backgroundColor": "#FBBF24",
-      "borderRadius": { "value": 2, "unit": "px" }
+      "backgroundColor": "#FBBF24"
     }
   },
   "breakpoints": [],
