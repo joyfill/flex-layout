@@ -45,7 +45,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 
 | Property | Status | Samples | Tests delta | Date | Notes |
 |---|---|---|---|---|---|
-| `position` | ⬜ | 1/0/0/0 | — | — | — |
+| `position` | ✅ | 2/3/2/4 | +19 baselines | 2026-05-13 | 16 spec samples + 2 iOS-ext (`fixed`, `sticky` fall back to absolute with diagnostic) + responsive-wide method; AI walk found zero impl bugs; verified `absolute` removes the item from flex flow (siblings collapse the gap), insets anchor to the closest positioned ancestor (root viewport if none), nested positioned ancestor correctly takes precedence over root, `overflow:hidden` clips absolute children that extend past parent's border-box, `zIndex` orders absolute siblings, CSS default `relative` confirmed via default.json matching relative.json |
 | `display` | ⬜ | 1/0/0/0 | — | — | — |
 | `boxSizing` | ⬜ | 1/0/0/0 | — | — | PR #25 deduction needs visual sample |
 | `zIndex` | ⬜ | 1/0/0/0 | — | — | — |
