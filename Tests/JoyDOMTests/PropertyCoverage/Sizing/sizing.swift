@@ -74,4 +74,33 @@ final class SizingSnapshotTests: XCTestCase {
             snapshotName: "responsive-wide"
         )
     }
+
+    // MARK: - height
+
+    func testHeight() {
+        assertSnapshotsForSamples(in: "sizing/height")
+    }
+
+    /// Wide-viewport companion to `sizing/height/responsive.json`.
+    ///
+    /// Manifest entry pins the narrow viewport (360x140) where the breakpoint
+    /// does NOT match so each `.box` is height 80. This method re-renders the
+    /// same JSON at the wide viewport (820x260) so the `width>=768px`
+    /// breakpoint flips `.box` height to 200.
+    func testHeightResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "sizing-height-responsive"),
+            "responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/sizing/height")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 820,
+            height: 260,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }

@@ -4377,7 +4377,160 @@
       "file": "sizing/height/overview.json",
       "category": "Sizing",
       "property": "height",
-      "summary": "Fixed-px and percentage heights inside a height-bound parent"
+      "summary": "Showcase: four boxes (40/80/160/240px) demonstrating height sweep across the cross-axis of a row container",
+      "snapshot": { "viewportWidth": 400, "height": 280 }
+    },
+    {
+      "id": "sizing-height-zero-or-small-px",
+      "file": "sizing/height/zero-or-small-px.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "Very small height (8px) renders as a thin colored strip",
+      "snapshot": { "viewportWidth": 320, "height": 80 }
+    },
+    {
+      "id": "sizing-height-small-px",
+      "file": "sizing/height/small-px.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "Standard 60px box height in a row",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "sizing-height-medium-px",
+      "file": "sizing/height/medium-px.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "Medium 160px height in a row of three boxes",
+      "snapshot": { "viewportWidth": 320, "height": 220 }
+    },
+    {
+      "id": "sizing-height-large-px",
+      "file": "sizing/height/large-px.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "Large 300px height fills most of the snapshot viewport",
+      "snapshot": { "viewportWidth": 320, "height": 360 }
+    },
+    {
+      "id": "sizing-height-percent-50",
+      "file": "sizing/height/percent-50.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "height: 50% resolves against parent's fixed 240px height -> 120px boxes",
+      "snapshot": { "viewportWidth": 320, "height": 280 }
+    },
+    {
+      "id": "sizing-height-percent-100",
+      "file": "sizing/height/percent-100.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "height: 100% fills parent's full inner content-box height (parent 240, padding 16 -> children 208 inner)",
+      "snapshot": { "viewportWidth": 320, "height": 280 }
+    },
+{
+      "id": "sizing-height-default",
+      "file": "sizing/height/default.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "height omitted -> CSS default 'auto' kicks in; cards size to their content (40/80/40)",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "sizing-height-empty",
+      "file": "sizing/height/empty.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "Single empty 120x120 box (no children) honors its declared px height",
+      "snapshot": { "viewportWidth": 240, "height": 180 }
+    },
+    {
+      "id": "sizing-height-single-child",
+      "file": "sizing/height/single-child.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "Single 120x180 box demonstrates height in isolation",
+      "snapshot": { "viewportWidth": 240, "height": 240 }
+    },
+    {
+      "id": "sizing-height-percent-of-unsized-parent",
+      "file": "sizing/height/percent-of-unsized-parent.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "CSS quirk: percent height with no parent height collapses to 0 — green box (50%) effectively disappears between red (120px) and blue (80px)",
+      "snapshot": { "viewportWidth": 320, "height": 180 }
+    },
+    {
+      "id": "sizing-height-inline",
+      "file": "sizing/height/inline.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "height authored via inline node.props.style (no class selectors)",
+      "snapshot": { "viewportWidth": 320, "height": 240 }
+    },
+    {
+      "id": "sizing-height-class-selector",
+      "file": "sizing/height/class-selector.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "height authored via .tall class selector shared across three boxes",
+      "snapshot": { "viewportWidth": 320, "height": 240 }
+    },
+    {
+      "id": "sizing-height-in-flex-column",
+      "file": "sizing/height/in-flex-column.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "Column-direction container: height is the main-axis size and items stack vertically (40 + 80 + 120 + gaps)",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "sizing-height-in-fixed-height-container",
+      "file": "sizing/height/in-fixed-height-container.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "Fixed-height (200px) row container: percent (75%) and px heights coexist; percent resolves against parent inner height",
+      "snapshot": { "viewportWidth": 320, "height": 240 }
+    },
+    {
+      "id": "sizing-height-with-flex-basis",
+      "file": "sizing/height/with-flex-basis.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "Column mode: flexBasis 100px on red overrides its height 60 for main-axis sizing; green/blue keep height 60",
+      "snapshot": { "viewportWidth": 240, "height": 360 }
+    },
+    {
+      "id": "sizing-height-with-flex-grow",
+      "file": "sizing/height/with-flex-grow.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "Column mode in 320px-tall container: green grows to absorb remaining main-axis space beyond its base 60px height",
+      "snapshot": { "viewportWidth": 240, "height": 360 }
+    },
+    {
+      "id": "sizing-height-with-min-height",
+      "file": "sizing/height/with-min-height.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "minHeight 100 clamps red's declared 30px height upward to 100",
+      "snapshot": { "viewportWidth": 320, "height": 180 }
+    },
+    {
+      "id": "sizing-height-with-max-height",
+      "file": "sizing/height/with-max-height.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "maxHeight 120 clamps red's declared 240px height downward to 120",
+      "snapshot": { "viewportWidth": 320, "height": 220 }
+    },
+    {
+      "id": "sizing-height-responsive",
+      "file": "sizing/height/responsive.json",
+      "category": "Sizing",
+      "property": "height",
+      "summary": "Narrow viewport: height 80; >=768px breakpoint flips boxes to height 200 (companion responsive-wide method covers the wide variant)",
+      "snapshot": { "viewportWidth": 360, "height": 140 }
     },
     {
       "id": "sizing-min-max-overview",
