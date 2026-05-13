@@ -2789,56 +2789,56 @@
     },
     {
       "id": "boxmodel-background-color",
-      "file": "boxmodel/background-color.json",
+      "file": "boxmodel/background-color/overview.json",
       "category": "Box Model & Visuals",
       "property": "backgroundColor",
       "summary": "Hex backgroundColor on a sized card"
     },
     {
       "id": "boxmodel-opacity",
-      "file": "boxmodel/opacity.json",
+      "file": "boxmodel/opacity/overview.json",
       "category": "Box Model & Visuals",
       "property": "opacity",
       "summary": "Three siblings at opacity 1, 0.5, and 0"
     },
     {
       "id": "boxmodel-padding",
-      "file": "boxmodel/padding.json",
+      "file": "boxmodel/padding/overview.json",
       "category": "Box Model & Visuals",
       "property": "padding",
       "summary": "Uniform Length and per-side {top,right,bottom,left} padding"
     },
     {
       "id": "boxmodel-margin",
-      "file": "boxmodel/margin.json",
+      "file": "boxmodel/margin/overview.json",
       "category": "Box Model & Visuals",
       "property": "margin",
       "summary": "Uniform Length and per-side margin (on flex item)"
     },
     {
       "id": "boxmodel-border-width",
-      "file": "boxmodel/border-width.json",
+      "file": "boxmodel/border-width/overview.json",
       "category": "Box Model & Visuals",
       "property": "borderWidth",
       "summary": "Thin and thick solid borders for visual comparison"
     },
     {
       "id": "boxmodel-border-color",
-      "file": "boxmodel/border-color.json",
+      "file": "boxmodel/border-color/overview.json",
       "category": "Box Model & Visuals",
       "property": "borderColor",
       "summary": "Two hex border colors on identical frames"
     },
     {
       "id": "boxmodel-border-style",
-      "file": "boxmodel/border-style.json",
+      "file": "boxmodel/border-style/overview.json",
       "category": "Box Model & Visuals",
       "property": "borderStyle",
       "summary": "All five styles: solid, none, dashed, dotted, double"
     },
     {
       "id": "boxmodel-border-radius",
-      "file": "boxmodel/border-radius.json",
+      "file": "boxmodel/border-radius/overview.json",
       "category": "Box Model & Visuals",
       "property": "borderRadius",
       "summary": "Pill (uniform) and per-corner radii"
@@ -2915,21 +2915,21 @@
     },
     {
       "id": "sizing-width",
-      "file": "sizing/width.json",
+      "file": "sizing/width/overview.json",
       "category": "Sizing",
       "property": "width",
       "summary": "Fixed-px and percentage widths"
     },
     {
       "id": "sizing-height",
-      "file": "sizing/height.json",
+      "file": "sizing/height/overview.json",
       "category": "Sizing",
       "property": "height",
       "summary": "Fixed-px and percentage heights inside a height-bound parent"
     },
     {
       "id": "sizing-min-max",
-      "file": "sizing/min-max.json",
+      "file": "sizing/min-max/overview.json",
       "category": "Sizing",
       "property": "minWidth/maxWidth/minHeight/maxHeight",
       "summary": "All four min/max constraints clamping a percentage-sized box"
