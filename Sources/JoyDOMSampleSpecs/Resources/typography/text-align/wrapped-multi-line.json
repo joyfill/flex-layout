@@ -14,9 +14,9 @@
     "type": "div",
     "props": { "id": "root" },
     "children": [
-      { "type": "p", "props": { "id": "left"   }, "children": ["Left aligned: the quick brown fox jumps over the lazy dog."]   },
-      { "type": "p", "props": { "id": "center" }, "children": ["Center aligned: the quick brown fox jumps over the lazy dog."] },
-      { "type": "p", "props": { "id": "right"  }, "children": ["Right aligned: the quick brown fox jumps over the lazy dog."]  }
+      { "type": "p", "props": { "id": "left"   }, "children": ["The quick brown fox jumps over the lazy dog. Multi-line text that wraps so alignment is visible."] },
+      { "type": "p", "props": { "id": "center" }, "children": ["The quick brown fox jumps over the lazy dog. Multi-line text that wraps so alignment is visible."] },
+      { "type": "p", "props": { "id": "right"  }, "children": ["The quick brown fox jumps over the lazy dog. Multi-line text that wraps so alignment is visible."] }
     ]
   }
 }

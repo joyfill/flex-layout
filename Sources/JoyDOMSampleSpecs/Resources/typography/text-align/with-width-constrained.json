@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "padding": { "value": 16, "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    },
+    "#narrow": {
+      "width": { "value": 200, "unit": "px" },
+      "backgroundColor": "#E5E7EB",
+      "padding": { "value": 8, "unit": "px" }
+    },
+    "#p": {
+      "textAlign": "right",
+      "fontSize": { "value": 16, "unit": "px" },
+      "color": "#111827"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      {
+        "type": "div",
+        "props": { "id": "narrow" },
+        "children": [
+          { "type": "p", "props": { "id": "p" }, "children": ["A narrow 200px container forces this longer text to wrap onto multiple lines; each line is right-aligned within its content box."] }
+        ]
+      }
+    ]
+  }
+}
