@@ -3409,7 +3409,176 @@
       "file": "sizing/width/overview.json",
       "category": "Sizing",
       "property": "width",
-      "summary": "Fixed-px and percentage widths"
+      "summary": "showcase: mixed px + percentage widths in a fixed-width row container",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-zero",
+      "file": "sizing/width/zero.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "value sweep: width 0px collapses the box to zero main-axis size",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-small-px",
+      "file": "sizing/width/small-px.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "value sweep: width 60px on each child via shared class",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-medium-px",
+      "file": "sizing/width/medium-px.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "value sweep: width 160px on two children",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-large-px",
+      "file": "sizing/width/large-px.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "value sweep: width 300px on a single child inside a 400px container",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-percent-50",
+      "file": "sizing/width/percent-50.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "value sweep: width 50% resolves against the 368px inner content area",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-percent-100",
+      "file": "sizing/width/percent-100.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "special value: width 100% fills the parent's inner content area (column flex)",
+      "snapshot": { "viewportWidth": 400, "height": 180 }
+    },
+    {
+      "id": "sizing-width-auto",
+      "file": "sizing/width/auto.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "special value: width omitted (CSS-default auto) — flexBasis 80px supplies the main-axis size",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-default",
+      "file": "sizing/width/default.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "default: width omitted entirely — empty divs collapse to zero intrinsic content width",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-empty",
+      "file": "sizing/width/empty.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "edge: empty container with width 400px paints only the gray background",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-single-child",
+      "file": "sizing/width/single-child.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "edge: a single 200px child inside a 400px container leaves trailing free space",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-larger-than-container",
+      "file": "sizing/width/width-larger-than-container.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "edge: two 200px children inside a 240px container with flexShrink:0 — overflow past container width",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-inline",
+      "file": "sizing/width/inline.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "authoring: width declared inline on each node's props.style",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-class-selector",
+      "file": "sizing/width/class-selector.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "authoring: width applied via shared .box class selector",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-in-flex-row",
+      "file": "sizing/width/in-flex-row.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "context: mixed px and % widths inside a flex row — percent resolves against parent content area",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-in-fixed-container",
+      "file": "sizing/width/in-fixed-container.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "context: 50% width inside a nested 240px container resolves against that container's inner area",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-with-flex-basis",
+      "file": "sizing/width/with-flex-basis.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "interaction: width 80px loses to flexBasis 160px — basis is the main-axis hypothetical size",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-with-flex-grow",
+      "file": "sizing/width/with-flex-grow.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "interaction: width 60px + flexGrow 1 — items expand beyond declared width to consume free space",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-with-min-width",
+      "file": "sizing/width/with-min-width.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "interaction: width 40px clamped up by minWidth 100px — min wins over declared width",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-with-max-width",
+      "file": "sizing/width/with-max-width.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "interaction: width 200px clamped down by maxWidth 80px — max wins over declared width",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-nested",
+      "file": "sizing/width/nested.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "edge: nested flex container — outer 75% of root inner, inner children 48% of outer inner area",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-width-responsive",
+      "file": "sizing/width/responsive.json",
+      "category": "Sizing",
+      "property": "width",
+      "summary": "responsive: width 200px at narrow viewport; width 100% at >=768px (paired with testWidthResponsiveWide)",
+      "snapshot": { "viewportWidth": 360, "height": 180 }
     },
     {
       "id": "sizing-height",

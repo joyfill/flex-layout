@@ -14,9 +14,9 @@
       "borderRadius": { "value": 4, "unit": "px" },
       "flexShrink": 0
     },
-    "#a": { "backgroundColor": "#EF4444", "width": { "value": 60,  "unit": "px" } },
-    "#b": { "backgroundColor": "#10B981", "width": { "value": 120, "unit": "px" } },
-    "#c": { "backgroundColor": "#3B82F6", "width": { "value": 25,  "unit": "%"  } }
+    "#a": { "backgroundColor": "#EF4444", "width": { "value": 0,   "unit": "px" } },
+    "#b": { "backgroundColor": "#10B981", "width": { "value": 60,  "unit": "px" } },
+    "#c": { "backgroundColor": "#3B82F6", "width": { "value": 120, "unit": "px" } }
   },
   "breakpoints": [],
   "layout": {
