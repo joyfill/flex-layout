@@ -38,7 +38,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `alignItems` | ⬜ | 1/0/0/0 | — | — | — |
 | `alignSelf` | ⬜ | 1/0/0/0 | — | — | — |
 | `flexWrap` | ⬜ | 1/0/0/0 | — | — | — |
-| `gap`/`rowGap`/`columnGap` | ⬜ | 1/0/0/0 | — | — | — |
+| `gap`/`rowGap`/`columnGap` | ✅ | 4/4/4/10 | +23 baselines | 2026-05-13 | 22 samples + responsive-wide method; one tracker row covers 3 distinct CSS properties (gap, rowGap, columnGap) all exercised; AI walk found zero impl bugs; rowGap/columnGap override semantics verified (gap inherited on non-overridden axis); rowGap in column-direction = vertical main-axis spacing (writing-mode-oriented, not flex-axis-oriented); columnGap in column-direction with no wrap is no-op; gap survives justifyContent:center and flexGrow distribution |
 | `order` | ⬜ | 1/0/0/0 | — | — | — |
 
 ## 2. Layout & Positioning (9 properties)
