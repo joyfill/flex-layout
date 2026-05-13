@@ -270,8 +270,13 @@ public struct FlexOverflowModifier: ViewModifier {
             // Hard clip: content is never visible outside the view's frame.
             content.clipped()
         case .scroll:
-            // Always scrollable in both axes, regardless of content size.
-            ScrollView([.horizontal, .vertical]) { content }.clipped()
+            // CSS `scroll` always shows scrollbars. Use SwiftUI's
+            // `.scrollIndicators(.visible)` to request them; in offscreen
+            // snapshot rendering they may not actually paint, but the
+            // signal is correct for interactive contexts.
+            ScrollView([.horizontal, .vertical]) { content }
+                .scrollIndicators(.visible)
+                .clipped()
         case .auto:
             // Use a plain (non-scrolling) layout when content fits.
             // Fall back to a ScrollView when it overflows.
@@ -279,7 +284,9 @@ public struct FlexOverflowModifier: ViewModifier {
             // that fits and uses the second when the first is too large.
             ViewThatFits(in: [.horizontal, .vertical]) {
                 content.clipped()
-                ScrollView([.horizontal, .vertical]) { content }.clipped()
+                ScrollView([.horizontal, .vertical]) { content }
+                    .scrollIndicators(.automatic)
+                    .clipped()
             }
         }
     }
