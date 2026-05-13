@@ -134,15 +134,28 @@ sed -i '' "s|\"file\": \"<section>/<prop1>.json\"|\"file\": \"<section>/<prop1>/
 #        // Walkers append their test methods below.
 #    }
 
-# 4. Validate:
+# 4. CRITICAL — register the new snapshot test class in CI's --skip list.
+#    Snapshot tests run LOCALLY ONLY (see the comment block in ci.yml).
+#    Every new <Section>SnapshotTests class must be appended to the
+#    `swift test --parallel` --skip args in .github/workflows/ci.yml,
+#    otherwise CI will fail the moment Step 5 lands its first baseline.
+#    The Section-3 batch (May 14) shipped 3 new snapshot classes before
+#    anyone noticed — `testWidth` was the first to abort the CI suite.
+#    Edit ci.yml:
+#       --skip FlexboxSnapshotTests
+#       --skip JoyDOMSnapshotBaselineTests
+#       --skip <NewSection>SnapshotTests        ← add this
+
+# 5. Validate:
 swift test --filter "SpecPropertySamplesTests"
 
-# 5. PR + merge.
+# 6. PR + merge.
 ```
 
 **Gate:** Every property under the Section has a subfolder with the existing
 stub renamed to `overview.json`. Manifest reflects new paths. Test class
-skeleton exists. `SpecPropertySamplesTests` still passes.
+skeleton exists. **The new test class is in `ci.yml`'s `--skip` list.**
+`SpecPropertySamplesTests` still passes.
 
 ---
 
@@ -438,6 +451,29 @@ Pure 1:1 mirror of the JSON tree — no method-name prefix, no counter suffix.
 
 > **These are NOT baselines yet.** They're screenshots for review. Baselines
 > get promoted in Step 9.
+
+#### Checkpoint-commit rule (recovery from walker mid-run crashes)
+
+Walker sub-agents periodically die mid-run on API errors, sandbox-permission
+walls, or context exhaustion. The May-14 batch had **at least 4 walkers**
+(`borderColor`, `backgroundColor`, `borderRadius`, `borderStyle`) crash with
+uncommitted work that had to be hand-recovered — sometimes hours of authoring
+gone if nothing was committed.
+
+**Rule:** commit at every numbered-step boundary, not at end-of-walk. Minimum
+checkpoints:
+
+| After step | Commit message stub |
+|---|---|
+| 2 (samples authored) | `test(<prop>): author N sample JSONs` |
+| 3 (manifest entries) | `test(<prop>): manifest entries for N samples` |
+| 5 (baselines recorded) | `test(<prop>): wire up test methods + record N baselines` |
+| 8 (fixes applied, if any) | `fix(<area>): <one-line> — surfaced by <prop> walk` |
+| 10 (tracker) | `docs(tracker): <prop> ✅ — N samples, <bug count summary>` |
+
+Never let a walker hold more than one logical step in the working tree. If
+the walker crashes mid-Step 5, you lose at most the baselines (re-runnable
+deterministically); you don't lose the JSON authoring work from Step 2.
 
 **Gate:** PNG files exist for every sample in the new property's folder.
 
@@ -888,8 +924,118 @@ parent context, or pre-authorize the sub-agent's tools via
 May-13 batch: an order-DB rebase sub-agent hit `Permission denied` on
 every update-page call.
 
+Update from the May-14 batch: **isolated-worktree sub-agents** (`Agent` tool
+with `isolation: "worktree"`) also lose Bash/git/swift permissions even when
+the parent has them. The CI-fix walker today denied on `git status`. In-
+session sub-agents (no `isolation`) inherit fine. Use isolated worktrees
+only for tasks with known-pre-authorized tool sets; for any task that needs
+ad-hoc Bash, run in the parent context.
+
+#### Pre-merge row-count assertion (mandatory gate)
+
+Before opening the PR, assert all three numbers match:
+
+```
+# Local JSON count
+ls Sources/JoyDOMSampleSpecs/Resources/<section>/<prop>/*.json | wc -l
+
+# Local snapshot count (= JSON count + N responsive-wide variants)
+ls Tests/JoyDOMTests/PropertyCoverage/<Section>/__Snapshots__/<section>/<prop>/*.png | wc -l
+
+# Notion row count (via notion-search on the data source URL)
+```
+
+**Why mandatory:** the May-14 batch had two DBs ship with silent gaps —
+`border-radius` had 8/22 rows, `background-color` had 0/22 rows. Both were
+caught only because the audit pass explicitly cross-checked the counts.
+A walker can succeed at every other step and still produce a half-empty
+Notion DB if `notion-create-pages` returned mid-batch errors that the
+walker swallowed.
+
 **Gate:** One row per sample, image previews loading, JSON code blocks in
-each row's body. No duplicate rows.
+each row's body. No duplicate rows. **JSON count == snapshot count (minus
+responsive-wide variants) == Notion row count.**
+
+---
+
+## Pre-merge — predictable conflict patterns
+
+Every Section-3 PR in the May-14 batch (PRs #59–#69 + #60/#62/#63/#64)
+conflicted on the **same three files** during rebase against main. The
+resolution pattern is identical every time — internalize it once.
+
+### The 3 hot files
+
+| File | Why it conflicts | Resolution |
+|---|---|---|
+| `Sources/JoyDOMSampleSpecs/Resources/manifest.json` | Every walker appends its sample entries at roughly the same location (end of `samples[]`). | Keep all entries from both sides. Drop any pre-existing single-sample placeholder for the walker's property (e.g. `boxmodel-border-width` → renamed to `boxmodel-border-width-overview`). Validate with `python3 -c "import json; json.load(open('…/manifest.json'))"`. |
+| `Tests/JoyDOMTests/PropertyCoverage/<Section>/<section>.swift` | Walkers append `testXxx()` methods inside the same class body before `}`. Branches forked at empty scaffold → main now has 4-8 methods → the walker's "add before `}`" diff applies at the wrong line. | Fastest path: `git show main:<file> > /tmp/X.swift && cp /tmp/X.swift <file>`, then `Edit` to append the walker's new methods before the final `}`. Don't try to merge line-by-line. |
+| `docs/Property-Coverage-Tracker.md` | Each property's row in the Section table updates from ⬜ → ✅/⚠️. Other walkers updated other rows in the same table. | Keep all ✅/⚠️ rows from both sides; revert only the ⬜ rows that another walker hasn't touched yet. The "Documented limitations" subsection at the bottom of the file accumulates one row per limitation — append, don't replace. |
+
+### Why walkers always fork from stale main
+
+Walkers fire in parallel off whatever main was when the batch kicked off.
+By the time the merges land sequentially, main has moved 6-10 commits.
+Every walker's tip is N commits behind, and N grows as the batch
+progresses. Two options:
+
+1. **Rebase-before-PR-open** (cleaner, more work upfront): the walker's
+   final step rebases its branch onto fresh main before opening the PR.
+   Conflicts are paid by the walker, not by the merger.
+2. **Accept conflicts, standardize resolution** (what May-14 did): merger
+   resolves all three files at merge time using the patterns above.
+   ~5 minutes per PR.
+
+For one-off walks pick (1); for parallel batches (1) doesn't scale —
+walker N's rebase is invalidated as soon as walker N-1 lands, producing a
+race. The May-14 batch used (2) successfully across 11 PRs.
+
+### Pinned-ref protocol for Notion durability
+
+When a walker's branch is squash-merged with `--delete-branch`, the
+Notion-image URLs (which point at `raw.githubusercontent.com/.../<head-
+sha>/...`) keep working only because GitHub keeps blobs forever — but the
+**branch** disappears. The pinned-ref restore makes the original head
+SHA reachable under a stable name:
+
+```bash
+git push origin <original-head-sha>:refs/heads/test/<prop>-coverage-pinned
+```
+
+Run this **before** `gh pr merge` (after pushing the rebased branch).
+Already covered in Step 10c; surfaced here because the May-14 merge loop
+made it a hot path — 11 PRs all needed this without exception.
+
+---
+
+## Cross-property bug surfacing
+
+Single-property walks miss bugs that only manifest at the **intersection**
+of two properties. The May-14 borderWidth walk surfaced GitHub issue #72
+(four black corner stubs at `borderRadius == min(w,h)/2 && borderWidth > 0`)
+because one of its samples — `with-border-radius.json` — combined a full-
+circle radius with a thick visible border. The earlier `borderRadius` walk
+(PR #61) reviewed circle samples and border samples but never combined
+them, so the bug shipped invisibly.
+
+**Rule:** each property's sample set should include 1-2 deliberate
+combinations with previously-covered properties (see the matrix below).
+Pick combinations where either property's edge case (max value, default,
+zero, full-circle, etc.) plausibly interacts with the other.
+
+| If walking… | At minimum combine with… |
+|---|---|
+| any color property | `borderRadius`, `opacity` |
+| `borderWidth` / `borderColor` / `borderStyle` | `borderRadius` (especially full-circle), each other |
+| `padding` / `margin` | `boxSizing` content-box vs border-box |
+| `width` / `height` | `flexGrow`, `flexBasis`, `minWidth`/`maxWidth` |
+| `overflow` | `borderRadius`, fixed-size container with overflowing child |
+| `borderRadius` | `borderWidth > 0` at full-circle radius (the May-14 seam) |
+
+These are not exhaustive samples — one or two per pair is enough to catch
+the obvious interactions. The cost is small (1-2 extra JSONs per walk);
+the regression-prevention value is high (issue #72 would have been caught
+at PR #61 instead of PR #63 if this rule had been in place).
 
 ---
 
