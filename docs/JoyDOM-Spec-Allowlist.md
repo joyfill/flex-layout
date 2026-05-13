@@ -140,8 +140,19 @@ for f in <your-new-samples>/*.json; do
   grep -q '"display"[[:space:]]*:[[:space:]]*"flex"' "$f" || echo "MISSING display:flex in $f"
 done
 
-# No out-of-spec values.
-grep -E '"(row-reverse|column-reverse|wrap-reverse|baseline|alignContent|inline-flex|fixed|sticky|dashed|dotted|double)"' <your-new-samples>/*.json
+# Out-of-spec values — property-scoped to avoid false positives on className
+# arrays that happen to include reserved CSS keywords like `.fixed` / `.sticky`.
+grep -nE '"position"[[:space:]]*:[[:space:]]*"(fixed|sticky)"'                            <your-new-samples>/*.json
+grep -nE '"display"[[:space:]]*:[[:space:]]*"(block|inline|inline-block|inline-flex)"'    <your-new-samples>/*.json
+grep -nE '"flexDirection"[[:space:]]*:[[:space:]]*"(row-reverse|column-reverse)"'         <your-new-samples>/*.json
+grep -nE '"flexWrap"[[:space:]]*:[[:space:]]*"wrap-reverse"'                              <your-new-samples>/*.json
+grep -nE '"(alignItems|alignSelf)"[[:space:]]*:[[:space:]]*"baseline"'                    <your-new-samples>/*.json
+grep -nE '"borderStyle"[[:space:]]*:[[:space:]]*"(dashed|dotted|double)"'                 <your-new-samples>/*.json
+grep -nE '"alignContent"[[:space:]]*:'                                                    <your-new-samples>/*.json
 ```
 
-If either prints anything, fix before proceeding.
+If any line prints, fix before proceeding. Each grep is property-scoped (the
+left side requires `"propertyName":`) so className arrays like
+`["box", "fixed"]` will not trigger the position-fixed screen. Even so, prefer
+class names that don't read like CSS values (use `.no-shrink`, not `.fixed`)
+to keep human-scanning of JSON unambiguous.
