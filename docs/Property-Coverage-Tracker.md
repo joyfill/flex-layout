@@ -34,7 +34,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `flexGrow` | ✅ | 5/5/6/4 | +20 baselines | 2026-05-13 | 19 samples + responsive-wide method; AI walk found zero impl bugs; ratio-equivalence (one/two/fractional byte-identical) proven; alignContent removed from with-wrap during scope check |
 | `flexShrink` | ✅ | 5/5/7/4 | +20 baselines | 2026-05-13 | 20 samples (overview kept) + responsive-wide method; AI walk found zero impl bugs; ratio-equivalence (one/two/fractional/default byte-identical at 84/84/84) proven; CSS weighted shrink (basis × shrink) verified on with-basis (45/91/136); min-clamp + reflow verified on with-min-width (100/66/66 after re-resolving overflow on non-frozen items); wrap defeats shrink confirmed; nested.json proves shrink propagation through nested flex containers |
 | `flexBasis` | ⬜ | 1/0/0/0 | — | — | — |
-| `justifyContent` | ⬜ | 1/0/0/0 | — | — | — |
+| `justifyContent` | ✅ | 7/5/4/5 | +21 baselines | 2026-05-13 | 21 samples + responsive-wide method; all 6 spec enum values (flex-start, flex-end, center, space-between, space-around, space-evenly) render at CSS-spec-predicted positions; default correctly falls back to flex-start; with-grow proves justifyContent has no effect when items consume all free space; with-wrap distributes per-line; in-column verifies main-axis flip; nested proves independent main-axis distribution at each nesting level; AI walk found zero impl bugs |
 | `alignItems` | ⬜ | 1/0/0/0 | — | — | — |
 | `alignSelf` | ⬜ | 1/0/0/0 | — | — | — |
 | `flexWrap` | ⬜ | 1/0/0/0 | — | — | — |
