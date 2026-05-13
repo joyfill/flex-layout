@@ -4228,6 +4228,14 @@
       "snapshot": { "viewportWidth": 400, "height": 140 }
     },
     {
+      "id": "typography-font-style-empty",
+      "file": "typography/font-style/empty.json",
+      "category": "Typography",
+      "property": "fontStyle",
+      "summary": "edge: fontStyle: italic on an empty <p> — declaration applies but has no text to render",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
       "id": "typography-font-style-single-child",
       "file": "typography/font-style/single-child.json",
       "category": "Typography",
