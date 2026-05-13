@@ -2342,7 +2342,168 @@
       "file": "layout/insets/overview.json",
       "category": "Layout & Positioning",
       "property": "top/left/bottom/right",
-      "summary": "Absolutely-positioned child pinned to all four edges of its frame"
+      "summary": "Absolutely-positioned child pinned to all four edges of its frame",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-insets-top-only",
+      "file": "layout/insets/top-only.json",
+      "category": "Layout & Positioning",
+      "property": "top",
+      "summary": "top: 30px on an absolute child — vertical offset from relative parent's top edge",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-insets-left-only",
+      "file": "layout/insets/left-only.json",
+      "category": "Layout & Positioning",
+      "property": "left",
+      "summary": "left: 40px on an absolute child — horizontal offset from relative parent's left edge",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-insets-bottom-only",
+      "file": "layout/insets/bottom-only.json",
+      "category": "Layout & Positioning",
+      "property": "bottom",
+      "summary": "bottom: 20px on an absolute child — anchored 20px above the relative parent's bottom edge",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-insets-right-only",
+      "file": "layout/insets/right-only.json",
+      "category": "Layout & Positioning",
+      "property": "right",
+      "summary": "right: 24px on an absolute child — anchored 24px left of the relative parent's right edge",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-insets-top-and-left",
+      "file": "layout/insets/top-and-left.json",
+      "category": "Layout & Positioning",
+      "property": "top/left",
+      "summary": "top + left combined — anchors absolute child to a top-left corner offset",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-insets-bottom-and-right",
+      "file": "layout/insets/bottom-and-right.json",
+      "category": "Layout & Positioning",
+      "property": "bottom/right",
+      "summary": "bottom + right combined — anchors absolute child to a bottom-right corner offset",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-insets-all-four",
+      "file": "layout/insets/all-four.json",
+      "category": "Layout & Positioning",
+      "property": "top/left/bottom/right",
+      "summary": "All four insets on a width-less/height-less absolute child — stretches to fill the inset rectangle",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-insets-default",
+      "file": "layout/insets/default.json",
+      "category": "Layout & Positioning",
+      "property": "top/left/bottom/right",
+      "summary": "default: no insets declared on an absolute child — anchors at the in-flow position (top-left of content box, after padding)",
+      "snapshot": { "viewportWidth": 280, "height": 160 }
+    },
+    {
+      "id": "layout-insets-empty",
+      "file": "layout/insets/empty.json",
+      "category": "Layout & Positioning",
+      "property": "top/left/bottom/right",
+      "summary": "Empty container — verifies an insets-capable parent renders with no children without error",
+      "snapshot": { "viewportWidth": 280, "height": 160 }
+    },
+    {
+      "id": "layout-insets-zero-values",
+      "file": "layout/insets/zero-values.json",
+      "category": "Layout & Positioning",
+      "property": "top/left",
+      "summary": "top: 0, left: 0 — pins absolute child to the top-left corner exactly",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-insets-negative-values",
+      "file": "layout/insets/negative-values.json",
+      "category": "Layout & Positioning",
+      "property": "top/left",
+      "summary": "top: -10, left: -10 — element shifts outside the relative parent's box (no clip)",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-insets-inline",
+      "file": "layout/insets/inline.json",
+      "category": "Layout & Positioning",
+      "property": "top/left",
+      "summary": "Insets declared inline via node.props.style (authoring sweep)",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-insets-class-selector",
+      "file": "layout/insets/class-selector.json",
+      "category": "Layout & Positioning",
+      "property": "top/left",
+      "summary": "Insets declared via class selector .pinned-tl (authoring sweep)",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-insets-with-relative-parent",
+      "file": "layout/insets/with-relative-parent.json",
+      "category": "Layout & Positioning",
+      "property": "top/left",
+      "summary": "Absolute child anchors to the nearest positioned (relative) ancestor — a nested frame inside root",
+      "snapshot": { "viewportWidth": 320, "height": 240 }
+    },
+    {
+      "id": "layout-insets-with-absolute-parent",
+      "file": "layout/insets/with-absolute-parent.json",
+      "category": "Layout & Positioning",
+      "property": "top/left",
+      "summary": "Absolute child anchors to an absolutely-positioned ancestor frame",
+      "snapshot": { "viewportWidth": 320, "height": 240 }
+    },
+    {
+      "id": "layout-insets-with-no-positioned-ancestor",
+      "file": "layout/insets/with-no-positioned-ancestor.json",
+      "category": "Layout & Positioning",
+      "property": "top/left",
+      "summary": "Absolute child with NO positioned ancestor — anchors to the initial containing block (root)",
+      "snapshot": { "viewportWidth": 320, "height": 240 }
+    },
+    {
+      "id": "layout-insets-with-z-index",
+      "file": "layout/insets/with-z-index.json",
+      "category": "Layout & Positioning",
+      "property": "top/left",
+      "summary": "Two absolute children with overlapping offsets — z-index determines paint order",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-insets-with-overflow-hidden",
+      "file": "layout/insets/with-overflow-hidden.json",
+      "category": "Layout & Positioning",
+      "property": "top/left",
+      "summary": "Absolute child with negative insets inside a relative+overflow:hidden frame — parent clips off-canvas portion",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "layout-insets-position-relative-shifts",
+      "file": "layout/insets/position-relative-shifts.json",
+      "category": "Layout & Positioning",
+      "property": "top/left",
+      "summary": "position: relative + top/left — DOCUMENTED LIMITATION: JoyDOM-swift only applies insets when position: absolute; relative items render at flow position (insets currently no-op). CSS spec would shift the green box down 20 / right 10.",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "layout-insets-responsive",
+      "file": "layout/insets/responsive.json",
+      "category": "Layout & Positioning",
+      "property": "top/left",
+      "summary": "responsive: top:0/left:0 narrow → top:40/left:80 at ≥768px (drag viewport slider through 768 to see)",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
     },
     {
       "id": "boxmodel-background-color",

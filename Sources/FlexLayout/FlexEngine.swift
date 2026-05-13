@@ -495,8 +495,8 @@ public enum FlexEngine {
             for item in line.items {
                 let w = isRow ? item.mainSize  : item.crossSize
                 let h = isRow ? item.crossSize : item.mainSize
-                let x: CGFloat
-                let y: CGFloat
+                var x: CGFloat
+                var y: CGFloat
                 if isRow {
                     // mainOffset / crossOffset point at the *outer* box origin;
                     // shift by the margin start to land on the content box.
@@ -505,6 +505,24 @@ public enum FlexEngine {
                 } else {
                     x = pad.leading + line.crossOffset + item.crossOffset + item.marginCrossStart
                     y = pad.top     + item.mainOffset  + item.marginMainStart
+                }
+                // CSS §9.4: `position: relative` leaves the item in flow (so
+                // siblings continue to see its in-flow position) but shifts
+                // its *visual* frame by the resolved insets. The flex
+                // layout above is what siblings used; here we apply the
+                // paint-time offset to just this item.
+                let input = inputs[item.inputIndex]
+                if input.position == .relative {
+                    if let l = input.leading {
+                        x += l
+                    } else if let r = input.trailing {
+                        x -= r
+                    }
+                    if let t = input.top {
+                        y += t
+                    } else if let b = input.bottom {
+                        y -= b
+                    }
                 }
                 frames[item.inputIndex]    = CGRect(x: x, y: y, width: w, height: h)
                 proposals[item.inputIndex] = ProposedViewSize(width: w, height: h)
