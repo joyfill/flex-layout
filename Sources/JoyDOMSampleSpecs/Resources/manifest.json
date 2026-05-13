@@ -4128,70 +4128,70 @@
     },
     {
       "id": "typography-font-family",
-      "file": "typography/font-family.json",
+      "file": "typography/font-family/overview.json",
       "category": "Typography",
       "property": "fontFamily",
       "summary": "Custom fontFamily on a heading"
     },
     {
       "id": "typography-font-size",
-      "file": "typography/font-size.json",
+      "file": "typography/font-size/overview.json",
       "category": "Typography",
       "property": "fontSize",
       "summary": "Three sizes: caption, body, heading"
     },
     {
       "id": "typography-font-weight",
-      "file": "typography/font-weight.json",
+      "file": "typography/font-weight/overview.json",
       "category": "Typography",
       "property": "fontWeight",
       "summary": "Named and numeric weights from 100 to 900"
     },
     {
       "id": "typography-font-style",
-      "file": "typography/font-style.json",
+      "file": "typography/font-style/overview.json",
       "category": "Typography",
       "property": "fontStyle",
       "summary": "Plain and italic paragraphs"
     },
     {
       "id": "typography-color",
-      "file": "typography/color.json",
+      "file": "typography/color/overview.json",
       "category": "Typography",
       "property": "color",
       "summary": "Hex text color on a paragraph"
     },
     {
       "id": "typography-text-decoration",
-      "file": "typography/text-decoration.json",
+      "file": "typography/text-decoration/overview.json",
       "category": "Typography",
       "property": "textDecoration",
       "summary": "All three values: none, underline, line-through"
     },
     {
       "id": "typography-text-align",
-      "file": "typography/text-align.json",
+      "file": "typography/text-align/overview.json",
       "category": "Typography",
       "property": "textAlign",
       "summary": "Left, center, right"
     },
     {
       "id": "typography-text-transform",
-      "file": "typography/text-transform.json",
+      "file": "typography/text-transform/overview.json",
       "category": "Typography",
       "property": "textTransform",
       "summary": "none, uppercase, lowercase"
     },
     {
       "id": "typography-line-height",
-      "file": "typography/line-height.json",
+      "file": "typography/line-height/overview.json",
       "category": "Typography",
       "property": "lineHeight",
       "summary": "Tight (1.0), regular (1.4), and loose (1.8) multipliers"
     },
     {
       "id": "typography-letter-spacing",
-      "file": "typography/letter-spacing.json",
+      "file": "typography/letter-spacing/overview.json",
       "category": "Typography",
       "property": "letterSpacing",
       "summary": "Px and em letter-spacing values"
