@@ -22,4 +22,28 @@ import JoyDOMSampleSpecs
 final class LayoutSnapshotTests: XCTestCase {
     // Walkers append their test methods below as each Layout & Positioning
     // property's coverage walk lands.
+
+    func testOverflow() {
+        assertSnapshotsForSamples(in: "layout/overflow")
+    }
+
+    /// Second snapshot of the `responsive` sample, rendered at a viewport
+    /// width past the `>=480px` breakpoint to capture the alternate
+    /// (`overflow: visible`) layout.
+    func testOverflowResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "layout-overflow-responsive"),
+            "responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/layout/overflow")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 600,
+            height: 260,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
