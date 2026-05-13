@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "display": "flex",
+      "flexDirection": "row",
+      "padding": { "value": 16, "unit": "px" },
+      "gap":     { "value": 8,  "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    },
+    ".box": {
+      "height": { "value": 60, "unit": "px" },
+      "borderRadius": { "value": 4, "unit": "px" }
+    },
+    "#a": {
+      "backgroundColor": "#EF4444",
+      "width":    { "value": 200, "unit": "px" },
+      "maxWidth": { "value": 80,  "unit": "px" }
+    },
+    "#b": {
+      "backgroundColor": "#10B981",
+      "width":    { "value": 60,  "unit": "px" }
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "div", "props": { "id": "a", "className": ["box"] } },
+      { "type": "div", "props": { "id": "b", "className": ["box"] } }
+    ]
+  }
+}

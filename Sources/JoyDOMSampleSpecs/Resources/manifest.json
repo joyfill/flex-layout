@@ -2928,11 +2928,180 @@
       "summary": "Fixed-px and percentage heights inside a height-bound parent"
     },
     {
-      "id": "sizing-min-max",
+      "id": "sizing-min-max-overview",
       "file": "sizing/min-max/overview.json",
       "category": "Sizing",
       "property": "minWidth/maxWidth/minHeight/maxHeight",
-      "summary": "All four min/max constraints clamping a percentage-sized box"
+      "summary": "Showcase: red minWidth, green maxWidth, blue minHeight, amber maxHeight all clamping standard 60x60 boxes",
+      "snapshot": { "viewportWidth": 480, "height": 200 }
+    },
+    {
+      "id": "sizing-min-max-default",
+      "file": "sizing/min-max/default.json",
+      "category": "Sizing",
+      "property": "minWidth/maxWidth/minHeight/maxHeight",
+      "summary": "Defaults: no min/max declared — boxes render at declared 60x60 unaffected",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-min-max-min-width-only",
+      "file": "sizing/min-max/min-width-only.json",
+      "category": "Sizing",
+      "property": "minWidth",
+      "summary": "minWidth 120 > declared width 60 — red grows to 120 horizontally",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-min-max-max-width-only",
+      "file": "sizing/min-max/max-width-only.json",
+      "category": "Sizing",
+      "property": "maxWidth",
+      "summary": "maxWidth 80 < declared width 120 — red clamps to 80",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-min-max-min-height-only",
+      "file": "sizing/min-max/min-height-only.json",
+      "category": "Sizing",
+      "property": "minHeight",
+      "summary": "minHeight 120 > declared height 40 — red grows tall vertically",
+      "snapshot": { "viewportWidth": 400, "height": 180 }
+    },
+    {
+      "id": "sizing-min-max-max-height-only",
+      "file": "sizing/min-max/max-height-only.json",
+      "category": "Sizing",
+      "property": "maxHeight",
+      "summary": "maxHeight 60 < declared height 120 — red clamps to 60",
+      "snapshot": { "viewportWidth": 400, "height": 180 }
+    },
+    {
+      "id": "sizing-min-max-min-and-max-width",
+      "file": "sizing/min-max/min-and-max-width.json",
+      "category": "Sizing",
+      "property": "minWidth/maxWidth",
+      "summary": "Pair on width: declared 30 grows to min 60; declared 90 stays; declared 200 clamps to max 120",
+      "snapshot": { "viewportWidth": 480, "height": 120 }
+    },
+    {
+      "id": "sizing-min-max-width-clamped-by-min",
+      "file": "sizing/min-max/width-clamped-by-min.json",
+      "category": "Sizing",
+      "property": "minWidth",
+      "summary": "Declared width 40 < minWidth 100 — element grows to 100 (CSS spec: min wins over declared)",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "sizing-min-max-width-clamped-by-max",
+      "file": "sizing/min-max/width-clamped-by-max.json",
+      "category": "Sizing",
+      "property": "maxWidth",
+      "summary": "Declared width 200 > maxWidth 80 — element clamps to 80",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "sizing-min-max-min-and-max-height",
+      "file": "sizing/min-max/min-and-max-height.json",
+      "category": "Sizing",
+      "property": "minHeight/maxHeight",
+      "summary": "Pair on height: declared 30 grows to min 60; declared 90 stays; declared 200 clamps to max 120",
+      "snapshot": { "viewportWidth": 320, "height": 180 }
+    },
+    {
+      "id": "sizing-min-max-height-clamped-by-min",
+      "file": "sizing/min-max/height-clamped-by-min.json",
+      "category": "Sizing",
+      "property": "minHeight",
+      "summary": "Declared height 40 < minHeight 120 — element grows vertically to 120",
+      "snapshot": { "viewportWidth": 320, "height": 180 }
+    },
+    {
+      "id": "sizing-min-max-height-clamped-by-max",
+      "file": "sizing/min-max/height-clamped-by-max.json",
+      "category": "Sizing",
+      "property": "maxHeight",
+      "summary": "Declared height 200 > maxHeight 80 — element clamps to 80",
+      "snapshot": { "viewportWidth": 320, "height": 200 }
+    },
+    {
+      "id": "sizing-min-max-empty",
+      "file": "sizing/min-max/empty.json",
+      "category": "Sizing",
+      "property": "minWidth/minHeight",
+      "summary": "Empty container forced to minimum dimensions (minWidth 200, minHeight 80) despite no children",
+      "snapshot": { "viewportWidth": 320, "height": 160 }
+    },
+    {
+      "id": "sizing-min-max-single-child",
+      "file": "sizing/min-max/single-child.json",
+      "category": "Sizing",
+      "property": "minWidth/minHeight",
+      "summary": "Single child with min constraints overriding declared 40x40 to 120x80",
+      "snapshot": { "viewportWidth": 320, "height": 160 }
+    },
+    {
+      "id": "sizing-min-max-min-larger-than-max",
+      "file": "sizing/min-max/min-larger-than-max.json",
+      "category": "Sizing",
+      "property": "minWidth/maxWidth",
+      "summary": "Edge: minWidth 120 > maxWidth 80 — CSS spec says min wins, final width = 120",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "sizing-min-max-inline",
+      "file": "sizing/min-max/inline.json",
+      "category": "Sizing",
+      "property": "minWidth/maxWidth",
+      "summary": "Authoring: min/max declared via inline node.props.style",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "sizing-min-max-class-selector",
+      "file": "sizing/min-max/class-selector.json",
+      "category": "Sizing",
+      "property": "minWidth/minHeight",
+      "summary": "Authoring: class .min-clamped applies minWidth and minHeight to 1st and 3rd boxes",
+      "snapshot": { "viewportWidth": 400, "height": 160 }
+    },
+    {
+      "id": "sizing-min-max-with-flex-grow-and-max",
+      "file": "sizing/min-max/with-flex-grow-and-max.json",
+      "category": "Sizing",
+      "property": "maxWidth",
+      "summary": "Flex-grow free-space distribution: red clamps at maxWidth 80; remaining grows over green+blue (freeze+re-resolve)",
+      "snapshot": { "viewportWidth": 480, "height": 120 }
+    },
+    {
+      "id": "sizing-min-max-with-flex-shrink-and-min",
+      "file": "sizing/min-max/with-flex-shrink-and-min.json",
+      "category": "Sizing",
+      "property": "minWidth",
+      "summary": "Flex-shrink with min clamp: red freezes at minWidth 100, deficit re-resolved across green+blue (mirrors flex-shrink/with-min-width.json)",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "sizing-min-max-with-percent-width-and-min",
+      "file": "sizing/min-max/with-percent-width-and-min.json",
+      "category": "Sizing",
+      "property": "minWidth",
+      "summary": "Percent width 30%=90 < minWidth 140 — clamps to 140 px after percent resolution",
+      "snapshot": { "viewportWidth": 360, "height": 120 }
+    },
+    {
+      "id": "sizing-min-max-with-padding-and-box-sizing",
+      "file": "sizing/min-max/with-padding-and-box-sizing.json",
+      "category": "Sizing",
+      "property": "minWidth/maxWidth",
+      "summary": "border-box + padding 8: min/max clamp the outer box (red declared 60 grows to min 100; green declared 200 clamps to max 100)",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
+    },
+    {
+      "id": "sizing-min-max-responsive",
+      "file": "sizing/min-max/responsive.json",
+      "category": "Sizing",
+      "property": "minWidth",
+      "summary": "Responsive: minWidth 60 at narrow viewport; flips to minWidth 200 at >=768px breakpoint",
+      "snapshot": { "viewportWidth": 360, "height": 120 }
     },
     {
       "id": "textbehavior-text-overflow",

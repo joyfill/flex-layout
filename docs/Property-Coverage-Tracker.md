@@ -72,7 +72,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 |---|---|---|---|---|---|
 | `width` | ⬜ | 1/0/0/0 | — | — | — |
 | `height` | ⬜ | 1/0/0/0 | — | — | — |
-| `min`/`maxWidth` & `min`/`maxHeight` | ⬜ | 1/0/0/0 | — | — | — |
+| `min`/`maxWidth` & `min`/`maxHeight` | ✅ | 5/3/2/5 + 4 per-property + 2 responsive | +23 baselines | 2026-05-14 | 22 samples covering all 4 properties (minWidth/maxWidth/minHeight/maxHeight) under combined `sizing/min-max/`; AI walk found zero impl bugs; verified CSS clamp invariants — declared < min clamps up, declared > max clamps down, `min-larger-than-max` proves CSS "min wins over max", `with-flex-grow-and-max` and `with-flex-shrink-and-min` verify the freeze-and-re-resolve algorithm for flex interactions (mirrors flexShrink/with-min-width 100/66/66 result); percent width resolves before min clamp; border-box clamps the outer box; responsive breakpoint flips minWidth 60→200 |
 
 ## 5. Typography (10 properties)
 
