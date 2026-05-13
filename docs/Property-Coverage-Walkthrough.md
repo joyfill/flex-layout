@@ -11,7 +11,8 @@ moving on).
 
 > **Pairs with**
 > - [`Property-Coverage-Tracker.md`](Property-Coverage-Tracker.md) — live status
-> - [`Spec-Property-Reference.md`](Spec-Property-Reference.md) — property semantics
+> - [`Spec-Property-Reference.md`](Spec-Property-Reference.md) — per-property impl semantics + caveats
+> - [`JoyDOM-Spec-Allowlist.md`](JoyDOM-Spec-Allowlist.md) — flat allowlist of every property + value samples may use (sample-author cheat-sheet)
 > - [`Spec-Test-Plan.md`](Spec-Test-Plan.md) — broader test strategy
 
 ---
@@ -44,6 +45,20 @@ moving on).
   output prediction anchors in CSS / JoyDOM spec semantics, never in "what
   JoyDOM currently does." Any divergence is either a sample-design issue or an
   implementation bug — that's exactly what the walk is designed to surface.
+- **For min/max clamp predictions, use the CSS "freeze and re-resolve"
+  algorithm.** When an item hits a min-size (or max-size), it is **frozen** at
+  that size and the overflow / free space is then **re-resolved** over the
+  remaining flexible items. It is NOT the naive "redistribute the clamped
+  item's excess proportionally" intuition. Example from the `flexShrink` walk:
+  in `with-min-width.json` red clamps at minWidth 100; the remaining ~8px of
+  inner space is then re-flowed across green + blue → **100/66/66** (not the
+  naive 100/116/116). Mispredicting this is the most common spec-algorithm
+  mistake in flex walks; double-check any sample that exercises a clamp.
+- **±1px subpixel rounding is expected and acceptable.** Pixel-sampled widths
+  routinely show 57/58/57 where the prediction was 57/57/57, or 83 where the
+  prediction was 84. Anything larger is a real divergence worth investigating,
+  not noise. Document the tolerance in your verdict — don't silently accept
+  larger gaps.
 
 ---
 
@@ -115,6 +130,13 @@ The two folders are siblings. The snapshot helper's prefix filter
 
 #### Design rules
 
+- **`display: flex` is mandatory on every flex container.** The JoyDOM CSS spec
+  defines `display` as `'flex' | 'none'` — there is no implicit flex layout.
+  JoyDOM-swift will render flex children even when `display: flex` is omitted,
+  but the sample is spec-malformed and JS/Kotlin runtimes will not match.
+  Always declare it explicitly on `#root` (and on every nested flex container).
+  See [`JoyDOM-Spec-Allowlist.md`](JoyDOM-Spec-Allowlist.md) for the grep
+  recipe you can run before recording baselines.
 - **One concept per sample.** A `with-grow.json` that also tweaks
   `justify-content` hides which thing the snapshot proves.
 - **Make the property visually dominant.** If a CSS default swallows the
@@ -122,6 +144,12 @@ The two folders are siblings. The snapshot helper's prefix filter
   a `gap: 8`), the snapshot doesn't prove anything. Caught this in
   `flex-direction/with-wrap.json` — patched it with explicit
   `alignContent: flex-start` so the row-gap actually shows.
+- **Avoid class names that lexically collide with CSS keywords.** `.fixed`,
+  `.sticky`, `.absolute`, `.inline`, `.block`, `.dashed`, etc. as class names
+  trip up greps that screen for out-of-spec values (e.g. `position: "fixed"`)
+  and confuse readers scanning JSON. Use behavioural names like `.no-shrink`,
+  `.pinned`, `.dashed-border` — anything that doesn't read like a property
+  value.
 - **Use the standard color palette** for predictability:
   - `#EF4444` red `#a` / `#l1`
   - `#10B981` green `#b` / `#l2`
@@ -133,29 +161,21 @@ The two folders are siblings. The snapshot helper's prefix filter
   as the default child shape unless the sample specifically needs different
   dimensions.
 
-See the [Appendix](#appendix--reusable-snippets) for copy-paste starters.
+See the [Appendix](#appendix--reusable-snippets) for copy-paste starters and
+[`JoyDOM-Spec-Allowlist.md`](JoyDOM-Spec-Allowlist.md) for the canonical list
+of every property + value JoyDOM samples may use.
 
 **Gate:** Every filename from Step 1 has a JSON.
 
 ---
 
-### 3. Schema validation
+### 3. Add manifest entries
 
-Run the existing validator over every new sample:
-
-```bash
-swift test --filter "SpecPropertySamplesTests"
-```
-
-This decodes each sample as a `Spec` and reports missing keys, malformed
-breakpoints, unknown property names. **No `try? JSONDecoder()` swallowing
-errors** — every failure must be addressed before rendering.
-
-**Gate:** Validator passes for all samples in the new property's folder.
-
----
-
-### 4. Add manifest entries
+> **Order matters: manifest before validation.** `SpecPropertySamplesTests`
+> iterates `SpecPropertySamples.all`, which is populated from the manifest.
+> Files not yet in the manifest are silently skipped by the validator — so
+> running Step 4 first against un-manifested JSONs produces a misleading
+> "all green" with zero coverage of your new samples.
 
 For each spec-aligned JSON, add to
 `Sources/JoyDOMSampleSpecs/Resources/manifest.json`:
@@ -199,8 +219,30 @@ The `-iOSExt` suffix on `property` and the "not in spec" preamble on
 - For breakpoint-flip samples, the **narrow** viewport goes here; the wide
   viewport is captured by a separate `<Prop>ResponsiveWide` test method.
 
-**Gate:** Every JSON has a manifest entry. `SpecPropertySamplesTests` still
-passes.
+**Gate:** Every JSON has a manifest entry.
+
+---
+
+### 4. Schema validation
+
+Now that the manifest references every new file, run the validator:
+
+```bash
+swift test --filter "SpecPropertySamplesTests"
+```
+
+This decodes each manifested sample as a `Spec`, walks it through
+`RuleBuilder` + `StyleTreeBuilder`, and reports missing keys, malformed
+breakpoints, unknown property names, or cascade-time failures. **No
+`try? JSONDecoder()` swallowing errors** — every failure must be addressed
+before rendering.
+
+Also run the [allowlist grep recipe](JoyDOM-Spec-Allowlist.md#quick-sanity-check-for-a-finished-sample)
+against your new JSONs to catch missing `display: flex` and any out-of-spec
+values (`row-reverse`, `wrap-reverse`, `alignContent`, etc.) before they
+become baselines.
+
+**Gate:** Validator passes for all samples; allowlist grep produces no hits.
 
 ---
 
@@ -288,12 +330,46 @@ For each sample, the AI:
    not "what JoyDOM currently does." Writes out child positions, axis
    behavior, color order, free-space distribution.
 3. Reads the screenshot
-4. **Pixel-samples for precision** (Python + PIL):
+4. **Pixel-samples for precision** (Python + PIL).
+
+   **Preferred technique: colored-run scan** — scans a horizontal (or
+   vertical) line through the rendered boxes and auto-detects each colored
+   run's span. Scales across all samples in a folder without hand-tuning
+   coordinates per sample. The `flexShrink` walk used this to verify 20
+   baselines in one shot:
 
    ```python
    from PIL import Image
-   img = Image.open('Tests/.../sample.png')
-   pixels = img.load()
+   COLORS = {"red":(232,44,53),"green":(27,174,110),
+             "blue":(47,105,243),"amber":(240,141,14)}
+   def color_at(px):
+       r,g,b,*_ = px
+       for name,(cr,cg,cb) in COLORS.items():
+           if abs(r-cr)<=12 and abs(g-cg)<=12 and abs(b-cb)<=12: return name
+       return None
+   def find_runs(path, scan_y_viewport):
+       img = Image.open(path); px = img.load(); w,h = img.size
+       y = int(scan_y_viewport * 2)   # viewport→retina
+       runs, cur, start = [], None, 0
+       for x in range(w):
+           c = color_at(px[x, y])
+           if c != cur:
+               if cur in COLORS: runs.append((cur, start/2, (x)/2))
+               cur, start = c, x
+       if cur in COLORS: runs.append((cur, start/2, w/2))
+       return runs
+   # Example: scan mid-box-height
+   for color, x_start, x_end in find_runs(".../sample.png", 46):
+       print(f"  {color} viewport_x=[{x_start:.1f}..{x_end:.1f}] width={x_end-x_start:.1f}")
+   ```
+
+   For column-direction samples, swap to a vertical scan at a fixed x.
+
+   **Fallback: targeted pixel samples** — when colored-run scanning won't
+   resolve a question (e.g. verifying a single non-colored property like
+   `borderColor`), drop to direct pixel reads:
+
+   ```python
    # Pixel coords = viewport coords × 2 (retina)
    for x, y, label in [(92, 92, 'red box center'), ...]:
        print(f'  ({x},{y}) {label}: {pixels[x, y]}')
@@ -332,10 +408,27 @@ Walk every sample manually, focused on what AI typically misses:
   spec would expect? Sometimes the spec-correct rendering is bewildering and
   the sample should be redesigned to make the property's effect clearer.
 
+#### Coverage-parity scan
+
+Before declaring the review complete, **diff your sample folder against the
+two or three most recent walks' folders**:
+
+```bash
+ls Sources/JoyDOMSampleSpecs/Resources/flexbox/<new-prop>/ | sort > /tmp/new
+ls Sources/JoyDOMSampleSpecs/Resources/flexbox/<prior-prop>/ | sort > /tmp/prior
+diff /tmp/prior /tmp/new
+```
+
+Any sample the prior walk had that yours doesn't — either justify the
+omission (e.g. `flex-grow/with-shrink.json` mirrors as `flex-shrink/with-grow.json`,
+same concept under a different name) or **add it now**. The `flexShrink` walk
+missed `nested.json` on the first pass; the gap was only found post-merge
+during a final review. Catching parity gaps here saves a follow-up PR.
+
 Append findings to the triaged list from Step 6. Don't fix yet — just triage.
 
 **Gate:** Combined AI + human issue list, fully triaged with one of the four
-tags above.
+tags above. Coverage-parity diff inspected and either matched or justified.
 
 ---
 
@@ -386,11 +479,39 @@ flag, no manual intervention.
 
 ---
 
-### 10. Push, PR, merge
+### 10. Update Tracker, push, PR, merge
+
+#### 10a. Update Tracker (bundle into the same PR)
+
+Flip the property's row in `docs/Property-Coverage-Tracker.md` from ⬜ to ✅
+(or ⚠️ if limitations were documented) **in the same PR as the samples**.
+Both prior walks (`flexDirection`, `flexGrow`, `flexShrink`) bundled the
+tracker flip into the coverage PR rather than as a follow-up commit. Fill in:
+
+- **Samples** column: `value-sweep / edges / contexts / interactions` count.
+- **Tests delta** column: count of **new** PNG files created. If
+  `overview.png` already existed on `main` and you didn't re-record it, it
+  doesn't count toward this number (e.g. `flexShrink` shipped 18 new sample
+  PNGs + 1 nested + 1 responsive-wide = **+20 baselines**, not +21).
+- **Date** column: today's date.
+- **Notes** column: noteworthy bugs surfaced, limitations, sample-design
+  quirks, and which CSS invariants the walk verified.
+
+Bug entries get rows in the "Bugs surfaced during the walk" table at the
+bottom; limitations get rows in "Documented limitations."
+
+#### 10b. Branch, push, PR
+
+> **Check for branch-name collisions first.** Locked agent worktrees on prior
+> sessions can hold conventional branch names hostage. Run
+> `git worktree list | grep <intended-branch>` — if a locked worktree owns
+> the name, pick a fresh one (e.g. `test/<prop>-coverage` instead of
+> `test/<prop>-l2-l3`) rather than forcing through with `--force`.
 
 ```bash
-git push -u origin test/<prop-kebab>-l2-l3
-gh pr create --title "Test/<prop-kebab> property coverage" --body "<see below>"
+git push -u origin test/<prop-kebab>-coverage
+gh pr create --title "test(<prop-kebab>): property coverage walk — <N> samples" \
+             --body "<see below>"
 ```
 
 PR body must include:
@@ -399,34 +520,25 @@ PR body must include:
 - Sample patches with rationale (link each commit)
 - Known limitations deferred (link Tracker rows)
 - One-line summary of the property's verified behavior
+- Confirmation that the [allowlist grep](JoyDOM-Spec-Allowlist.md#quick-sanity-check-for-a-finished-sample)
+  passed (display:flex present everywhere, no out-of-spec values)
+
+#### 10c. Capture merge SHA
 
 After merge to `main`, **capture the merge commit SHA**:
+
 ```bash
-git rev-parse main
+git checkout main && git pull --ff-only origin main && git rev-parse main
 ```
 
-This is what the Notion image URLs will pin against in Step 12.
+This is what the Notion image URLs will pin against in Step 11. Branch HEAD
+SHAs are NOT durable (rebases / deletions lose history); only merge SHAs are.
 
-**Gate:** PR merged. Merge SHA captured.
-
----
-
-### 11. Update Tracker
-
-Flip the property's row in `docs/Property-Coverage-Tracker.md` from ⬜ to ✅
-(or ⚠️ if limitations were documented). Fill in:
-
-- **Samples** column: `value-sweep / edges / contexts / interactions` count
-- **Tests delta** column: rough count of new test methods (usually +1 or +2)
-- **Date** column: today's date
-- **Notes** column: noteworthy bugs surfaced, limitations, sample-design quirks
-
-Bug entries get rows in the "Bugs surfaced during the walk" table at the
-bottom; limitations get rows in "Documented limitations."
+**Gate:** PR merged. Merge SHA captured. Tracker reflects the new ✅.
 
 ---
 
-### 12. Create Notion table
+### 11. Create Notion table
 
 New database under the [JoyDom property comparison parent page](https://www.notion.so/joyfill/35edef37c9a080da8bc8d0c06cd30c67).
 
@@ -469,7 +581,11 @@ https://raw.githubusercontent.com/j0yhq/flexbox-swift/<MERGE-SHA>/Tests/JoyDOMTe
 
 Properties:
 - `Template`: sample basename (e.g. `"row"`)
-- `iOS UI`: just the URL string (Notion auto-wraps to a file attachment)
+- `Swift`: just the raw GitHub URL string. When creating pages via the Notion
+  MCP `notion-create-pages` tool, pass `"Swift": "https://raw.githubusercontent.com/..."`
+  — Notion wraps it into the FILES format automatically. No need to construct
+  the `file://%7B...%7D` percent-encoded blob you'll see when reading existing
+  rows back.
 
 Page body (markdown):
 ```markdown
@@ -581,3 +697,56 @@ findings. Expect them.
    standalone children of the parent Notion page. **Tag:** `out-of-scope`.
    **The "test only what the spec supports" principle in this doc is the
    prevention for next time.**
+
+---
+
+## What we learned running this on `flexShrink`
+
+Zero implementation bugs surfaced — but the walk produced several
+process-level findings that landed as edits to this very document. Captured
+here as a reference for what a clean walk looks like and which corners are
+easy to cut:
+
+1. **CSS clamp algorithm tripped the AI prediction.** On `with-min-width`
+   (red `minWidth: 100`), I predicted 100/116/116 by the naive "redistribute
+   the clamped item's excess" intuition. The spec-correct answer is
+   **100/66/66**: red freezes at 100, then green + blue re-shrink against
+   the smaller residual free space. Surfaced the "freeze and re-resolve"
+   principle now in the Principles section.
+
+2. **Step 3 / Step 4 ordering was misleading.** The previous version told
+   walkers to run schema validation before adding manifest entries — but
+   the validator only iterates manifested samples, so the "all green" was
+   meaningless. Swapped: now manifest is Step 3, validation is Step 4.
+
+3. **`display: flex` was implicit-but-mandatory.** JoyDOM-swift renders flex
+   children even when the property is omitted, so several existing samples
+   on `main` got away with it. The spec defines `display` strictly as
+   `'flex' | 'none'`, and JS / Kotlin runtimes will not auto-flex. Added
+   the explicit mandate to Step 2 design rules and shipped a sibling
+   [`JoyDOM-Spec-Allowlist.md`](JoyDOM-Spec-Allowlist.md) with a grep
+   recipe authors run before recording baselines.
+
+4. **Hand-coded pixel coordinates didn't scale.** The original PIL example
+   hardcoded `(92, 92, 'red box center')` per sample. With 20 samples of
+   variable widths, that was painful. The colored-run-scan technique now in
+   Step 6 verifies all 20 baselines in one Python script.
+
+5. **`nested.json` parity gap missed until post-merge.** The first PR didn't
+   include a nested-flex sample even though `flexDirection` had one. Added
+   the coverage-parity-scan step to Step 7 so future walks `diff` their
+   sample folder against a prior walk's before opening the PR.
+
+6. **`.fixed` class name collided with `position: fixed`.** A grep recipe
+   that screens for out-of-spec values false-positives on className arrays
+   containing reserved CSS keywords. Cosmetic, but worth avoiding — added
+   to Step 2 design rules.
+
+7. **Branch name held hostage by a locked agent worktree.** The
+   conventional `test/flex-shrink-l2-l3` was owned by an abandoned worktree
+   from an earlier session. Pivoted to `test/flex-shrink-coverage` rather
+   than forcing the lock open. Added a worktree-collision check to Step 10.
+
+**Tag distribution:** 0 `bug-in-impl`, 0 `bug-in-sample`, 0 `out-of-scope`,
+0 `documented-limitation` — but **7 `process-improvement`** findings, all
+folded back into this document.
