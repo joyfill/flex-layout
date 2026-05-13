@@ -1092,6 +1092,158 @@
       }
     },
     {
+      "id": "flexbox-align-self-auto",
+      "file": "flexbox/align-self/auto.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "alignSelf: auto on middle child inherits container's alignItems: flex-end",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-self-flex-start",
+      "file": "flexbox/align-self/flex-start.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "alignSelf: flex-start on middle child overrides container's alignItems: flex-end",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-self-flex-end",
+      "file": "flexbox/align-self/flex-end.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "alignSelf: flex-end on middle child overrides container's alignItems: flex-start",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-self-center",
+      "file": "flexbox/align-self/center.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "alignSelf: center on middle child overrides container's alignItems: flex-start",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-self-stretch",
+      "file": "flexbox/align-self/stretch.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "alignSelf: stretch on middle child (no height) expands to fill cross axis",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-self-default",
+      "file": "flexbox/align-self/default.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "alignSelf omitted \u2014 children inherit container's alignItems: center",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-self-empty",
+      "file": "flexbox/align-self/empty.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "edge: empty container, no children",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-self-single-child",
+      "file": "flexbox/align-self/single-child.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "edge: single child overrides container alignItems via alignSelf: flex-start",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-self-all-override",
+      "file": "flexbox/align-self/all-override.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "edge: every child sets a different alignSelf \u2014 sweep along the cross axis",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-self-inline",
+      "file": "flexbox/align-self/inline.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "authoring: alignSelf declared via inline node.props.style",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-self-class-selector",
+      "file": "flexbox/align-self/class-selector.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "authoring: alignSelf via .drop class shared between selectors",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-self-in-column",
+      "file": "flexbox/align-self/in-column.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "context: column container \u2014 alignSelf shifts middle child along the horizontal cross axis",
+      "snapshot": { "viewportWidth": 280, "height": 240 }
+    },
+    {
+      "id": "flexbox-align-self-in-fixed-height",
+      "file": "flexbox/align-self/in-fixed-height.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "context: tall fixed-height container exposes alignSelf center vs flex-end positions",
+      "snapshot": { "viewportWidth": 400, "height": 200 }
+    },
+    {
+      "id": "flexbox-align-self-with-stretch-parent",
+      "file": "flexbox/align-self/with-stretch-parent.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "interaction: alignItems: stretch parent \u2014 one child with fixed height opts into alignSelf: center",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-self-with-flex-end-parent",
+      "file": "flexbox/align-self/with-flex-end-parent.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "interaction: alignItems: flex-end parent \u2014 two siblings override to flex-start and center",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-self-with-wrap",
+      "file": "flexbox/align-self/with-wrap.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "interaction: flexWrap: wrap \u2014 alignSelf applies within each flex line",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "flexbox-align-self-with-different-heights",
+      "file": "flexbox/align-self/with-different-heights.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "interaction: children of varying heights, some override container alignItems",
+      "snapshot": { "viewportWidth": 400, "height": 160 }
+    },
+    {
+      "id": "flexbox-align-self-responsive",
+      "file": "flexbox/align-self/responsive.json",
+      "category": "Flexbox",
+      "property": "alignSelf",
+      "summary": "responsive: alignSelf: flex-start at narrow flips to auto (inherit flex-end) at \u2265768px",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-self-ios-ext-baseline",
+      "file": "flexbox/align-self-ios-ext/baseline.json",
+      "category": "Flexbox",
+      "property": "alignSelf-iOSExt",
+      "summary": "iOS-ext baseline: alignSelf: baseline (not in JoyDOM spec; covered only by the iOS FlexLayout primitive)",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
       "id": "flexbox-flex-wrap",
       "file": "flexbox/flex-wrap/overview.json",
       "category": "Flexbox",
