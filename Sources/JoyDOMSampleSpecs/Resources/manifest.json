@@ -3138,6 +3138,281 @@
       "summary": "Uniform Length and per-side margin (on flex item)"
     },
     {
+      "id": "boxmodel-margin-zero",
+      "file": "boxmodel/margin/zero.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "value sweep: margin: 0 (verifies no spacing baseline)",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-small",
+      "file": "boxmodel/margin/small.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "value sweep: margin: 4 (small uniform spacing)",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-medium",
+      "file": "boxmodel/margin/medium.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "value sweep: margin: 16 (medium uniform spacing)",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-large",
+      "file": "boxmodel/margin/large.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "value sweep: margin: 32 (large uniform spacing)",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 180
+      }
+    },
+    {
+      "id": "boxmodel-margin-top-only",
+      "file": "boxmodel/margin/top-only.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "per-side object: only top margin set",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-right-only",
+      "file": "boxmodel/margin/right-only.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "per-side object: only right margin set",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-bottom-only",
+      "file": "boxmodel/margin/bottom-only.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "per-side object: only bottom margin set",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-left-only",
+      "file": "boxmodel/margin/left-only.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "per-side object: only left margin set",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-vertical-horizontal",
+      "file": "boxmodel/margin/vertical-horizontal.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "asymmetric: top:16 right:32 bottom:16 left:32",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-all-different",
+      "file": "boxmodel/margin/all-different.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "asymmetric: all four sides different (8/16/24/32)",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-default",
+      "file": "boxmodel/margin/default.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "defaults: margin omitted (verifies CSS default 0)",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-empty",
+      "file": "boxmodel/margin/empty.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "edge: empty container with margin",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-single-child",
+      "file": "boxmodel/margin/single-child.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "edge: single child with margin",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-negative-margin",
+      "file": "boxmodel/margin/negative-margin.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "edge: negative margin shifts element INWARD overlapping siblings",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 180
+      }
+    },
+    {
+      "id": "boxmodel-margin-inline",
+      "file": "boxmodel/margin/inline.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "authoring: margin via node.props.style inline",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-class-selector",
+      "file": "boxmodel/margin/class-selector.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "authoring: margin via class selector",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-with-flex-row",
+      "file": "boxmodel/margin/with-flex-row.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "context: margin in row-direction flex container",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-with-flex-column",
+      "file": "boxmodel/margin/with-flex-column.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "context: margin in column-direction flex container",
+      "snapshot": {
+        "viewportWidth": 240,
+        "height": 360
+      }
+    },
+    {
+      "id": "boxmodel-margin-with-gap",
+      "file": "boxmodel/margin/with-gap.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "interaction: margin + gap stack additively per CSS",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-with-flex-grow",
+      "file": "boxmodel/margin/with-flex-grow.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "interaction: grow distributes free space AFTER margin",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-with-padding",
+      "file": "boxmodel/margin/with-padding.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "interaction: margin and padding are independent (outer vs inner)",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-with-justify-content",
+      "file": "boxmodel/margin/with-justify-content.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "interaction: margin pushes flex item displacing free space",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-nested",
+      "file": "boxmodel/margin/nested.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "edge: nested flex containers with margin at each level",
+      "snapshot": {
+        "viewportWidth": 380,
+        "height": 200
+      }
+    },
+    {
+      "id": "boxmodel-margin-flex-margin-proof",
+      "file": "boxmodel/margin/flex-margin-proof.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "PR #21 visual proof: margin participates in flex layout (true flex-item margin)",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 140
+      }
+    },
+    {
+      "id": "boxmodel-margin-responsive",
+      "file": "boxmodel/margin/responsive.json",
+      "category": "Box Model & Visuals",
+      "property": "margin",
+      "summary": "responsive: margin: 4 narrow, margin: 16 wide at >=768px",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 180
+      }
+    },
+    {
       "id": "boxmodel-border-width",
       "file": "boxmodel/border-width/overview.json",
       "category": "Box Model & Visuals",
