@@ -2068,7 +2068,7 @@
       "file": "layout/insets/position-relative-shifts.json",
       "category": "Layout & Positioning",
       "property": "top/left",
-      "summary": "position: relative + top/left shifts only the relative item; siblings remain at their flow positions",
+      "summary": "position: relative + top/left — DOCUMENTED LIMITATION: JoyDOM-swift only applies insets when position: absolute; relative items render at flow position (insets currently no-op). CSS spec would shift the green box down 20 / right 10.",
       "snapshot": { "viewportWidth": 360, "height": 160 }
     },
     {
