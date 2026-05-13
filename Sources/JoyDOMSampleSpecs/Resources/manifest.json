@@ -3115,6 +3115,14 @@
       "snapshot": { "viewportWidth": 360, "height": 120 }
     },
     {
+      "id": "boxmodel-padding-nested",
+      "file": "boxmodel/padding/nested.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Three-level nesting: outer 20 → mid 12 → inner per-side {4,12,4,12} padding — shows padding accumulating through depth",
+      "snapshot": { "viewportWidth": 360, "height": 140 }
+    },
+    {
       "id": "boxmodel-padding-responsive",
       "file": "boxmodel/padding/responsive.json",
       "category": "Box Model & Visuals",
