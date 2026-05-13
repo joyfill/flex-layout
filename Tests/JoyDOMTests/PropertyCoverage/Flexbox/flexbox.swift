@@ -156,6 +156,28 @@ final class FlexboxSnapshotTests: XCTestCase {
         )
     }
 
+    /// `flex-basis/responsive.json` declares the NARROW canvas (3 boxes
+    /// at flexBasis 90px, flexShrink 0 — they keep their fixed size and
+    /// leave free space at the end). The >=768px breakpoint flips `.box`
+    /// to `flexBasis: 0 + flexGrow: 1`, making items stretch to fill the
+    /// wider container. This method captures the wide-viewport branch.
+    func testFlexBasisResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "flexbox-flex-basis-responsive"),
+            "flex-basis responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/flexbox/flex-basis")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 900,
+            height: 100,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
+
     /// `flex-shrink/responsive.json` declares the NARROW canvas (3 boxes
     /// at 120px wide each shrink to fit the viewport). The ≥768px
     /// breakpoint flips `.box` to `flexShrink: 0`, letting items keep
