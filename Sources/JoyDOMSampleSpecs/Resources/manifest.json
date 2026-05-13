@@ -2019,6 +2019,14 @@
       "snapshot": { "viewportWidth": 360, "height": 160 }
     },
     {
+      "id": "layout-box-sizing-nested",
+      "file": "layout/box-sizing/nested.json",
+      "category": "Layout & Positioning",
+      "property": "boxSizing",
+      "summary": "three nested border-box containers (outer 200x160, middle 160x120, inner 120x80) — deduction applies at every level independently",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
       "id": "layout-box-sizing-responsive",
       "file": "layout/box-sizing/responsive.json",
       "category": "Layout & Positioning",

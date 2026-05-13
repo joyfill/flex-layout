@@ -10,7 +10,6 @@
     },
     ".card": {
       "display": "flex",
-      "height": { "value": 120, "unit": "px" },
       "padding": { "value": 16, "unit": "px" },
       "borderWidth": { "value": 4, "unit": "px" },
       "borderColor": "#111827",
@@ -20,10 +19,12 @@
     "#border-box": {
       "boxSizing": "border-box",
       "width":  { "value": 120, "unit": "px" },
+      "height": { "value": 120, "unit": "px" },
       "backgroundColor": "#EF4444"
     },
     "#content-box": {
       "width":  { "value": 80, "unit": "px" },
+      "height": { "value": 80, "unit": "px" },
       "backgroundColor": "#10B981"
     }
   },
