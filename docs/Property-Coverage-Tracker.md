@@ -70,7 +70,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 
 | Property | Status | Samples | Tests delta | Date | Notes |
 |---|---|---|---|---|---|
-| `width` | ⬜ | 1/0/0/0 | — | — | — |
+| `width` | ✅ | 7/5/4/5 | +23 baselines | 2026-05-14 | 22 samples (overview rewritten) + responsive-wide method; AI walk found zero impl bugs; value sweep covers `0px`/`60px`/`160px`/`300px`/`50%`/`100%`/omitted-auto; CSS invariants verified: percent resolves against the parent's content area (50% of 368 inner → 184px), 100% fills inner area, omitted width defers to flexBasis (auto.json) or collapses empty children to 0 (default.json); flexBasis wins over declared width (`with-flex-basis` renders at 160 not 80); flexGrow expands beyond declared width when free space remains (`with-flex-grow` 60→117); minWidth clamps up (40→100), maxWidth clamps down (200→80); `width-larger-than-container` confirms flex item overflows past container right edge with flexShrink:0; nested.json verifies percent widths resolve at each level independently against that level's inner content area; responsive breakpoint flip (200px ↔ 100%) confirmed via `testWidthResponsiveWide` |
 | `height` | ⬜ | 1/0/0/0 | — | — | — |
 | `min`/`maxWidth` & `min`/`maxHeight` | ⬜ | 1/0/0/0 | — | — | — |
 
