@@ -49,7 +49,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `display` | ⬜ | 1/0/0/0 | — | — | — |
 | `boxSizing` | ⬜ | 1/0/0/0 | — | — | PR #25 deduction needs visual sample |
 | `zIndex` | ⬜ | 1/0/0/0 | — | — | — |
-| `overflow` | ⬜ | 1/0/0/0 | — | — | — |
+| `overflow` | ✅ | 5/3/2/4 | +20 baselines | 2026-05-13 | 19 spec samples + responsive-wide method; AI walk found zero impl bugs and zero sample-design issues; spec values `visible`/`hidden`/`clip`/`scroll`/`auto` all verified against oversized children; documented limitation: `clip`/`scroll`/`auto` render byte-equivalent to `hidden` in static snapshots because `FlexOverflowModifier` maps clip→`.clipped()`, scroll→`ScrollView`+`.clipped()`, auto→`ViewThatFits` falling back to scroll — distinction is interaction-time, not paint-time; nested overflow:hidden containers clip independently (with-nested-overflow); overflow:hidden clips absolutely-positioned descendants (with-position-absolute-child); rounded-corner clipping verified (with-border-radius) |
 | `top`/`left`/`bottom`/`right` | ⬜ | 1/0/0/0 | — | — | Combined as `insets` |
 
 ## 3. Box Model & Visuals (8 properties)
@@ -161,3 +161,4 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 
 | Property | Limitation | Why deferred | Tracking |
 |---|---|---|---|
+| `overflow` | `clip`, `scroll`, and `auto` render byte-identical to `hidden` in static UI snapshots | `FlexOverflowModifier` maps `clip`→`.clipped()`, `scroll`→`ScrollView(...)` + `.clipped()`, `auto`→`ViewThatFits` falling back to a `ScrollView` + `.clipped()` — all three end up clipped at the same container rect when content overflows and no scrollbars/gestures are exercised. The distinction is interaction-time (scrollability), not paint-time. | overflow coverage walk (this PR) |
