@@ -48,7 +48,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `position` | ⬜ | 1/0/0/0 | — | — | — |
 | `display` | ⬜ | 1/0/0/0 | — | — | — |
 | `boxSizing` | ⬜ | 1/0/0/0 | — | — | PR #25 deduction needs visual sample |
-| `zIndex` | ⬜ | 1/0/0/0 | — | — | — |
+| `zIndex` | ⚠️ | 5/3/2/3 | +19 baselines | 2026-05-13 | 18 samples + responsive-wide method; **surfaced 1 `bug-in-impl` (deferred): zIndex is a no-op in the production renderer — children always paint in source order regardless of declared zIndex.** Cascade resolves zIndex correctly into `ComputedStyle.item.zIndex`, FlexLayout stores it via `FlexZIndexKey`, but no painter sort consumes it. Confirmed by `negative.png` (declared z:0 / z:-1, both render in source order with green on top) and `overview.png` (declared red:1 / green:3 / blue:2 paints as red→green→blue source order). Spec-compliant `no-position-no-effect` (in-flow flex children show no overlap) and `with-overflow-hidden` (zIndex doesn't escape clipping) verified. Fix requires Layout-protocol painter-order sort — out of scope for coverage walk; baselines locked to detect regression when fix lands. |
 | `overflow` | ⬜ | 1/0/0/0 | — | — | — |
 | `top`/`left`/`bottom`/`right` | ⬜ | 1/0/0/0 | — | — | Combined as `insets` |
 
@@ -150,14 +150,12 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 
 ## Bugs surfaced during the walk
 
-(Empty — populated as the walk progresses.)
-
 | ID | Property | Reproducer sample | Expected vs actual | Status |
 |---|---|---|---|---|
+| ZIDX-1 | `zIndex` | `layout/z-index/negative.json`, `overview.json` | CSS spec: positioned siblings paint in zIndex order (lower behind, higher in front). Actual: zIndex is fully ignored at paint time; children always paint in source order. Cascade + storage are correct; the missing piece is a painter-order sort inside `FlexLayout`. Visible everywhere overlap exists and source order ≠ zIndex order. | deferred — needs Layout-protocol painter-order sort |
 
 ## Documented limitations
 
-(Empty — populated as the walk progresses.)
-
 | Property | Limitation | Why deferred | Tracking |
 |---|---|---|---|
+| `zIndex` | Paint order is source-order, not zIndex-order — declared zIndex values cascade & store but never influence which child paints on top. | Fix requires changes to `FlexLayout`'s child-placement path to sort entries by zIndex (analogous to the `entries.sort { $0.item.zIndex < $1.item.zIndex }` pattern from the playground prototype) plus handling for absolutely-positioned items. Cross-module refactor — out of scope for a coverage walk. | ZIDX-1 row above; baselines under `Tests/JoyDOMTests/PropertyCoverage/Layout/__Snapshots__/layout/z-index/` are locked to current (broken) behavior to detect regression when fix lands. |
