@@ -46,7 +46,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | Property | Status | Samples | Tests delta | Date | Notes |
 |---|---|---|---|---|---|
 | `position` | ⬜ | 1/0/0/0 | — | — | — |
-| `display` | ⬜ | 1/0/0/0 | — | — | — |
+| `display` | ✅ | 3/4/4/4 | +21 baselines | 2026-05-13 | 15 spec samples (overview re-recorded) + 4 ios-ext (block/inline/inline-block/inline-flex) + responsive-wide method; AI walk found zero impl bugs; spec values `flex` (standard flex layout) and `none` (element + descendants removed from flow, zero space contribution) verified; default fallback (omitted = flex per joydom-swift; CSS spec would default by element type but joydom treats every node as flex) confirmed byte-identical to explicit `display: flex`; `display: none` on middle child collapses gap (siblings reflow with single gap, not gap-with-blank-slot); `display: none` on inner container hides container + all descendants; hidden child contributes zero space to flex-grow distribution (`with-grow` → 2 remaining children split full 400px width); hidden child contributes zero space to wrap-line calc (`with-wrap` 240px container fits all 3 visible items on one line, no wrap triggered); responsive breakpoint flip (`>=768px` hides `#b`) verified via `testDisplayResponsiveWide` |
 | `boxSizing` | ⬜ | 1/0/0/0 | — | — | PR #25 deduction needs visual sample |
 | `zIndex` | ⬜ | 1/0/0/0 | — | — | — |
 | `overflow` | ⬜ | 1/0/0/0 | — | — | — |
