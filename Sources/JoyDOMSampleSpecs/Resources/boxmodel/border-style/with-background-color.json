@@ -13,7 +13,7 @@
       "height": { "value": 80, "unit": "px" },
       "borderWidth": { "value": 3, "unit": "px" },
       "borderColor": "#000000",
-      "backgroundColor": "#E5E7EB"
+      "backgroundColor": "#10B981"
     },
     "#a": { "borderStyle": "solid" },
     "#b": { "borderStyle": "none" }
