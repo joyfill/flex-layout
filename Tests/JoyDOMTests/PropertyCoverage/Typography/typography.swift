@@ -24,4 +24,32 @@ import JoyDOMSampleSpecs
 final class TypographySnapshotTests: XCTestCase {
     // Walkers append their test methods below as each Typography
     // property's coverage walk lands.
+
+    // MARK: - fontSize
+
+    func testFontSize() {
+        assertSnapshotsForSamples(in: "typography/font-size")
+    }
+
+    /// Wide-viewport companion to `typography/font-size/responsive.json`.
+    ///
+    /// The manifest entry pins the narrow viewport (`360x100`) where the
+    /// paragraph renders at 14px. This method re-renders the same JSON at
+    /// `820x100` so the `width>=768px` breakpoint flips `fontSize` to 32px.
+    func testFontSizeResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "typography-font-size-responsive"),
+            "responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/typography/font-size")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 820,
+            height: 100,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
