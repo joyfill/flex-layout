@@ -2881,7 +2881,7 @@
       "category": "Box Model & Visuals",
       "property": "backgroundColor",
       "summary": "Green box with 20px padding — background fills the padded inside per CSS box-model",
-      "snapshot": { "viewportWidth": 200, "height": 120 }
+      "snapshot": { "viewportWidth": 240, "height": 160 }
     },
     {
       "id": "boxmodel-background-color-with-border",
@@ -2889,7 +2889,7 @@
       "category": "Box Model & Visuals",
       "property": "backgroundColor",
       "summary": "Blue box with a 6px black solid border — background fills inside the border-box per CSS",
-      "snapshot": { "viewportWidth": 200, "height": 120 }
+      "snapshot": { "viewportWidth": 200, "height": 140 }
     },
     {
       "id": "boxmodel-background-color-with-border-radius",

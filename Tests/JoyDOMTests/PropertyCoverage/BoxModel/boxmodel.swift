@@ -20,4 +20,29 @@ import JoyDOMSampleSpecs
 final class BoxModelSnapshotTests: XCTestCase {
     // Walkers append their test methods below as each Box Model &
     // Visuals property's coverage walk lands.
+
+    func testBackgroundColor() {
+        assertSnapshotsForSamples(in: "boxmodel/background-color")
+    }
+
+    /// `boxmodel/background-color/responsive.json` declares the NARROW
+    /// canvas (viewport <768px → red). This method renders the same JSON
+    /// at the wide canvas (≥768px → blue) so both branches of the
+    /// breakpoint are baseline-locked.
+    func testBackgroundColorResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "boxmodel-background-color-responsive"),
+            "background-color responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/boxmodel/background-color")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 900,
+            height: 120,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
