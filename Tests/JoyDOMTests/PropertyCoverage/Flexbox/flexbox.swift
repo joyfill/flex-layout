@@ -174,4 +174,25 @@ final class FlexboxSnapshotTests: XCTestCase {
             snapshotName: "responsive-wide"
         )
     }
+
+    /// `order/responsive.json` declares the NARROW canvas (source order
+    /// red → green → blue). The ≥768px breakpoint applies order 3/1/2 to
+    /// #a/#b/#c so the visual order becomes green → blue → red. This
+    /// method captures the wide-viewport branch.
+    func testOrderResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "flexbox-order-responsive"),
+            "order responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/flexbox/order")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 900,
+            height: 100,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
