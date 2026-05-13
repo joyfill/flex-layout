@@ -2788,11 +2788,140 @@
       "snapshot": { "viewportWidth": 280, "height": 200 }
     },
     {
-      "id": "boxmodel-background-color",
+      "id": "boxmodel-background-color-overview",
       "file": "boxmodel/background-color/overview.json",
       "category": "Box Model & Visuals",
       "property": "backgroundColor",
-      "summary": "Hex backgroundColor on a sized card"
+      "summary": "Four colored boxes on a gray root showcase the standard palette via #id selectors",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "boxmodel-background-color-short-hex",
+      "file": "boxmodel/background-color/short-hex.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "3-digit hex shorthand (#f00 / #0a0 / #00f) — exercises hex parsing variants",
+      "snapshot": { "viewportWidth": 280, "height": 100 }
+    },
+    {
+      "id": "boxmodel-background-color-long-hex",
+      "file": "boxmodel/background-color/long-hex.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "Standard 6-digit hex (#3B82F6) on a single box",
+      "snapshot": { "viewportWidth": 200, "height": 100 }
+    },
+    {
+      "id": "boxmodel-background-color-hex-with-alpha",
+      "file": "boxmodel/background-color/hex-with-alpha.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "8-digit hex with alpha (#RRGGBBAA) at 100/50/20% opacity",
+      "snapshot": { "viewportWidth": 240, "height": 100 }
+    },
+    {
+      "id": "boxmodel-background-color-contrast-pair",
+      "file": "boxmodel/background-color/contrast-pair.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "Bright/dark adjacent pair (#FFFFFF white + #000000 black) on the gray root",
+      "snapshot": { "viewportWidth": 200, "height": 100 }
+    },
+    {
+      "id": "boxmodel-background-color-default",
+      "file": "boxmodel/background-color/default.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "Middle box omits backgroundColor — verifies CSS default is transparent (gray root shows through)",
+      "snapshot": { "viewportWidth": 240, "height": 100 }
+    },
+    {
+      "id": "boxmodel-background-color-empty",
+      "file": "boxmodel/background-color/empty.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "backgroundColor on a sized container with no children — fills the entire content box",
+      "snapshot": { "viewportWidth": 240, "height": 120 }
+    },
+    {
+      "id": "boxmodel-background-color-single-child",
+      "file": "boxmodel/background-color/single-child.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "Single amber child on the gray root — minimum-viable backgroundColor demo",
+      "snapshot": { "viewportWidth": 200, "height": 100 }
+    },
+    {
+      "id": "boxmodel-background-color-nested-bg-on-bg",
+      "file": "boxmodel/background-color/nested-bg-on-bg.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "Three nesting levels each declare backgroundColor — outer gray contains a blue panel containing red+amber boxes (all distinct)",
+      "snapshot": { "viewportWidth": 240, "height": 140 }
+    },
+    {
+      "id": "boxmodel-background-color-inline",
+      "file": "boxmodel/background-color/inline.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "backgroundColor authored via node.props.style (inline) rather than #id selectors",
+      "snapshot": { "viewportWidth": 240, "height": 100 }
+    },
+    {
+      "id": "boxmodel-background-color-class-selector",
+      "file": "boxmodel/background-color/class-selector.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "backgroundColor applied via .class selectors (.swatch-red / .swatch-green / .swatch-blue) composed with .box",
+      "snapshot": { "viewportWidth": 240, "height": 100 }
+    },
+    {
+      "id": "boxmodel-background-color-with-padding",
+      "file": "boxmodel/background-color/with-padding.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "Green box with 20px padding — background fills the padded inside per CSS box-model",
+      "snapshot": { "viewportWidth": 240, "height": 160 }
+    },
+    {
+      "id": "boxmodel-background-color-with-border",
+      "file": "boxmodel/background-color/with-border.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "Blue box with a 6px black solid border — background fills inside the border-box per CSS",
+      "snapshot": { "viewportWidth": 200, "height": 140 }
+    },
+    {
+      "id": "boxmodel-background-color-with-border-radius",
+      "file": "boxmodel/background-color/with-border-radius.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "Three boxes with borderRadius 0 / 12 / 40 — background gets clipped to rounded corners",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "boxmodel-background-color-with-opacity",
+      "file": "boxmodel/background-color/with-opacity.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "Three red boxes at opacity 1.0 / 0.5 / 0.2 — backgroundColor inherits item opacity",
+      "snapshot": { "viewportWidth": 240, "height": 100 }
+    },
+    {
+      "id": "boxmodel-background-color-with-flex-grow",
+      "file": "boxmodel/background-color/with-flex-grow.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "Three boxes with flexGrow 1/2/1 — backgroundColor paints across the grown widths (red, green double-wide, blue)",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "boxmodel-background-color-responsive",
+      "file": "boxmodel/background-color/responsive.json",
+      "category": "Box Model & Visuals",
+      "property": "backgroundColor",
+      "summary": "responsive: backgroundColor red on narrow viewport → blue at ≥768px breakpoint",
+      "snapshot": { "viewportWidth": 280, "height": 120 }
     },
     {
       "id": "boxmodel-opacity",
