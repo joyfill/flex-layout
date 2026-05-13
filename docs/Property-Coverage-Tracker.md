@@ -86,7 +86,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `textAlign` | ⬜ | 1/0/0/0 | — | — | — |
 | `textTransform` | ⬜ | 1/0/0/0 | — | — | — |
 | `lineHeight` | ⬜ | 1/0/0/0 | — | — | ⚠️ system-leading subtraction caveat |
-| `letterSpacing` | ⬜ | 1/0/0/0 | — | — | ⚠️ em scaling caveat |
+| `letterSpacing` | ✅ | 9/1/4/5 | +20 | 2026-05-14 | em scaling verified: `0.1em` @ `fontSize: 16` renders pixel-identical to `1.6px` (`em-px-equivalence.json`). px and em sweeps + negative-tracking overlap edge confirm `.tracking()` mapping. Note: `with-text-align.json` exercises the property × textAlign axis but the per-line `width` on `.tracked` sits on the `<p>` element, not the inner Text leaf, so the three lines collapse to natural width — sample still proves tracking renders identically across align declarations (the textAlign-on-`<p>` weakness is a separate Typography-section concern). |
 
 ## 6. Text Behavior (2 properties)
 
