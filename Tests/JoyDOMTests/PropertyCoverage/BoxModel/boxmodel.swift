@@ -20,4 +20,29 @@ import JoyDOMSampleSpecs
 final class BoxModelSnapshotTests: XCTestCase {
     // Walkers append their test methods below as each Box Model &
     // Visuals property's coverage walk lands.
+
+    func testMargin() {
+        assertSnapshotsForSamples(in: "boxmodel/margin")
+    }
+
+    /// `margin/responsive.json` declares the NARROW canvas (margin: 4 on
+    /// each item). The ≥768px breakpoint flips `.tile` to `margin: 16`,
+    /// visibly enlarging the inter-item spacing. This method captures the
+    /// wide-viewport branch.
+    func testMarginResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "boxmodel-margin-responsive"),
+            "margin responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/boxmodel/margin")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 900,
+            height: 180,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
