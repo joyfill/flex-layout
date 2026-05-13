@@ -1891,6 +1891,158 @@
       "summary": "flex container plus a hidden node via display:none"
     },
     {
+      "id": "layout-display-flex",
+      "file": "layout/display/flex.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "display:flex on root lays children out in a row",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "layout-display-none",
+      "file": "layout/display/none.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "display:none on middle child removes it from flow; siblings reflow with gap collapsing",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "layout-display-default",
+      "file": "layout/display/default.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "display omitted entirely; joydom-swift defaults to flex layout",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "layout-display-empty",
+      "file": "layout/display/empty.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "display:flex container with no children renders an empty box at its fixed size",
+      "snapshot": { "viewportWidth": 300, "height": 120 }
+    },
+    {
+      "id": "layout-display-single-child",
+      "file": "layout/display/single-child.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "single child in a display:flex container renders normally",
+      "snapshot": { "viewportWidth": 300, "height": 120 }
+    },
+    {
+      "id": "layout-display-none-on-middle-child",
+      "file": "layout/display/none-on-middle-child.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "display:none on the middle of three siblings — first and third reflow together",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "layout-display-none-on-container",
+      "file": "layout/display/none-on-container.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "display:none on a flex container hides the container and all descendants",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "layout-display-inline",
+      "file": "layout/display/inline.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "display declared inline via node.props.style — middle child set to none",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "layout-display-class-selector",
+      "file": "layout/display/class-selector.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "display applied via class selectors (.shown / .gone) — middle child hidden",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "layout-display-in-flex-row",
+      "file": "layout/display/in-flex-row.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "display:none child inside a nested flex row container; outer + inner survive",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "layout-display-in-fixed-width",
+      "file": "layout/display/in-fixed-width.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "display:none inside a fixed-width container — hidden child contributes zero space",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "layout-display-with-grow",
+      "file": "layout/display/with-grow.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "display:none child doesn't claim flex-grow share; remaining siblings split the space",
+      "snapshot": { "viewportWidth": 500, "height": 120 }
+    },
+    {
+      "id": "layout-display-with-wrap",
+      "file": "layout/display/with-wrap.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "display:none child in a wrapping container — wrapping computed over visible items only",
+      "snapshot": { "viewportWidth": 300, "height": 200 }
+    },
+    {
+      "id": "layout-display-with-padding",
+      "file": "layout/display/with-padding.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "display:none child contributes zero space — container padding/gap unaffected by it",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "layout-display-responsive",
+      "file": "layout/display/responsive.json",
+      "category": "Layout & Positioning",
+      "property": "display",
+      "summary": "responsive: at narrow viewport b is visible; at >=768px b becomes display:none",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "layout-display-ios-ext-block",
+      "file": "layout/display-ios-ext/block.json",
+      "category": "Layout & Positioning",
+      "property": "display-iOSExt",
+      "summary": "iOS-ext block: display:block on a flex child (not in JoyDOM spec; covered only by the iOS implementation)",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "layout-display-ios-ext-inline",
+      "file": "layout/display-ios-ext/inline.json",
+      "category": "Layout & Positioning",
+      "property": "display-iOSExt",
+      "summary": "iOS-ext inline: display:inline on a flex child (not in JoyDOM spec; covered only by the iOS implementation)",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "layout-display-ios-ext-inline-block",
+      "file": "layout/display-ios-ext/inline-block.json",
+      "category": "Layout & Positioning",
+      "property": "display-iOSExt",
+      "summary": "iOS-ext inline-block: display:inline-block on a flex child (not in JoyDOM spec; covered only by the iOS implementation)",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "layout-display-ios-ext-inline-flex",
+      "file": "layout/display-ios-ext/inline-flex.json",
+      "category": "Layout & Positioning",
+      "property": "display-iOSExt",
+      "summary": "iOS-ext inline-flex: display:inline-flex on a nested container (not in JoyDOM spec; covered only by the iOS implementation)",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
       "id": "layout-box-sizing",
       "file": "layout/box-sizing/overview.json",
       "category": "Layout & Positioning",
