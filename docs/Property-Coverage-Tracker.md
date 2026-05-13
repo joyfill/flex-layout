@@ -39,7 +39,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `alignSelf` | ⬜ | 1/0/0/0 | — | — | — |
 | `flexWrap` | ⬜ | 1/0/0/0 | — | — | — |
 | `gap`/`rowGap`/`columnGap` | ⬜ | 1/0/0/0 | — | — | — |
-| `order` | ⬜ | 1/0/0/0 | — | — | — |
+| `order` | ✅ | 5/3/2/4 | +20 baselines | 2026-05-13 | 19 samples (overview kept) + responsive-wide method; AI walk found zero impl bugs; verified negative orders + mixed signs + large-magnitude relative ordering (1000/10/100 → 10<100<1000); same-order CSS-spec stability preserved (source order tiebreaker); ordering applies on column axis; reordering coexists cleanly with justifyContent / flexWrap / flexGrow / alignSelf without affecting sizing or cross-axis alignment |
 
 ## 2. Layout & Positioning (9 properties)
 
