@@ -32,7 +32,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 |---|---|---|---|---|---|
 | `flexDirection` | ✅ | 2/5/6/9 | +33 baselines | 2026-05-12 | 21 spec + 2 iOS-ext (row/column-reverse moved to `flex-direction-ios-ext/`); surfaced 2 impl bugs (synthetic-root wrap, empty-div 10px intrinsic) + 1 sample-design patch (with-wrap alignContent) |
 | `flexGrow` | ✅ | 5/5/6/4 | +20 baselines | 2026-05-13 | 19 samples + responsive-wide method; AI walk found zero impl bugs; ratio-equivalence (one/two/fractional byte-identical) proven; alignContent removed from with-wrap during scope check |
-| `flexShrink` | ⬜ | 1/0/0/0 | — | — | — |
+| `flexShrink` | ✅ | 5/5/6/4 | +19 baselines | 2026-05-13 | 19 samples (overview kept) + responsive-wide method; AI walk found zero impl bugs; ratio-equivalence (one/two/fractional/default byte-identical at 84/84/84) proven; CSS weighted shrink (basis × shrink) verified on with-basis (45/91/136); min-clamp + reflow verified on with-min-width (100/66/66 after re-resolving overflow on non-frozen items); wrap defeats shrink confirmed |
 | `flexBasis` | ⬜ | 1/0/0/0 | — | — | — |
 | `justifyContent` | ⬜ | 1/0/0/0 | — | — | — |
 | `alignItems` | ⬜ | 1/0/0/0 | — | — | — |
