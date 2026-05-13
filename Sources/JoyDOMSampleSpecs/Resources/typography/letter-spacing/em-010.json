@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "display": "flex",
+      "flexDirection": "column",
+      "padding": { "value": 16, "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    },
+    "#label": {
+      "fontSize": { "value": 24, "unit": "px" },
+      "letterSpacing": { "value": 0.1, "unit": "em" }
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "id": "label" }, "children": ["Em zero one."] }
+    ]
+  }
+}
