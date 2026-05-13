@@ -39,7 +39,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `alignSelf` | ⬜ | 1/0/0/0 | — | — | — |
 | `flexWrap` | ✅ | 2/4/4/5 | +17 baselines | 2026-05-13 | 15 spec samples + 1 ios-ext (wrap-reverse) + responsive-wide method; AI walk found zero impl bugs; spec values `nowrap` (with overflow → items shrink) and `wrap` (with overflow → items reflow onto multiple lines) verified; default fallback (omitted = nowrap) confirmed byte-identical to explicit nowrap; per-line free-space distribution (`with-grow` → row1 grows to 140/140, row2 grows alone to full 288) proven; per-axis `gap` (c:16, r:24) shows row-gap honored across wrapped lines; one sample-design patch (in-column container shrunk from 320→200 so it fits 240 viewport); CSS-default `align-content: stretch` avoided by leaving container height unset so lines pack at content height |
 | `gap`/`rowGap`/`columnGap` | ⬜ | 1/0/0/0 | — | — | — |
-| `order` | ⬜ | 1/0/0/0 | — | — | — |
+| `order` | ✅ | 5/3/2/4 | +20 baselines | 2026-05-13 | 19 samples (overview kept) + responsive-wide method; AI walk found zero impl bugs; verified negative orders + mixed signs + large-magnitude relative ordering (1000/10/100 → 10<100<1000); same-order CSS-spec stability preserved (source order tiebreaker); ordering applies on column axis; reordering coexists cleanly with justifyContent / flexWrap / flexGrow / alignSelf without affecting sizing or cross-axis alignment |
 
 ## 2. Layout & Positioning (9 properties)
 

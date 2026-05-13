@@ -889,6 +889,150 @@
       }
     },
     {
+      "id": "flexbox-order-zero",
+      "file": "flexbox/order/zero.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "value sweep: order: 0 on all items \u2014 source order preserved (red, green, blue)",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-order-positive",
+      "file": "flexbox/order/positive.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "value sweep: orders 3/2/1 on three items \u2014 reverses source order (blue, green, red)",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-order-mixed-signs",
+      "file": "flexbox/order/mixed-signs.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "value sweep: orders 1/0/-1 \u2014 negative renders first (blue, green, red)",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-order-negative-only",
+      "file": "flexbox/order/negative-only.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "value sweep: orders 0/-1/-2 \u2014 all-negative order chain renders most-negative first (blue, green, red)",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-order-large-values",
+      "file": "flexbox/order/large-values.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "value sweep: orders 1000/10/100 \u2014 only relative magnitude matters (green, blue, red)",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-order-default",
+      "file": "flexbox/order/default.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "default (omitted): all items use order 0 \u2014 source order renders unchanged",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-order-empty",
+      "file": "flexbox/order/empty.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "edge: empty container \u2014 no children to reorder",
+      "snapshot": { "viewportWidth": 240, "height": 100 }
+    },
+    {
+      "id": "flexbox-order-single-child",
+      "file": "flexbox/order/single-child.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "edge: single child with order: 5 \u2014 ordering is a no-op",
+      "snapshot": { "viewportWidth": 200, "height": 100 }
+    },
+    {
+      "id": "flexbox-order-same-order-stable",
+      "file": "flexbox/order/same-order-stable.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "edge: all four items share order: 1 \u2014 source order preserved (CSS-spec stable)",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-order-inline",
+      "file": "flexbox/order/inline.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "authoring: order set via inline node.props.style on each child",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-order-class-selector",
+      "file": "flexbox/order/class-selector.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "authoring: order applied via .first/.second/.third class selectors",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-order-in-column",
+      "file": "flexbox/order/in-column.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "context: flexDirection column \u2014 order reorders vertically (green, blue, red top-to-bottom)",
+      "snapshot": { "viewportWidth": 200, "height": 240 }
+    },
+    {
+      "id": "flexbox-order-in-fixed-width",
+      "file": "flexbox/order/in-fixed-width.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "context: fixed-width 300px container \u2014 ordering does not affect sizing (blue, red, green)",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
+    },
+    {
+      "id": "flexbox-order-with-justify",
+      "file": "flexbox/order/with-justify.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "interaction: order + justifyContent: space-between \u2014 reordered children get distributed (green, blue, red)",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "flexbox-order-with-wrap",
+      "file": "flexbox/order/with-wrap.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "interaction: order + flexWrap: wrap \u2014 ordered sequence (green, amber, blue, red) flows into two rows",
+      "snapshot": { "viewportWidth": 220, "height": 180 }
+    },
+    {
+      "id": "flexbox-order-with-grow",
+      "file": "flexbox/order/with-grow.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "interaction: order + flexGrow: 1 \u2014 items reorder then grow to fill (green, blue, red)",
+      "snapshot": { "viewportWidth": 420, "height": 100 }
+    },
+    {
+      "id": "flexbox-order-with-align-self",
+      "file": "flexbox/order/with-align-self.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "interaction: order combined with per-item alignSelf \u2014 reordering preserves each item's cross-axis alignment",
+      "snapshot": { "viewportWidth": 320, "height": 160 }
+    },
+    {
+      "id": "flexbox-order-responsive",
+      "file": "flexbox/order/responsive.json",
+      "category": "Flexbox",
+      "property": "order",
+      "summary": "responsive: source order at narrow viewports, order 3/1/2 reorder at \u2265768px (drag viewport slider through 768 to see)",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
       "id": "layout-position",
       "file": "layout/position.json",
       "category": "Layout & Positioning",
