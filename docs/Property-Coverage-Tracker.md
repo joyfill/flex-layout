@@ -77,7 +77,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 
 | Property | Status | Samples | Tests delta | Date | Notes |
 |---|---|---|---|---|---|
-| `fontFamily` | ⬜ | 1/0/0/0 | — | — | — |
+| `fontFamily` | ✅ | 7/3/2/5 | +19 | 2026-05-14 | 18 samples (incl. responsive-wide). Value sweep covers System / Helvetica / Times New Roman / Menlo / Courier / Georgia / Helvetica Neue. Verified `default` (omitted) and unknown-family `invalid-fallback` both render via CoreText system fallback. Interactions cover × fontSize, × fontWeight (incl. numeric 300/700), × color. `nested.json` confirms SwiftUI `.font()` env on a parent `<div>` cascades to descendant `<p>` text and that a child override resets cleanly. Zero impl bugs surfaced. |
 | `fontSize` | ⬜ | 1/0/0/0 | — | — | — |
 | `fontWeight` | ⬜ | 1/0/0/0 | — | — | CSS Fonts L4 band mapping |
 | `fontStyle` | ⬜ | 1/0/0/0 | — | — | — |
