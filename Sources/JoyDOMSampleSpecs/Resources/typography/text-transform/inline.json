@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "style": {},
+  "breakpoints": [],
+  "layout": {
+    "type": "p",
+    "props": {
+      "id": "t",
+      "style": { "textTransform": "uppercase", "fontSize": { "value": 20, "unit": "px" } }
+    },
+    "children": ["inline-styled text"]
+  }
+}
