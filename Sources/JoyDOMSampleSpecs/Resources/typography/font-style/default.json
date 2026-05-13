@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "display": "flex",
+      "padding": { "value": 24, "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    },
+    "#p": {
+      "fontSize": { "value": 24, "unit": "px" }
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "id": "p" }, "children": ["No fontStyle declared — defaults to normal"] }
+    ]
+  }
+}
