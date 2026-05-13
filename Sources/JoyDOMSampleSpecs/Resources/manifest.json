@@ -4176,11 +4176,132 @@
       "summary": "Left, center, right"
     },
     {
-      "id": "typography-text-transform",
+      "id": "typography-text-transform-overview",
       "file": "typography/text-transform/overview.json",
       "category": "Typography",
       "property": "textTransform",
-      "summary": "none, uppercase, lowercase"
+      "summary": "Showcase: none / uppercase / lowercase rendered side by side",
+      "snapshot": { "viewportWidth": 400, "height": 200 }
+    },
+    {
+      "id": "typography-text-transform-none",
+      "file": "typography/text-transform/none.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Value sweep — textTransform: none leaves casing untouched",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-text-transform-uppercase",
+      "file": "typography/text-transform/uppercase.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Value sweep — textTransform: uppercase",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-text-transform-lowercase",
+      "file": "typography/text-transform/lowercase.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Value sweep — textTransform: lowercase",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-text-transform-default",
+      "file": "typography/text-transform/default.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Defaults — textTransform omitted, CSS fallback is none",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-text-transform-already-uppercase",
+      "file": "typography/text-transform/already-uppercase.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Edge — already-uppercase source string transformed with lowercase",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-text-transform-already-lowercase",
+      "file": "typography/text-transform/already-lowercase.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Edge — already-lowercase source string transformed with uppercase",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-text-transform-multi-word",
+      "file": "typography/text-transform/multi-word.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Edge — multi-word string fully uppercased (no per-word capitalize in spec)",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-text-transform-inline",
+      "file": "typography/text-transform/inline.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Authoring — inline style on the node's props.style",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-text-transform-class-selector",
+      "file": "typography/text-transform/class-selector.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Authoring — class selectors (.shout uppercase, .whisper lowercase)",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "typography-text-transform-with-font-family",
+      "file": "typography/text-transform/with-font-family.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Interaction × fontFamily — serif vs sans caps headings",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "typography-text-transform-with-letter-spacing",
+      "file": "typography/text-transform/with-letter-spacing.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Interaction × letterSpacing — uppercase tight vs tracked",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "typography-text-transform-unicode",
+      "file": "typography/text-transform/unicode.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Edge — Unicode (accented letters) and emoji preserved through uppercase",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "typography-text-transform-single-child",
+      "file": "typography/text-transform/single-child.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Edge — single short text node",
+      "snapshot": { "viewportWidth": 400, "height": 60 }
+    },
+    {
+      "id": "typography-text-transform-empty",
+      "file": "typography/text-transform/empty.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Edge — empty children, textTransform on a fixed-size container",
+      "snapshot": { "viewportWidth": 300, "height": 80 }
+    },
+    {
+      "id": "typography-text-transform-responsive",
+      "file": "typography/text-transform/responsive.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Responsive — narrow viewport: lowercase; >=768px: uppercase",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
     },
     {
       "id": "typography-line-height",
