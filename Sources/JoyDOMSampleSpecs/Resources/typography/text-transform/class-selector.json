@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "style": {
+    ".shout": { "textTransform": "uppercase", "fontSize": { "value": 20, "unit": "px" } },
+    ".whisper": { "textTransform": "lowercase", "fontSize": { "value": 20, "unit": "px" } }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "id": "a", "className": ["shout"] }, "children": ["Shouted Headline"] },
+      { "type": "p", "props": { "id": "b", "className": ["whisper"] }, "children": ["Whispered Aside"] }
+    ]
+  }
+}
