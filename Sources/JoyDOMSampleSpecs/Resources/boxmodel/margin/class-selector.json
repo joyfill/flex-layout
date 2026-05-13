@@ -12,8 +12,10 @@
     ".box": {
       "width":  { "value": 60, "unit": "px" },
       "height": { "value": 60, "unit": "px" },
-      "borderRadius": { "value": 4, "unit": "px" },
-      "margin": { "value": 8, "unit": "px" }
+      "borderRadius": { "value": 4, "unit": "px" }
+    },
+    ".spaced": {
+      "margin": { "value": 12, "unit": "px" }
     },
     "#a": { "backgroundColor": "#EF4444" },
     "#b": { "backgroundColor": "#10B981" },
@@ -24,9 +26,9 @@
     "type": "div",
     "props": { "id": "root" },
     "children": [
-      { "type": "div", "props": { "id": "a", "className": ["box"] } },
-      { "type": "div", "props": { "id": "b", "className": ["box"] } },
-      { "type": "div", "props": { "id": "c", "className": ["box"] } }
+      { "type": "div", "props": { "id": "a", "className": ["box", "spaced"] } },
+      { "type": "div", "props": { "id": "b", "className": ["box", "spaced"] } },
+      { "type": "div", "props": { "id": "c", "className": ["box", "spaced"] } }
     ]
   }
 }

@@ -5,8 +5,8 @@
       "display": "flex",
       "flexDirection": "row",
       "padding": { "value": 16, "unit": "px" },
-      "gap":     { "value": 0,  "unit": "px" },
-      "width":   { "value": 360, "unit": "px" },
+      "gap":     { "value": 16, "unit": "px" },
+      "width":   { "value": 400, "unit": "px" },
       "backgroundColor": "#F3F4F6"
     },
     ".box": {
