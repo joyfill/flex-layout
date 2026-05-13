@@ -4891,11 +4891,156 @@
       "snapshot": { "viewportWidth": 480, "height": 200 }
     },
     {
-      "id": "typography-letter-spacing",
+      "id": "typography-letter-spacing-overview",
       "file": "typography/letter-spacing/overview.json",
       "category": "Typography",
       "property": "letterSpacing",
-      "summary": "Px and em letter-spacing values"
+      "summary": "showcase: px tracking on one line, em tracking on another",
+      "snapshot": { "viewportWidth": 400, "height": 160 }
+    },
+    {
+      "id": "typography-letter-spacing-default",
+      "file": "typography/letter-spacing/default.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "default: letterSpacing omitted, baseline tracking",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "typography-letter-spacing-px-zero",
+      "file": "typography/letter-spacing/px-zero.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "value sweep: letterSpacing 0px (explicit zero matches default)",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "typography-letter-spacing-px-1",
+      "file": "typography/letter-spacing/px-1.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "value sweep: letterSpacing 1px",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "typography-letter-spacing-px-2",
+      "file": "typography/letter-spacing/px-2.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "value sweep: letterSpacing 2px",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "typography-letter-spacing-px-4",
+      "file": "typography/letter-spacing/px-4.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "value sweep: letterSpacing 4px",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "typography-letter-spacing-px-8",
+      "file": "typography/letter-spacing/px-8.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "value sweep: letterSpacing 8px (wide tracking)",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "typography-letter-spacing-px-negative-2",
+      "file": "typography/letter-spacing/px-negative-2.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "edge: negative letterSpacing -2px (tight tracking)",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "typography-letter-spacing-em-005",
+      "file": "typography/letter-spacing/em-005.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "value sweep: letterSpacing 0.05em (scales with fontSize)",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "typography-letter-spacing-em-010",
+      "file": "typography/letter-spacing/em-010.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "value sweep: letterSpacing 0.1em",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "typography-letter-spacing-em-020",
+      "file": "typography/letter-spacing/em-020.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "value sweep: letterSpacing 0.2em (wide em tracking)",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "typography-letter-spacing-em-px-equivalence",
+      "file": "typography/letter-spacing/em-px-equivalence.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "em-scaling verification: 0.1em @ 16px fontSize must render identical to 1.6px",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "typography-letter-spacing-inline",
+      "file": "typography/letter-spacing/inline.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "authoring: letterSpacing applied via inline node.props.style",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "typography-letter-spacing-class-selector",
+      "file": "typography/letter-spacing/class-selector.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "authoring: letterSpacing applied via class selector",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "typography-letter-spacing-with-font-size",
+      "file": "typography/letter-spacing/with-font-size.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "interaction: same 0.1em across 12/20/32px fontSize — tracking scales proportionally",
+      "snapshot": { "viewportWidth": 400, "height": 200 }
+    },
+    {
+      "id": "typography-letter-spacing-with-font-weight",
+      "file": "typography/letter-spacing/with-font-weight.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "interaction: tracking applied to normal and bold weight lines",
+      "snapshot": { "viewportWidth": 400, "height": 160 }
+    },
+    {
+      "id": "typography-letter-spacing-with-text-align",
+      "file": "typography/letter-spacing/with-text-align.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "interaction: tracking + textAlign left/center/right within fixed-width lines",
+      "snapshot": { "viewportWidth": 400, "height": 200 }
+    },
+    {
+      "id": "typography-letter-spacing-negative-overlap",
+      "file": "typography/letter-spacing/negative-overlap.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "edge: -6px tracking at 32px fontSize overlaps glyphs",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "typography-letter-spacing-responsive",
+      "file": "typography/letter-spacing/responsive.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "responsive: 0px tight at narrow viewport, 6px wide at >=768px",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
     },
     {
       "id": "sizing-width",
