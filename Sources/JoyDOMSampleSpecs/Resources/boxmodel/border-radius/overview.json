@@ -1,23 +1,52 @@
 {
   "version": 1,
   "style": {
-    "#pill":    { "borderRadius": { "value": 999, "unit": "px" }, "backgroundColor": "#0066CC", "width": { "value": 200, "unit": "px" }, "height": { "value": 40, "unit": "px" } },
+    "#root": {
+      "display": "flex",
+      "flexDirection": "row",
+      "padding": { "value": 16, "unit": "px" },
+      "gap":     { "value": 12, "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    },
+    "#sharp": {
+      "width":  { "value": 80, "unit": "px" },
+      "height": { "value": 80, "unit": "px" },
+      "backgroundColor": "#EF4444",
+      "borderRadius": { "value": 0, "unit": "px" }
+    },
+    "#rounded": {
+      "width":  { "value": 80, "unit": "px" },
+      "height": { "value": 80, "unit": "px" },
+      "backgroundColor": "#10B981",
+      "borderRadius": { "value": 16, "unit": "px" }
+    },
+    "#pill": {
+      "width":  { "value": 80, "unit": "px" },
+      "height": { "value": 80, "unit": "px" },
+      "backgroundColor": "#3B82F6",
+      "borderRadius": { "value": 40, "unit": "px" }
+    },
     "#corners": {
+      "width":  { "value": 80, "unit": "px" },
+      "height": { "value": 80, "unit": "px" },
+      "backgroundColor": "#F59E0B",
       "borderRadius": {
-        "topLeft":     { "value": 12, "unit": "px" },
+        "topLeft":     { "value": 24, "unit": "px" },
         "topRight":    { "value":  4, "unit": "px" },
-        "bottomRight": { "value": 12, "unit": "px" },
+        "bottomRight": { "value": 24, "unit": "px" },
         "bottomLeft":  { "value":  4, "unit": "px" }
-      },
-      "backgroundColor": "#FF8800",
-      "width": { "value": 200, "unit": "px" },
-      "height": { "value": 60, "unit": "px" }
+      }
     }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "pill" },
-    "children": [{ "type": "div", "props": { "id": "corners" } }]
+    "props": { "id": "root" },
+    "children": [
+      { "type": "div", "props": { "id": "sharp" } },
+      { "type": "div", "props": { "id": "rounded" } },
+      { "type": "div", "props": { "id": "pill" } },
+      { "type": "div", "props": { "id": "corners" } }
+    ]
   }
 }
