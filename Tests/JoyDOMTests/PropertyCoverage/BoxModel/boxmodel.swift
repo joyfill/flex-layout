@@ -20,4 +20,31 @@ import JoyDOMSampleSpecs
 final class BoxModelSnapshotTests: XCTestCase {
     // Walkers append their test methods below as each Box Model &
     // Visuals property's coverage walk lands.
+
+    /// Renders every sample under `boxmodel/opacity/` and snapshots it
+    /// to a leaf matching the JSON basename (e.g. `half.json` → `half.png`).
+    func testOpacity() {
+        assertSnapshotsForSamples(in: "boxmodel/opacity")
+    }
+
+    /// `boxmodel/opacity/responsive.json` declares the NARROW canvas
+    /// where `.box` resolves to `opacity: 0.25`. At ≥768px the breakpoint
+    /// flips `.box` to `opacity: 1`. This second snapshot renders the
+    /// same JSON at a wide viewport to capture the breakpoint flip.
+    func testOpacityResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "boxmodel-opacity-responsive"),
+            "opacity responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/boxmodel/opacity")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 900,
+            height: 100,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }

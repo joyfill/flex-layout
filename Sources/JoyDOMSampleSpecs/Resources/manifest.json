@@ -2799,7 +2799,144 @@
       "file": "boxmodel/opacity/overview.json",
       "category": "Box Model & Visuals",
       "property": "opacity",
-      "summary": "Three siblings at opacity 1, 0.5, and 0"
+      "summary": "Three siblings at opacity 1, 0.5, and 0",
+      "snapshot": { "viewportWidth": 240, "height": 100 }
+    },
+    {
+      "id": "boxmodel-opacity-zero",
+      "file": "boxmodel/opacity/zero.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "opacity 0 — box fully transparent (gray bg shows through)",
+      "snapshot": { "viewportWidth": 120, "height": 100 }
+    },
+    {
+      "id": "boxmodel-opacity-quarter",
+      "file": "boxmodel/opacity/quarter.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "opacity 0.25 — mostly transparent red over gray",
+      "snapshot": { "viewportWidth": 120, "height": 100 }
+    },
+    {
+      "id": "boxmodel-opacity-half",
+      "file": "boxmodel/opacity/half.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "opacity 0.5 — half-blended red over gray",
+      "snapshot": { "viewportWidth": 120, "height": 100 }
+    },
+    {
+      "id": "boxmodel-opacity-three-quarter",
+      "file": "boxmodel/opacity/three-quarter.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "opacity 0.75 — mostly opaque red, slight gray bleed-through",
+      "snapshot": { "viewportWidth": 120, "height": 100 }
+    },
+    {
+      "id": "boxmodel-opacity-one",
+      "file": "boxmodel/opacity/one.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "opacity 1 — fully opaque red",
+      "snapshot": { "viewportWidth": 120, "height": 100 }
+    },
+    {
+      "id": "boxmodel-opacity-default",
+      "file": "boxmodel/opacity/default.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "opacity omitted — verifies CSS default of 1.0 (fully opaque)",
+      "snapshot": { "viewportWidth": 120, "height": 100 }
+    },
+    {
+      "id": "boxmodel-opacity-empty",
+      "file": "boxmodel/opacity/empty.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "opacity 0.5 on an empty container — half-transparent gray block",
+      "snapshot": { "viewportWidth": 160, "height": 100 }
+    },
+    {
+      "id": "boxmodel-opacity-single-child",
+      "file": "boxmodel/opacity/single-child.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "opacity 0.5 on parent — cascades visually through to single red child",
+      "snapshot": { "viewportWidth": 120, "height": 100 }
+    },
+    {
+      "id": "boxmodel-opacity-overlap-stacking",
+      "file": "boxmodel/opacity/overlap-stacking.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "Two absolute-positioned tiles overlapping — opaque red beneath opacity-0.5 blue (blend visible)",
+      "snapshot": { "viewportWidth": 240, "height": 160 }
+    },
+    {
+      "id": "boxmodel-opacity-inline",
+      "file": "boxmodel/opacity/inline.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "opacity authored inline via node.props.style — 1, 0.5, 0.25 row",
+      "snapshot": { "viewportWidth": 240, "height": 100 }
+    },
+    {
+      "id": "boxmodel-opacity-class-selector",
+      "file": "boxmodel/opacity/class-selector.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "opacity via class selectors .full / .half-faded / .faded",
+      "snapshot": { "viewportWidth": 240, "height": 100 }
+    },
+    {
+      "id": "boxmodel-opacity-on-text-content",
+      "file": "boxmodel/opacity/on-text-content.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "opacity applied to text paragraphs — 1.0 / 0.5 / 0.25",
+      "snapshot": { "viewportWidth": 240, "height": 160 }
+    },
+    {
+      "id": "boxmodel-opacity-on-nested-container",
+      "file": "boxmodel/opacity/on-nested-container.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "opacity 0.5 on outer container — inner children inherit visually; child #c multiplies via own 0.5",
+      "snapshot": { "viewportWidth": 260, "height": 120 }
+    },
+    {
+      "id": "boxmodel-opacity-with-background-color",
+      "file": "boxmodel/opacity/with-background-color.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "Four boxes sweeping 0.25 / 0.5 / 0.75 / 1.0 over gray — backgroundColor + opacity interplay",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "boxmodel-opacity-with-border",
+      "file": "boxmodel/opacity/with-border.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "Bordered boxes — opacity affects border alongside fill (1.0 / 0.5 / 0.25)",
+      "snapshot": { "viewportWidth": 280, "height": 100 }
+    },
+    {
+      "id": "boxmodel-opacity-with-flex-grow",
+      "file": "boxmodel/opacity/with-flex-grow.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "flexGrow:1 siblings each with different opacity — layout unchanged, only paint",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "boxmodel-opacity-responsive",
+      "file": "boxmodel/opacity/responsive.json",
+      "category": "Box Model & Visuals",
+      "property": "opacity",
+      "summary": "opacity 0.25 below 768px breakpoint, flips to 1.0 at ≥768px (paired with -ResponsiveWide test)",
+      "snapshot": { "viewportWidth": 240, "height": 100 }
     },
     {
       "id": "boxmodel-padding",
