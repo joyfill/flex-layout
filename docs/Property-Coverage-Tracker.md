@@ -57,7 +57,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 
 | Property | Status | Samples | Tests delta | Date | Notes |
 |---|---|---|---|---|---|
-| `backgroundColor` | ⬜ | 1/0/0/0 | — | — | — |
+| `backgroundColor` | ✅ | 5/3/2/5 | +18 baselines | 2026-05-14 | 17 samples + responsive-wide method; AI walk surfaced 1 impl bug (CSS 3-digit / 4-digit hex shorthand silently rendered transparent because `Color(hex:)` only handled count==6/8) **fixed in the same PR** — `ColorHelpers.swift` now expands `#RGB`/`#RGBA` per CSS Color L4 §4.2 (nibble doubled); `short-hex.png` re-recorded post-fix to lock red/green/blue rendering. Other invariants verified: 8-digit alpha (`#3B82F680` = 50% blend), CSS default = transparent (`default.json` middle box → gray root shows through), `#root` background paints behind children, nested backgrounds stack independently at every nesting level (`nested-bg-on-bg`: gray → blue panel → red/amber), background fills inside border-box (`with-border`: 6px solid black border, blue inside), borderRadius clips background to rounded shape (`with-border-radius`: 0/12/40 radii), `opacity` multiplies into rendered background (`with-opacity`: 1.0/0.5/0.2), background fills grown flex widths (`with-flex-grow`: red/green-2x/blue), responsive breakpoint flip (red ↔ blue at width>=768px). |
 | `opacity` | ⬜ | 1/0/0/0 | — | — | — |
 | `padding` | ⬜ | 1/0/0/0 | — | — | — |
 | `margin` | ⬜ | 1/0/0/0 | — | — | PR #21 true flex margin needs visual proof |
