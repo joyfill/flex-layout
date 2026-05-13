@@ -1878,42 +1878,42 @@
     },
     {
       "id": "layout-position",
-      "file": "layout/position.json",
+      "file": "layout/position/overview.json",
       "category": "Layout & Positioning",
       "property": "position",
       "summary": "absolute and relative positioning side-by-side"
     },
     {
       "id": "layout-display",
-      "file": "layout/display.json",
+      "file": "layout/display/overview.json",
       "category": "Layout & Positioning",
       "property": "display",
       "summary": "flex container plus a hidden node via display:none"
     },
     {
       "id": "layout-box-sizing",
-      "file": "layout/boxSizing.json",
+      "file": "layout/box-sizing/overview.json",
       "category": "Layout & Positioning",
       "property": "boxSizing",
       "summary": "border-box width with padding and border deducted from inner content"
     },
     {
       "id": "layout-z-index",
-      "file": "layout/zIndex.json",
+      "file": "layout/z-index/overview.json",
       "category": "Layout & Positioning",
       "property": "zIndex",
       "summary": "Two absolutely-positioned siblings stacked by zIndex"
     },
     {
       "id": "layout-overflow",
-      "file": "layout/overflow.json",
+      "file": "layout/overflow/overview.json",
       "category": "Layout & Positioning",
       "property": "overflow",
       "summary": "All five overflow values: visible, hidden, clip, scroll, auto"
     },
     {
       "id": "layout-insets",
-      "file": "layout/insets.json",
+      "file": "layout/insets/overview.json",
       "category": "Layout & Positioning",
       "property": "top/left/bottom/right",
       "summary": "Absolutely-positioned child pinned to all four edges of its frame"
