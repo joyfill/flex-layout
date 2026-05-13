@@ -695,6 +695,158 @@
       }
     },
     {
+      "id": "flexbox-flex-basis-zero",
+      "file": "flexbox/flex-basis/zero.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "sweep: flexBasis 0 + flexGrow 1 \u2014 free space divided equally across 3 items",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-basis-auto",
+      "file": "flexbox/flex-basis/auto.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "sweep: flexBasis: auto \u2014 items use their declared width (80px) as basis",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-basis-px-small",
+      "file": "flexbox/flex-basis/px-small.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "sweep: flexBasis: 80px \u2014 fixed px basis on each item, free space left at end",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-basis-px-large",
+      "file": "flexbox/flex-basis/px-large.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "sweep: flexBasis: 140px + flexShrink: 0 \u2014 large fixed basis fills most of the container",
+      "snapshot": { "viewportWidth": 500, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-basis-percent-50",
+      "file": "flexbox/flex-basis/percent-50.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "sweep: flexBasis: 50% \u2014 each item gets half the container main-axis size",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-basis-default",
+      "file": "flexbox/flex-basis/default.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "default: flexBasis omitted (CSS-default auto) \u2014 items use width: 90px as basis",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-basis-empty",
+      "file": "flexbox/flex-basis/empty.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "edge: empty flex container \u2014 no children, no items to size",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "flexbox-flex-basis-single-child",
+      "file": "flexbox/flex-basis/single-child.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "edge: single child with flexBasis 200px \u2014 basis honored without inter-item interaction",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-basis-mixed-units",
+      "file": "flexbox/flex-basis/mixed-units.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "edge: mixed units auto + px + % \u2014 each basis resolved against its own value/unit",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-basis-nested",
+      "file": "flexbox/flex-basis/nested.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "edge: nested flex container \u2014 outer basis 240px, inner items basis 50% resolve against the outer's main-axis content size",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "flexbox-flex-basis-inline",
+      "file": "flexbox/flex-basis/inline.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "authoring: inline node.props.style \u2014 each item declares its own flexBasis directly",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-basis-class-selector",
+      "file": "flexbox/flex-basis/class-selector.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "authoring: .box class selector \u2014 shared flexBasis applied via class rule",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-basis-in-column",
+      "file": "flexbox/flex-basis/in-column.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "context: column direction \u2014 flexBasis resolves against the cross-axis-perpendicular (height) main axis",
+      "snapshot": { "viewportWidth": 300, "height": 400 }
+    },
+    {
+      "id": "flexbox-flex-basis-in-fixed-width",
+      "file": "flexbox/flex-basis/in-fixed-width.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "context: fixed-width 300 container \u2014 % basis (30%) resolves against the container's main-axis width",
+      "snapshot": { "viewportWidth": 300, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-basis-with-grow",
+      "file": "flexbox/flex-basis/with-grow.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "interaction: flexBasis: 60 + flexGrow: 1 \u2014 items start at 60 then divide leftover free space equally",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-basis-with-shrink",
+      "file": "flexbox/flex-basis/with-shrink.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "interaction: flexBasis: 140 + flexShrink: 1 in a 300 container \u2014 items shrink uniformly from their basis to fit",
+      "snapshot": { "viewportWidth": 300, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-basis-with-wrap",
+      "file": "flexbox/flex-basis/with-wrap.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "interaction: flexBasis 120 + flexWrap: wrap + shrink 0 \u2014 items keep their basis width and overflow onto next line",
+      "snapshot": { "viewportWidth": 300, "height": 200 }
+    },
+    {
+      "id": "flexbox-flex-basis-with-min-max",
+      "file": "flexbox/flex-basis/with-min-max.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "interaction: flexBasis with minWidth/maxWidth clamps \u2014 red 40px basis clamps up to 80, green 200px basis clamps down to 120",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-basis-responsive",
+      "file": "flexbox/flex-basis/responsive.json",
+      "category": "Flexbox",
+      "property": "flexBasis",
+      "summary": "responsive: basis 90px at narrow viewports, basis 0 + grow 1 at >=768px (items stretch to fill)",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
       "id": "flexbox-justify-content",
       "file": "flexbox/justify-content/overview.json",
       "category": "Flexbox",
