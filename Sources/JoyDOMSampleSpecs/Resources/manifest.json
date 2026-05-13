@@ -3560,7 +3560,136 @@
       "file": "boxmodel/border-style/overview.json",
       "category": "Box Model & Visuals",
       "property": "borderStyle",
-      "summary": "All five styles: solid, none, dashed, dotted, double"
+      "summary": "Side-by-side solid vs none borders on identical frames",
+      "snapshot": { "viewportWidth": 280, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-style-solid",
+      "file": "boxmodel/border-style/solid.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle",
+      "summary": "Spec value `solid`: full continuous stroke around the box",
+      "snapshot": { "viewportWidth": 200, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-style-none",
+      "file": "boxmodel/border-style/none.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle",
+      "summary": "Spec value `none`: stroke suppressed even though borderWidth is set",
+      "snapshot": { "viewportWidth": 200, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-style-default",
+      "file": "boxmodel/border-style/default.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle",
+      "summary": "borderStyle omitted: cascade fallback when borderWidth + borderColor are set (joydom-swift defaults to `solid`)",
+      "snapshot": { "viewportWidth": 200, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-style-empty",
+      "file": "boxmodel/border-style/empty.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle",
+      "summary": "Empty container with solid border (no children) renders frame at declared dimensions",
+      "snapshot": { "viewportWidth": 200, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-style-single-child",
+      "file": "boxmodel/border-style/single-child.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle",
+      "summary": "Container with solid border and one child verifies stroke draws around outer box only",
+      "snapshot": { "viewportWidth": 220, "height": 160 }
+    },
+    {
+      "id": "boxmodel-border-style-none-overrides-width",
+      "file": "boxmodel/border-style/none-overrides-width.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle",
+      "summary": "borderStyle:none with borderWidth:8 — left box (solid) shows thick red stroke, right box (none) shows no stroke even though same width declared",
+      "snapshot": { "viewportWidth": 280, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-style-inline",
+      "file": "boxmodel/border-style/inline.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle",
+      "summary": "borderStyle declared via inline `node.props.style` rather than a class/id rule",
+      "snapshot": { "viewportWidth": 200, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-style-class-selector",
+      "file": "boxmodel/border-style/class-selector.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle",
+      "summary": "borderStyle declared via two class selectors (.bordered solid vs .plain none)",
+      "snapshot": { "viewportWidth": 280, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-style-with-thick-width",
+      "file": "boxmodel/border-style/with-thick-width.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle",
+      "summary": "borderStyle:solid combined with borderWidth:10 — verifies stroke scales linearly with width",
+      "snapshot": { "viewportWidth": 200, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-style-with-rounded",
+      "file": "boxmodel/border-style/with-rounded.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle",
+      "summary": "borderStyle:solid combined with borderRadius — stroke follows the rounded outline",
+      "snapshot": { "viewportWidth": 200, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-style-with-background-color",
+      "file": "boxmodel/border-style/with-background-color.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle",
+      "summary": "solid vs none on green-filled boxes — confirms background is unaffected by border-style suppression",
+      "snapshot": { "viewportWidth": 280, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-style-with-flex-children",
+      "file": "boxmodel/border-style/with-flex-children.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle",
+      "summary": "solid border on a flex row container — verifies stroke draws around the parent without affecting child layout",
+      "snapshot": { "viewportWidth": 300, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-style-responsive",
+      "file": "boxmodel/border-style/responsive.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle",
+      "summary": "Narrow viewport (<768px) renders solid; wide viewport flips to none via breakpoint",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-style-ios-ext-dashed",
+      "file": "boxmodel/border-style-ios-ext/dashed.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle-iOSExt",
+      "summary": "iOS-ext `dashed`: dashed stroke pattern (not in JoyDOM spec; covered only by the iOS renderer via SwiftUI StrokeStyle dash array)",
+      "snapshot": { "viewportWidth": 240, "height": 160 }
+    },
+    {
+      "id": "boxmodel-border-style-ios-ext-dotted",
+      "file": "boxmodel/border-style-ios-ext/dotted.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle-iOSExt",
+      "summary": "iOS-ext `dotted`: round-cap dotted stroke (not in JoyDOM spec; iOS-only via StrokeStyle lineCap:.round + dash:[0.01, bw*2])",
+      "snapshot": { "viewportWidth": 240, "height": 160 }
+    },
+    {
+      "id": "boxmodel-border-style-ios-ext-double",
+      "file": "boxmodel/border-style-ios-ext/double.json",
+      "category": "Box Model & Visuals",
+      "property": "borderStyle-iOSExt",
+      "summary": "iOS-ext `double`: two concentric strokes approximating the CSS double-line look (not in JoyDOM spec; iOS-only)",
+      "snapshot": { "viewportWidth": 240, "height": 160 }
     },
     {
       "id": "boxmodel-border-radius-overview",
