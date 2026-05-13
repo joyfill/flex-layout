@@ -627,11 +627,27 @@ public struct JoyDOMView: View {
         }
         var v = AnyView(view.clipShape(shape))
         if let sc = strokeColor, let bw = borderWidth {
+            // Issue #72: SwiftUI's `Shape.stroke(lineWidth:)` centers
+            // the stroke on the path edge — half lies OUTSIDE the shape.
+            // When `borderRadius == min(w, h) / 2` the rounded rect
+            // becomes a true circle tangent to its bounding box at the
+            // N/E/S/W compass points, and the outer half of the stroke
+            // extends past the bounding rect into the empty corners,
+            // rendering as four square stubs.
+            //
+            // Fix: clip the stroke overlay to the SAME shape used to
+            // clip the fill (trims the outer half), then double the
+            // requested width so the inner half = `bw` remains visible.
+            // Matches CSS's `border-box` rule that borders paint inside
+            // the box, and the geometry of `.strokeBorder` on
+            // InsettableShape (which isn't reachable through `AnyShape`
+            // type erasure).
             v = AnyView(v.overlay(
                 strokedOverlay(shape: shape,
                                color: sc,
-                               width: bw,
+                               width: bw * 2,
                                style: borderStyle ?? .solid)
+                    .clipShape(shape)
             ))
         }
         return v
