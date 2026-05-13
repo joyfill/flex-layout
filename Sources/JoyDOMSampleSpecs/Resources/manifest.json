@@ -4262,7 +4262,7 @@
       "category": "Typography",
       "property": "textAlign",
       "summary": "Cross-property × fontSize: large centered title above smaller centered body",
-      "snapshot": { "viewportWidth": 400, "height": 220 }
+      "snapshot": { "viewportWidth": 400, "height": 260 }
     },
     {
       "id": "typography-text-align-nested",

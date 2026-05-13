@@ -24,7 +24,7 @@
     "type": "div",
     "props": { "id": "root" },
     "children": [
-      { "type": "h1", "props": { "id": "title" }, "children": ["Large Centered Title"] },
+      { "type": "h1", "props": { "id": "title" }, "children": ["A Large Centered Title That Wraps Onto Two Lines"] },
       { "type": "p",  "props": { "id": "body"  }, "children": ["Smaller centered body text below. Demonstrates textAlign × fontSize interaction on multi-element layouts."] }
     ]
   }

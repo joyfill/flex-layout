@@ -11,7 +11,7 @@
     "#a": {
       "display": "flex",
       "flexDirection": "column",
-      "width": { "value": 80, "unit": "px" },
+      "width": { "value": 140, "unit": "px" },
       "backgroundColor": "#E5E7EB",
       "padding": { "value": 8, "unit": "px" }
     },
