@@ -36,7 +36,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `flexBasis` | ⬜ | 1/0/0/0 | — | — | — |
 | `justifyContent` | ⬜ | 1/0/0/0 | — | — | — |
 | `alignItems` | ⬜ | 1/0/0/0 | — | — | — |
-| `alignSelf` | ⬜ | 1/0/0/0 | — | — | — |
+| `alignSelf` | ✅ | 5/4/4/5 | +20 baselines | 2026-05-13 | 18 spec samples + 1 ios-ext (`baseline`) + responsive-wide method; AI walk found zero impl bugs, 1 sample-design fix (`with-wrap` initially used equal-height items so the flex-end override collapsed onto flex-start — patched to varied heights); per-item override of container `alignItems` verified across the auto/flex-start/flex-end/center/stretch sweep and all four interaction contexts (stretch parent, flex-end parent, wrap, varied heights); responsive breakpoint flip (flex-start ↔ auto) confirmed |
 | `flexWrap` | ⬜ | 1/0/0/0 | — | — | — |
 | `gap`/`rowGap`/`columnGap` | ⬜ | 1/0/0/0 | — | — | — |
 | `order` | ⬜ | 1/0/0/0 | — | — | — |
