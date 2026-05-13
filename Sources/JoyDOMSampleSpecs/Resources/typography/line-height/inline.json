@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "display": "flex",
+      "flexDirection": "column",
+      "padding": { "value": 16, "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      {
+        "type": "p",
+        "props": {
+          "id": "para",
+          "style": {
+            "fontSize": { "value": 16, "unit": "px" },
+            "lineHeight": 1.6,
+            "color": "#111827"
+          }
+        },
+        "children": ["Inline-authored line-height 1.6. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog."]
+      }
+    ]
+  }
+}
