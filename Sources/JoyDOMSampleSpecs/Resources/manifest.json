@@ -266,6 +266,204 @@
       }
     },
     {
+      "id": "flexbox-flex-grow-zero",
+      "file": "flexbox/flex-grow/zero.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "value sweep: flexGrow: 0 \u2014 items stay at their content width, free space at the end",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-one",
+      "file": "flexbox/flex-grow/one.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "value sweep: flexGrow: 1 on all \u2014 equal share of free space (basis: 0 makes the math clean)",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-two",
+      "file": "flexbox/flex-grow/two.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "value sweep: flexGrow: 2 on all \u2014 visually identical to flexGrow: 1 (ratios matter, not absolutes)",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-fractional",
+      "file": "flexbox/flex-grow/fractional.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "value sweep: flexGrow: 0.5 on all \u2014 fractional grow factor honored (Double precision)",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-mixed-ratios",
+      "file": "flexbox/flex-grow/mixed-ratios.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "value sweep: flexGrow 1/1/2 \u2014 proportional distribution of free space",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-default",
+      "file": "flexbox/flex-grow/default.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "flexGrow omitted: defaults to 0 (no growth), free space stays at the main-end",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-empty",
+      "file": "flexbox/flex-grow/empty.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "edge case: container with no children \u2014 flexGrow has no items to distribute to, layout doesn't crash",
+      "snapshot": {
+        "viewportWidth": 320,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-single-child",
+      "file": "flexbox/flex-grow/single-child.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "edge case: single child with flexGrow: 1 \u2014 fills the entire inner content area",
+      "snapshot": {
+        "viewportWidth": 360,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-single-grower",
+      "file": "flexbox/flex-grow/single-grower.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "edge case: flexGrow 0/1/0 \u2014 only the middle child absorbs all free space",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-inline",
+      "file": "flexbox/flex-grow/inline.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "flexGrow set inline via node.props.style \u2014 no selector rule needed",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-class-selector",
+      "file": "flexbox/flex-grow/class-selector.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "flexGrow applied via .grow class \u2014 all matching siblings split free space equally",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-in-column",
+      "file": "flexbox/flex-grow/in-column.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "context: column direction \u2014 flexGrow distributes free space on the vertical main axis",
+      "snapshot": {
+        "viewportWidth": 160,
+        "height": 400
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-in-fixed-width",
+      "file": "flexbox/flex-grow/in-fixed-width.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "context: 250-wide parent \u2014 items with flexGrow: 1 split the inner content space evenly",
+      "snapshot": {
+        "viewportWidth": 280,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-with-basis",
+      "file": "flexbox/flex-grow/with-basis.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "interaction: flexBasis: 80px + flexGrow 0/1/2 \u2014 items start at 80, leftover space distributed proportionally",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-with-shrink",
+      "file": "flexbox/flex-grow/with-shrink.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "interaction: width: 120 \u00d7 3 in a 300-wide parent \u2192 flexShrink kicks in, flexGrow ignored (no free space to distribute)",
+      "snapshot": {
+        "viewportWidth": 320,
+        "height": 120
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-with-wrap",
+      "file": "flexbox/flex-grow/with-wrap.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "interaction: row + wrap + flexGrow: 1 \u2014 items on each line grow to fill that line's remaining space",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 200
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-with-min-max",
+      "file": "flexbox/flex-grow/with-min-max.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "interaction: flexGrow: 1 with maxWidth on item a \u2014 a clamps at 80px, b and c absorb the freed space",
+      "snapshot": {
+        "viewportWidth": 440,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-grow-responsive",
+      "file": "flexbox/flex-grow/responsive.json",
+      "category": "Flexbox",
+      "property": "flexGrow",
+      "summary": "responsive: fixed-width boxes at narrow viewports, flexGrow: 1 + basis: 0 at \u2265768px (drag viewport slider through 768 to see)",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 120
+      }
+    },
+    {
       "id": "flexbox-flex-shrink",
       "file": "flexbox/flex-shrink/overview.json",
       "category": "Flexbox",

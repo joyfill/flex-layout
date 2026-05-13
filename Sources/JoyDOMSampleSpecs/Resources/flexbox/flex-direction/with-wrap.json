@@ -2,6 +2,7 @@
   "version": 1,
   "style": {
     "#root": {
+      "display": "flex",
       "flexDirection": "row",
       "flexWrap":      "wrap",
       "alignContent":  "flex-start",

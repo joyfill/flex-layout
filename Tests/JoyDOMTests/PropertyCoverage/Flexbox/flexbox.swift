@@ -97,4 +97,25 @@ final class FlexboxSnapshotTests: XCTestCase {
             snapshotName: "responsive-wide"
         )
     }
+
+    /// `flex-grow/responsive.json` declares the NARROW canvas (boxes
+    /// stay at their fixed 60×60). The ≥768px breakpoint switches the
+    /// `.box` class to `flexBasis: 0 + flexGrow: 1`, making the items
+    /// stretch to fill. This method captures the wide-viewport branch.
+    func testFlexGrowResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "flexbox-flex-grow-responsive"),
+            "flex-grow responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/flexbox/flex-grow")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 900,
+            height: 120,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
