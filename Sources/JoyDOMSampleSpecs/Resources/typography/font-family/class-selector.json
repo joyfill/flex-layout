@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "style": {
+    ".display-serif": {
+      "fontFamily": "Georgia",
+      "fontSize": { "value": 20, "unit": "px" }
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "p",
+    "props": { "id": "text", "className": ["display-serif"] },
+    "children": ["The quick brown fox jumps over the lazy dog"]
+  }
+}

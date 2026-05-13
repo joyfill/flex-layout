@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "style": {
+    "#text": {
+      "fontFamily": "System",
+      "fontSize": { "value": 20, "unit": "px" }
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "p",
+    "props": { "id": "text" },
+    "children": ["The quick brown fox jumps over the lazy dog"]
+  }
+}

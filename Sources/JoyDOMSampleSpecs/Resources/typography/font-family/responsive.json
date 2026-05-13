@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "style": {
+    "#text": {
+      "fontFamily": "Georgia",
+      "fontSize": { "value": 20, "unit": "px" }
+    }
+  },
+  "breakpoints": [
+    {
+      "conditions": [
+        { "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }
+      ],
+      "nodes": {},
+      "style": {
+        "#text": {
+          "fontFamily": "Menlo"
+        }
+      }
+    }
+  ],
+  "layout": {
+    "type": "p",
+    "props": { "id": "text" },
+    "children": ["Narrow: Georgia. Wide: Menlo."]
+  }
+}
