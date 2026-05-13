@@ -63,7 +63,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `margin` | ⬜ | 1/0/0/0 | — | — | PR #21 true flex margin needs visual proof |
 | `borderWidth` | ⬜ | 1/0/0/0 | — | — | — |
 | `borderColor` | ⬜ | 1/0/0/0 | — | — | — |
-| `borderStyle` | ⬜ | 1/0/0/0 | — | — | Ext dashed/dotted/double have no render tests |
+| `borderStyle` | ✅ | 2/3/2/2 | +18 baselines | 2026-05-14 | 14 spec + 3 iOS-ext (`dashed`, `dotted`, `double`) + responsive-wide method; AI walk found zero impl bugs; spec values `solid` and `none` verified; `none-overrides-width` proves zero-width border even with borderWidth set; iOS-ext dashed/dotted/double render without crash (visual distinction from solid varies by SwiftUI version); resolved the tracker note "Ext dashed/dotted/double have no render tests" |
 | `borderRadius` | ⬜ | 1/0/0/0 | — | — | — |
 
 ## 4. Sizing (3 properties)
