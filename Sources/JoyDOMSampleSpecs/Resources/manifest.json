@@ -607,6 +607,17 @@
       }
     },
     {
+      "id": "flexbox-flex-shrink-nested",
+      "file": "flexbox/flex-shrink/nested.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "nested flex containers — outer shrink fits inner container into available width, then inner shrink fits its own children",
+      "snapshot": {
+        "viewportWidth": 340,
+        "height": 100
+      }
+    },
+    {
       "id": "flexbox-flex-shrink-in-fixed-width",
       "file": "flexbox/flex-shrink/in-fixed-width.json",
       "category": "Flexbox",
