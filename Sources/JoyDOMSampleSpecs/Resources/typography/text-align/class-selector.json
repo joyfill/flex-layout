@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "padding": { "value": 16, "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    },
+    ".text":   { "fontSize": { "value": 16, "unit": "px" }, "color": "#111827" },
+    ".left":   { "textAlign": "left" },
+    ".center": { "textAlign": "center" },
+    ".right":  { "textAlign": "right" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "className": ["text", "left"]   }, "children": ["Class-selector: .text.left aligns to the left"] },
+      { "type": "p", "props": { "className": ["text", "center"] }, "children": ["Class-selector: .text.center aligns center"] },
+      { "type": "p", "props": { "className": ["text", "right"]  }, "children": ["Class-selector: .text.right aligns to the right"] }
+    ]
+  }
+}
