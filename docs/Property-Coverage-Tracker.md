@@ -35,7 +35,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `flexShrink` | ✅ | 5/5/7/4 | +20 baselines | 2026-05-13 | 20 samples (overview kept) + responsive-wide method; AI walk found zero impl bugs; ratio-equivalence (one/two/fractional/default byte-identical at 84/84/84) proven; CSS weighted shrink (basis × shrink) verified on with-basis (45/91/136); min-clamp + reflow verified on with-min-width (100/66/66 after re-resolving overflow on non-frozen items); wrap defeats shrink confirmed; nested.json proves shrink propagation through nested flex containers |
 | `flexBasis` | ⬜ | 1/0/0/0 | — | — | — |
 | `justifyContent` | ⬜ | 1/0/0/0 | — | — | — |
-| `alignItems` | ⬜ | 1/0/0/0 | — | — | — |
+| `alignItems` | ✅ | 4/5/4/5 | +19 baselines | 2026-05-13 | 17 spec samples + 1 iOS-ext (`baseline`) + responsive-wide method; AI walk found zero impl bugs; verified cross-axis positioning for flex-start/flex-end/center/stretch in row mode (60×60 boxes in 140px-tall container) and column mode (cross axis flips to horizontal); CSS default `stretch` confirmed via default.json byte-comparison with stretch.json; alignSelf override correctly shadows container alignItems (only middle child drops to flex-end while siblings stay at flex-start) |
 | `alignSelf` | ⬜ | 1/0/0/0 | — | — | — |
 | `flexWrap` | ⬜ | 1/0/0/0 | — | — | — |
 | `gap`/`rowGap`/`columnGap` | ⬜ | 1/0/0/0 | — | — | — |
