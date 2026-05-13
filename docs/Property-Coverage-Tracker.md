@@ -86,7 +86,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `textAlign` | ⬜ | 1/0/0/0 | — | — | — |
 | `textTransform` | ⬜ | 1/0/0/0 | — | — | — |
 | `lineHeight` | ✅ | 6/4/2/7 | +21 | 2026-05-14 | system-leading subtraction confirmed correct (UIKit `UIFont.lineHeight` / AppKit ascender-descender-leading); `lineHeight 1.0` and ``< 1.0`` clamp lineSpacing to 0; verified via `system-leading-verify.json` (visible gap ratios match `1.5 → ~6px` / `2.0 → ~16px` at fontSize 20). Zero impl bugs. |
-| `letterSpacing` | ⬜ | 1/0/0/0 | — | — | ⚠️ em scaling caveat |
+| `letterSpacing` | ✅ | 9/1/4/5 | +20 | 2026-05-14 | em scaling verified: `0.1em` @ `fontSize: 16` renders pixel-identical to `1.6px` (`em-px-equivalence.json`). px and em sweeps + negative-tracking overlap edge confirm `.tracking()` mapping. Note: `with-text-align.json` exercises the property × textAlign axis but the per-line `width` on `.tracked` sits on the `<p>` element, not the inner Text leaf, so the three lines collapse to natural width — sample still proves tracking renders identically across align declarations (the textAlign-on-`<p>` weakness is a separate Typography-section concern). |
 
 ## 6. Text Behavior (2 properties)
 
