@@ -70,6 +70,18 @@ final class FlexboxSnapshotTests: XCTestCase {
         assertSnapshotsForSamples(in: "flexbox/align-self")
     }
 
+    /// iOS-only extension of `alignSelf` (`baseline`).
+    ///
+    /// The value is NOT in the JoyDOM CSS spec (which restricts
+    /// `alignSelf` to `'auto' | 'flex-start' | 'flex-end' | 'center' | 'stretch'`),
+    /// but the underlying FlexLayout primitive supports it. Kept in a sibling
+    /// folder so the iOS code path stays regression-tested without polluting
+    /// the cross-platform sample set — JS/Kotlin runtimes won't implement it
+    /// and shouldn't compare against the corresponding baseline.
+    func testAlignSelfIosExt() {
+        assertSnapshotsForSamples(in: "flexbox/align-self-ios-ext")
+    }
+
     func testFlexWrap() {
         assertSnapshotsForSamples(in: "flexbox/flex-wrap")
     }
@@ -183,6 +195,27 @@ final class FlexboxSnapshotTests: XCTestCase {
         let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
         let snapshotDir = (testFileDir as NSString)
             .appendingPathComponent("__Snapshots__/flexbox/align-items")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 900,
+            height: 140,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
+
+    /// `align-self/responsive.json` declares the NARROW canvas (middle child
+    /// overrides container alignItems via alignSelf: flex-start). The ≥768px
+    /// breakpoint flips the override to `auto`, letting the child inherit the
+    /// container's alignItems: flex-end. This method captures the wide branch.
+    func testAlignSelfResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "flexbox-align-self-responsive"),
+            "align-self responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/flexbox/align-self")
         assertJoyDOMSnapshot(
             json: sample.json,
             viewportWidth: 900,
