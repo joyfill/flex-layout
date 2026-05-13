@@ -4169,11 +4169,132 @@
       "summary": "All three values: none, underline, line-through"
     },
     {
-      "id": "typography-text-align",
+      "id": "typography-text-align-overview",
       "file": "typography/text-align/overview.json",
       "category": "Typography",
       "property": "textAlign",
-      "summary": "Left, center, right"
+      "summary": "Showcase: three paragraphs aligned left / center / right",
+      "snapshot": { "viewportWidth": 400, "height": 220 }
+    },
+    {
+      "id": "typography-text-align-left",
+      "file": "typography/text-align/left.json",
+      "category": "Typography",
+      "property": "textAlign",
+      "summary": "Value sweep: textAlign=left on a wrapped multi-line paragraph",
+      "snapshot": { "viewportWidth": 400, "height": 160 }
+    },
+    {
+      "id": "typography-text-align-center",
+      "file": "typography/text-align/center.json",
+      "category": "Typography",
+      "property": "textAlign",
+      "summary": "Value sweep: textAlign=center on a wrapped multi-line paragraph",
+      "snapshot": { "viewportWidth": 400, "height": 160 }
+    },
+    {
+      "id": "typography-text-align-right",
+      "file": "typography/text-align/right.json",
+      "category": "Typography",
+      "property": "textAlign",
+      "summary": "Value sweep: textAlign=right on a wrapped multi-line paragraph",
+      "snapshot": { "viewportWidth": 400, "height": 160 }
+    },
+    {
+      "id": "typography-text-align-default",
+      "file": "typography/text-align/default.json",
+      "category": "Typography",
+      "property": "textAlign",
+      "summary": "CSS-default: textAlign omitted → leading/left in LTR",
+      "snapshot": { "viewportWidth": 400, "height": 160 }
+    },
+    {
+      "id": "typography-text-align-single-line",
+      "file": "typography/text-align/single-line.json",
+      "category": "Typography",
+      "property": "textAlign",
+      "summary": "Single-line text: alignment positions short text within container width",
+      "snapshot": { "viewportWidth": 400, "height": 160 }
+    },
+    {
+      "id": "typography-text-align-wrapped-multi-line",
+      "file": "typography/text-align/wrapped-multi-line.json",
+      "category": "Typography",
+      "property": "textAlign",
+      "summary": "Wrapped multi-line: alignment visible across each wrapped line",
+      "snapshot": { "viewportWidth": 400, "height": 240 }
+    },
+    {
+      "id": "typography-text-align-inline",
+      "file": "typography/text-align/inline.json",
+      "category": "Typography",
+      "property": "textAlign",
+      "summary": "Authoring: textAlign declared inline via node.props.style",
+      "snapshot": { "viewportWidth": 400, "height": 220 }
+    },
+    {
+      "id": "typography-text-align-class-selector",
+      "file": "typography/text-align/class-selector.json",
+      "category": "Typography",
+      "property": "textAlign",
+      "summary": "Authoring: textAlign declared via class selectors (.left/.center/.right)",
+      "snapshot": { "viewportWidth": 400, "height": 220 }
+    },
+    {
+      "id": "typography-text-align-with-padding",
+      "file": "typography/text-align/with-padding.json",
+      "category": "Typography",
+      "property": "textAlign",
+      "summary": "Interaction × padding: center alignment is relative to the padded content box",
+      "snapshot": { "viewportWidth": 400, "height": 220 }
+    },
+    {
+      "id": "typography-text-align-with-width-constrained",
+      "file": "typography/text-align/with-width-constrained.json",
+      "category": "Typography",
+      "property": "textAlign",
+      "summary": "Interaction × width-constrained container: 200px container forces wrap, right-aligned per line",
+      "snapshot": { "viewportWidth": 400, "height": 240 }
+    },
+    {
+      "id": "typography-text-align-with-font-size",
+      "file": "typography/text-align/with-font-size.json",
+      "category": "Typography",
+      "property": "textAlign",
+      "summary": "Cross-property × fontSize: large centered title above smaller centered body",
+      "snapshot": { "viewportWidth": 400, "height": 220 }
+    },
+    {
+      "id": "typography-text-align-nested",
+      "file": "typography/text-align/nested.json",
+      "category": "Typography",
+      "property": "textAlign",
+      "summary": "Nested containers: textAlign resolves against the innermost content box",
+      "snapshot": { "viewportWidth": 400, "height": 240 }
+    },
+    {
+      "id": "typography-text-align-empty",
+      "file": "typography/text-align/empty.json",
+      "category": "Typography",
+      "property": "textAlign",
+      "summary": "Edge: paragraph with empty children + textAlign set (no text to align)",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "typography-text-align-with-flex-grow",
+      "file": "typography/text-align/with-flex-grow.json",
+      "category": "Typography",
+      "property": "textAlign",
+      "summary": "Interaction × flexGrow: left-aligned label cell + right-aligned grown value cell in a row",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "typography-text-align-responsive",
+      "file": "typography/text-align/responsive.json",
+      "category": "Typography",
+      "property": "textAlign",
+      "summary": "Responsive: textAlign=left at narrow, flips to center at width>=768px",
+      "snapshot": { "viewportWidth": 400, "height": 160 }
     },
     {
       "id": "typography-text-transform",
