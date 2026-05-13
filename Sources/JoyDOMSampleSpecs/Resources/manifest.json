@@ -2943,7 +2943,192 @@
       "file": "boxmodel/padding/overview.json",
       "category": "Box Model & Visuals",
       "property": "padding",
-      "summary": "Uniform Length and per-side {top,right,bottom,left} padding"
+      "summary": "Side-by-side flex showcase: uniform 16px padding vs per-side {8,24,8,24}",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "boxmodel-padding-zero",
+      "file": "boxmodel/padding/zero.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "padding: 0 — children hug the container edge (no offset)",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
+    },
+    {
+      "id": "boxmodel-padding-small",
+      "file": "boxmodel/padding/small.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "padding: 4 — small uniform inset on all sides",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
+    },
+    {
+      "id": "boxmodel-padding-medium",
+      "file": "boxmodel/padding/medium.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "padding: 16 — common uniform inset (matches standard root template)",
+      "snapshot": { "viewportWidth": 360, "height": 120 }
+    },
+    {
+      "id": "boxmodel-padding-large",
+      "file": "boxmodel/padding/large.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "padding: 32 — large uniform inset visibly shrinking the content area",
+      "snapshot": { "viewportWidth": 420, "height": 140 }
+    },
+    {
+      "id": "boxmodel-padding-top-only",
+      "file": "boxmodel/padding/top-only.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Per-side object: top 24, others 0 — children pushed down only",
+      "snapshot": { "viewportWidth": 360, "height": 120 }
+    },
+    {
+      "id": "boxmodel-padding-right-only",
+      "file": "boxmodel/padding/right-only.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Per-side object: right 24, others 0 — right-edge inset only",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
+    },
+    {
+      "id": "boxmodel-padding-bottom-only",
+      "file": "boxmodel/padding/bottom-only.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Per-side object: bottom 24, others 0 — bottom-edge inset only",
+      "snapshot": { "viewportWidth": 360, "height": 120 }
+    },
+    {
+      "id": "boxmodel-padding-left-only",
+      "file": "boxmodel/padding/left-only.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Per-side object: left 24, others 0 — left-edge inset only",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
+    },
+    {
+      "id": "boxmodel-padding-vertical-horizontal",
+      "file": "boxmodel/padding/vertical-horizontal.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Vertical 16 / horizontal 32 — symmetric per-axis padding",
+      "snapshot": { "viewportWidth": 420, "height": 120 }
+    },
+    {
+      "id": "boxmodel-padding-all-different",
+      "file": "boxmodel/padding/all-different.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Four distinct sides: top 8 / right 16 / bottom 24 / left 32",
+      "snapshot": { "viewportWidth": 420, "height": 120 }
+    },
+    {
+      "id": "boxmodel-padding-default",
+      "file": "boxmodel/padding/default.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Padding omitted — verifies default 0 (children hug container edge)",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
+    },
+    {
+      "id": "boxmodel-padding-empty",
+      "file": "boxmodel/padding/empty.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Empty container with padding 24 — inset area visible against bg",
+      "snapshot": { "viewportWidth": 280, "height": 140 }
+    },
+    {
+      "id": "boxmodel-padding-single-child",
+      "file": "boxmodel/padding/single-child.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Single child inset by uniform padding 24 inside fixed-width container",
+      "snapshot": { "viewportWidth": 280, "height": 140 }
+    },
+    {
+      "id": "boxmodel-padding-large-padding-narrow-container",
+      "file": "boxmodel/padding/large-padding-narrow-container.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Padding 60 each side on a 100x200 border-box container — content area collapses (padding clamps to outer)",
+      "snapshot": { "viewportWidth": 200, "height": 240 }
+    },
+    {
+      "id": "boxmodel-padding-inline",
+      "file": "boxmodel/padding/inline.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Padding declared via node.props.style (inline authoring)",
+      "snapshot": { "viewportWidth": 360, "height": 120 }
+    },
+    {
+      "id": "boxmodel-padding-class-selector",
+      "file": "boxmodel/padding/class-selector.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Padding declared via .padded-container class selector",
+      "snapshot": { "viewportWidth": 360, "height": 120 }
+    },
+    {
+      "id": "boxmodel-padding-with-content-box",
+      "file": "boxmodel/padding/with-content-box.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "boxSizing default (content-box): declared 100x60 + padding 16 → outer 132x92",
+      "snapshot": { "viewportWidth": 220, "height": 140 }
+    },
+    {
+      "id": "boxmodel-padding-with-border-box",
+      "file": "boxmodel/padding/with-border-box.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "boxSizing border-box: declared 132x92 + padding 16 → outer 132x92, content area 100x60",
+      "snapshot": { "viewportWidth": 220, "height": 140 }
+    },
+    {
+      "id": "boxmodel-padding-with-background-color",
+      "file": "boxmodel/padding/with-background-color.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Amber container bg fills inside the padded area (bg paints under padding)",
+      "snapshot": { "viewportWidth": 360, "height": 120 }
+    },
+    {
+      "id": "boxmodel-padding-with-border",
+      "file": "boxmodel/padding/with-border.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Solid 4px border + padding 16 — padding sits inside the border edge",
+      "snapshot": { "viewportWidth": 360, "height": 120 }
+    },
+    {
+      "id": "boxmodel-padding-with-flex-children",
+      "file": "boxmodel/padding/with-flex-children.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Padding 20 shrinks the inner main-axis space available for flexGrow children",
+      "snapshot": { "viewportWidth": 360, "height": 120 }
+    },
+    {
+      "id": "boxmodel-padding-nested",
+      "file": "boxmodel/padding/nested.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Three-level nesting: outer 20 → mid 12 → inner per-side {4,12,4,12} padding — shows padding accumulating through depth",
+      "snapshot": { "viewportWidth": 360, "height": 140 }
+    },
+    {
+      "id": "boxmodel-padding-responsive",
+      "file": "boxmodel/padding/responsive.json",
+      "category": "Box Model & Visuals",
+      "property": "padding",
+      "summary": "Padding 8 narrow; >=768px breakpoint flips to 32 (wide-viewport variant captured by testPaddingResponsiveWide)",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
     },
     {
       "id": "boxmodel-margin",

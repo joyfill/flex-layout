@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "display": "flex",
+      "flexDirection": "row",
+      "padding": { "value": 60, "unit": "px" },
+      "width": { "value": 100, "unit": "px" },
+      "height": { "value": 200, "unit": "px" },
+      "boxSizing": "border-box",
+      "backgroundColor": "#F3F4F6"
+    },
+    "#a": {
+      "width":  { "value": 40, "unit": "px" },
+      "height": { "value": 40, "unit": "px" },
+      "borderRadius": { "value": 4, "unit": "px" },
+      "backgroundColor": "#EF4444"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "div", "props": { "id": "a" } }
+    ]
+  }
+}
