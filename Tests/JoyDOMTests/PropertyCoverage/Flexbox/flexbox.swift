@@ -61,6 +61,18 @@ final class FlexboxSnapshotTests: XCTestCase {
         assertSnapshotsForSamples(in: "flexbox/flex-wrap")
     }
 
+    /// iOS-only extensions of `flexWrap` (e.g. `wrap-reverse`).
+    ///
+    /// `wrap-reverse` is NOT in the JoyDOM CSS spec (which restricts
+    /// `flexWrap` to `'nowrap' | 'wrap'`), but the underlying FlexLayout
+    /// primitive supports it. Kept in a sibling folder so the iOS code
+    /// path stays regression-tested without polluting the cross-platform
+    /// sample set — JS/Kotlin runtimes won't implement these and shouldn't
+    /// compare against the corresponding baselines.
+    func testFlexWrapIosExt() {
+        assertSnapshotsForSamples(in: "flexbox/flex-wrap-ios-ext")
+    }
+
     func testGap() {
         assertSnapshotsForSamples(in: "flexbox/gap")
     }
@@ -132,6 +144,28 @@ final class FlexboxSnapshotTests: XCTestCase {
         let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
         let snapshotDir = (testFileDir as NSString)
             .appendingPathComponent("__Snapshots__/flexbox/flex-shrink")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 900,
+            height: 120,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
+
+    /// `flex-wrap/responsive.json` declares the NARROW canvas where 3 wider-
+    /// than-container boxes (with `flexShrink: 0`) wrap onto multiple lines.
+    /// The ≥768px breakpoint flips `#root` to `flexWrap: nowrap`, packing
+    /// items onto a single line within the wide viewport. This method
+    /// captures the wide-viewport branch.
+    func testFlexWrapResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "flexbox-flex-wrap-responsive"),
+            "flex-wrap responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/flexbox/flex-wrap")
         assertJoyDOMSnapshot(
             json: sample.json,
             viewportWidth: 900,
