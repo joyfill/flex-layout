@@ -60,7 +60,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `backgroundColor` | ⬜ | 1/0/0/0 | — | — | — |
 | `opacity` | ⬜ | 1/0/0/0 | — | — | — |
 | `padding` | ⬜ | 1/0/0/0 | — | — | — |
-| `margin` | ⬜ | 1/0/0/0 | — | — | PR #21 true flex margin needs visual proof |
+| `margin` | ✅ | 4/4/6/7 | +26 baselines | 2026-05-14 | 25 samples + responsive-wide method; AI walk found zero impl bugs; uniform Length and per-side object forms verified; per-side sweep (top/right/bottom/left-only) + asymmetric combinations; `flex-margin-proof.json` delivers visual evidence for PR #21 (margin participates in flex layout as true flex-item spacing, not just outer wrapping); margin + gap stack additively; negative margins shift INWARD overlapping siblings; grow distributes free space after accounting for margins; resolves tracker note "PR #21 true flex margin needs visual proof" |
 | `borderWidth` | ⬜ | 1/0/0/0 | — | — | — |
 | `borderColor` | ⬜ | 1/0/0/0 | — | — | — |
 | `borderStyle` | ⬜ | 1/0/0/0 | — | — | Ext dashed/dotted/double have no render tests |
