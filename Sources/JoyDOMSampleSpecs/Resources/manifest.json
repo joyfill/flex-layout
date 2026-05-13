@@ -475,6 +475,204 @@
       }
     },
     {
+      "id": "flexbox-flex-shrink-zero",
+      "file": "flexbox/flex-shrink/zero.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "value sweep: flexShrink: 0 \u2014 items keep their 120px width and overflow the 300px container",
+      "snapshot": {
+        "viewportWidth": 360,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-one",
+      "file": "flexbox/flex-shrink/one.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "value sweep: flexShrink: 1 (CSS default) \u2014 items shrink equally to fit the container",
+      "snapshot": {
+        "viewportWidth": 360,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-two",
+      "file": "flexbox/flex-shrink/two.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "value sweep: flexShrink: 2 \u2014 uniform shrink factor produces identical layout to shrink: 1",
+      "snapshot": {
+        "viewportWidth": 360,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-fractional",
+      "file": "flexbox/flex-shrink/fractional.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "value sweep: flexShrink: 0.5 \u2014 uniform fractional shrink, same layout as shrink: 1",
+      "snapshot": {
+        "viewportWidth": 360,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-mixed-ratios",
+      "file": "flexbox/flex-shrink/mixed-ratios.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "value sweep: shrink ratios 1/1/2 \u2014 blue item shrinks twice as much as red and green",
+      "snapshot": {
+        "viewportWidth": 360,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-default",
+      "file": "flexbox/flex-shrink/default.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "defaults: property omitted \u2014 verifies CSS default flexShrink: 1 (items shrink to fit)",
+      "snapshot": {
+        "viewportWidth": 360,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-empty",
+      "file": "flexbox/flex-shrink/empty.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "edge: empty container \u2014 no items to shrink, fixed-size root stays at declared dimensions",
+      "snapshot": {
+        "viewportWidth": 340,
+        "height": 140
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-single-child",
+      "file": "flexbox/flex-shrink/single-child.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "edge: single oversized child \u2014 shrinks alone from 400px down to the 200px container's inner width",
+      "snapshot": {
+        "viewportWidth": 240,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-single-shrinker",
+      "file": "flexbox/flex-shrink/single-shrinker.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "edge: only green (#b) shrinks \u2014 red and blue at shrink: 0 absorb all overflow into one item",
+      "snapshot": {
+        "viewportWidth": 360,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-inline",
+      "file": "flexbox/flex-shrink/inline.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "authoring: flexShrink declared inline via node.props.style \u2014 ratios 0/1/2",
+      "snapshot": {
+        "viewportWidth": 360,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-class-selector",
+      "file": "flexbox/flex-shrink/class-selector.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "authoring: flexShrink declared via .fixed/.shrink-1/.shrink-2 class selectors",
+      "snapshot": {
+        "viewportWidth": 360,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-in-column",
+      "file": "flexbox/flex-shrink/in-column.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "context: flexDirection: column \u2014 vertical shrink along main axis when stack overflows height",
+      "snapshot": {
+        "viewportWidth": 240,
+        "height": 340
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-in-fixed-width",
+      "file": "flexbox/flex-shrink/in-fixed-width.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "context: narrow 220px container forces heavier shrink than the standard 300px overview",
+      "snapshot": {
+        "viewportWidth": 260,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-with-basis",
+      "file": "flexbox/flex-shrink/with-basis.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "interaction: shrink: 1 with basis 80/160/240 \u2014 CSS weighted shrink (basis x shrink) hits larger items harder",
+      "snapshot": {
+        "viewportWidth": 360,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-with-grow",
+      "file": "flexbox/flex-shrink/with-grow.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "interaction: shrink + grow both 1, container undersized \u2014 shrink wins when content overflows",
+      "snapshot": {
+        "viewportWidth": 360,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-with-wrap",
+      "file": "flexbox/flex-shrink/with-wrap.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "interaction: flexWrap: wrap defeats shrink \u2014 items wrap to new lines at natural size instead of shrinking",
+      "snapshot": {
+        "viewportWidth": 340,
+        "height": 240
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-with-min-width",
+      "file": "flexbox/flex-shrink/with-min-width.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "interaction: minWidth: 100 on red clamps its shrink \u2014 remaining overflow redistributes to green and blue",
+      "snapshot": {
+        "viewportWidth": 320,
+        "height": 100
+      }
+    },
+    {
+      "id": "flexbox-flex-shrink-responsive",
+      "file": "flexbox/flex-shrink/responsive.json",
+      "category": "Flexbox",
+      "property": "flexShrink",
+      "summary": "responsive: shrink: 1 at narrow viewports (items shrink to fit), shrink: 0 at >=768px (items keep 120px width)",
+      "snapshot": {
+        "viewportWidth": 400,
+        "height": 120
+      }
+    },
+    {
       "id": "flexbox-flex-basis",
       "file": "flexbox/flex-basis/overview.json",
       "category": "Flexbox",
