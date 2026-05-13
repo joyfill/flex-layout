@@ -4,6 +4,12 @@ name: Record snapshot baselines
 # baseline on a GitHub-hosted macOS runner, then commits the diff
 # back to the source branch.
 #
+# Note: the first time this file lands on the default branch, GitHub
+# sometimes mis-parses it and dispatch returns 422 "Workflow does
+# not have 'workflow_dispatch' trigger". A subsequent push that
+# modifies the file forces a re-parse. If you see that 422 error,
+# touch this file with any change (even a comment) and push.
+#
 # Why this exists: snapshot baselines recorded on local developer
 # Macs produce subtly different pixels (antialiasing, font subpixel
 # rendering, Display-P3 vs sRGB) than GitHub-hosted runners. When the

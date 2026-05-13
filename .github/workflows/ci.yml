@@ -11,17 +11,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Single-runner CI: macos-15 / Swift 6.0. We previously matrixed
+  # against macos-14 / Swift 5.9 as well, but it doubled the runtime
+  # without catching anything the newer pair didn't. If we need to
+  # widen the matrix again (e.g. when Apple ships macos-26), this is
+  # the spot.
   test:
-    name: Swift ${{ matrix.swift }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: macos-14
-            swift: "5.9"
-          - os: macos-15
-            swift: "6.0"
+    name: Swift 6.0 on macos-15
+    runs-on: macos-15
 
     steps:
       - uses: actions/checkout@v4
@@ -33,13 +30,13 @@ jobs:
         run: swift build --target FlexLayout
 
       # Snapshot tests (FlexboxSnapshotTests, JoyDOMSnapshotBaselineTests)
-      # are temporarily excluded on CI. Locally-recorded baselines diverge
+      # are temporarily excluded. Locally-recorded baselines diverge
       # from GitHub-hosted runner output beyond any reasonable precision
-      # threshold (we tried 0.99 → 0.95 → 0.85, all failed). The proper
-      # fix is to re-record baselines on a CI runner — see
-      # `.github/workflows/record-baselines.yml` (manual dispatch). Once
-      # baselines are CI-canonical, drop the `--skip` flag below and
-      # tighten precision back to e.g. 0.99 in `JoyDOMSnapshotHelpers`.
+      # threshold (we tried 0.99 → 0.95 → 0.85, all failed). The fix is
+      # to re-record on a CI runner — see
+      # `.github/workflows/record-baselines.yml` (manual dispatch).
+      # Once baselines are CI-canonical, drop these `--skip` flags and
+      # tighten precision back to ~0.99 in `JoyDOMSnapshotHelpers`.
       - name: Test
         run: swift test --parallel --skip FlexboxSnapshotTests --skip JoyDOMSnapshotBaselineTests
 
