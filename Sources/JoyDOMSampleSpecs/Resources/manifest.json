@@ -739,6 +739,134 @@
       }
     },
     {
+      "id": "flexbox-flex-wrap-nowrap",
+      "file": "flexbox/flex-wrap/nowrap.json",
+      "category": "Flexbox",
+      "property": "flexWrap",
+      "summary": "nowrap: 3 boxes wider than container shrink to one line (default behavior, explicit)",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-wrap-wrap",
+      "file": "flexbox/flex-wrap/wrap.json",
+      "category": "Flexbox",
+      "property": "flexWrap",
+      "summary": "wrap: 3 boxes overflow container width and reflow onto two lines",
+      "snapshot": { "viewportWidth": 360, "height": 180 }
+    },
+    {
+      "id": "flexbox-flex-wrap-default",
+      "file": "flexbox/flex-wrap/default.json",
+      "category": "Flexbox",
+      "property": "flexWrap",
+      "summary": "default (flexWrap omitted): items shrink onto one line, verifying nowrap fallback",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-wrap-empty",
+      "file": "flexbox/flex-wrap/empty.json",
+      "category": "Flexbox",
+      "property": "flexWrap",
+      "summary": "wrap container with zero children \u2014 renders as empty 320x80 background",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-wrap-single-child",
+      "file": "flexbox/flex-wrap/single-child.json",
+      "category": "Flexbox",
+      "property": "flexWrap",
+      "summary": "wrap with one child: no wrapping needed, single box at start",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-wrap-fits-on-one-line",
+      "file": "flexbox/flex-wrap/fits-on-one-line.json",
+      "category": "Flexbox",
+      "property": "flexWrap",
+      "summary": "wrap but children fit \u2014 stays on one line, no wrapping triggered",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
+    },
+    {
+      "id": "flexbox-flex-wrap-inline",
+      "file": "flexbox/flex-wrap/inline.json",
+      "category": "Flexbox",
+      "property": "flexWrap",
+      "summary": "flexWrap declared via node.props.style on the root container (inline authoring)",
+      "snapshot": { "viewportWidth": 360, "height": 180 }
+    },
+    {
+      "id": "flexbox-flex-wrap-class-selector",
+      "file": "flexbox/flex-wrap/class-selector.json",
+      "category": "Flexbox",
+      "property": "flexWrap",
+      "summary": "flexWrap supplied via a .wrap-row class selector on the root container",
+      "snapshot": { "viewportWidth": 360, "height": 180 }
+    },
+    {
+      "id": "flexbox-flex-wrap-in-column",
+      "file": "flexbox/flex-wrap/in-column.json",
+      "category": "Flexbox",
+      "property": "flexWrap",
+      "summary": "column + wrap: 4 boxes overflow fixed height and start a new column",
+      "snapshot": { "viewportWidth": 240, "height": 260 }
+    },
+    {
+      "id": "flexbox-flex-wrap-in-fixed-width",
+      "file": "flexbox/flex-wrap/in-fixed-width.json",
+      "category": "Flexbox",
+      "property": "flexWrap",
+      "summary": "wrap inside a nested fixed-width 200px container \u2014 wrap triggered by the nested width",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "flexbox-flex-wrap-with-gap",
+      "file": "flexbox/flex-wrap/with-gap.json",
+      "category": "Flexbox",
+      "property": "flexWrap",
+      "summary": "wrap + per-axis gap (c:16, r:24) \u2014 row gap visibly separates wrapped lines",
+      "snapshot": { "viewportWidth": 360, "height": 200 }
+    },
+    {
+      "id": "flexbox-flex-wrap-with-justify",
+      "file": "flexbox/flex-wrap/with-justify.json",
+      "category": "Flexbox",
+      "property": "flexWrap",
+      "summary": "wrap + justifyContent: space-between \u2014 each line distributes its own free space",
+      "snapshot": { "viewportWidth": 360, "height": 180 }
+    },
+    {
+      "id": "flexbox-flex-wrap-with-grow",
+      "file": "flexbox/flex-wrap/with-grow.json",
+      "category": "Flexbox",
+      "property": "flexWrap",
+      "summary": "wrap + flexGrow: 1 \u2014 each wrapped line's items grow to fill that line's free space",
+      "snapshot": { "viewportWidth": 360, "height": 180 }
+    },
+    {
+      "id": "flexbox-flex-wrap-with-shrink",
+      "file": "flexbox/flex-wrap/with-shrink.json",
+      "category": "Flexbox",
+      "property": "flexWrap",
+      "summary": "wrap + flexShrink: 0 \u2014 items keep declared width, overflow wraps rather than shrinks",
+      "snapshot": { "viewportWidth": 360, "height": 180 }
+    },
+    {
+      "id": "flexbox-flex-wrap-responsive",
+      "file": "flexbox/flex-wrap/responsive.json",
+      "category": "Flexbox",
+      "property": "flexWrap",
+      "summary": "responsive: narrow viewport wraps, \u2265768px breakpoint flips to nowrap (narrow canvas)",
+      "snapshot": { "viewportWidth": 360, "height": 180 }
+    },
+    {
+      "id": "flexbox-flex-wrap-ios-ext-wrap-reverse",
+      "file": "flexbox/flex-wrap-ios-ext/wrap-reverse.json",
+      "category": "Flexbox",
+      "property": "flexWrap-iOSExt",
+      "summary": "iOS-ext wrap-reverse: wrap with cross axis reversed \u2014 first line at bottom (not in JoyDOM spec; covered only by the iOS FlexLayout primitive)",
+      "snapshot": { "viewportWidth": 360, "height": 180 }
+    },
+    {
       "id": "flexbox-gap",
       "file": "flexbox/gap/overview.json",
       "category": "Flexbox",
