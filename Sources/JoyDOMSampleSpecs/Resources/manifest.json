@@ -3420,11 +3420,140 @@
       "summary": "Thin and thick solid borders for visual comparison"
     },
     {
-      "id": "boxmodel-border-color",
+      "id": "boxmodel-border-color-overview",
       "file": "boxmodel/border-color/overview.json",
       "category": "Box Model & Visuals",
       "property": "borderColor",
-      "summary": "Two hex border colors on identical frames"
+      "summary": "Four hex border colors (red/green/blue/black) on identical frames",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "boxmodel-border-color-red",
+      "file": "boxmodel/border-color/red.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "borderColor: #EF4444 (red) — value sweep",
+      "snapshot": { "viewportWidth": 160, "height": 100 }
+    },
+    {
+      "id": "boxmodel-border-color-green",
+      "file": "boxmodel/border-color/green.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "borderColor: #10B981 (green) — value sweep",
+      "snapshot": { "viewportWidth": 160, "height": 100 }
+    },
+    {
+      "id": "boxmodel-border-color-blue",
+      "file": "boxmodel/border-color/blue.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "borderColor: #3B82F6 (blue) — value sweep",
+      "snapshot": { "viewportWidth": 160, "height": 100 }
+    },
+    {
+      "id": "boxmodel-border-color-black",
+      "file": "boxmodel/border-color/black.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "borderColor: #000000 (black) — value sweep",
+      "snapshot": { "viewportWidth": 160, "height": 100 }
+    },
+    {
+      "id": "boxmodel-border-color-default",
+      "file": "boxmodel/border-color/default.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "Default: borderColor omitted with borderWidth set — verifies no border renders (JoyDOM requires both)",
+      "snapshot": { "viewportWidth": 160, "height": 100 }
+    },
+    {
+      "id": "boxmodel-border-color-empty",
+      "file": "boxmodel/border-color/empty.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "Empty container with red border — verifies border renders on container with no children",
+      "snapshot": { "viewportWidth": 240, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-color-single-child",
+      "file": "boxmodel/border-color/single-child.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "Single bordered child — minimal context for borderColor visibility",
+      "snapshot": { "viewportWidth": 200, "height": 100 }
+    },
+    {
+      "id": "boxmodel-border-color-same-as-background",
+      "file": "boxmodel/border-color/same-as-background.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "borderColor identical to root background — border is invisible (still consumes layout space)",
+      "snapshot": { "viewportWidth": 160, "height": 100 }
+    },
+    {
+      "id": "boxmodel-border-color-inline",
+      "file": "boxmodel/border-color/inline.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "borderColor applied via inline node.props.style — authoring-style coverage",
+      "snapshot": { "viewportWidth": 260, "height": 100 }
+    },
+    {
+      "id": "boxmodel-border-color-class-selector",
+      "file": "boxmodel/border-color/class-selector.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "borderColor applied via .bd-* class selectors — cascade-style coverage",
+      "snapshot": { "viewportWidth": 260, "height": 100 }
+    },
+    {
+      "id": "boxmodel-border-color-with-thick-border",
+      "file": "boxmodel/border-color/with-thick-border.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "borderColor with thick borderWidth (12px) — verifies stroke color saturates fully",
+      "snapshot": { "viewportWidth": 160, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-color-with-thin-border",
+      "file": "boxmodel/border-color/with-thin-border.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "borderColor with thin borderWidth (1px) — verifies hairline stroke rendering",
+      "snapshot": { "viewportWidth": 160, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-color-with-border-radius",
+      "file": "boxmodel/border-color/with-border-radius.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "borderColor with borderRadius: pill (999) and square (0) — stroke follows clip shape",
+      "snapshot": { "viewportWidth": 220, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-color-with-background-color",
+      "file": "boxmodel/border-color/with-background-color.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "borderColor + backgroundColor — black border on red/green/blue fills, no color interaction",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-color-with-flex-children",
+      "file": "boxmodel/border-color/with-flex-children.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "Bordered flex container with children — borderColor does NOT inherit; children render without border",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-color-responsive",
+      "file": "boxmodel/border-color/responsive.json",
+      "category": "Box Model & Visuals",
+      "property": "borderColor",
+      "summary": "Responsive breakpoint flip: borderColor red below 768px, blue at/above",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
     },
     {
       "id": "boxmodel-border-style",
