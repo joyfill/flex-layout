@@ -17,17 +17,13 @@
       "borderRadius": { "value": 4, "unit": "px" }
     },
     "#a": { "backgroundColor": "#EF4444" },
-    "#b": { "backgroundColor": "#10B981" },
-    "#c": { "backgroundColor": "#3B82F6" },
-    "#pinned": {
+    "#b": {
+      "backgroundColor": "#10B981",
       "position": "absolute",
-      "top":  { "value": 16, "unit": "px" },
-      "right":{ "value": 16, "unit": "px" },
-      "width":  { "value": 60, "unit": "px" },
-      "height": { "value": 60, "unit": "px" },
-      "borderRadius": { "value": 4, "unit": "px" },
-      "backgroundColor": "#F59E0B"
-    }
+      "top":  { "value": 40, "unit": "px" },
+      "left": { "value": 120, "unit": "px" }
+    },
+    "#c": { "backgroundColor": "#3B82F6" }
   },
   "breakpoints": [],
   "layout": {
@@ -36,8 +32,7 @@
     "children": [
       { "type": "div", "props": { "id": "a", "className": ["box"] } },
       { "type": "div", "props": { "id": "b", "className": ["box"] } },
-      { "type": "div", "props": { "id": "c", "className": ["box"] } },
-      { "type": "div", "props": { "id": "pinned" } }
+      { "type": "div", "props": { "id": "c", "className": ["box"] } }
     ]
   }
 }
