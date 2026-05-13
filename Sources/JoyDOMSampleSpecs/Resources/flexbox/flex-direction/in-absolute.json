@@ -9,6 +9,7 @@
       "borderRadius": { "value": 8, "unit": "px" }
     },
     "#overlay": {
+      "display": "flex",
       "position": "absolute",
       "top":    { "value": 16, "unit": "px" },
       "left":   { "value": 16, "unit": "px" },

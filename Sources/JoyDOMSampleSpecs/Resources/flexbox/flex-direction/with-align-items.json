@@ -2,6 +2,7 @@
   "version": 1,
   "style": {
     "#root": {
+      "display": "flex",
       "flexDirection": "row",
       "alignItems":    "center",
       "padding": { "value": 16, "unit": "px" },
