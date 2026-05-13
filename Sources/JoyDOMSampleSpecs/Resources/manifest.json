@@ -717,6 +717,150 @@
       }
     },
     {
+      "id": "flexbox-align-items-flex-start",
+      "file": "flexbox/align-items/flex-start.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "row + alignItems: flex-start \u2014 60x60 boxes pinned to the top of a 140px-tall container",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-items-flex-end",
+      "file": "flexbox/align-items/flex-end.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "row + alignItems: flex-end \u2014 60x60 boxes pinned to the bottom of a 140px-tall container",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-items-center",
+      "file": "flexbox/align-items/center.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "row + alignItems: center \u2014 60x60 boxes vertically centered in a 140px-tall container",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-items-stretch",
+      "file": "flexbox/align-items/stretch.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "row + alignItems: stretch \u2014 boxes with no explicit height stretch to fill the cross axis",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-items-default",
+      "file": "flexbox/align-items/default.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "default: alignItems omitted \u2014 verifies the CSS-spec fallback of stretch",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-items-empty",
+      "file": "flexbox/align-items/empty.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "edge: empty flex container with alignItems: center \u2014 renders the bare root background",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-items-single-child",
+      "file": "flexbox/align-items/single-child.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "edge: single 60x60 child with alignItems: center \u2014 child vertically centered",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-items-mixed-heights",
+      "file": "flexbox/align-items/mixed-heights.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "edge: 3 boxes of mixed heights (40/70/100) with alignItems: center \u2014 each centered on its cross axis",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-items-inline",
+      "file": "flexbox/align-items/inline.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "authoring: alignItems declared inline via node.props.style on the root container",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-items-class-selector",
+      "file": "flexbox/align-items/class-selector.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "authoring: alignItems declared via class selector (.row-center) on the root container",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-items-in-column",
+      "file": "flexbox/align-items/in-column.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "context: flexDirection column + alignItems: center \u2014 cross axis is horizontal, boxes centered left-to-right",
+      "snapshot": { "viewportWidth": 320, "height": 260 }
+    },
+    {
+      "id": "flexbox-align-items-in-fixed-width",
+      "file": "flexbox/align-items/in-fixed-width.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "context: fixed-width root (280px) + alignItems: flex-end \u2014 boxes pinned to bottom regardless of available main-axis room",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-items-with-wrap",
+      "file": "flexbox/align-items/with-wrap.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "interaction: flexWrap + alignItems: flex-start with mixed-height children \u2014 within each line, items align to the line's top edge",
+      "snapshot": { "viewportWidth": 320, "height": 220 }
+    },
+    {
+      "id": "flexbox-align-items-with-gap",
+      "file": "flexbox/align-items/with-gap.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "interaction: gap: 24 + alignItems: center \u2014 main-axis gap doesn't disturb cross-axis centering",
+      "snapshot": { "viewportWidth": 360, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-items-with-grow",
+      "file": "flexbox/align-items/with-grow.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "interaction: flexGrow: 1 + alignItems: flex-end \u2014 main-axis growth doesn't disturb cross-axis flex-end pinning",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-items-with-alignSelf-override",
+      "file": "flexbox/align-items/with-alignSelf-override.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "interaction: alignItems: flex-start container, middle child overrides with alignSelf: flex-end \u2014 only that child drops to the bottom",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-items-responsive",
+      "file": "flexbox/align-items/responsive.json",
+      "category": "Flexbox",
+      "property": "alignItems",
+      "summary": "responsive: narrow viewport renders alignItems: flex-start; \u2265768px breakpoint flips to flex-end (wide variant captured by testAlignItemsResponsiveWide)",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
+    },
+    {
+      "id": "flexbox-align-items-ios-ext-baseline",
+      "file": "flexbox/align-items-ios-ext/baseline.json",
+      "category": "Flexbox",
+      "property": "alignItems-iOSExt",
+      "summary": "iOS-ext baseline: 3 text nodes of different font sizes align on their text baselines (not in JoyDOM spec; covered only by the iOS FlexLayout primitive)",
+      "snapshot": { "viewportWidth": 320, "height": 140 }
+    },
+    {
       "id": "flexbox-align-self",
       "file": "flexbox/align-self/overview.json",
       "category": "Flexbox",
