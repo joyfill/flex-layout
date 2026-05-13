@@ -6,7 +6,7 @@
       "flexDirection": "row",
       "padding": { "value": 16, "unit": "px" },
       "gap":     { "value": 8,  "unit": "px" },
-      "width":   { "value": 360, "unit": "px" },
+      "width":   { "value": 320, "unit": "px" },
       "height":  { "value": 160, "unit": "px" },
       "position": "relative",
       "backgroundColor": "#F3F4F6"
@@ -17,27 +17,31 @@
       "borderRadius": { "value": 4, "unit": "px" }
     },
     "#a": { "backgroundColor": "#EF4444" },
-    "#b": { "backgroundColor": "#10B981" },
-    "#c": { "backgroundColor": "#3B82F6" },
-    "#pinned": {
-      "position": "absolute",
-      "top":  { "value": 16, "unit": "px" },
-      "right":{ "value": 16, "unit": "px" },
-      "width":  { "value": 60, "unit": "px" },
-      "height": { "value": 60, "unit": "px" },
-      "borderRadius": { "value": 4, "unit": "px" },
-      "backgroundColor": "#F59E0B"
-    }
+    "#b": { "backgroundColor": "#10B981", "position": "relative" },
+    "#c": { "backgroundColor": "#3B82F6" }
   },
-  "breakpoints": [],
+  "breakpoints": [
+    {
+      "conditions": [
+        { "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }
+      ],
+      "nodes": {},
+      "style": {
+        "#b": {
+          "position": "absolute",
+          "top":  { "value": 32, "unit": "px" },
+          "left": { "value": 200, "unit": "px" }
+        }
+      }
+    }
+  ],
   "layout": {
     "type": "div",
     "props": { "id": "root" },
     "children": [
       { "type": "div", "props": { "id": "a", "className": ["box"] } },
       { "type": "div", "props": { "id": "b", "className": ["box"] } },
-      { "type": "div", "props": { "id": "c", "className": ["box"] } },
-      { "type": "div", "props": { "id": "pinned" } }
+      { "type": "div", "props": { "id": "c", "className": ["box"] } }
     ]
   }
 }

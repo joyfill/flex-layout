@@ -45,7 +45,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 
 | Property | Status | Samples | Tests delta | Date | Notes |
 |---|---|---|---|---|---|
-| `position` | ⬜ | 1/0/0/0 | — | — | — |
+| `position` | ✅ | 2/3/2/4 | +19 baselines | 2026-05-13 | 16 spec samples + 2 iOS-ext (`fixed`, `sticky` fall back to absolute with diagnostic) + responsive-wide method; AI walk found zero impl bugs; verified `absolute` removes the item from flex flow (siblings collapse the gap), insets anchor to the closest positioned ancestor (root viewport if none), nested positioned ancestor correctly takes precedence over root, `overflow:hidden` clips absolute children that extend past parent's border-box, `zIndex` orders absolute siblings, CSS default `relative` confirmed via default.json matching relative.json |
 | `display` | ⬜ | 1/0/0/0 | — | — | — |
 | `boxSizing` | ✅ | 2/3/2/3 | +18 baselines | 2026-05-13 | 18 samples (overview rewritten as side-by-side comparison) + responsive-wide method; AI walk found zero impl bugs, 1 sample-design fix (`equal-outer-size` originally only equalized width, patched to also equalize height); visual proof for PR #25 — `border-box` deducts `borderWidth*2 + paddingMain*2` from FlexLayout-supplied size, while `content-box` (default when omitted) leaves outer = declared + padding + border; `equal-outer-size` proves border-box width=120 and content-box width=80 (+ padding 16 + border 4) both yield identical 120×120 outer; `width-padding-border` is the canonical numerical proof; nested.json shows deduction applies independently at every nesting level; responsive breakpoint flip (content-box ↔ border-box at width>=768px) confirmed |
 | `zIndex` | ⬜ | 1/0/0/0 | — | — | — |

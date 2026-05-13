@@ -1881,7 +1881,144 @@
       "file": "layout/position/overview.json",
       "category": "Layout & Positioning",
       "property": "position",
-      "summary": "absolute and relative positioning side-by-side"
+      "summary": "overview: 3 in-flow boxes plus an absolutely-positioned amber pin anchored to the root",
+      "snapshot": { "viewportWidth": 400, "height": 200 }
+    },
+    {
+      "id": "layout-position-absolute",
+      "file": "layout/position/absolute.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "absolute: middle (green) box removed from flow and anchored at top:40, left:120; red and blue close the gap",
+      "snapshot": { "viewportWidth": 400, "height": 200 }
+    },
+    {
+      "id": "layout-position-relative",
+      "file": "layout/position/relative.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "relative: all three boxes stay in flow at default offsets; layout identical to default flow",
+      "snapshot": { "viewportWidth": 400, "height": 160 }
+    },
+    {
+      "id": "layout-position-default",
+      "file": "layout/position/default.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "default: position omitted — boxes flow normally (CSS default = relative)",
+      "snapshot": { "viewportWidth": 400, "height": 160 }
+    },
+    {
+      "id": "layout-position-empty",
+      "file": "layout/position/empty.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "edge case: positioned container with no children renders without crashing",
+      "snapshot": { "viewportWidth": 240, "height": 120 }
+    },
+    {
+      "id": "layout-position-single-child",
+      "file": "layout/position/single-child.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "edge case: single absolute child anchored to its positioned parent",
+      "snapshot": { "viewportWidth": 280, "height": 160 }
+    },
+    {
+      "id": "layout-position-no-positioned-ancestor",
+      "file": "layout/position/no-positioned-ancestor.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "edge case: absolute child with no positioned ancestor — anchors to the root viewport",
+      "snapshot": { "viewportWidth": 360, "height": 200 }
+    },
+    {
+      "id": "layout-position-inline",
+      "file": "layout/position/inline.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "authoring: position declared inline via node.props.style (no class selectors)",
+      "snapshot": { "viewportWidth": 360, "height": 200 }
+    },
+    {
+      "id": "layout-position-class-selector",
+      "file": "layout/position/class-selector.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "authoring: position applied via .pinned class selector — blue box detaches to top-right",
+      "snapshot": { "viewportWidth": 360, "height": 200 }
+    },
+    {
+      "id": "layout-position-in-flex-row",
+      "file": "layout/position/in-flex-row.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "context: absolute child inside a row flex container — removed from flow, siblings collapse the gap",
+      "snapshot": { "viewportWidth": 400, "height": 160 }
+    },
+    {
+      "id": "layout-position-in-fixed-width",
+      "file": "layout/position/in-fixed-width.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "context: two absolute children anchored to opposite corners of a fixed-width parent",
+      "snapshot": { "viewportWidth": 260, "height": 200 }
+    },
+    {
+      "id": "layout-position-with-insets-absolute",
+      "file": "layout/position/with-insets-absolute.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "interaction: absolute child positioned with top:20 and left:40 insets relative to its parent",
+      "snapshot": { "viewportWidth": 360, "height": 240 }
+    },
+    {
+      "id": "layout-position-with-z-index",
+      "file": "layout/position/with-z-index.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "interaction: two absolute siblings stacked by zIndex (blue z:1 in front of red z:0)",
+      "snapshot": { "viewportWidth": 360, "height": 240 }
+    },
+    {
+      "id": "layout-position-with-overflow-hidden",
+      "file": "layout/position/with-overflow-hidden.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "interaction: absolute child positioned beyond parent's right edge — clipped by overflow:hidden",
+      "snapshot": { "viewportWidth": 360, "height": 240 }
+    },
+    {
+      "id": "layout-position-with-nested-positioned-ancestor",
+      "file": "layout/position/with-nested-positioned-ancestor.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "interaction: deeply nested absolute child anchors to the closest positioned ancestor (inner), not root",
+      "snapshot": { "viewportWidth": 400, "height": 260 }
+    },
+    {
+      "id": "layout-position-responsive",
+      "file": "layout/position/responsive.json",
+      "category": "Layout & Positioning",
+      "property": "position",
+      "summary": "responsive: middle box is relative at narrow viewports; at >=768px it switches to absolute and detaches",
+      "snapshot": { "viewportWidth": 360, "height": 200 }
+    },
+    {
+      "id": "layout-position-ios-ext-fixed",
+      "file": "layout/position-ios-ext/fixed.json",
+      "category": "Layout & Positioning",
+      "property": "position-iOSExt",
+      "summary": "iOS-ext fixed: position:'fixed' falls back to absolute on iOS with a warning diagnostic (not in JoyDOM spec)",
+      "snapshot": { "viewportWidth": 360, "height": 240 }
+    },
+    {
+      "id": "layout-position-ios-ext-sticky",
+      "file": "layout/position-ios-ext/sticky.json",
+      "category": "Layout & Positioning",
+      "property": "position-iOSExt",
+      "summary": "iOS-ext sticky: position:'sticky' falls back to absolute on iOS with a warning diagnostic (not in JoyDOM spec)",
+      "snapshot": { "viewportWidth": 360, "height": 240 }
     },
     {
       "id": "layout-display",

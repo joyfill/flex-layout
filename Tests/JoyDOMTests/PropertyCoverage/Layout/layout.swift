@@ -50,4 +50,42 @@ final class LayoutSnapshotTests: XCTestCase {
             snapshotName: "responsive-wide"
         )
     }
+
+    func testPosition() {
+        assertSnapshotsForSamples(in: "layout/position")
+    }
+
+    /// iOS-only extensions of `position` (`fixed`, `sticky`).
+    ///
+    /// These values are NOT in the JoyDOM CSS spec (which restricts
+    /// `position` to `'absolute' | 'relative'`), but joydom-swift renders
+    /// them as `absolute` and emits a warning diagnostic. Kept in a sibling
+    /// folder so the iOS code path stays regression-tested without
+    /// polluting the cross-platform sample set — JS/Kotlin runtimes won't
+    /// implement these and shouldn't compare against the corresponding
+    /// baselines.
+    func testPositionIosExt() {
+        assertSnapshotsForSamples(in: "layout/position-ios-ext")
+    }
+
+    /// `position/responsive.json` declares the NARROW canvas (middle box
+    /// stays in flow as `position: relative`). The ≥768px breakpoint flips
+    /// `#b` to `position: absolute` with `top: 32, left: 200`, detaching it
+    /// from the flow. This method captures the wide-viewport branch.
+    func testPositionResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "layout-position-responsive"),
+            "position responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/layout/position")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 900,
+            height: 200,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
