@@ -4309,11 +4309,100 @@
       "summary": "Named and numeric weights from 100 to 900"
     },
     {
-      "id": "typography-font-style",
+      "id": "typography-font-style-overview",
       "file": "typography/font-style/overview.json",
       "category": "Typography",
       "property": "fontStyle",
-      "summary": "Plain and italic paragraphs"
+      "summary": "Showcase: normal vs italic paragraphs side-by-side",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "typography-font-style-normal",
+      "file": "typography/font-style/normal.json",
+      "category": "Typography",
+      "property": "fontStyle",
+      "summary": "value sweep: fontStyle: normal renders upright glyphs",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "typography-font-style-italic",
+      "file": "typography/font-style/italic.json",
+      "category": "Typography",
+      "property": "fontStyle",
+      "summary": "value sweep: fontStyle: italic applies SwiftUI .italic() modifier",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "typography-font-style-default",
+      "file": "typography/font-style/default.json",
+      "category": "Typography",
+      "property": "fontStyle",
+      "summary": "default: fontStyle omitted — falls back to CSS default 'normal'",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "typography-font-style-inline",
+      "file": "typography/font-style/inline.json",
+      "category": "Typography",
+      "property": "fontStyle",
+      "summary": "authoring: fontStyle: italic declared inline via node.props.style",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "typography-font-style-class-selector",
+      "file": "typography/font-style/class-selector.json",
+      "category": "Typography",
+      "property": "fontStyle",
+      "summary": "authoring: fontStyle resolved via class selectors (.plain / .emph)",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "typography-font-style-with-font-weight-bold",
+      "file": "typography/font-style/with-font-weight-bold.json",
+      "category": "Typography",
+      "property": "fontStyle",
+      "summary": "interaction × fontWeight: regular / bold / italic / bold-italic 4-way matrix",
+      "snapshot": { "viewportWidth": 400, "height": 200 }
+    },
+    {
+      "id": "typography-font-style-with-font-family-serif",
+      "file": "typography/font-style/with-font-family-serif.json",
+      "category": "Typography",
+      "property": "fontStyle",
+      "summary": "interaction × fontFamily: Georgia (serif) italic uses true italic glyphs",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "typography-font-style-with-font-family-sans",
+      "file": "typography/font-style/with-font-family-sans.json",
+      "category": "Typography",
+      "property": "fontStyle",
+      "summary": "interaction × fontFamily: Helvetica (sans) italic — visually distinct from serif italic",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "typography-font-style-nested",
+      "file": "typography/font-style/nested.json",
+      "category": "Typography",
+      "property": "fontStyle",
+      "summary": "inheritance: italic on outer <p> cascades into nested <span>",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "typography-font-style-single-child",
+      "file": "typography/font-style/single-child.json",
+      "category": "Typography",
+      "property": "fontStyle",
+      "summary": "edge: single italic paragraph in the tree",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "typography-font-style-responsive",
+      "file": "typography/font-style/responsive.json",
+      "category": "Typography",
+      "property": "fontStyle",
+      "summary": "Narrow viewport renders fontStyle: normal; wide viewport (>=768px) flips to italic via breakpoint",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
     },
     {
       "id": "typography-color",
