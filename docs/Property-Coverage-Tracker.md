@@ -64,7 +64,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `borderWidth` | ⬜ | 1/0/0/0 | — | — | — |
 | `borderColor` | ⬜ | 1/0/0/0 | — | — | — |
 | `borderStyle` | ⬜ | 1/0/0/0 | — | — | Ext dashed/dotted/double have no render tests |
-| `borderRadius` | ⬜ | 1/0/0/0 | — | — | — |
+| `borderRadius` | ✅ | 12/3/4/3 | +23 baselines | 2026-05-14 | 22 spec samples + responsive-wide method; AI walk found zero impl bugs and zero sample-design issues. Value-sweep (zero/small/medium/large/pill) verifies progressive corner rounding; per-corner samples (top-left-only/top-right-only/bottom-right-only/bottom-left-only) verify each corner of the `{ topLeft, topRight, bottomRight, bottomLeft }` object form independently; asymmetric samples (top-corners-only, diagonal) verify multi-corner combinations; circle (50px on 80×80 → no, on 100×100 with r=50) renders as perfect circle; radius-larger-than-half (r=200 on 80×80) clamps to ellipse via SwiftUI `RoundedRectangle`'s native min(width,height)/2 clamp — matches CSS spec UA clamping; interactions verify background clips to corners (with-background-color), borders curve along radius (with-border), and overflow:hidden clips children to rounded corners (with-overflow-hidden); responsive breakpoint flips 4px → 32px. |
 
 ## 4. Sizing (3 properties)
 

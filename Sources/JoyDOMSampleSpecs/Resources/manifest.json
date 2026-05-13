@@ -2837,11 +2837,180 @@
       "summary": "All five styles: solid, none, dashed, dotted, double"
     },
     {
-      "id": "boxmodel-border-radius",
+      "id": "boxmodel-border-radius-overview",
       "file": "boxmodel/border-radius/overview.json",
       "category": "Box Model & Visuals",
       "property": "borderRadius",
-      "summary": "Pill (uniform) and per-corner radii"
+      "summary": "Showcase: sharp, rounded, pill, and asymmetric per-corner radii side-by-side",
+      "snapshot": { "viewportWidth": 420, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-radius-default",
+      "file": "boxmodel/border-radius/default.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Default (property omitted) — verifies spec fallback to 0 / sharp corners",
+      "snapshot": { "viewportWidth": 200, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-radius-zero",
+      "file": "boxmodel/border-radius/zero.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "borderRadius: 0 — explicit sharp corners",
+      "snapshot": { "viewportWidth": 200, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-radius-small",
+      "file": "boxmodel/border-radius/small.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "borderRadius: 4px — subtle rounding",
+      "snapshot": { "viewportWidth": 200, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-radius-medium",
+      "file": "boxmodel/border-radius/medium.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "borderRadius: 16px — clear rounded-card look",
+      "snapshot": { "viewportWidth": 200, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-radius-large",
+      "file": "boxmodel/border-radius/large.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "borderRadius: 32px — heavy rounding approaching half-height",
+      "snapshot": { "viewportWidth": 200, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-radius-pill",
+      "file": "boxmodel/border-radius/pill.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Pill: radius = height/2 on a wide rectangle → fully rounded ends",
+      "snapshot": { "viewportWidth": 240, "height": 100 }
+    },
+    {
+      "id": "boxmodel-border-radius-top-left-only",
+      "file": "boxmodel/border-radius/top-left-only.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Per-corner: only topLeft rounded (object form, other corners default 0)",
+      "snapshot": { "viewportWidth": 200, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-radius-top-right-only",
+      "file": "boxmodel/border-radius/top-right-only.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Per-corner: only topRight rounded",
+      "snapshot": { "viewportWidth": 200, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-radius-bottom-right-only",
+      "file": "boxmodel/border-radius/bottom-right-only.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Per-corner: only bottomRight rounded",
+      "snapshot": { "viewportWidth": 200, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-radius-bottom-left-only",
+      "file": "boxmodel/border-radius/bottom-left-only.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Per-corner: only bottomLeft rounded",
+      "snapshot": { "viewportWidth": 200, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-radius-top-corners-only",
+      "file": "boxmodel/border-radius/top-corners-only.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Asymmetric: both top corners rounded, bottom corners sharp (card-tab shape)",
+      "snapshot": { "viewportWidth": 200, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-radius-diagonal",
+      "file": "boxmodel/border-radius/diagonal.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Diagonal: topLeft and bottomRight rounded, other two sharp",
+      "snapshot": { "viewportWidth": 200, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-radius-empty",
+      "file": "boxmodel/border-radius/empty.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Empty container with borderRadius: 16 — verifies rounding applies on childless boxes",
+      "snapshot": { "viewportWidth": 240, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-radius-circle",
+      "file": "boxmodel/border-radius/circle.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "100×100 square with radius 50 → perfect circle",
+      "snapshot": { "viewportWidth": 200, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-radius-radius-larger-than-half",
+      "file": "boxmodel/border-radius/radius-larger-than-half.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Radius 200 on an 80×80 box — documents impl clamping behaviour vs spec",
+      "snapshot": { "viewportWidth": 200, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-radius-inline",
+      "file": "boxmodel/border-radius/inline.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Authoring: borderRadius declared via inline node.props.style",
+      "snapshot": { "viewportWidth": 200, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-radius-class-selector",
+      "file": "boxmodel/border-radius/class-selector.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Authoring: shared .rounded class applies borderRadius to multiple boxes",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-radius-with-background-color",
+      "file": "boxmodel/border-radius/with-background-color.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Interaction: backgroundColor clips to rounded corners",
+      "snapshot": { "viewportWidth": 220, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-radius-with-border",
+      "file": "boxmodel/border-radius/with-border.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Interaction: border stroke curves along the rounded corners",
+      "snapshot": { "viewportWidth": 200, "height": 120 }
+    },
+    {
+      "id": "boxmodel-border-radius-with-overflow-hidden",
+      "file": "boxmodel/border-radius/with-overflow-hidden.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Interaction: oversized child clips to parent's rounded corners with overflow:hidden",
+      "snapshot": { "viewportWidth": 220, "height": 140 }
+    },
+    {
+      "id": "boxmodel-border-radius-responsive",
+      "file": "boxmodel/border-radius/responsive.json",
+      "category": "Box Model & Visuals",
+      "property": "borderRadius",
+      "summary": "Breakpoint flip: 4px at narrow viewport, 32px when width ≥ 768px",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
     },
     {
       "id": "typography-font-family",
