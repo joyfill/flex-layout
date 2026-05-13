@@ -64,6 +64,12 @@ Every property listed as `Length<'px'>` or `Length<'px' | '%'>` takes the typed 
 | `gap` · `rowGap` · `columnGap` | `Length<"px">` |
 | `order` | `number` |
 
+> **`rowGap` / `columnGap` are writing-mode-oriented, not flex-axis-oriented.**
+> Commonly mispredicted. In `flexDirection: column`, `rowGap` becomes the
+> main-axis (vertical) spacing — NOT cross-axis. And `columnGap` in a
+> single-line column flex container with no wrap is a no-op (no columns
+> to space). Verified during the `gap` walk on 2026-05-13.
+
 ## 3. Sizing
 
 | Property | Legal values |
