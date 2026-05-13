@@ -22,4 +22,28 @@ import JoyDOMSampleSpecs
 final class LayoutSnapshotTests: XCTestCase {
     // Walkers append their test methods below as each Layout & Positioning
     // property's coverage walk lands.
+
+    func testZIndex() {
+        assertSnapshotsForSamples(in: "layout/z-index")
+    }
+
+    /// Wide-viewport variant of `layout/z-index/responsive.json` — at
+    /// width ≥ 768px the breakpoint flips green's zIndex from `1` to `-1`
+    /// so red paints on top instead of green.
+    func testZIndexResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "layout-z-index-responsive"),
+            "responsive zIndex sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/layout/z-index")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 800,
+            height: 200,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
