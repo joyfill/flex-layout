@@ -80,7 +80,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `fontFamily` | ⬜ | 1/0/0/0 | — | — | — |
 | `fontSize` | ✅ | 8/3/2/5 + responsive | +22 baselines | 2026-05-14 | 21 spec samples + responsive-wide method (22 baselines); value sweep 8/12/14/16/18/24/36/64 px; `default` (omitted) renders identically to `px-16`, confirming the CSS 16px spec default; edges (`very-small` 1px, `very-large` 96px, `single-character` 48px) render at expected scales; both authoring styles (`inline-style` via `node.props.style`, `class-selector` via `.large`) cascade correctly; cross-property interactions verified — `with-line-height` (1.6 multiplier wraps to 3 lines visibly spaced), `with-font-weight` (700 visibly bolder), `with-font-family` (Georgia serif), `with-color` (#0066CC blue), `in-flex-container` (12/20/32 px baselines align in a row flex container); responsive breakpoint flip 14px→32px at width≥768px verified via `testFontSizeResponsiveWide`; allowlist grep clean (`fontSize: Length<"px">` only); AI walk found zero impl bugs. |
 | `fontWeight` | ⬜ | 1/0/0/0 | — | — | CSS Fonts L4 band mapping |
-| `fontStyle` | ⬜ | 1/0/0/0 | — | — | — |
+| `fontStyle` | ✅ | 4/3/3/3 | +14 | 2026-05-14 | Zero impl bugs. SwiftUI `.italic()` correctly applied; cascades into nested `<span>`; bold-italic and family×italic combinations all distinct. |
 | `color` | ⬜ | 1/0/0/0 | — | — | — |
 | `textDecoration` | ⬜ | 1/0/0/0 | — | — | Env cascade to Text descendants |
 | `textAlign` | ⬜ | 1/0/0/0 | — | — | — |
