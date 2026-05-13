@@ -2472,7 +2472,152 @@
       "file": "layout/overflow/overview.json",
       "category": "Layout & Positioning",
       "property": "overflow",
-      "summary": "All five overflow values: visible, hidden, clip, scroll, auto"
+      "summary": "Four-cell showcase: visible, hidden, scroll, auto each wrapping an oversized child",
+      "snapshot": { "viewportWidth": 480, "height": 120 }
+    },
+    {
+      "id": "layout-overflow-visible",
+      "file": "layout/overflow/visible.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "overflow: visible — oversized child spills outside the 160x100 container, fully visible",
+      "snapshot": { "viewportWidth": 400, "height": 260 }
+    },
+    {
+      "id": "layout-overflow-hidden",
+      "file": "layout/overflow/hidden.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "overflow: hidden — oversized child clipped at the 160x100 container edge",
+      "snapshot": { "viewportWidth": 400, "height": 260 }
+    },
+    {
+      "id": "layout-overflow-clip",
+      "file": "layout/overflow/clip.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "overflow: clip — semantically no scroll container; expected to render identical to hidden",
+      "snapshot": { "viewportWidth": 400, "height": 260 }
+    },
+    {
+      "id": "layout-overflow-scroll",
+      "file": "layout/overflow/scroll.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "overflow: scroll — wraps content in a ScrollView; in a static snapshot content is clipped at scroll bounds",
+      "snapshot": { "viewportWidth": 400, "height": 260 }
+    },
+    {
+      "id": "layout-overflow-auto",
+      "file": "layout/overflow/auto.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "overflow: auto — ViewThatFits switches to a scrolling variant when content overflows",
+      "snapshot": { "viewportWidth": 400, "height": 260 }
+    },
+    {
+      "id": "layout-overflow-default",
+      "file": "layout/overflow/default.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "overflow omitted — verifies CSS default 'visible' (oversized child spills)",
+      "snapshot": { "viewportWidth": 400, "height": 260 }
+    },
+    {
+      "id": "layout-overflow-empty",
+      "file": "layout/overflow/empty.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "empty container with overflow: hidden — paints the container box only",
+      "snapshot": { "viewportWidth": 240, "height": 140 }
+    },
+    {
+      "id": "layout-overflow-single-child-fits",
+      "file": "layout/overflow/single-child-fits.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "single child smaller than container — overflow setting has no observable effect",
+      "snapshot": { "viewportWidth": 300, "height": 160 }
+    },
+    {
+      "id": "layout-overflow-single-child-overflows",
+      "file": "layout/overflow/single-child-overflows.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "single oversized child clipped by overflow: hidden on a 160x100 container",
+      "snapshot": { "viewportWidth": 400, "height": 260 }
+    },
+    {
+      "id": "layout-overflow-inline",
+      "file": "layout/overflow/inline.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "overflow: hidden declared inline via node.props.style",
+      "snapshot": { "viewportWidth": 400, "height": 260 }
+    },
+    {
+      "id": "layout-overflow-class-selector",
+      "file": "layout/overflow/class-selector.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "overflow: hidden applied via a .clipped class selector",
+      "snapshot": { "viewportWidth": 400, "height": 260 }
+    },
+    {
+      "id": "layout-overflow-in-flex-row",
+      "file": "layout/overflow/in-flex-row.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "Two siblings in a flex row: clipper (overflow:hidden) vs bleeder (overflow:visible) with identical oversized children",
+      "snapshot": { "viewportWidth": 520, "height": 220 }
+    },
+    {
+      "id": "layout-overflow-in-fixed-width-and-height",
+      "file": "layout/overflow/in-fixed-width-and-height.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "overflow: hidden on a fixed-width AND fixed-height container — child clipped on both axes",
+      "snapshot": { "viewportWidth": 400, "height": 260 }
+    },
+    {
+      "id": "layout-overflow-with-position-absolute-child",
+      "file": "layout/overflow/with-position-absolute-child.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "absolutely-positioned child extending beyond the relative parent with overflow: hidden — verifies clip applies to abs descendants",
+      "snapshot": { "viewportWidth": 400, "height": 260 }
+    },
+    {
+      "id": "layout-overflow-with-border-radius",
+      "file": "layout/overflow/with-border-radius.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "overflow: hidden + borderRadius — verifies whether the clip rect follows the rounded corners",
+      "snapshot": { "viewportWidth": 400, "height": 260 }
+    },
+    {
+      "id": "layout-overflow-with-padding",
+      "file": "layout/overflow/with-padding.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "overflow: hidden with large container padding — clip happens at the container outer edge",
+      "snapshot": { "viewportWidth": 400, "height": 260 }
+    },
+    {
+      "id": "layout-overflow-with-nested-overflow",
+      "file": "layout/overflow/with-nested-overflow.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "Two nested overflow:hidden containers — innermost child clipped by inner, inner clipped by outer",
+      "snapshot": { "viewportWidth": 400, "height": 260 }
+    },
+    {
+      "id": "layout-overflow-responsive",
+      "file": "layout/overflow/responsive.json",
+      "category": "Layout & Positioning",
+      "property": "overflow",
+      "summary": "narrow viewport: overflow: hidden; >=480px breakpoint flips to overflow: visible",
+      "snapshot": { "viewportWidth": 400, "height": 260 }
     },
     {
       "id": "layout-insets",
