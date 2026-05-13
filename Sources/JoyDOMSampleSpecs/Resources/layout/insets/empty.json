@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "display": "flex",
+      "position": "relative",
+      "width":  { "value": 240, "unit": "px" },
+      "height": { "value": 120, "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" }
+  }
+}
