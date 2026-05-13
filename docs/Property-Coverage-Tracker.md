@@ -30,8 +30,8 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 
 | Property | Status | Samples (sweep/edges/ctx/inter) | Tests delta | Date | Notes |
 |---|---|---|---|---|---|
-| `flexDirection` | ⬜ | 1/0/0/0 | — | — | — |
-| `flexGrow` | ⬜ | 1/0/0/0 | — | — | — |
+| `flexDirection` | ✅ | 2/5/6/9 | +33 baselines | 2026-05-12 | 21 spec + 2 iOS-ext (row/column-reverse moved to `flex-direction-ios-ext/`); surfaced 2 impl bugs (synthetic-root wrap, empty-div 10px intrinsic) + 1 sample-design patch (with-wrap alignContent) |
+| `flexGrow` | ✅ | 5/5/6/4 | +20 baselines | 2026-05-13 | 19 samples + responsive-wide method; AI walk found zero impl bugs; ratio-equivalence (one/two/fractional byte-identical) proven; alignContent removed from with-wrap during scope check |
 | `flexShrink` | ⬜ | 1/0/0/0 | — | — | — |
 | `flexBasis` | ⬜ | 1/0/0/0 | — | — | — |
 | `justifyContent` | ⬜ | 1/0/0/0 | — | — | — |
