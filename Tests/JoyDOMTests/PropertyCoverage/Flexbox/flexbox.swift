@@ -140,4 +140,24 @@ final class FlexboxSnapshotTests: XCTestCase {
             snapshotName: "responsive-wide"
         )
     }
+
+    /// `gap/responsive.json` declares the NARROW canvas (gap: 4px between
+    /// boxes). The ≥768px breakpoint switches `#root` to `gap: 32px`. This
+    /// method captures the wide-viewport branch.
+    func testGapResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "flexbox-gap-responsive"),
+            "gap responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/flexbox/gap")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 900,
+            height: 120,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
