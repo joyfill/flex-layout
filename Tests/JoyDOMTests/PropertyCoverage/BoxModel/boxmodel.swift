@@ -20,4 +20,28 @@ import JoyDOMSampleSpecs
 final class BoxModelSnapshotTests: XCTestCase {
     // Walkers append their test methods below as each Box Model &
     // Visuals property's coverage walk lands.
+
+    func testPadding() {
+        assertSnapshotsForSamples(in: "boxmodel/padding")
+    }
+
+    /// `boxmodel/padding/responsive.json` declares the NARROW canvas (padding 8).
+    /// The >=768px breakpoint flips `#root` to `padding: 32`. This method
+    /// captures the wide-viewport branch.
+    func testPaddingResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "boxmodel-padding-responsive"),
+            "padding responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/boxmodel/padding")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 900,
+            height: 140,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
