@@ -4441,11 +4441,164 @@
       "summary": "none, uppercase, lowercase"
     },
     {
-      "id": "typography-line-height",
+      "id": "typography-line-height-overview",
       "file": "typography/line-height/overview.json",
       "category": "Typography",
       "property": "lineHeight",
-      "summary": "Tight (1.0), regular (1.4), and loose (1.8) multipliers"
+      "summary": "Showcase: tight (1.0), regular (1.4), and loose (1.8) multipliers stacked",
+      "snapshot": { "viewportWidth": 480, "height": 360 }
+    },
+    {
+      "id": "typography-line-height-default",
+      "file": "typography/line-height/default.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "lineHeight omitted — falls back to font's natural line height",
+      "snapshot": { "viewportWidth": 480, "height": 200 }
+    },
+    {
+      "id": "typography-line-height-unitless-1",
+      "file": "typography/line-height/unitless-1.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "lineHeight 1.0 — target equals font size; lineSpacing clamps to 0",
+      "snapshot": { "viewportWidth": 480, "height": 200 }
+    },
+    {
+      "id": "typography-line-height-unitless-1-2",
+      "file": "typography/line-height/unitless-1-2.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "lineHeight 1.2 — near system default",
+      "snapshot": { "viewportWidth": 480, "height": 200 }
+    },
+    {
+      "id": "typography-line-height-unitless-1-5",
+      "file": "typography/line-height/unitless-1-5.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "lineHeight 1.5 — comfortable body-reading multiplier",
+      "snapshot": { "viewportWidth": 480, "height": 200 }
+    },
+    {
+      "id": "typography-line-height-unitless-2",
+      "file": "typography/line-height/unitless-2.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "lineHeight 2.0 — double-spaced text",
+      "snapshot": { "viewportWidth": 480, "height": 240 }
+    },
+    {
+      "id": "typography-line-height-unitless-3",
+      "file": "typography/line-height/unitless-3.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "lineHeight 3.0 — exaggerated triple spacing",
+      "snapshot": { "viewportWidth": 480, "height": 320 }
+    },
+    {
+      "id": "typography-line-height-tight-overlap",
+      "file": "typography/line-height/tight-overlap.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "Edge: lineHeight 0.7 < 1.0; target below system leading clamps lineSpacing to 0",
+      "snapshot": { "viewportWidth": 480, "height": 200 }
+    },
+    {
+      "id": "typography-line-height-single-line",
+      "file": "typography/line-height/single-line.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "Single-line text with lineHeight 2.0 — no inter-line gap is rendered",
+      "snapshot": { "viewportWidth": 480, "height": 120 }
+    },
+    {
+      "id": "typography-line-height-multiline-wrap",
+      "file": "typography/line-height/multiline-wrap.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "Wrapped paragraph with lineHeight 1.8 — gap visible between every wrapped line",
+      "snapshot": { "viewportWidth": 320, "height": 260 }
+    },
+    {
+      "id": "typography-line-height-inline",
+      "file": "typography/line-height/inline.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "lineHeight authored as inline style on the <p> node",
+      "snapshot": { "viewportWidth": 480, "height": 200 }
+    },
+    {
+      "id": "typography-line-height-class-selector",
+      "file": "typography/line-height/class-selector.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "lineHeight authored via class selector (.body)",
+      "snapshot": { "viewportWidth": 480, "height": 200 }
+    },
+    {
+      "id": "typography-line-height-with-font-size-small",
+      "file": "typography/line-height/with-font-size-small.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "lineHeight 1.5 × fontSize 12 → line-box 18px",
+      "snapshot": { "viewportWidth": 480, "height": 180 }
+    },
+    {
+      "id": "typography-line-height-with-font-size-large",
+      "file": "typography/line-height/with-font-size-large.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "lineHeight 1.5 × fontSize 32 → line-box 48px",
+      "snapshot": { "viewportWidth": 480, "height": 220 }
+    },
+    {
+      "id": "typography-line-height-with-font-family-serif",
+      "file": "typography/line-height/with-font-family-serif.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "Georgia serif × lineHeight 1.5 — different fonts have different built-in leading",
+      "snapshot": { "viewportWidth": 480, "height": 220 }
+    },
+    {
+      "id": "typography-line-height-with-font-weight-bold",
+      "file": "typography/line-height/with-font-weight-bold.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "Bold weight × lineHeight 1.6 — weight does not change line-height",
+      "snapshot": { "viewportWidth": 480, "height": 220 }
+    },
+    {
+      "id": "typography-line-height-with-letter-spacing",
+      "file": "typography/line-height/with-letter-spacing.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "lineHeight 1.8 × letterSpacing 2px — independent typographic axes",
+      "snapshot": { "viewportWidth": 480, "height": 240 }
+    },
+    {
+      "id": "typography-line-height-nested",
+      "file": "typography/line-height/nested.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "lineHeight on a container cascades to nested <p> via SwiftUI environment",
+      "snapshot": { "viewportWidth": 480, "height": 240 }
+    },
+    {
+      "id": "typography-line-height-system-leading-verify",
+      "file": "typography/line-height/system-leading-verify.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "System-leading verification: same fontSize 20 with omitted / 1.0 / 1.5 / 2.0 multipliers stacked for visual comparison",
+      "snapshot": { "viewportWidth": 480, "height": 360 }
+    },
+    {
+      "id": "typography-line-height-responsive",
+      "file": "typography/line-height/responsive.json",
+      "category": "Typography",
+      "property": "lineHeight",
+      "summary": "Breakpoint flip: lineHeight 1.2 narrow → 2.0 at width≥768",
+      "snapshot": { "viewportWidth": 480, "height": 200 }
     },
     {
       "id": "typography-letter-spacing",
