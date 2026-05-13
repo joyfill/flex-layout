@@ -4155,11 +4155,164 @@
       "summary": "Plain and italic paragraphs"
     },
     {
-      "id": "typography-color",
+      "id": "typography-color-overview",
       "file": "typography/color/overview.json",
       "category": "Typography",
       "property": "color",
-      "summary": "Hex text color on a paragraph"
+      "summary": "Palette showcase: red/green/blue/amber paragraphs on gray root",
+      "snapshot": { "viewportWidth": 360, "height": 200 }
+    },
+    {
+      "id": "typography-color-short-hex",
+      "file": "typography/color/short-hex.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "3-digit hex shorthand (#f00 / #0a0 / #00f) — exercises hex parsing variants",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "typography-color-long-hex",
+      "file": "typography/color/long-hex.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "6-digit hex (#EF4444 / #10B981 / #3B82F6) — canonical palette",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "typography-color-hex-with-alpha",
+      "file": "typography/color/hex-with-alpha.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "8-digit hex alpha (FF / 80 / 33) — opacity baked into text color",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "typography-color-short-hex-with-alpha",
+      "file": "typography/color/short-hex-with-alpha.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "4-digit hex alpha (#00ff / #00f8 / #00f4) — short-hex with alpha nibble",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "typography-color-default",
+      "file": "typography/color/default.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "Middle paragraph omits color — verifies CSS UA default falls back to black",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "typography-color-empty",
+      "file": "typography/color/empty.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "Empty paragraph with color declared — verifies no children doesn't crash",
+      "snapshot": { "viewportWidth": 280, "height": 80 }
+    },
+    {
+      "id": "typography-color-single-child",
+      "file": "typography/color/single-child.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "Single colored paragraph — minimal sample",
+      "snapshot": { "viewportWidth": 320, "height": 80 }
+    },
+    {
+      "id": "typography-color-inline",
+      "file": "typography/color/inline.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "Color declared via node.props.style (inline) — authoring parity vs class-selector",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "typography-color-class-selector",
+      "file": "typography/color/class-selector.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "Color via .danger / .success / .info class selectors — should render byte-identical to inline form",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "typography-color-tag-selector",
+      "file": "typography/color/tag-selector.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "Color via tag selectors (p { color: blue }, h1 { color: red }) — element-name cascade",
+      "snapshot": { "viewportWidth": 360, "height": 180 }
+    },
+    {
+      "id": "typography-color-inheritance",
+      "file": "typography/color/inheritance.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "color: blue on #root cascades to all descendant <p> elements (CSS inherited property)",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "typography-color-nested-override",
+      "file": "typography/color/nested-override.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "Inherited blue overridden to red on a single child — verifies specificity wins over inheritance",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "typography-color-nested",
+      "file": "typography/color/nested.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "Color inherits through a nested div container into deeper <p> descendants",
+      "snapshot": { "viewportWidth": 360, "height": 200 }
+    },
+    {
+      "id": "typography-color-with-background-color",
+      "file": "typography/color/with-background-color.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "White color on red/green/blue backgroundColor — cross-property combo (color × backgroundColor)",
+      "snapshot": { "viewportWidth": 360, "height": 200 }
+    },
+    {
+      "id": "typography-color-with-opacity",
+      "file": "typography/color/with-opacity.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "Red text at opacity 1.0 / 0.5 / 0.2 — cross-property combo (color × opacity)",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "typography-color-with-border-color",
+      "file": "typography/color/with-border-color.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "Matching text color + borderColor on each paragraph — cross-property combo (color × borderColor)",
+      "snapshot": { "viewportWidth": 360, "height": 220 }
+    },
+    {
+      "id": "typography-color-with-font-size",
+      "file": "typography/color/with-font-size.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "Color paired with varied fontSize (12/18/28) — verifies color renders uniformly across sizes",
+      "snapshot": { "viewportWidth": 360, "height": 200 }
+    },
+    {
+      "id": "typography-color-contrast-pair",
+      "file": "typography/color/contrast-pair.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "Dark-on-light + light-on-dark contrast pairing — exercises both extremes of the color range",
+      "snapshot": { "viewportWidth": 360, "height": 180 }
+    },
+    {
+      "id": "typography-color-responsive",
+      "file": "typography/color/responsive.json",
+      "category": "Typography",
+      "property": "color",
+      "summary": "Responsive flip: red narrow → blue at width≥768px breakpoint",
+      "snapshot": { "viewportWidth": 320, "height": 80 }
     },
     {
       "id": "typography-text-decoration",
