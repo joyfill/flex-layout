@@ -9,6 +9,12 @@ checklist so the next property doesn't require re-deriving the workflow. Each
 step has a **goal** and a **gate** (the concrete artifact that must exist before
 moving on).
 
+> **Step 0 (scaffold-prep)** runs **once per Tracker Section** when you first
+> open coverage walks under a new top-level folder (`flexbox/`, `layout/`,
+> `boxmodel/`, …). Steps 1–11 then run **once per property** within that
+> Section. If the Section is already scaffolded (e.g. Flexbox after PR #1),
+> skip Step 0 and start at Step 1.
+
 > **Pairs with**
 > - [`Property-Coverage-Tracker.md`](Property-Coverage-Tracker.md) — live status
 > - [`Spec-Property-Reference.md`](Spec-Property-Reference.md) — per-property impl semantics + caveats
@@ -36,7 +42,24 @@ moving on).
 - **Triage every issue.** Tag as `bug-in-impl` (fix JoyDOM), `bug-in-sample`
   (patch JSON), `out-of-scope` (move to `*-ios-ext/`), or
   `documented-limitation` (Tracker note) **before** fixing. This keeps commits
-  scoped and reviewable.
+  scoped and reviewable. See Step 8 for the triage subtree that distinguishes
+  fixable `bug-in-impl` from intrinsic `documented-limitation`.
+- **Probe the minimum-viable fix before deferring.** When a `bug-in-impl` first
+  smells like a "cross-module refactor", spend 15-30 minutes tracing the
+  actual code path before tagging it deferred. Two cases in the Layout batch
+  (May 13) were initially tagged as out-of-scope refactors but turned out to
+  be ≤10-line fixes once the actual gap was found:
+  - **ZIDX-1** — walker said *"requires Layout-protocol painter-order sort"*.
+    Reality: one line in `JoyDOMView.applyItem` chained SwiftUI's `.zIndex(_:)`
+    modifier (the compositor reads its own hook, not `Layout.placeSubviews`
+    placement order).
+  - **CSS §9.4 relative-position insets** — walker said *"needs separate
+    translate at layout time, documented-limitation"*. Reality: 8 lines in
+    `FlexEngine.solve`'s in-flow loop applying the inset as a paint-time
+    offset.
+
+  First-impression diagnosis is often wrong about the layer where the fix
+  lives. **Fix > defer** if the trace points at a contained change.
 - **The rendering script is deterministic.** Same input → same pixels. No
   `Date()`, async ordering, random IDs, or fonts that vary by host. Re-renders
   must produce clean diffs, not noise — otherwise step 7's churn is
@@ -63,6 +86,65 @@ moving on).
 ---
 
 ## Steps
+
+### 0. Section scaffold-prep PR (one-time per Section)
+
+> **Run once per Tracker Section (Flexbox, Layout & Positioning, Box Model,
+> etc.) — NOT per property.** If you're starting the first walk under a brand-
+> new top-level folder (`flexbox/`, `layout/`, `boxmodel/`, …), or the
+> existing `Resources/<section>/` only holds flat-file stubs from initial
+> seeding, do a scaffold-prep PR before firing any walkers.
+
+When N walkers fire in parallel against a Section, they all want to:
+- Migrate the same flat stubs (`layout/position.json`) into per-property
+  subfolders (`layout/position/overview.json`).
+- Create the same `Tests/JoyDOMTests/PropertyCoverage/<Section>/<section>.swift`
+  test class.
+- Edit overlapping `manifest.json` entries to point at the new paths.
+
+Doing this work N times in parallel produces guaranteed race conditions and
+manifest conflicts at PR-open. Doing it once up-front, in a small "chore"
+PR, gives every walker a clean tree to work from. The Layout batch on May 13
+proved this out: PR #50 was a ~3-minute scaffold PR that eliminated all
+race conditions for the 6 parallel walkers that followed.
+
+#### Scaffold-prep checklist
+
+```bash
+git checkout -b chore/<section>-section-scaffold
+
+# 1. Create per-property subfolders + move flat stubs to <subfolder>/overview.json
+mkdir -p Sources/JoyDOMSampleSpecs/Resources/<section>/<prop1> \
+         Sources/JoyDOMSampleSpecs/Resources/<section>/<prop2> \
+         …
+git mv Sources/JoyDOMSampleSpecs/Resources/<section>/<prop1>.json \
+       Sources/JoyDOMSampleSpecs/Resources/<section>/<prop1>/overview.json
+# … repeat for each stub …
+
+# 2. Update manifest.json `file` field for each migrated stub (targeted sed
+#    to preserve the file's existing \u-escape convention — don't reserialize
+#    the whole file with json.dump):
+sed -i '' "s|\"file\": \"<section>/<prop1>.json\"|\"file\": \"<section>/<prop1>/overview.json\"|" \
+         Sources/JoyDOMSampleSpecs/Resources/manifest.json
+
+# 3. Create empty test class skeleton at
+#    Tests/JoyDOMTests/PropertyCoverage/<Section>/<section>.swift:
+#
+#    final class <Section>SnapshotTests: XCTestCase {
+#        // Walkers append their test methods below.
+#    }
+
+# 4. Validate:
+swift test --filter "SpecPropertySamplesTests"
+
+# 5. PR + merge.
+```
+
+**Gate:** Every property under the Section has a subfolder with the existing
+stub renamed to `overview.json`. Manifest reflects new paths. Test class
+skeleton exists. `SpecPropertySamplesTests` still passes.
+
+---
 
 ### 1. Scope the property
 
@@ -493,6 +575,51 @@ fix(samples): <one-line summary>                            # bug-in-sample
 docs(tracker): <prop> limitation — <one-line>               # documented-limitation
 ```
 
+#### Triage subtree: `bug-in-impl` vs `documented-limitation`
+
+When you find an impl divergence from CSS spec, the triage decision matters
+more than the label — picking `documented-limitation` for a fixable bug
+means future readers will leave it broken. Use this decision tree:
+
+```
+Did the AI/human review find a divergence from CSS spec?
+│
+├── Can the impl be brought to spec with a contained change (<50 LOC,
+│   one or two source files)? ──── yes ──► bug-in-impl
+│   │                                       fix in the SAME PR (see below)
+│   │                                       no documented-limitation entry
+│   │
+│   └─ no ──► Is the fix genuinely cross-module (>200 LOC, multiple
+│             frameworks, requires API redesign)?
+│             │
+│             ├── yes ──► documented-limitation, with a deferred-fix
+│             │           tracking issue + short Tracker note about scope
+│             │
+│             └── no ──► STOP. Probe deeper. Most "cross-module refactors"
+│                       turn out to be 5-20 LOC changes once the actual
+│                       code path is traced. Don't tag deferred without
+│                       first attempting the minimum-viable fix (see
+│                       Principles).
+│
+└── Is the divergence intrinsic to the platform or testing methodology
+    (SwiftUI semantics that don't render offscreen, snapshot-testing
+    blind spots, etc.)? ──── yes ──► documented-limitation
+                                     The impl signals correct intent;
+                                     the limitation is in the rendering /
+                                     testing environment, not JoyDOM.
+                                     Example: `overflow:scroll` indicators
+                                     don't paint in static snapshots
+                                     regardless of `.scrollIndicators(.visible)`.
+```
+
+Two May-13 cases where this triage went wrong on first pass and right on
+second:
+
+| Walker first-pass | Reality after probe |
+|---|---|
+| ZIDX-1: "documented-limitation, cross-module Layout-protocol refactor" | bug-in-impl, **1 line** in `JoyDOMView.applyItem` |
+| Insets §9.4: "documented-limitation, needs separate translate at layout time" | bug-in-impl, **8 lines** in `FlexEngine.solve`'s in-flow loop |
+
 #### Investigation pattern for `bug-in-impl`
 
 1. Reproduce in isolation (the failing snapshot is a great repro).
@@ -505,9 +632,38 @@ docs(tracker): <prop> limitation — <one-line>               # documented-limit
 5. Run the **full** test suite (`swift test`, no filter) — bugs in shared
    code can regress other properties.
 
-If a bug is too deep for this PR (requires cross-module refactoring, has
-unclear scope), spawn a separate task. Don't let one deep dive sink the
-property's coverage PR.
+If a bug is genuinely too deep for this PR (verified by deep trace, not
+just first-impression), spawn a separate task. Don't let one deep dive
+sink the property's coverage PR — but per the triage subtree above, defer
+only when investigation confirms the scope.
+
+#### Fix-in-same-PR sub-sequence for `bug-in-impl`
+
+When the bug fix is contained (the common case after the May-13 batch),
+land it in the same PR as the coverage walk. The commit chain that has
+been working:
+
+```
+1. fix(<scope>): <impl change>                        # the actual fix
+2. test(<prop>): re-record N baselines after fix      # post-fix re-record
+3. docs(tracker): <prop> ✅ (no limitation) after fix # tracker promotion
+```
+
+Tracker mechanics for the third commit:
+- Flip the property's row from ⚠️ (if it was the walker's initial pass) to ✅.
+- Remove any entry the walker added to the "Bugs surfaced during the walk"
+  table — the bug is now resolved within this PR's scope.
+- Remove any entry the walker added to the "Documented limitations" table.
+- Add a notes-column blurb capturing both the bug found and the fix applied,
+  with a reference to the regression-seam sample that proves it (see the
+  insets and zIndex Notes columns for the established phrasing).
+
+**Why land the fix in the coverage PR?** Per the "Baselines are immutable
+artifacts. Do not promote until the sample AND the implementation are both
+verified correct" principle: a baseline that captures the buggy rendering
+is worse than no baseline at all — it locks the bug in until someone
+notices. Re-recording in the same PR aligns the sample, baseline, and impl
+on the correct CSS behavior.
 
 **Gate:** Triaged list fully resolved. `swift test` (no filter) passes
 cleanly. Re-rendered screenshots match new expectations from Step 6.
@@ -583,6 +739,15 @@ PR body must include:
 > a one-off out-of-sequence main commit; every other walker correctly
 > stopped at PR-open.
 
+> **Merge-sequencing cost estimate (parallel batches).** The first PR in a
+> parallel batch merges clean; every subsequent PR conflicts on the same
+> three files (`manifest.json`, `<section>.swift`'s end-of-file, and
+> `Property-Coverage-Tracker.md` rows). Resolutions are mechanical (keep
+> both sides, append in stable order). **Reserve ~5-10 minutes per
+> follow-up PR** for the rebase + conflict-resolve + push-pinned + merge
+> cycle. The Layout batch on May 13 sequenced 6 PRs through this dance in
+> roughly an hour total.
+
 #### 10c. Capture merge SHA + restore branch SHA for Notion durability
 
 After merge to `main`, **capture the merge commit SHA**:
@@ -608,6 +773,11 @@ the commit reachable:
 # After the rebase/merge dust settles, restore the SHA the Notion DB references:
 git push origin <original-branch-head-sha>:refs/heads/test/<prop>-coverage-pinned
 ```
+
+**This pattern is battle-tested.** Across the Flexbox batch (7 walks) and
+the Layout batch (6 walks + 2 impl-bug fixes), every Notion DB stayed live
+through the merge-sequencing cycle via this `-pinned` ref approach. No
+broken image previews. Trust the recipe.
 
 Or, simpler: **don't pass `--delete-branch` and don't rebase**. If the PR
 merges clean and the branch sticks around at its original SHA, no post-merge
@@ -937,3 +1107,69 @@ process gaps.
 (both auto-detected during the walker's own AI review and patched before
 PR-open), 0 `out-of-scope`, 0 `documented-limitation` — but **8 process-
 improvement findings** (this section + the changes referenced above).
+
+---
+
+## What we learned running the Layout & Positioning batch (2026-05-13)
+
+Six parallel walkers (`position`, `display`, `boxSizing`, `zIndex`,
+`overflow`, `insets`) for Section 2. Two real impl bugs surfaced and were
+fixed in their respective coverage PRs; one was a clean documented
+limitation; three were clean walks. The batch produced six process
+findings that became this update.
+
+1. **"Deferred bug" was over-applied.** ZIDX-1 ("requires Layout-protocol
+   painter-order sort, cross-module refactor") turned out to be a one-line
+   `.zIndex(_:)` chain in `JoyDOMView.applyItem`. The CSS §9.4 insets
+   "documented-limitation" turned out to be 8 lines in `FlexEngine.solve`.
+   Walkers under-probe before tagging deferred. Added the
+   "minimum-viable-fix probe" principle to counter-pressure premature
+   deferral, and the Step 8 triage subtree to distinguish fixable bugs from
+   intrinsic limitations.
+
+2. **The bug-fix-in-coverage-PR pattern works.** Both impl bugs were
+   landed in the same PRs as their coverage walks via the 3-commit
+   sequence (fix → re-record → tracker promote). The "Baselines are
+   immutable artifacts" principle from the original walkthrough was the
+   key guidance: a baseline that captures buggy output is worse than no
+   baseline. Re-recording in the same PR after the fix gets sample,
+   baseline, and impl aligned on the correct CSS behavior. Step 8 now
+   documents the commit chain and tracker mechanics explicitly.
+
+3. **The scaffold-prep PR pattern eliminated race-condition conflicts.**
+   PR #50 took ~3 minutes to set up per-property subfolders + the empty
+   `Layout/layout.swift` class. The 6 walkers that followed had zero
+   structural-file conflicts at PR-open (only the expected end-of-file
+   manifest/tracker/test-method overlap at merge time, which is mechanical).
+   Now codified as Step 0 — run once per Section.
+
+4. **One walker did identify a true documented-limitation correctly.**
+   The `overflow` walker flagged that `clip`/`scroll`/`auto` render byte-
+   equivalent to `hidden` in static snapshots. Investigation confirmed
+   this is intrinsic — SwiftUI's offscreen `ScrollView` doesn't paint
+   indicators even with `.scrollIndicators(.visible)`. The impl signals
+   correct intent; the limitation is in the testing methodology, not
+   JoyDOM. This is the right shape of "documented-limitation": a snapshot-
+   testing methodology artifact, not a code defect.
+
+5. **Notion `-pinned` ref pattern stayed reliable.** Across all 6 Layout
+   walks plus the in-PR fixes (which rebased branches and re-recorded
+   baselines), every Notion DB stayed live via the pre-rebase `-pinned`
+   ref. Pattern is now battle-tested.
+
+6. **Merge sequencing is predictable.** First PR merges clean; every
+   subsequent PR conflicts on `manifest.json` / `<section>.swift` /
+   `Property-Coverage-Tracker.md`. The conflicts are mechanical (keep both
+   sides, append). Total cost for the 6-PR Layout batch was ~1 hour.
+
+**Tag distribution across the 6 walkers (after triage corrections):**
+- 0 `bug-in-impl` deferred (the 2 walkers that initially tagged deferred
+  both saw their bugs fixed in the same PR after the minimum-viable-fix
+  probe)
+- 2 `bug-in-impl` fixed-in-PR (ZIDX-1, CSS §9.4 insets)
+- 1 `bug-in-sample` (boxSizing `equal-outer-size`, self-fixed during the
+  walker's own AI review)
+- 0 `out-of-scope`
+- 1 `documented-limitation` (overflow indicator-rendering in static
+  snapshots — intrinsic to SwiftUI's offscreen render of `ScrollView`)
+- 6 `process-improvement` findings (this section + the doc changes above)
