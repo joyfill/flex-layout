@@ -878,6 +878,182 @@
       }
     },
     {
+      "id": "flexbox-gap-zero",
+      "file": "flexbox/gap/zero.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "gap: 0 \u2014 boxes touch with no spacing",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-gap-small",
+      "file": "flexbox/gap/small.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "gap: 4px \u2014 thin spacing between row items",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-gap-medium",
+      "file": "flexbox/gap/medium.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "gap: 16px \u2014 medium spacing between row items",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-gap-large",
+      "file": "flexbox/gap/large.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "gap: 32px \u2014 wide spacing between row items",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "flexbox-gap-default",
+      "file": "flexbox/gap/default.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "gap omitted \u2014 verifies CSS-spec default of 0px (boxes touch)",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-gap-empty",
+      "file": "flexbox/gap/empty.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "edge case: container with no children + gap declared \u2014 should not crash",
+      "snapshot": { "viewportWidth": 320, "height": 120 }
+    },
+    {
+      "id": "flexbox-gap-single-child",
+      "file": "flexbox/gap/single-child.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "edge case: single child \u2014 no inter-item gap is produced",
+      "snapshot": { "viewportWidth": 200, "height": 100 }
+    },
+    {
+      "id": "flexbox-gap-two-items",
+      "file": "flexbox/gap/two-items.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "two items with gap: 16 \u2014 exactly one gap rendered",
+      "snapshot": { "viewportWidth": 260, "height": 100 }
+    },
+    {
+      "id": "flexbox-gap-row-gap-only",
+      "file": "flexbox/gap/row-gap-only.json",
+      "category": "Flexbox",
+      "property": "rowGap",
+      "summary": "row + wrap + rowGap: 16 \u2014 only vertical spacing between wrapped rows",
+      "snapshot": { "viewportWidth": 240, "height": 180 }
+    },
+    {
+      "id": "flexbox-gap-row-gap-in-column",
+      "file": "flexbox/gap/row-gap-in-column.json",
+      "category": "Flexbox",
+      "property": "rowGap",
+      "summary": "column direction + rowGap: 16 \u2014 vertical spacing between stacked items",
+      "snapshot": { "viewportWidth": 200, "height": 260 }
+    },
+    {
+      "id": "flexbox-gap-column-gap-only",
+      "file": "flexbox/gap/column-gap-only.json",
+      "category": "Flexbox",
+      "property": "columnGap",
+      "summary": "row direction + columnGap: 16 \u2014 horizontal spacing between row items",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-gap-column-gap-in-column",
+      "file": "flexbox/gap/column-gap-in-column.json",
+      "category": "Flexbox",
+      "property": "columnGap",
+      "summary": "column direction + columnGap: 16 \u2014 no effect (no second column)",
+      "snapshot": { "viewportWidth": 200, "height": 260 }
+    },
+    {
+      "id": "flexbox-gap-gap-and-row-override",
+      "file": "flexbox/gap/gap-and-row-override.json",
+      "category": "Flexbox",
+      "property": "rowGap",
+      "summary": "gap: 16 + rowGap: 4 \u2014 rowGap overrides vertical, columnGap inherits 16",
+      "snapshot": { "viewportWidth": 260, "height": 180 }
+    },
+    {
+      "id": "flexbox-gap-gap-and-column-override",
+      "file": "flexbox/gap/gap-and-column-override.json",
+      "category": "Flexbox",
+      "property": "columnGap",
+      "summary": "gap: 16 + columnGap: 4 \u2014 columnGap overrides horizontal, rowGap inherits 16",
+      "snapshot": { "viewportWidth": 240, "height": 180 }
+    },
+    {
+      "id": "flexbox-gap-inline",
+      "file": "flexbox/gap/inline.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "gap declared inline via node style \u2014 same visual as class-selector",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-gap-class-selector",
+      "file": "flexbox/gap/class-selector.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "gap on container, colors via class selectors \u2014 authoring-style variant",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-gap-in-column",
+      "file": "flexbox/gap/in-column.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "column direction + gap: 16 \u2014 vertical spacing between stacked items",
+      "snapshot": { "viewportWidth": 200, "height": 260 }
+    },
+    {
+      "id": "flexbox-gap-in-fixed-width",
+      "file": "flexbox/gap/in-fixed-width.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "fixed-width container + gap: 12 \u2014 gap consumes free space deterministically",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
+      "id": "flexbox-gap-with-wrap",
+      "file": "flexbox/gap/with-wrap.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "row + wrap + rowGap: 12 + columnGap: 8 \u2014 both axes visible across 2x2 grid",
+      "snapshot": { "viewportWidth": 260, "height": 180 }
+    },
+    {
+      "id": "flexbox-gap-with-grow",
+      "file": "flexbox/gap/with-grow.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "flexGrow: 1 children + gap: 16 \u2014 gap reserved before growth distribution",
+      "snapshot": { "viewportWidth": 420, "height": 100 }
+    },
+    {
+      "id": "flexbox-gap-with-justify",
+      "file": "flexbox/gap/with-justify.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "justifyContent: center + gap: 16 \u2014 gap survives main-axis centering",
+      "snapshot": { "viewportWidth": 420, "height": 100 }
+    },
+    {
+      "id": "flexbox-gap-responsive",
+      "file": "flexbox/gap/responsive.json",
+      "category": "Flexbox",
+      "property": "gap",
+      "summary": "responsive: gap: 4 at narrow, gap: 32 at \u2265768px breakpoint",
+      "snapshot": { "viewportWidth": 320, "height": 100 }
+    },
+    {
       "id": "flexbox-order",
       "file": "flexbox/order/overview.json",
       "category": "Flexbox",
