@@ -148,4 +148,45 @@ final class BoxModelSnapshotTests: XCTestCase {
             snapshotName: "responsive-wide"
         )
     }
+
+    // MARK: - borderStyle
+
+    /// CSS spec coverage for `borderStyle` (`'solid' | 'none'`).
+    func testBorderStyle() {
+        assertSnapshotsForSamples(in: "boxmodel/border-style")
+    }
+
+    /// iOS-only extensions of `borderStyle` (`dashed`, `dotted`, `double`).
+    ///
+    /// These values are NOT in the JoyDOM CSS spec (which restricts
+    /// `borderStyle` to `'solid' | 'none'`), but joydom-swift renders them
+    /// via SwiftUI `StrokeStyle` dash arrays (`dashed`, `dotted`) and a
+    /// pair of concentric strokes (`double`). Kept in a sibling folder so
+    /// the iOS code path stays regression-tested without polluting the
+    /// cross-platform sample set — JS/Kotlin runtimes won't implement
+    /// these and shouldn't compare against the corresponding baselines.
+    func testBorderStyleIosExt() {
+        assertSnapshotsForSamples(in: "boxmodel/border-style-ios-ext")
+    }
+
+    /// Wide-viewport companion to `boxmodel/border-style/responsive.json`.
+    /// Narrow viewport renders `borderStyle: solid`; the `>=768px`
+    /// breakpoint flips `#card` to `borderStyle: none`, suppressing the
+    /// stroke even though `borderWidth` and `borderColor` are unchanged.
+    func testBorderStyleResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "boxmodel-border-style-responsive"),
+            "responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/boxmodel/border-style")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 820,
+            height: 140,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }

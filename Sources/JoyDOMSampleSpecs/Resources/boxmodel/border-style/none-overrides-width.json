@@ -11,8 +11,8 @@
     ".box": {
       "width": { "value": 80, "unit": "px" },
       "height": { "value": 80, "unit": "px" },
-      "borderWidth": { "value": 3, "unit": "px" },
-      "borderColor": "#000000",
+      "borderWidth": { "value": 8, "unit": "px" },
+      "borderColor": "#EF4444",
       "backgroundColor": "#E5E7EB"
     },
     "#a": { "borderStyle": "solid" },
