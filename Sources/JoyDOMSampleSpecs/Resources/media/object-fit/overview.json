@@ -13,22 +13,20 @@
       "height": { "value": 80, "unit": "px" },
       "backgroundColor": "#E5E7EB"
     },
-    "#fill":       { "objectFit": "fill" },
-    "#contain":    { "objectFit": "contain" },
-    "#cover":      { "objectFit": "cover" },
-    "#none":       { "objectFit": "none" },
-    "#scale-down": { "objectFit": "scale-down" }
+    "#fill":    { "objectFit": "fill" },
+    "#contain": { "objectFit": "contain" },
+    "#cover":   { "objectFit": "cover" },
+    "#none":    { "objectFit": "none" }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
     "props": { "id": "gallery" },
     "children": [
-      { "type": "img", "props": { "id": "fill",       "src": "https://example.com/photo.jpg" } },
-      { "type": "img", "props": { "id": "contain",    "src": "https://example.com/photo.jpg" } },
-      { "type": "img", "props": { "id": "cover",      "src": "https://example.com/photo.jpg" } },
-      { "type": "img", "props": { "id": "none",       "src": "https://example.com/photo.jpg" } },
-      { "type": "img", "props": { "id": "scale-down", "src": "https://example.com/photo.jpg" } }
+      { "type": "img", "props": { "id": "fill",    "src": "https://example.com/photo.jpg" } },
+      { "type": "img", "props": { "id": "contain", "src": "https://example.com/photo.jpg" } },
+      { "type": "img", "props": { "id": "cover",   "src": "https://example.com/photo.jpg" } },
+      { "type": "img", "props": { "id": "none",    "src": "https://example.com/photo.jpg" } }
     ]
   }
 }

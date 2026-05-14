@@ -6057,8 +6057,8 @@
       "file": "media/object-fit/overview.json",
       "category": "Media",
       "property": "objectFit",
-      "summary": "Showcase: fill / contain / cover / none / scale-down stacked",
-      "snapshot": { "viewportWidth": 280, "height": 480 }
+      "summary": "Showcase: fill / contain / cover / none stacked",
+      "snapshot": { "viewportWidth": 280, "height": 400 }
     },
     {
       "id": "media-object-fit-fill",
@@ -6090,14 +6090,6 @@
       "category": "Media",
       "property": "objectFit",
       "summary": "Value 'none' — render at intrinsic size, no scaling",
-      "snapshot": { "viewportWidth": 240, "height": 160 }
-    },
-    {
-      "id": "media-object-fit-scale-down",
-      "file": "media/object-fit/scale-down.json",
-      "category": "Media",
-      "property": "objectFit",
-      "summary": "Value 'scale-down' — like 'none' if intrinsic <= box, else like 'contain'",
       "snapshot": { "viewportWidth": 240, "height": 160 }
     },
     {
