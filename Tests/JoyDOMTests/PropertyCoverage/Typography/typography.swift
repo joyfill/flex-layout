@@ -24,4 +24,33 @@ import JoyDOMSampleSpecs
 final class TypographySnapshotTests: XCTestCase {
     // Walkers append their test methods below as each Typography
     // property's coverage walk lands.
+
+    // MARK: - textTransform
+
+    func testTextTransform() {
+        assertSnapshotsForSamples(in: "typography/text-transform")
+    }
+
+    /// Wide-viewport companion to `typography/text-transform/responsive.json`.
+    ///
+    /// The manifest entry pins the narrow viewport which renders the
+    /// `textTransform: lowercase` base style. This method re-renders the
+    /// same JSON at the wide viewport (800x80) so the `width>=768px`
+    /// breakpoint flips the value to `uppercase`.
+    func testTextTransformResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "typography-text-transform-responsive"),
+            "responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/typography/text-transform")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 800,
+            height: 80,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
