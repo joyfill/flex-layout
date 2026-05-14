@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "display": "flex",
+      "flexDirection": "row",
+      "gap": { "value": 8, "unit": "px" },
+      "padding": { "value": 16, "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    },
+    ".thumb": {
+      "width": { "value": 100, "unit": "px" },
+      "height": { "value": 100, "unit": "px" },
+      "backgroundColor": "#E5E7EB",
+      "objectFit": "cover"
+    },
+    "#tl": { "objectPosition": { "horizontal": "left",   "vertical": "top"    } },
+    "#cc": { "objectPosition": { "horizontal": "center", "vertical": "center" } },
+    "#br": { "objectPosition": { "horizontal": "right",  "vertical": "bottom" } }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "img", "props": { "id": "tl", "className": ["thumb"], "src": "https://example.com/photo.jpg" } },
+      { "type": "img", "props": { "id": "cc", "className": ["thumb"], "src": "https://example.com/photo.jpg" } },
+      { "type": "img", "props": { "id": "br", "className": ["thumb"], "src": "https://example.com/photo.jpg" } }
+    ]
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "display": "flex",
+      "padding": { "value": 16, "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    },
+    "#card": {
+      "display": "flex",
+      "flexDirection": "column",
+      "gap": { "value": 8, "unit": "px" },
+      "padding": { "value": 8, "unit": "px" },
+      "backgroundColor": "#E5E7EB"
+    },
+    "#hero": {
+      "width": { "value": 200, "unit": "px" },
+      "height": { "value": 100, "unit": "px" },
+      "backgroundColor": "#3B82F6",
+      "objectFit": "cover"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      {
+        "type": "div",
+        "props": { "id": "card" },
+        "children": [
+          { "type": "img", "props": { "id": "hero", "src": "https://example.com/photo.jpg" } }
+        ]
+      }
+    ]
+  }
+}

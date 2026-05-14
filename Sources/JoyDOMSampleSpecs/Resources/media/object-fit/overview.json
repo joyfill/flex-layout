@@ -1,20 +1,34 @@
 {
   "version": 1,
   "style": {
-    "#fill":    { "width": { "value": 240, "unit": "px" }, "height": { "value": 160, "unit": "px" }, "objectFit": "fill" },
-    "#contain": { "width": { "value": 240, "unit": "px" }, "height": { "value": 160, "unit": "px" }, "objectFit": "contain" },
-    "#cover":   { "width": { "value": 240, "unit": "px" }, "height": { "value": 160, "unit": "px" }, "objectFit": "cover" },
-    "#none":    { "width": { "value": 240, "unit": "px" }, "height": { "value": 160, "unit": "px" }, "objectFit": "none" }
+    "#gallery": {
+      "display": "flex",
+      "flexDirection": "column",
+      "gap": { "value": 8, "unit": "px" },
+      "padding": { "value": 8, "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    },
+    "img": {
+      "width": { "value": 240, "unit": "px" },
+      "height": { "value": 80, "unit": "px" },
+      "backgroundColor": "#E5E7EB"
+    },
+    "#fill":       { "objectFit": "fill" },
+    "#contain":    { "objectFit": "contain" },
+    "#cover":      { "objectFit": "cover" },
+    "#none":       { "objectFit": "none" },
+    "#scale-down": { "objectFit": "scale-down" }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "gallery", "style": { "flexDirection": "column", "gap": { "value": 8, "unit": "px" } } },
+    "props": { "id": "gallery" },
     "children": [
-      { "type": "img", "props": { "id": "fill",    "src": "https://example.com/photo.jpg" } },
-      { "type": "img", "props": { "id": "contain", "src": "https://example.com/photo.jpg" } },
-      { "type": "img", "props": { "id": "cover",   "src": "https://example.com/photo.jpg" } },
-      { "type": "img", "props": { "id": "none",    "src": "https://example.com/photo.jpg" } }
+      { "type": "img", "props": { "id": "fill",       "src": "https://example.com/photo.jpg" } },
+      { "type": "img", "props": { "id": "contain",    "src": "https://example.com/photo.jpg" } },
+      { "type": "img", "props": { "id": "cover",      "src": "https://example.com/photo.jpg" } },
+      { "type": "img", "props": { "id": "none",       "src": "https://example.com/photo.jpg" } },
+      { "type": "img", "props": { "id": "scale-down", "src": "https://example.com/photo.jpg" } }
     ]
   }
 }
