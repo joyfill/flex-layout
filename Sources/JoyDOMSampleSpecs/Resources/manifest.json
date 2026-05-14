@@ -4439,11 +4439,156 @@
       "snapshot": { "viewportWidth": 360, "height": 100 }
     },
     {
-      "id": "typography-font-weight",
+      "id": "typography-font-weight-overview",
       "file": "typography/font-weight/overview.json",
       "category": "Typography",
       "property": "fontWeight",
-      "summary": "Named and numeric weights from 100 to 900"
+      "summary": "Showcase: named normal/bold + numeric sweep 100/400/700/900",
+      "snapshot": { "viewportWidth": 400, "height": 280 }
+    },
+    {
+      "id": "typography-font-weight-w100",
+      "file": "typography/font-weight/w100.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Numeric 100 → SwiftUI .ultraLight band",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-font-weight-w200",
+      "file": "typography/font-weight/w200.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Numeric 200 → SwiftUI .thin band",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-font-weight-w300",
+      "file": "typography/font-weight/w300.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Numeric 300 → SwiftUI .light band",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-font-weight-w400",
+      "file": "typography/font-weight/w400.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Numeric 400 → SwiftUI .regular band",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-font-weight-w500",
+      "file": "typography/font-weight/w500.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Numeric 500 → SwiftUI .medium band",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-font-weight-w600",
+      "file": "typography/font-weight/w600.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Numeric 600 → SwiftUI .semibold band",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-font-weight-w700",
+      "file": "typography/font-weight/w700.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Numeric 700 → SwiftUI .bold band",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-font-weight-w800",
+      "file": "typography/font-weight/w800.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Numeric 800 → SwiftUI .heavy band",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-font-weight-w900",
+      "file": "typography/font-weight/w900.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Numeric 900 → SwiftUI .black band",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-font-weight-normal",
+      "file": "typography/font-weight/normal.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Named 'normal' (= 400)",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-font-weight-bold",
+      "file": "typography/font-weight/bold.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Named 'bold' (= 700)",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-font-weight-default",
+      "file": "typography/font-weight/default.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Omitted → CSS UA default 400/normal",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-font-weight-inline",
+      "file": "typography/font-weight/inline.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Inline node.props.style with fontWeight 700",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-font-weight-class-selector",
+      "file": "typography/font-weight/class-selector.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Class selector .heavy → fontWeight 800",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-font-weight-with-font-style-italic",
+      "file": "typography/font-weight/with-font-style-italic.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Bold italic (fontWeight 700 + fontStyle italic)",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-font-weight-with-font-size",
+      "file": "typography/font-weight/with-font-size.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Bold 700 at fontSize 14/24/40px",
+      "snapshot": { "viewportWidth": 400, "height": 200 }
+    },
+    {
+      "id": "typography-font-weight-with-font-family-mono",
+      "file": "typography/font-weight/with-font-family-mono.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Menlo at fontWeight 400 vs 700",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "typography-font-weight-responsive",
+      "file": "typography/font-weight/responsive.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Narrow 300 → wide 800 at width>=768px",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
     },
     {
       "id": "typography-font-style-overview",

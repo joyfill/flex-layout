@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "style": {
+    ".heavy": { "fontWeight": 800, "fontSize": { "value": 28, "unit": "px" } }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "className": ["heavy"] }, "children": ["class .heavy → fontWeight 800"] }
+    ]
+  }
+}
