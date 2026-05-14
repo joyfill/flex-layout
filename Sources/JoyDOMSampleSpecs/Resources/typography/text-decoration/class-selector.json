@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "style": {
+    ".underlined":   { "textDecoration": "underline",    "fontSize": { "value": 24, "unit": "px" } },
+    ".struck":       { "textDecoration": "line-through", "fontSize": { "value": 24, "unit": "px" } }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "className": ["underlined"] }, "children": ["Underlined via .underlined"] },
+      { "type": "p", "props": { "className": ["struck"]     }, "children": ["Struck via .struck"] }
+    ]
+  }
+}

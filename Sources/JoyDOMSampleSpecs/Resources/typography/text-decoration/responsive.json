@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "style": {
+    "p": { "textDecoration": "none", "fontSize": { "value": 24, "unit": "px" } }
+  },
+  "breakpoints": [
+    {
+      "conditions": [
+        { "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }
+      ],
+      "nodes": {},
+      "style": {
+        "p": { "textDecoration": "underline" }
+      }
+    }
+  ],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "children": ["none narrow → underline wide at >=768px"] }
+    ]
+  }
+}

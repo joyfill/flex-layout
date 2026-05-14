@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "style": {
+    "p": { "textDecoration": "line-through", "fontSize": { "value": 24, "unit": "px" } }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "children": ["Strikethrough text"] }
+    ]
+  }
+}

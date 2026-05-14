@@ -4855,11 +4855,100 @@
       "snapshot": { "viewportWidth": 320, "height": 80 }
     },
     {
-      "id": "typography-text-decoration",
+      "id": "typography-text-decoration-overview",
       "file": "typography/text-decoration/overview.json",
       "category": "Typography",
       "property": "textDecoration",
-      "summary": "All three values: none, underline, line-through"
+      "summary": "Showcase: none / underline / line-through side-by-side",
+      "snapshot": { "viewportWidth": 400, "height": 180 }
+    },
+    {
+      "id": "typography-text-decoration-none",
+      "file": "typography/text-decoration/none.json",
+      "category": "Typography",
+      "property": "textDecoration",
+      "summary": "Value 'none' — no decoration stroke",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-text-decoration-underline",
+      "file": "typography/text-decoration/underline.json",
+      "category": "Typography",
+      "property": "textDecoration",
+      "summary": "Value 'underline'",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-text-decoration-line-through",
+      "file": "typography/text-decoration/line-through.json",
+      "category": "Typography",
+      "property": "textDecoration",
+      "summary": "Value 'line-through' (strikethrough)",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-text-decoration-default",
+      "file": "typography/text-decoration/default.json",
+      "category": "Typography",
+      "property": "textDecoration",
+      "summary": "Omitted → CSS UA default 'none'",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-text-decoration-inline",
+      "file": "typography/text-decoration/inline.json",
+      "category": "Typography",
+      "property": "textDecoration",
+      "summary": "Inline node.props.style with underline",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-text-decoration-class-selector",
+      "file": "typography/text-decoration/class-selector.json",
+      "category": "Typography",
+      "property": "textDecoration",
+      "summary": "Class selectors .underlined / .struck",
+      "snapshot": { "viewportWidth": 400, "height": 140 }
+    },
+    {
+      "id": "typography-text-decoration-with-color",
+      "file": "typography/text-decoration/with-color.json",
+      "category": "Typography",
+      "property": "textDecoration",
+      "summary": "Decoration adopts text color (red underline, blue underline, red strike)",
+      "snapshot": { "viewportWidth": 400, "height": 200 }
+    },
+    {
+      "id": "typography-text-decoration-with-font-size",
+      "file": "typography/text-decoration/with-font-size.json",
+      "category": "Typography",
+      "property": "textDecoration",
+      "summary": "Underline at fontSize 14/24/40 — stroke scales with text",
+      "snapshot": { "viewportWidth": 400, "height": 200 }
+    },
+    {
+      "id": "typography-text-decoration-nested-cascade",
+      "file": "typography/text-decoration/nested-cascade.json",
+      "category": "Typography",
+      "property": "textDecoration",
+      "summary": "Env cascade — decoration set on outer div underlines descendants through a nested div",
+      "snapshot": { "viewportWidth": 400, "height": 160 }
+    },
+    {
+      "id": "typography-text-decoration-single-child",
+      "file": "typography/text-decoration/single-child.json",
+      "category": "Typography",
+      "property": "textDecoration",
+      "summary": "Single struck child",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-text-decoration-responsive",
+      "file": "typography/text-decoration/responsive.json",
+      "category": "Typography",
+      "property": "textDecoration",
+      "summary": "Narrow none → wide underline at width>=768px",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
     },
     {
       "id": "typography-text-align-overview",
