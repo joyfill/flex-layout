@@ -5111,6 +5111,14 @@
       "snapshot": { "viewportWidth": 400, "height": 80 }
     },
     {
+      "id": "typography-text-transform-capitalize",
+      "file": "typography/text-transform/capitalize.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Value sweep — textTransform: capitalize (title-case each word)",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
       "id": "typography-text-transform-default",
       "file": "typography/text-transform/default.json",
       "category": "Typography",

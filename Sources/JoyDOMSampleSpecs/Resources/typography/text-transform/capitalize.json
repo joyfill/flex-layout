@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "style": {
+    "#t": { "textTransform": "capitalize", "fontSize": { "value": 20, "unit": "px" } }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "p",
+    "props": { "id": "t" },
+    "children": ["the quick brown FOX jumps over"]
+  }
+}

@@ -467,6 +467,7 @@ extension Style {
         case none
         case uppercase
         case lowercase
+        case capitalize
     }
 
     public enum TextOverflow: String, Equatable, Codable {

@@ -515,6 +515,10 @@ public struct JoyDOMView: View {
             switch tt {
             case .uppercase: v = AnyView(v.environment(\.textCase, .uppercase))
             case .lowercase: v = AnyView(v.environment(\.textCase, .lowercase))
+            case .capitalize:
+                // SwiftUI's `.textCase` only models upper/lower; capitalize
+                // has to be applied to the raw string at the text leaf.
+                v = AnyView(v.environment(\.inheritedCapitalize, true))
             case .none: break
             }
         }
