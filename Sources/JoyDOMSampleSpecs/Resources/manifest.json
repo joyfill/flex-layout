@@ -6039,11 +6039,124 @@
       "snapshot": { "viewportWidth": 360, "height": 120 }
     },
     {
-      "id": "textbehavior-text-overflow",
+      "id": "textbehavior-text-overflow-overview",
       "file": "textbehavior/text-overflow/overview.json",
       "category": "Text Behavior",
       "property": "textOverflow",
-      "summary": "Ellipsis recipe with width-bound parent and nowrap text"
+      "summary": "Overview: clip vs ellipsis side by side in a 200px-wide nowrap frame",
+      "snapshot": { "viewportWidth": 360, "height": 120 }
+    },
+    {
+      "id": "textbehavior-text-overflow-clip",
+      "file": "textbehavior/text-overflow/clip.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "clip: text exceeds 200px nowrap frame; overflowed glyphs cut at the frame edge",
+      "snapshot": { "viewportWidth": 360, "height": 80 }
+    },
+    {
+      "id": "textbehavior-text-overflow-ellipsis",
+      "file": "textbehavior/text-overflow/ellipsis.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "ellipsis: text exceeds 200px nowrap frame; trailing glyphs replaced with U+2026",
+      "snapshot": { "viewportWidth": 360, "height": 80 }
+    },
+    {
+      "id": "textbehavior-text-overflow-default",
+      "file": "textbehavior/text-overflow/default.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Default (property omitted): falls back to clip per spec",
+      "snapshot": { "viewportWidth": 360, "height": 80 }
+    },
+    {
+      "id": "textbehavior-text-overflow-fits",
+      "file": "textbehavior/text-overflow/fits.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Text fits inside the frame; ellipsis declared has no visible effect",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "textbehavior-text-overflow-long-string",
+      "file": "textbehavior/text-overflow/long-string.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Very long paragraph in a 240px nowrap frame; ellipsis collapses the tail",
+      "snapshot": { "viewportWidth": 360, "height": 80 }
+    },
+    {
+      "id": "textbehavior-text-overflow-inline",
+      "file": "textbehavior/text-overflow/inline.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Inline-style ellipsis via node.props.style on the paragraph",
+      "snapshot": { "viewportWidth": 360, "height": 80 }
+    },
+    {
+      "id": "textbehavior-text-overflow-class-selector",
+      "file": "textbehavior/text-overflow/class-selector.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Class-selector ellipsis: .ellipsis bundle applied via className",
+      "snapshot": { "viewportWidth": 360, "height": 80 }
+    },
+    {
+      "id": "textbehavior-text-overflow-with-width",
+      "file": "textbehavior/text-overflow/with-width.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Interaction with width: narrow frame truncates more aggressively than wide",
+      "snapshot": { "viewportWidth": 400, "height": 160 }
+    },
+    {
+      "id": "textbehavior-text-overflow-with-white-space",
+      "file": "textbehavior/text-overflow/with-white-space.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Interaction with whiteSpace: normal wraps (no truncation); nowrap triggers ellipsis",
+      "snapshot": { "viewportWidth": 360, "height": 200 }
+    },
+    {
+      "id": "textbehavior-text-overflow-with-font-size",
+      "file": "textbehavior/text-overflow/with-font-size.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Interaction with fontSize: 12 / 18 / 28 px in the same 200px frame; larger sizes truncate earlier",
+      "snapshot": { "viewportWidth": 360, "height": 240 }
+    },
+    {
+      "id": "textbehavior-text-overflow-with-font-family",
+      "file": "textbehavior/text-overflow/with-font-family.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Interaction with fontFamily: Georgia vs Menlo in the same 220px frame; monospace truncates earlier",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "textbehavior-text-overflow-with-color",
+      "file": "textbehavior/text-overflow/with-color.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Interaction with color: ellipsis glyph inherits the paragraph's text color (red)",
+      "snapshot": { "viewportWidth": 360, "height": 80 }
+    },
+    {
+      "id": "textbehavior-text-overflow-missing-precondition",
+      "file": "textbehavior/text-overflow/missing-precondition.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Missing preconditions: ellipsis declared without width/overflow/nowrap has no visible effect (text wraps)",
+      "snapshot": { "viewportWidth": 400, "height": 240 }
+    },
+    {
+      "id": "textbehavior-text-overflow-responsive",
+      "file": "textbehavior/text-overflow/responsive.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Responsive: clip at narrow viewport; flips to ellipsis at >=768px",
+      "snapshot": { "viewportWidth": 360, "height": 80 }
     },
     {
       "id": "textbehavior-white-space-overview",
