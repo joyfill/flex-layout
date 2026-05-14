@@ -1,7 +1,7 @@
 {
   "version": 1,
   "style": {
-    "#frame":   { "width": { "value": 220, "unit": "px" } },
+    "#frame":   { "display": "flex", "flexDirection": "column", "gap": { "value": 4, "unit": "px" }, "width": { "value": 220, "unit": "px" } },
     "#first":   { "whiteSpace": "normal" },
     "#second":  { "whiteSpace": "nowrap" }
   },
