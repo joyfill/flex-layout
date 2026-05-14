@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "style": {},
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "style": { "textDecoration": "underline", "fontSize": { "value": 24, "unit": "px" } } }, "children": ["Inline underline"] }
+    ]
+  }
+}

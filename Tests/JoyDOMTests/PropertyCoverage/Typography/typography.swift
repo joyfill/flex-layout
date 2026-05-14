@@ -263,4 +263,31 @@ final class TypographySnapshotTests: XCTestCase {
             snapshotName: "responsive-wide"
         )
     }
+
+    // MARK: - textDecoration
+
+    func testTextDecoration() {
+        assertSnapshotsForSamples(in: "typography/text-decoration")
+    }
+
+    /// Wide-viewport companion to `typography/text-decoration/responsive.json`.
+    /// Narrow viewport renders `textDecoration: none`; the `>=768px`
+    /// breakpoint flips to `underline`, exercising the env-cascade path
+    /// on the responsive branch.
+    func testTextDecorationResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "typography-text-decoration-responsive"),
+            "textDecoration responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/typography/text-decoration")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 800,
+            height: 80,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
