@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "style": {
+    "#img": {
+      "width":  { "value": 240, "unit": "px" },
+      "height": { "value": 240, "unit": "px" },
+      "objectFit": "contain",
+      "backgroundColor": "#111827"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "img",
+    "props": { "id": "img", "src": "bundle://photo-landscape" }
+  }
+}
