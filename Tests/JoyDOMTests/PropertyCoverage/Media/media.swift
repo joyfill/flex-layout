@@ -7,10 +7,6 @@
 // Example: `media/object-fit/cover.json`
 //        → `__Snapshots__/media/object-fit/cover.png`
 //
-// This file ships from the chore/textbehavior-media-section-scaffold prep
-// as an empty test class so parallel walkers (objectFit, objectPosition) can
-// each add their methods without racing to create the file.
-//
 // NOTE: MediaSnapshotTests is registered in `.github/workflows/ci.yml`'s
 // `--skip` list — snapshot tests run locally only.
 
@@ -20,6 +16,62 @@ import SnapshotTesting
 import JoyDOMSampleSpecs
 
 final class MediaSnapshotTests: XCTestCase {
-    // Walkers append their test methods below as each Media property's
-    // coverage walk lands.
+
+    override func setUp() {
+        super.setUp()
+        // Make the spec-samples bundle reachable to `_DOMImage` so any
+        // `bundle://<name>` URL in a sample resolves synchronously.
+        // Registration is idempotent.
+        DOMImageBundleRegistry.register(JoyDOMSampleSpecsBundle.bundle)
+    }
+
+    // MARK: - objectFit
+
+    func testObjectFit() {
+        assertSnapshotsForSamples(in: "media/object-fit")
+    }
+
+    /// Wide-viewport companion to `media/object-fit/responsive.json`.
+    /// Narrow renders `contain`; at width>=768px flips to `cover`.
+    func testObjectFitResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "media-object-fit-responsive"),
+            "responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/media/object-fit")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 820,
+            height: 200,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
+
+    // MARK: - objectPosition
+
+    func testObjectPosition() {
+        assertSnapshotsForSamples(in: "media/object-position")
+    }
+
+    /// Wide-viewport companion to `media/object-position/responsive.json`.
+    /// Narrow renders `top-left`; at width>=768px flips to `bottom-right`.
+    func testObjectPositionResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "media-object-position-responsive"),
+            "responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/media/object-position")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 820,
+            height: 320,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
