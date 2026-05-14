@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "style": {
+    "p": { "fontWeight": 300, "fontSize": 28 }
+  },
+  "breakpoints": [
+    {
+      "minWidth": 768,
+      "style": {
+        "p": { "fontWeight": 800 }
+      }
+    }
+  ],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "children": ["fontWeight: 300 narrow → 800 wide"] }
+    ]
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "style": {},
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "style": { "fontWeight": 700, "fontSize": 28 } }, "children": ["inline fontWeight 700"] }
+    ]
+  }
+}
