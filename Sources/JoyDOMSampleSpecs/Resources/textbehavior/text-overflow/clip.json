@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "style": {
+    "#frame": {
+      "width": { "value": 200, "unit": "px" },
+      "overflow": "hidden"
+    },
+    "#clipped": {
+      "overflow": "hidden",
+      "whiteSpace": "nowrap",
+      "textOverflow": "clip"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "frame" },
+    "children": [
+      { "type": "p", "props": { "id": "clipped" }, "children": ["The quick brown fox jumps over the lazy dog"] }
+    ]
+  }
+}
