@@ -52,4 +52,31 @@ final class TypographySnapshotTests: XCTestCase {
             snapshotName: "responsive-wide"
         )
     }
+
+    // MARK: - fontStyle
+
+    func testFontStyle() {
+        assertSnapshotsForSamples(in: "typography/font-style")
+    }
+
+    /// Wide-viewport companion to `typography/font-style/responsive.json`.
+    /// Narrow viewport renders `fontStyle: normal`; the `>=768px`
+    /// breakpoint flips `#headline` to `fontStyle: italic`, applying
+    /// SwiftUI's `.italic()` font modifier.
+    func testFontStyleResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "typography-font-style-responsive"),
+            "responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/typography/font-style")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 820,
+            height: 100,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }

@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "display": "flex",
+      "padding": { "value": 24, "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    },
+    "#headline": {
+      "fontStyle": "normal",
+      "fontSize": { "value": 24, "unit": "px" }
+    }
+  },
+  "breakpoints": [
+    {
+      "conditions": [
+        { "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }
+      ],
+      "nodes": {},
+      "style": {
+        "#headline": { "fontStyle": "italic" }
+      }
+    }
+  ],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "id": "headline" }, "children": ["Headline flips to italic at >=768px"] }
+    ]
+  }
+}

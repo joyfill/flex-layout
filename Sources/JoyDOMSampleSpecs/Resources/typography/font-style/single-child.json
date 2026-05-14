@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "display": "flex",
+      "padding": { "value": 24, "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    },
+    "#solo": {
+      "fontStyle": "italic",
+      "fontSize": { "value": 28, "unit": "px" }
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "id": "solo" }, "children": ["A single italic line"] }
+    ]
+  }
+}
