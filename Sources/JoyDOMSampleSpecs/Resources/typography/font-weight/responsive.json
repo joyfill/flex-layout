@@ -1,11 +1,14 @@
 {
   "version": 1,
   "style": {
-    "p": { "fontWeight": 300, "fontSize": 28 }
+    "p": { "fontWeight": 300, "fontSize": { "value": 28, "unit": "px" } }
   },
   "breakpoints": [
     {
-      "minWidth": 768,
+      "conditions": [
+        { "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }
+      ],
+      "nodes": {},
       "style": {
         "p": { "fontWeight": 800 }
       }

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "style": {
-    "p": { "fontSize": 28 }
+    "p": { "fontSize": { "value": 28, "unit": "px" } }
   },
   "breakpoints": [],
   "layout": {

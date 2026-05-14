@@ -6,7 +6,7 @@
     "type": "div",
     "props": { "id": "root" },
     "children": [
-      { "type": "p", "props": { "style": { "fontWeight": 700, "fontSize": 28 } }, "children": ["inline fontWeight 700"] }
+      { "type": "p", "props": { "style": { "fontWeight": 700, "fontSize": { "value": 28, "unit": "px" } } }, "children": ["inline fontWeight 700"] }
     ]
   }
 }

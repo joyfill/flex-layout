@@ -1,9 +1,9 @@
 {
   "version": 1,
   "style": {
-    "#small":  { "fontWeight": 700, "fontSize": 14 },
-    "#medium": { "fontWeight": 700, "fontSize": 24 },
-    "#large":  { "fontWeight": 700, "fontSize": 40 }
+    "#small":  { "fontWeight": 700, "fontSize": { "value": 14, "unit": "px" } },
+    "#medium": { "fontWeight": 700, "fontSize": { "value": 24, "unit": "px" } },
+    "#large":  { "fontWeight": 700, "fontSize": { "value": 40, "unit": "px" } }
   },
   "breakpoints": [],
   "layout": {
