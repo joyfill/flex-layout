@@ -28,3 +28,21 @@ extension EnvironmentValues {
         set { self[TextDecorationKey.self] = newValue }
     }
 }
+
+/// CSS `text-transform: capitalize` — title-cases each word. SwiftUI's
+/// `.textCase` only ships `.uppercase`/`.lowercase`, so capitalize has
+/// to ride down through the environment and be applied to the text
+/// content directly at the leaf.
+private struct InheritedCapitalizeKey: EnvironmentKey {
+    static let defaultValue: Bool = false
+}
+
+extension EnvironmentValues {
+    /// `true` when the nearest ancestor declared
+    /// `text-transform: capitalize`. `_DecoratedText` reads this and
+    /// title-cases its string content before painting.
+    public var inheritedCapitalize: Bool {
+        get { self[InheritedCapitalizeKey.self] }
+        set { self[InheritedCapitalizeKey.self] = newValue }
+    }
+}
