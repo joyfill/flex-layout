@@ -49,4 +49,31 @@ final class TextBehaviorSnapshotTests: XCTestCase {
             snapshotName: "responsive-wide"
         )
     }
+
+    // MARK: - textOverflow
+
+    func testTextOverflow() {
+        assertSnapshotsForSamples(in: "textbehavior/text-overflow")
+    }
+
+    /// Wide-viewport companion to `textbehavior/text-overflow/responsive.json`.
+    /// Narrow viewport renders `textOverflow: clip` (and `width: 200`); the
+    /// `>=768px` breakpoint widens the frame to 320 and flips to
+    /// `textOverflow: ellipsis`, so the truncated tail collapses to U+2026.
+    func testTextOverflowResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "textbehavior-text-overflow-responsive"),
+            "responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/textbehavior/text-overflow")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 820,
+            height: 80,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
