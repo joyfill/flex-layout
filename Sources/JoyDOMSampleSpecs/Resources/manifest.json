@@ -6040,28 +6040,28 @@
     },
     {
       "id": "textbehavior-text-overflow",
-      "file": "textbehavior/text-overflow.json",
+      "file": "textbehavior/text-overflow/overview.json",
       "category": "Text Behavior",
       "property": "textOverflow",
       "summary": "Ellipsis recipe with width-bound parent and nowrap text"
     },
     {
       "id": "textbehavior-white-space",
-      "file": "textbehavior/white-space.json",
+      "file": "textbehavior/white-space/overview.json",
       "category": "Text Behavior",
       "property": "whiteSpace",
       "summary": "normal (wraps) vs nowrap (single line)"
     },
     {
       "id": "media-object-fit",
-      "file": "media/object-fit.json",
+      "file": "media/object-fit/overview.json",
       "category": "Media",
       "property": "objectFit",
       "summary": "All four values: fill, contain, cover, none"
     },
     {
       "id": "media-object-position",
-      "file": "media/object-position.json",
+      "file": "media/object-position/overview.json",
       "category": "Media",
       "property": "objectPosition",
       "summary": "All nine horizontal x vertical pairings"
