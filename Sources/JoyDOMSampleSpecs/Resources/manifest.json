@@ -6046,11 +6046,132 @@
       "summary": "Ellipsis recipe with width-bound parent and nowrap text"
     },
     {
-      "id": "textbehavior-white-space",
+      "id": "textbehavior-white-space-overview",
       "file": "textbehavior/white-space/overview.json",
       "category": "Text Behavior",
       "property": "whiteSpace",
-      "summary": "normal (wraps) vs nowrap (single line)"
+      "summary": "Showcase: normal (wraps) vs nowrap (single line) side-by-side",
+      "snapshot": { "viewportWidth": 360, "height": 180 }
+    },
+    {
+      "id": "textbehavior-white-space-normal",
+      "file": "textbehavior/white-space/normal.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "Value sweep: whiteSpace=normal wraps long text within a fixed-width frame",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "textbehavior-white-space-nowrap",
+      "file": "textbehavior/white-space/nowrap.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "Value sweep: whiteSpace=nowrap forces single line; overflows fixed-width frame",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "textbehavior-white-space-default",
+      "file": "textbehavior/white-space/default.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "Omitted → CSS UA default 'normal' (wraps)",
+      "snapshot": { "viewportWidth": 360, "height": 160 }
+    },
+    {
+      "id": "textbehavior-white-space-inline",
+      "file": "textbehavior/white-space/inline.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "Inline node.props.style applying whiteSpace=nowrap",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "textbehavior-white-space-class-selector",
+      "file": "textbehavior/white-space/class-selector.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "Class selectors .wrap (normal) vs .one-line (nowrap)",
+      "snapshot": { "viewportWidth": 400, "height": 180 }
+    },
+    {
+      "id": "textbehavior-white-space-single-child",
+      "file": "textbehavior/white-space/single-child.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "Single nowrap paragraph overflowing the frame",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "textbehavior-white-space-nested",
+      "file": "textbehavior/white-space/nested.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "Paragraph inside a nested div receives whiteSpace=nowrap via type selector",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "textbehavior-white-space-with-width",
+      "file": "textbehavior/white-space/with-width.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "Narrow 160px frame: normal wraps, nowrap overflows",
+      "snapshot": { "viewportWidth": 400, "height": 200 }
+    },
+    {
+      "id": "textbehavior-white-space-with-text-overflow",
+      "file": "textbehavior/white-space/with-text-overflow.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "Canonical 4-precondition ellipsis recipe: width + overflow:hidden + whiteSpace:nowrap + textOverflow:ellipsis",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
+    },
+    {
+      "id": "textbehavior-white-space-with-font-size",
+      "file": "textbehavior/white-space/with-font-size.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "nowrap at fontSize 12 / 18 / 28 — each line overflows its frame",
+      "snapshot": { "viewportWidth": 400, "height": 200 }
+    },
+    {
+      "id": "textbehavior-white-space-long-word",
+      "file": "textbehavior/white-space/long-word.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "Unbreakable long word: normal still overflows (no break opportunity); nowrap overflows",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "textbehavior-white-space-short-text",
+      "file": "textbehavior/white-space/short-text.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "Short text fits the frame — normal and nowrap render identically",
+      "snapshot": { "viewportWidth": 400, "height": 100 }
+    },
+    {
+      "id": "textbehavior-white-space-with-padding",
+      "file": "textbehavior/white-space/with-padding.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "Container padding shrinks content box; nowrap line overflows the padded area",
+      "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "textbehavior-white-space-two-paragraphs",
+      "file": "textbehavior/white-space/two-paragraphs.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "First paragraph normal (wraps), second nowrap (single line) in same frame",
+      "snapshot": { "viewportWidth": 400, "height": 200 }
+    },
+    {
+      "id": "textbehavior-white-space-responsive",
+      "file": "textbehavior/white-space/responsive.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "Narrow normal → wide nowrap at width>=768px breakpoint",
+      "snapshot": { "viewportWidth": 360, "height": 120 }
     },
     {
       "id": "media-object-fit",
