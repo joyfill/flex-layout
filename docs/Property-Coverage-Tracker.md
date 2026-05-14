@@ -84,7 +84,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | `color` | ⬜ | 1/0/0/0 | — | — | — |
 | `textDecoration` | ⬜ | 1/0/0/0 | — | — | Env cascade to Text descendants |
 | `textAlign` | ⬜ | 1/0/0/0 | — | — | — |
-| `textTransform` | ⬜ | 1/0/0/0 | — | — | — |
+| `textTransform` | ✅ | 4/4/2/6 | +17 baselines | 2026-05-14 | 16 samples + responsive-wide method; AI walk found zero impl bugs; value sweep (none / uppercase / lowercase / capitalize via `multi-word`) renders correctly via SwiftUI `.textCase(.uppercase/.lowercase)` mapping; defaults verified (omitted → none); edge cases (already-uppercase + lowercase round-trips, already-lowercase + uppercase, unicode/accented characters) all preserve correctness; authoring (inline vs class-selector) byte-equivalent; interactions (× fontFamily, × letterSpacing) compose without conflict; responsive breakpoint flip verified via `testTextTransformResponsiveWide`. Recovered from a walker that hit an API error after 92 tool uses (samples + manifest committed; baselines + tests + tracker recovered manually). |
 | `lineHeight` | ⬜ | 1/0/0/0 | — | — | ⚠️ system-leading subtraction caveat |
 | `letterSpacing` | ⬜ | 1/0/0/0 | — | — | ⚠️ em scaling caveat |
 
