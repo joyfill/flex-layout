@@ -236,4 +236,31 @@ final class TypographySnapshotTests: XCTestCase {
             snapshotName: "responsive-wide"
         )
     }
+
+    // MARK: - fontWeight
+
+    func testFontWeight() {
+        assertSnapshotsForSamples(in: "typography/font-weight")
+    }
+
+    /// Wide-viewport companion to `typography/font-weight/responsive.json`.
+    /// Narrow viewport renders `fontWeight: 300` (light); the `>=768px`
+    /// breakpoint flips to `fontWeight: 800` (heavy), exercising the
+    /// numeric-to-`Font.Weight` band remap on the responsive path.
+    func testFontWeightResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "typography-font-weight-responsive"),
+            "fontWeight responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/typography/font-weight")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 800,
+            height: 80,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
