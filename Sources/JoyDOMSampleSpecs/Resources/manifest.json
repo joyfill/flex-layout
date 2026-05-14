@@ -6053,11 +6053,140 @@
       "summary": "normal (wraps) vs nowrap (single line)"
     },
     {
-      "id": "media-object-fit",
+      "id": "media-object-fit-overview",
       "file": "media/object-fit/overview.json",
       "category": "Media",
       "property": "objectFit",
-      "summary": "All four values: fill, contain, cover, none"
+      "summary": "Showcase: fill / contain / cover / none / scale-down stacked",
+      "snapshot": { "viewportWidth": 280, "height": 480 }
+    },
+    {
+      "id": "media-object-fit-fill",
+      "file": "media/object-fit/fill.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "Value 'fill' — stretch image to box, ignore aspect ratio",
+      "snapshot": { "viewportWidth": 240, "height": 160 }
+    },
+    {
+      "id": "media-object-fit-contain",
+      "file": "media/object-fit/contain.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "Value 'contain' — fit inside box, preserve aspect (may letterbox)",
+      "snapshot": { "viewportWidth": 240, "height": 160 }
+    },
+    {
+      "id": "media-object-fit-cover",
+      "file": "media/object-fit/cover.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "Value 'cover' — fill box, preserve aspect (may crop)",
+      "snapshot": { "viewportWidth": 240, "height": 160 }
+    },
+    {
+      "id": "media-object-fit-none",
+      "file": "media/object-fit/none.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "Value 'none' — render at intrinsic size, no scaling",
+      "snapshot": { "viewportWidth": 240, "height": 160 }
+    },
+    {
+      "id": "media-object-fit-scale-down",
+      "file": "media/object-fit/scale-down.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "Value 'scale-down' — like 'none' if intrinsic <= box, else like 'contain'",
+      "snapshot": { "viewportWidth": 240, "height": 160 }
+    },
+    {
+      "id": "media-object-fit-default",
+      "file": "media/object-fit/default.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "Omitted -> nil -> fill (CSS spec default)",
+      "snapshot": { "viewportWidth": 240, "height": 160 }
+    },
+    {
+      "id": "media-object-fit-inline",
+      "file": "media/object-fit/inline.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "Inline node.props.style with objectFit: cover",
+      "snapshot": { "viewportWidth": 240, "height": 160 }
+    },
+    {
+      "id": "media-object-fit-class-selector",
+      "file": "media/object-fit/class-selector.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "Class selectors .contain / .cover stacked",
+      "snapshot": { "viewportWidth": 240, "height": 200 }
+    },
+    {
+      "id": "media-object-fit-single-child",
+      "file": "media/object-fit/single-child.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "Single img as root layout — contain in 160x80",
+      "snapshot": { "viewportWidth": 240, "height": 120 }
+    },
+    {
+      "id": "media-object-fit-in-fixed-width",
+      "file": "media/object-fit/in-fixed-width.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "Cover inside a 120x120 fixed-width frame container",
+      "snapshot": { "viewportWidth": 240, "height": 160 }
+    },
+    {
+      "id": "media-object-fit-with-object-position",
+      "file": "media/object-fit/with-object-position.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "Cover + objectPosition trio (top-left, center, bottom-right)",
+      "snapshot": { "viewportWidth": 360, "height": 140 }
+    },
+    {
+      "id": "media-object-fit-with-border-radius",
+      "file": "media/object-fit/with-border-radius.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "Cover clipped to full-circle borderRadius (avatar pattern)",
+      "snapshot": { "viewportWidth": 240, "height": 140 }
+    },
+    {
+      "id": "media-object-fit-with-width-height",
+      "file": "media/object-fit/with-width-height.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "Cover with extreme aspect ratios — wide 240x60 vs tall 60x240",
+      "snapshot": { "viewportWidth": 360, "height": 280 }
+    },
+    {
+      "id": "media-object-fit-square-box",
+      "file": "media/object-fit/square-box.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "Three square 100x100 boxes — contain / cover / fill comparison",
+      "snapshot": { "viewportWidth": 360, "height": 140 }
+    },
+    {
+      "id": "media-object-fit-nested",
+      "file": "media/object-fit/nested.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "Img cover inside a nested card container",
+      "snapshot": { "viewportWidth": 280, "height": 180 }
+    },
+    {
+      "id": "media-object-fit-responsive",
+      "file": "media/object-fit/responsive.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "Narrow contain -> wide cover at width>=768px",
+      "snapshot": { "viewportWidth": 240, "height": 160 }
     },
     {
       "id": "media-object-position",
