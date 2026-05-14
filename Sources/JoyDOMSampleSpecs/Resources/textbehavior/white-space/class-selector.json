@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "style": {
+    "#frame":   { "width": { "value": 200, "unit": "px" } },
+    ".wrap":    { "whiteSpace": "normal" },
+    ".one-line":{ "whiteSpace": "nowrap" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "frame" },
+    "children": [
+      { "type": "p", "props": { "className": ["wrap"]     }, "children": ["Wrap class — flows across multiple lines as needed."] },
+      { "type": "p", "props": { "className": ["one-line"] }, "children": ["One-line class — stays on a single line and overflows."] }
+    ]
+  }
+}

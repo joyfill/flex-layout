@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "style": {
+    "#frame":   { "width": { "value": 220, "unit": "px" } },
+    "#first":   { "whiteSpace": "normal" },
+    "#second":  { "whiteSpace": "nowrap" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "frame" },
+    "children": [
+      { "type": "p", "props": { "id": "first"  }, "children": ["First paragraph wraps normally across multiple lines."] },
+      { "type": "p", "props": { "id": "second" }, "children": ["Second paragraph stays on one line and overflows."] }
+    ]
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "style": {
+    "#frame":    { "width": { "value": 200, "unit": "px" } },
+    "#wrap":     { "whiteSpace": "normal" },
+    "#one-line": { "whiteSpace": "nowrap" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "frame" },
+    "children": [
+      { "type": "p", "props": { "id": "wrap"     }, "children": ["Short text"] },
+      { "type": "p", "props": { "id": "one-line" }, "children": ["Short text"] }
+    ]
+  }
+}
