@@ -135,6 +135,11 @@ extension XCTestCase {
         // the snapshot pins the placeholder's `[#id]` text instead of
         // the real rendered output (caught visually during PR #34 manual
         // review). A fresh registry per render keeps tests isolated.
+        // Register the spec-samples bundle with the image loader so any
+        // `bundle://<name>` URL in a sample resolves synchronously to a
+        // shipped PNG. Idempotent; safe to call once per snapshot.
+        DOMImageBundleRegistry.register(JoyDOMSampleSpecsBundle.bundle)
+
         let registry = ComponentRegistry().withDefaultPrimitives()
         let view = JoyDOMView(spec: spec, registry: registry)
             .viewport(.init(width: viewportWidth))
@@ -262,6 +267,9 @@ extension XCTestCase {
             )
             return
         }
+
+        // Register spec-samples bundle for `bundle://` URL resolution.
+        DOMImageBundleRegistry.register(JoyDOMSampleSpecsBundle.bundle)
 
         // 2. Build view (same registry-with-primitives dance as the
         //    main overload — see PR #34 review).
