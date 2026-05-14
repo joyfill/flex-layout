@@ -129,4 +129,30 @@ final class TypographySnapshotTests: XCTestCase {
             snapshotName: "responsive-wide"
         )
     }
+
+    // MARK: - fontFamily
+
+    func testFontFamily() {
+        assertSnapshotsForSamples(in: "typography/font-family")
+    }
+
+    /// Wide-viewport companion to `responsive.json`. Re-renders the same JSON
+    /// at viewport 800×80 to trigger the `width >= 768px` breakpoint that
+    /// swaps fontFamily from Georgia → Menlo.
+    func testFontFamilyResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "typography-font-family-responsive"),
+            "responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/typography/font-family")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 800,
+            height: 80,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }

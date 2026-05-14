@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "style": {
+    "#text": {
+      "fontFamily": "Georgia",
+      "fontSize": { "value": 24, "unit": "px" },
+      "color": "#3B82F6"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "p",
+    "props": { "id": "text" },
+    "children": ["Georgia blue heading"]
+  }
+}
