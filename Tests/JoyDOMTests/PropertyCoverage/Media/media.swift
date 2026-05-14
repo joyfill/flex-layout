@@ -22,4 +22,31 @@ import JoyDOMSampleSpecs
 final class MediaSnapshotTests: XCTestCase {
     // Walkers append their test methods below as each Media property's
     // coverage walk lands.
+
+    // MARK: - objectFit
+
+    func testObjectFit() {
+        assertSnapshotsForSamples(in: "media/object-fit")
+    }
+
+    /// Wide-viewport companion to `media/object-fit/responsive.json`.
+    /// Narrow viewport renders `objectFit: contain`; the `>=768px`
+    /// breakpoint flips to `cover`, exercising the responsive cascade
+    /// path on the object-fit env value.
+    func testObjectFitResponsiveWide() throws {
+        let sample = try XCTUnwrap(
+            SpecPropertySamples.sample(withID: "media-object-fit-responsive"),
+            "objectFit responsive sample missing from JoyDOMSampleSpecs bundle"
+        )
+        let testFileDir = ((#filePath) as NSString).deletingLastPathComponent
+        let snapshotDir = (testFileDir as NSString)
+            .appendingPathComponent("__Snapshots__/media/object-fit")
+        assertJoyDOMSnapshot(
+            json: sample.json,
+            viewportWidth: 820,
+            height: 160,
+            snapshotDirectory: snapshotDir,
+            snapshotName: "responsive-wide"
+        )
+    }
 }
