@@ -200,10 +200,11 @@ enum JoyDOMSwiftEmitter {
 
     private static func emitObjectFit(_ v: Style.ObjectFit) -> String {
         switch v {
-        case .fill:    return ".fill"
-        case .contain: return ".contain"
-        case .cover:   return ".cover"
-        case .none:    return ".none"
+        case .fill:      return ".fill"
+        case .contain:   return ".contain"
+        case .cover:     return ".cover"
+        case .none:      return ".none"
+        case .scaleDown: return ".scaleDown"
         }
     }
 

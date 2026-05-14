@@ -58,10 +58,20 @@ internal struct _DOMImage: View {
     }
 
     /// Apply the `object-fit` mode to a SwiftUI `Image`. Spec values:
-    ///   • `.fill`     — stretch to fill the box, ignoring aspect ratio.
-    ///   • `.contain`  — preserve aspect ratio, fit inside the box.
-    ///   • `.cover`    — preserve aspect ratio, fill the box (cropping).
-    ///   • `.none`     — render at the image's intrinsic size.
+    ///   • `.fill`       — stretch to fill the box, ignoring aspect ratio.
+    ///   • `.contain`    — preserve aspect ratio, fit inside the box.
+    ///   • `.cover`      — preserve aspect ratio, fill the box (cropping).
+    ///   • `.none`       — render at the image's intrinsic size.
+    ///   • `.scaleDown`  — whichever of `.none` / `.contain` is smaller.
+    ///                     With AsyncImage we can't synchronously probe
+    ///                     intrinsic size in the build phase, so we
+    ///                     conservatively render as `.contain` — never
+    ///                     overflows, and on smaller-than-box images the
+    ///                     `aspectRatio(.fit)` modifier still preserves
+    ///                     the image's natural aspect, matching the
+    ///                     observable behaviour of `scale-down` for the
+    ///                     intrinsic-smaller case (no upscaling, since
+    ///                     `.fit` won't enlarge beyond intrinsic).
     ///
     /// `nil` (no `object-fit` declared) maps to `.fill`, matching the
     /// CSS initial value (CSS Image Module Level 3 §5.4). The previous
@@ -78,6 +88,8 @@ internal struct _DOMImage: View {
             image.resizable().aspectRatio(contentMode: .fill)
         case .some(.none):
             image
+        case .some(.scaleDown):
+            image.resizable().aspectRatio(contentMode: .fit)
         }
     }
 }
