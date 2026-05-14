@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "display": "flex",
+      "flexDirection": "column",
+      "gap": { "value": 6, "unit": "px" },
+      "padding": { "value": 16, "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "id": "p1", "style": { "textAlign": "left",   "fontSize": { "value": 16, "unit": "px" }, "color": "#111827" } }, "children": ["Inline-left: alignment declared in node.props.style"] },
+      { "type": "p", "props": { "id": "p2", "style": { "textAlign": "center", "fontSize": { "value": 16, "unit": "px" }, "color": "#111827" } }, "children": ["Inline-center: alignment declared in node.props.style"] },
+      { "type": "p", "props": { "id": "p3", "style": { "textAlign": "right",  "fontSize": { "value": 16, "unit": "px" }, "color": "#111827" } }, "children": ["Inline-right: alignment declared in node.props.style"] }
+    ]
+  }
+}

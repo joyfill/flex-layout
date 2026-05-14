@@ -1,0 +1,36 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "display": "flex",
+      "flexDirection": "column",
+      "padding": { "value": 16, "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    },
+    "#p": {
+      "textAlign": "left",
+      "fontSize": { "value": 16, "unit": "px" },
+      "color": "#111827"
+    }
+  },
+  "breakpoints": [
+    {
+      "conditions": [
+        { "type": "feature", "name": "width", "operator": ">=", "value": 768, "unit": "px" }
+      ],
+      "nodes": {},
+      "style": {
+        "#p": {
+          "textAlign": "center"
+        }
+      }
+    }
+  ],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "id": "p" }, "children": ["Responsive textAlign: left at narrow viewports, center at >=768px. The quick brown fox jumps over the lazy dog."] }
+    ]
+  }
+}

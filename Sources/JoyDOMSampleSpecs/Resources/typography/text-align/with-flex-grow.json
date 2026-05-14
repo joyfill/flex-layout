@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "display": "flex",
+      "flexDirection": "row",
+      "padding": { "value": 16, "unit": "px" },
+      "gap":     { "value": 8, "unit": "px" },
+      "backgroundColor": "#F3F4F6"
+    },
+    "#a": {
+      "display": "flex",
+      "flexDirection": "column",
+      "width": { "value": 140, "unit": "px" },
+      "backgroundColor": "#E5E7EB",
+      "padding": { "value": 8, "unit": "px" }
+    },
+    "#b": {
+      "display": "flex",
+      "flexDirection": "column",
+      "flexGrow": 1,
+      "backgroundColor": "#E5E7EB",
+      "padding": { "value": 8, "unit": "px" }
+    },
+    "#label": {
+      "textAlign": "left",
+      "fontSize": { "value": 14, "unit": "px" },
+      "color": "#111827"
+    },
+    "#value": {
+      "textAlign": "right",
+      "fontSize": { "value": 14, "unit": "px" },
+      "color": "#111827"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "div", "props": { "id": "a" }, "children": [
+        { "type": "p", "props": { "id": "label" }, "children": ["Item label that wraps onto another line."] }
+      ] },
+      { "type": "div", "props": { "id": "b" }, "children": [
+        { "type": "p", "props": { "id": "value" }, "children": ["Right-aligned value text that is long enough to wrap onto multiple lines so the alignment is visible across wrapped lines."] }
+      ] }
+    ]
+  }
+}
