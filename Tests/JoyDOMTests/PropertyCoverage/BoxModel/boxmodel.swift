@@ -102,6 +102,16 @@ final class BoxModelSnapshotTests: XCTestCase {
         assertSnapshotsForSamples(in: "boxmodel/margin")
     }
 
+    /// iOS-only extensions of `margin`. The JoyDOM cross-platform spec
+    /// restricts `Length<"px">` to non-negative values; samples that
+    /// exercise negative margins (which Swift / Yoga's FlexLayout
+    /// happily render but JS/Kotlin renderers reject as out-of-spec)
+    /// live here so the iOS code path stays regression-tested without
+    /// polluting the cross-platform sample set.
+    func testMarginIosExt() {
+        assertSnapshotsForSamples(in: "boxmodel/margin-ios-ext")
+    }
+
     /// `margin/responsive.json` declares the NARROW canvas (margin: 4 on
     /// each item). The ≥768px breakpoint flips `.tile` to `margin: 16`,
     /// visibly enlarging the inter-item spacing. This method captures the

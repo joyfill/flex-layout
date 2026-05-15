@@ -3411,8 +3411,8 @@
       }
     },
     {
-      "id": "boxmodel-margin-negative-margin",
-      "file": "boxmodel/margin/negative-margin.json",
+      "id": "boxmodel-margin-ios-ext-negative-margin",
+      "file": "boxmodel/margin-ios-ext/negative-margin.json",
       "category": "Box Model & Visuals",
       "property": "margin",
       "summary": "edge: negative margin shifts element INWARD overlapping siblings",
@@ -5111,8 +5111,8 @@
       "snapshot": { "viewportWidth": 400, "height": 80 }
     },
     {
-      "id": "typography-text-transform-capitalize",
-      "file": "typography/text-transform/capitalize.json",
+      "id": "typography-text-transform-ios-ext-capitalize",
+      "file": "typography/text-transform-ios-ext/capitalize.json",
       "category": "Typography",
       "property": "textTransform",
       "summary": "Value sweep — textTransform: capitalize (title-case each word)",

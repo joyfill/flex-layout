@@ -5,7 +5,6 @@
       "display": "flex",
       "flexDirection": "row",
       "flexWrap": "wrap",
-      "alignContent": "flex-start",
       "padding": { "value": 16, "unit": "px" },
       "gap":     { "value": 8,  "unit": "px" },
       "width":   { "value": 240, "unit": "px" },

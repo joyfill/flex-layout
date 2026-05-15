@@ -6,10 +6,8 @@
       "flexDirection": "row",
       "flexWrap": "wrap",
       "padding": { "value": 16, "unit": "px" },
-      "gap": {
-        "c": { "value": 16, "unit": "px" },
-        "r": { "value": 24, "unit": "px" }
-      },
+      "columnGap": { "value": 16, "unit": "px" },
+      "rowGap":    { "value": 24, "unit": "px" },
       "width":   { "value": 320, "unit": "px" },
       "backgroundColor": "#F3F4F6"
     },

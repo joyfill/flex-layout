@@ -214,6 +214,18 @@ final class TypographySnapshotTests: XCTestCase {
         assertSnapshotsForSamples(in: "typography/text-transform")
     }
 
+    /// iOS-only extensions of `textTransform`. The JoyDOM cross-platform
+    /// spec restricts `textTransform` to `"none" | "uppercase" |
+    /// "lowercase"`; `capitalize` (title-case each word) is in CSS but
+    /// not yet in the cross-platform spec. The Swift impl supports it
+    /// (see PR #87 — `Style.TextTransform.capitalize` enum case +
+    /// Foundation `.capitalized` in `_DecoratedText`), so the sample
+    /// lives here to keep the iOS code path regression-tested without
+    /// failing JS/Kotlin renderers.
+    func testTextTransformIosExt() {
+        assertSnapshotsForSamples(in: "typography/text-transform-ios-ext")
+    }
+
     /// Wide-viewport companion to `typography/text-transform/responsive.json`.
     ///
     /// The manifest entry pins the narrow viewport which renders the
