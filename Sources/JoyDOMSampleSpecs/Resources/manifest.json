@@ -6057,14 +6057,192 @@
       "file": "media/object-fit/overview.json",
       "category": "Media",
       "property": "objectFit",
-      "summary": "All four values: fill, contain, cover, none"
+      "summary": "All five values stacked: fill, contain, cover, none, scale-down",
+      "snapshot": { "viewportWidth": 280, "height": 560 }
+    },
+    {
+      "id": "media-object-fit-fill",
+      "file": "media/object-fit/fill.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "fill: stretch landscape image into a 240x160 box, ignoring aspect ratio",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "media-object-fit-contain",
+      "file": "media/object-fit/contain.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "contain: portrait image letterboxed inside landscape box (aspect preserved, no crop)",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "media-object-fit-cover",
+      "file": "media/object-fit/cover.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "cover: portrait image cropped to fill landscape box (aspect preserved, edges cropped)",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "media-object-fit-none",
+      "file": "media/object-fit/none.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "none: landscape image at intrinsic 400x200 size inside a 240x160 box (overflow clipped)",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "media-object-fit-scale-down",
+      "file": "media/object-fit/scale-down.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "scale-down: portrait image scaled to fit (matches contain for this intrinsic-larger case)",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "media-object-fit-default",
+      "file": "media/object-fit/default.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "default (objectFit omitted): falls back to fill — landscape image stretched to box",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "media-object-fit-inline",
+      "file": "media/object-fit/inline.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "inline style on img: cover applied directly via element-level style",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "media-object-fit-with-position",
+      "file": "media/object-fit/with-position.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "interaction: cover + objectPosition top-right (position is a no-op for cover at exact aspect crop)",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "media-object-fit-responsive",
+      "file": "media/object-fit/responsive.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "responsive: contain on narrow viewport, cover at width>=768px (recorded at narrow)",
+      "snapshot": { "viewportWidth": 360, "height": 200 }
     },
     {
       "id": "media-object-position",
       "file": "media/object-position/overview.json",
       "category": "Media",
       "property": "objectPosition",
-      "summary": "All nine horizontal x vertical pairings"
+      "summary": "All nine horizontal x vertical pairings as a 3x3 grid (cover crops anchored per pair)",
+      "snapshot": { "viewportWidth": 480, "height": 320 }
+    },
+    {
+      "id": "media-object-position-top-left",
+      "file": "media/object-position/top-left.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "top-left: contain + landscape image anchored top-left inside portrait box",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-top-center",
+      "file": "media/object-position/top-center.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "top-center: contain + landscape image anchored top-center inside portrait box",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-top-right",
+      "file": "media/object-position/top-right.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "top-right: contain + landscape image anchored top-right inside portrait box",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-center-left",
+      "file": "media/object-position/center-left.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "center-left: contain + landscape image anchored center-left inside portrait box",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-center-center",
+      "file": "media/object-position/center-center.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "center-center: contain + landscape image anchored dead-centre (= the default)",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-center-right",
+      "file": "media/object-position/center-right.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "center-right: contain + landscape image anchored center-right inside portrait box",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-bottom-left",
+      "file": "media/object-position/bottom-left.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "bottom-left: contain + landscape image anchored bottom-left inside portrait box",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-bottom-center",
+      "file": "media/object-position/bottom-center.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "bottom-center: contain + landscape image anchored bottom-center inside portrait box",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-bottom-right",
+      "file": "media/object-position/bottom-right.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "bottom-right: contain + landscape image anchored bottom-right inside portrait box",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-default",
+      "file": "media/object-position/default.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "default (objectPosition omitted): equivalent to center-center",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-with-object-fit-none",
+      "file": "media/object-position/with-object-fit-none.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "interaction: objectFit:none + objectPosition (intrinsic-size image anchored per alignment)",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-with-object-fit-cover",
+      "file": "media/object-position/with-object-fit-cover.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "documented no-op caveat: objectPosition has no visible effect when objectFit is cover at an aspect match",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-responsive",
+      "file": "media/object-position/responsive.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "responsive: top-left anchoring on narrow; flips to bottom-right at width>=768px",
+      "snapshot": { "viewportWidth": 360, "height": 320 }
     },
     {
       "id": "selectors-type",

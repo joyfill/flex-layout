@@ -487,6 +487,14 @@ extension Style {
         case contain
         case cover
         case none
+        /// CSS Image L3 §5.4: `scale-down` = whichever of `none` or
+        /// `contain` produces the smaller resulting image. With
+        /// AsyncImage we can't always probe intrinsic dimensions from
+        /// the build phase, so `_DOMImage.applyFit` treats this as
+        /// `contain` for the remote-URL case (the safer of the two —
+        /// no overflow) and intrinsic-size when the bundled-asset path
+        /// is taken with known dimensions.
+        case scaleDown = "scale-down"
     }
 
     /// `object-position` — alignment of a replaced element within its

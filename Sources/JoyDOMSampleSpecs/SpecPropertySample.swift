@@ -79,6 +79,15 @@ public struct SpecPropertySample: Identifiable, Equatable {
     }
 }
 
+/// Public access to the resource bundle for this target. Snapshot tests
+/// that load bundled image assets (`bundle://photo-landscape` etc.)
+/// register this bundle with JoyDOM's image loader so `_DOMImage` can
+/// resolve assets synchronously without going through AsyncImage.
+public enum JoyDOMSampleSpecsBundle {
+    /// The SwiftPM-generated resource bundle.
+    public static let bundle: Bundle = .module
+}
+
 /// Public registry of every property sample shipped in this target.
 public enum SpecPropertySamples {
 

@@ -221,6 +221,7 @@ extension _DOMImage {
         case .some(.contain):     return "resizable+fit"
         case .some(.cover):       return "resizable+fill"
         case .some(.none):        return "intrinsic"
+        case .some(.scaleDown):   return "resizable+fit"
         }
     }
 }
