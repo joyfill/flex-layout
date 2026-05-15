@@ -5431,40 +5431,40 @@
       "snapshot": { "viewportWidth": 400, "height": 120 }
     },
     {
-      "id": "typography-letter-spacing-px-negative-2",
-      "file": "typography/letter-spacing/px-negative-2.json",
+      "id": "typography-letter-spacing-ios-ext-px-negative-2",
+      "file": "typography/letter-spacing-ios-ext/px-negative-2.json",
       "category": "Typography",
       "property": "letterSpacing",
       "summary": "edge: negative letterSpacing -2px (tight tracking)",
       "snapshot": { "viewportWidth": 400, "height": 120 }
     },
     {
-      "id": "typography-letter-spacing-em-005",
-      "file": "typography/letter-spacing/em-005.json",
+      "id": "typography-letter-spacing-ios-ext-em-005",
+      "file": "typography/letter-spacing-ios-ext/em-005.json",
       "category": "Typography",
       "property": "letterSpacing",
       "summary": "value sweep: letterSpacing 0.05em (scales with fontSize)",
       "snapshot": { "viewportWidth": 400, "height": 120 }
     },
     {
-      "id": "typography-letter-spacing-em-010",
-      "file": "typography/letter-spacing/em-010.json",
+      "id": "typography-letter-spacing-ios-ext-em-010",
+      "file": "typography/letter-spacing-ios-ext/em-010.json",
       "category": "Typography",
       "property": "letterSpacing",
       "summary": "value sweep: letterSpacing 0.1em",
       "snapshot": { "viewportWidth": 400, "height": 120 }
     },
     {
-      "id": "typography-letter-spacing-em-020",
-      "file": "typography/letter-spacing/em-020.json",
+      "id": "typography-letter-spacing-ios-ext-em-020",
+      "file": "typography/letter-spacing-ios-ext/em-020.json",
       "category": "Typography",
       "property": "letterSpacing",
       "summary": "value sweep: letterSpacing 0.2em (wide em tracking)",
       "snapshot": { "viewportWidth": 400, "height": 120 }
     },
     {
-      "id": "typography-letter-spacing-em-px-equivalence",
-      "file": "typography/letter-spacing/em-px-equivalence.json",
+      "id": "typography-letter-spacing-ios-ext-em-px-equivalence",
+      "file": "typography/letter-spacing-ios-ext/em-px-equivalence.json",
       "category": "Typography",
       "property": "letterSpacing",
       "summary": "em-scaling verification: 0.1em @ 16px fontSize must render identical to 1.6px",
@@ -5487,8 +5487,8 @@
       "snapshot": { "viewportWidth": 400, "height": 120 }
     },
     {
-      "id": "typography-letter-spacing-with-font-size",
-      "file": "typography/letter-spacing/with-font-size.json",
+      "id": "typography-letter-spacing-ios-ext-with-font-size",
+      "file": "typography/letter-spacing-ios-ext/with-font-size.json",
       "category": "Typography",
       "property": "letterSpacing",
       "summary": "interaction: same 0.1em across 12/20/32px fontSize — tracking scales proportionally",
@@ -5511,8 +5511,8 @@
       "snapshot": { "viewportWidth": 400, "height": 200 }
     },
     {
-      "id": "typography-letter-spacing-negative-overlap",
-      "file": "typography/letter-spacing/negative-overlap.json",
+      "id": "typography-letter-spacing-ios-ext-negative-overlap",
+      "file": "typography/letter-spacing-ios-ext/negative-overlap.json",
       "category": "Typography",
       "property": "letterSpacing",
       "summary": "edge: -6px tracking at 32px fontSize overlaps glyphs",
@@ -6057,8 +6057,8 @@
       "file": "media/object-fit/overview.json",
       "category": "Media",
       "property": "objectFit",
-      "summary": "All five values stacked: fill, contain, cover, none, scale-down",
-      "snapshot": { "viewportWidth": 280, "height": 560 }
+      "summary": "All four cross-platform values stacked: fill, contain, cover, none",
+      "snapshot": { "viewportWidth": 280, "height": 460 }
     },
     {
       "id": "media-object-fit-fill",
@@ -6093,8 +6093,8 @@
       "snapshot": { "viewportWidth": 280, "height": 200 }
     },
     {
-      "id": "media-object-fit-scale-down",
-      "file": "media/object-fit/scale-down.json",
+      "id": "media-object-fit-ios-ext-scale-down",
+      "file": "media/object-fit-ios-ext/scale-down.json",
       "category": "Media",
       "property": "objectFit",
       "summary": "scale-down: portrait image scaled to fit (matches contain for this intrinsic-larger case)",
