@@ -23,6 +23,12 @@ final class TextBehaviorSnapshotTests: XCTestCase {
     // Walkers append their test methods below as each Text Behavior
     // property's coverage walk lands.
 
+    // MARK: - textOverflow
+
+    func testTextOverflow() {
+        assertSnapshotsForSamples(in: "textbehavior/text-overflow")
+    }
+
     // MARK: - whiteSpace
 
     func testWhiteSpace() {
