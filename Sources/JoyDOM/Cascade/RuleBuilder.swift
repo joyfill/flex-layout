@@ -61,11 +61,17 @@ internal enum RuleBuilder {
         }
 
         // 3. Per-node inline `props.style` — synthetic `#id { ... }` rules.
-        //    Only nodes with author-supplied `props.id` are addressable;
-        //    synthetic ids never enter the rule index (the spec says
-        //    unaddressable nodes can't be re-styled by id).
+        //    Nodes with author-supplied `props.id` use that id; nodes
+        //    without one use the same deterministic synthetic id that
+        //    `StyleTreeBuilder` assigns (`__joydom_anon_<path>`), so a
+        //    node's own inline style still applies to itself even when
+        //    the author didn't bother to name it. The synthetic-id
+        //    prefix is reserved, so author selectors can't collide with
+        //    these self-targeting rules.
+        var inlinePath: [Int] = []
         appendInlineRules(
             tree: spec.layout,
+            path: &inlinePath,
             into: &rules,
             sourceOrder: &sourceOrder
         )
@@ -115,14 +121,19 @@ internal enum RuleBuilder {
     }
 
     /// Walk the Node tree and emit a `#<id> { ... }` rule for each node
-    /// that has BOTH `props.id` AND `props.style` set. Nodes missing
-    /// either are skipped.
+    /// that has `props.style` set. Author-supplied `props.id` is used
+    /// when present; otherwise the same path-based synthetic id that
+    /// `StyleTreeBuilder.resolveID` assigns is used, so the rule still
+    /// matches the node when the cascade runs. `path` tracks the child
+    /// index chain from the layout root, mirroring `StyleTreeBuilder`.
     private static func appendInlineRules(
         tree: Node,
+        path: inout [Int],
         into rules: inout [StyleResolver.Rule],
         sourceOrder: inout Int
     ) {
-        if let id = tree.props?.id, let style = tree.props?.style {
+        if let style = tree.props?.style {
+            let id = tree.props?.id ?? syntheticID(for: path)
             let selector = idSelector(id)
             rules.append(StyleResolver.Rule(
                 selector: selector,
@@ -132,11 +143,25 @@ internal enum RuleBuilder {
             ))
             sourceOrder += 1
         }
-        for child in tree.children ?? [] {
+        for (index, child) in (tree.children ?? []).enumerated() {
             if case .node(let n) = child {
-                appendInlineRules(tree: n, into: &rules, sourceOrder: &sourceOrder)
+                path.append(index)
+                appendInlineRules(
+                    tree: n,
+                    path: &path,
+                    into: &rules,
+                    sourceOrder: &sourceOrder
+                )
+                path.removeLast()
             }
         }
+    }
+
+    /// Mirrors `StyleTreeBuilder.syntheticID` — keep these in sync.
+    /// `[]` → `__joydom_anon_`; `[0, 1]` → `__joydom_anon_0_1`.
+    private static func syntheticID(for path: [Int]) -> String {
+        guard !path.isEmpty else { return "__joydom_anon_" }
+        return "__joydom_anon_" + path.map(String.init).joined(separator: "_")
     }
 
     /// Build a single-id `ComplexSelector` for `#<nodeID>`. Used for
