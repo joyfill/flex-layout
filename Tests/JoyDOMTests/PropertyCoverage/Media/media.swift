@@ -31,6 +31,16 @@ final class MediaSnapshotTests: XCTestCase {
         assertSnapshotsForSamples(in: "media/object-fit")
     }
 
+    /// iOS-only extensions of `objectFit`. The JoyDOM cross-platform
+    /// spec lists 4 values (`fill | contain | cover | none`); CSS Image
+    /// Module Level 3 adds `scale-down`, which `Style.ObjectFit`
+    /// currently doesn't model. The sample lives here so iOS regression
+    /// coverage is preserved when the Swift enum + cross-platform spec
+    /// catch up.
+    func testObjectFitIosExt() {
+        assertSnapshotsForSamples(in: "media/object-fit-ios-ext")
+    }
+
     /// Wide-viewport companion to `media/object-fit/responsive.json`.
     /// Narrow renders `contain`; at width>=768px flips to `cover`.
     func testObjectFitResponsiveWide() throws {

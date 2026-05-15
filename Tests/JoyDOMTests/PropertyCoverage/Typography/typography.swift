@@ -162,6 +162,16 @@ final class TypographySnapshotTests: XCTestCase {
         assertSnapshotsForSamples(in: "typography/letter-spacing")
     }
 
+    /// iOS-only extensions of `letterSpacing`. CSS lets `letter-spacing`
+    /// accept negative `<length>` values (lines kern tighter), but the
+    /// JoyDOM cross-platform spec lists `letterSpacing: Length<"px">`
+    /// with the same non-negative convention applied to padding/margin.
+    /// Negative tracking demos that exercise the Swift impl's
+    /// `.tracking(_:)` path with sub-zero values live here.
+    func testLetterSpacingIosExt() {
+        assertSnapshotsForSamples(in: "typography/letter-spacing-ios-ext")
+    }
+
     /// Wide-viewport companion to `typography/letter-spacing/responsive.json`.
     ///
     /// The manifest entry pins the narrow viewport (`400x120`) which renders
