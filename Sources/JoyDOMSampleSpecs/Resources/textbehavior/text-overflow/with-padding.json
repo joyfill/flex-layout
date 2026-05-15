@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "style": {
+    "#frame": {
+      "width": { "value": 240, "unit": "px" },
+      "overflow": "hidden",
+      "backgroundColor": "#F3F4F6"
+    },
+    "#card": {
+      "padding": { "value": 16, "unit": "px" },
+      "overflow": "hidden",
+      "whiteSpace": "nowrap",
+      "textOverflow": "ellipsis"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "frame" },
+    "children": [
+      { "type": "p", "props": { "id": "card" }, "children": ["Padded ellipsis truncates before the right padding edge of the content box"] }
+    ]
+  }
+}
