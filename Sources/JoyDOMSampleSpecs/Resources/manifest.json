@@ -6151,6 +6151,62 @@
       "snapshot": { "viewportWidth": 400, "height": 240 }
     },
     {
+      "id": "textbehavior-text-overflow-id-selector",
+      "file": "textbehavior/text-overflow/id-selector.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Id-selector ellipsis: #myid bundle applied via id attribute",
+      "snapshot": { "viewportWidth": 360, "height": 80 }
+    },
+    {
+      "id": "textbehavior-text-overflow-single-child",
+      "file": "textbehavior/text-overflow/single-child.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Single child: root contains one <p id=card> with the 4 ellipsis preconditions",
+      "snapshot": { "viewportWidth": 360, "height": 80 }
+    },
+    {
+      "id": "textbehavior-text-overflow-empty",
+      "file": "textbehavior/text-overflow/empty.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Empty content: ellipsis declared but text is empty string — no crash, nothing visible",
+      "snapshot": { "viewportWidth": 360, "height": 80 }
+    },
+    {
+      "id": "textbehavior-text-overflow-with-padding",
+      "file": "textbehavior/text-overflow/with-padding.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "With padding: ellipsis truncates before the right padding edge of the content box",
+      "snapshot": { "viewportWidth": 360, "height": 80 }
+    },
+    {
+      "id": "textbehavior-text-overflow-with-border-radius",
+      "file": "textbehavior/text-overflow/with-border-radius.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "With borderRadius: ellipsis truncation composes with rounded-corner clipping",
+      "snapshot": { "viewportWidth": 360, "height": 100 }
+    },
+    {
+      "id": "textbehavior-text-overflow-nested",
+      "file": "textbehavior/text-overflow/nested.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Nested cascade: root declares ellipsis + preconditions; descendant <p> inherits truncation",
+      "snapshot": { "viewportWidth": 360, "height": 80 }
+    },
+    {
+      "id": "textbehavior-text-overflow-with-flex-grow",
+      "file": "textbehavior/text-overflow/with-flex-grow.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "With flexGrow: middle flex child grows to fill remaining space; ellipsis truncates its overflow",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
       "id": "textbehavior-text-overflow-responsive",
       "file": "textbehavior/text-overflow/responsive.json",
       "category": "Text Behavior",
