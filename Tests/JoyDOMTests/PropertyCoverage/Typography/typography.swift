@@ -25,6 +25,19 @@ final class TypographySnapshotTests: XCTestCase {
     // Walkers append their test methods below as each Typography
     // property's coverage walk lands.
 
+    /// Register the JoyDOM bundled fonts (Geist / Geist Mono / Libre
+    /// Baskerville) with CoreText before any test method runs. JoyDOM
+    /// migrated fontFamily samples + cross-property samples to these
+    /// bundled families for cross-runtime parity with joy-dom's JS
+    /// runtime; without registration `Font.custom("Geist", ...)` would
+    /// fall back to the host system font and the snapshots would not
+    /// match the recorded baselines. `registerIfNeeded()` is idempotent
+    /// and cheap on subsequent calls.
+    override func setUp() {
+        super.setUp()
+        FontRegistry.registerIfNeeded()
+    }
+
     // MARK: - fontSize
 
     func testFontSize() {
@@ -134,6 +147,17 @@ final class TypographySnapshotTests: XCTestCase {
 
     func testFontFamily() {
         assertSnapshotsForSamples(in: "typography/font-family")
+    }
+
+    /// iOS-only extensions of `fontFamily`. The JoyDOM cross-platform
+    /// spec resolves `fontFamily` against bundled cross-runtime families
+    /// (Geist / LibreBaskerville / GeistMono) so SwiftUI snapshots match
+    /// the joy-dom JS runtime. These macOS-stock samples (Georgia,
+    /// Helvetica Neue, Courier) exercise the CoreText system-fallback
+    /// path — they're preserved so iOS regression coverage stays in
+    /// place when host-font availability shifts on Apple OS updates.
+    func testFontFamilyIosExt() {
+        assertSnapshotsForSamples(in: "typography/font-family-ios-ext")
     }
 
     /// Wide-viewport companion to `responsive.json`. Re-renders the same JSON
