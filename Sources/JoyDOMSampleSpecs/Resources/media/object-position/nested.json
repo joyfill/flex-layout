@@ -2,14 +2,14 @@
   "version": 1,
   "style": {
     "#parent": {
-      "objectFit": "contain",
-      "objectPosition": { "horizontal": "left", "vertical": "bottom" },
       "padding": { "value": 8, "unit": "px" },
       "backgroundColor": "#111827"
     },
     "#child": {
       "width":  { "value": 200, "unit": "px" },
-      "height": { "value": 300, "unit": "px" }
+      "height": { "value": 300, "unit": "px" },
+      "objectFit": "contain",
+      "objectPosition": { "horizontal": "left", "vertical": "bottom" }
     }
   },
   "breakpoints": [],
