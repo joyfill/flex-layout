@@ -2,24 +2,82 @@
   "version": 1,
   "style": {
     "#root": {
+      "width": {
+        "value": 480,
+        "unit": "px"
+      },
+      "height": {
+        "value": 160,
+        "unit": "px"
+      },
       "display": "flex",
       "flexDirection": "column",
-      "padding": { "value": 16, "unit": "px" },
-      "gap": { "value": 8, "unit": "px" },
+      "padding": {
+        "value": 16,
+        "unit": "px"
+      },
+      "gap": {
+        "value": 8,
+        "unit": "px"
+      },
       "backgroundColor": "#F3F4F6"
     },
-    "#serif": { "fontFamily": "Libre Baskerville", "fontSize": { "value": 20, "unit": "px" } },
-    "#sans":  { "fontFamily": "Geist",            "fontSize": { "value": 20, "unit": "px" } },
-    "#mono":  { "fontFamily": "Geist Mono",        "fontSize": { "value": 20, "unit": "px" } }
+    "#serif": {
+      "fontFamily": "Libre Baskerville",
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      }
+    },
+    "#sans": {
+      "fontFamily": "Geist",
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      }
+    },
+    "#mono": {
+      "fontFamily": "Geist Mono",
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      }
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
-      { "type": "p", "props": { "id": "serif" }, "children": ["Serif Libre Baskerville"] },
-      { "type": "p", "props": { "id": "sans"  }, "children": ["Sans Geist"] },
-      { "type": "p", "props": { "id": "mono"  }, "children": ["Mono Geist Mono"] }
+      {
+        "type": "p",
+        "props": {
+          "id": "serif"
+        },
+        "children": [
+          "Serif Libre Baskerville"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "sans"
+        },
+        "children": [
+          "Sans Geist"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "mono"
+        },
+        "children": [
+          "Mono Geist Mono"
+        ]
+      }
     ]
   }
 }

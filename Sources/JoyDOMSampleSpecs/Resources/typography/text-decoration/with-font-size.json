@@ -1,18 +1,72 @@
 {
   "version": 1,
   "style": {
-    "#small":  { "textDecoration": "underline", "fontSize": { "value": 14, "unit": "px" } },
-    "#medium": { "textDecoration": "underline", "fontSize": { "value": 24, "unit": "px" } },
-    "#large":  { "textDecoration": "underline", "fontSize": { "value": 40, "unit": "px" } }
+    "#root": {
+      "width": {
+        "value": 400,
+        "unit": "px"
+      },
+      "height": {
+        "value": 200,
+        "unit": "px"
+      }
+    },
+    "#small": {
+      "textDecoration": "underline",
+      "fontSize": {
+        "value": 14,
+        "unit": "px"
+      }
+    },
+    "#medium": {
+      "textDecoration": "underline",
+      "fontSize": {
+        "value": 24,
+        "unit": "px"
+      }
+    },
+    "#large": {
+      "textDecoration": "underline",
+      "fontSize": {
+        "value": 40,
+        "unit": "px"
+      }
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
-      { "type": "p", "props": { "id": "small"  }, "children": ["Small underline"] },
-      { "type": "p", "props": { "id": "medium" }, "children": ["Medium underline"] },
-      { "type": "p", "props": { "id": "large"  }, "children": ["Large underline"] }
+      {
+        "type": "p",
+        "props": {
+          "id": "small"
+        },
+        "children": [
+          "Small underline"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "medium"
+        },
+        "children": [
+          "Medium underline"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "large"
+        },
+        "children": [
+          "Large underline"
+        ]
+      }
     ]
   }
 }

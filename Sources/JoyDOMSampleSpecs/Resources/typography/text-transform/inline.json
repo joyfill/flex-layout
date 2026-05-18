@@ -1,13 +1,32 @@
 {
   "version": 1,
-  "style": {},
+  "style": {
+    "#t": {
+      "width": {
+        "value": 400,
+        "unit": "px"
+      },
+      "height": {
+        "value": 80,
+        "unit": "px"
+      }
+    }
+  },
   "breakpoints": [],
   "layout": {
     "type": "p",
     "props": {
       "id": "t",
-      "style": { "textTransform": "uppercase", "fontSize": { "value": 20, "unit": "px" } }
+      "style": {
+        "textTransform": "uppercase",
+        "fontSize": {
+          "value": 20,
+          "unit": "px"
+        }
+      }
     },
-    "children": ["inline-styled text"]
+    "children": [
+      "inline-styled text"
+    ]
   }
 }

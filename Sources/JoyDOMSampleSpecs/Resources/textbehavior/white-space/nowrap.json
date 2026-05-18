@@ -1,15 +1,33 @@
 {
   "version": 1,
   "style": {
-    "#frame": { "width": { "value": 200, "unit": "px" } },
-    "p":      { "whiteSpace": "nowrap" }
+    "#frame": {
+      "height": {
+        "value": 100,
+        "unit": "px"
+      },
+      "width": {
+        "value": 200,
+        "unit": "px"
+      }
+    },
+    "p": {
+      "whiteSpace": "nowrap"
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "frame" },
+    "props": {
+      "id": "frame"
+    },
     "children": [
-      { "type": "p", "children": ["Lorem ipsum dolor sit amet consectetur adipiscing elit"] }
+      {
+        "type": "p",
+        "children": [
+          "Lorem ipsum dolor sit amet consectetur adipiscing elit"
+        ]
+      }
     ]
   }
 }

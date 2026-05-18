@@ -1,12 +1,30 @@
 {
   "version": 1,
   "style": {
-    "#t": { "textTransform": "none", "fontSize": { "value": 20, "unit": "px" } }
+    "#t": {
+      "width": {
+        "value": 400,
+        "unit": "px"
+      },
+      "height": {
+        "value": 80,
+        "unit": "px"
+      },
+      "textTransform": "none",
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      }
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "p",
-    "props": { "id": "t" },
-    "children": ["MixED Case sample"]
+    "props": {
+      "id": "t"
+    },
+    "children": [
+      "MixED Case sample"
+    ]
   }
 }

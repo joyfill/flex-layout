@@ -1,14 +1,30 @@
 {
   "version": 1,
   "style": {
-    "#frame": { "width": { "value": 200, "unit": "px" } }
+    "#frame": {
+      "height": {
+        "value": 160,
+        "unit": "px"
+      },
+      "width": {
+        "value": 200,
+        "unit": "px"
+      }
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "frame" },
+    "props": {
+      "id": "frame"
+    },
     "children": [
-      { "type": "p", "children": ["Lorem ipsum dolor sit amet consectetur adipiscing elit"] }
+      {
+        "type": "p",
+        "children": [
+          "Lorem ipsum dolor sit amet consectetur adipiscing elit"
+        ]
+      }
     ]
   }
 }

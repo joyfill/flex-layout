@@ -1,14 +1,37 @@
 {
   "version": 1,
   "style": {
-    "p": { "textDecoration": "underline", "fontSize": { "value": 24, "unit": "px" } }
+    "#root": {
+      "width": {
+        "value": 400,
+        "unit": "px"
+      },
+      "height": {
+        "value": 80,
+        "unit": "px"
+      }
+    },
+    "p": {
+      "textDecoration": "underline",
+      "fontSize": {
+        "value": 24,
+        "unit": "px"
+      }
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
-      { "type": "p", "children": ["Underlined text"] }
+      {
+        "type": "p",
+        "children": [
+          "Underlined text"
+        ]
+      }
     ]
   }
 }

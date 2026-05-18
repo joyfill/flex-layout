@@ -1,12 +1,30 @@
 {
   "version": 1,
   "style": {
-    "#t": { "textTransform": "capitalize", "fontSize": { "value": 20, "unit": "px" } }
+    "#t": {
+      "width": {
+        "value": 400,
+        "unit": "px"
+      },
+      "height": {
+        "value": 80,
+        "unit": "px"
+      },
+      "textTransform": "capitalize",
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      }
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "p",
-    "props": { "id": "t" },
-    "children": ["the quick brown FOX jumps over"]
+    "props": {
+      "id": "t"
+    },
+    "children": [
+      "the quick brown FOX jumps over"
+    ]
   }
 }

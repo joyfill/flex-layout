@@ -1,13 +1,27 @@
 {
   "version": 1,
-  "style": {},
+  "style": {
+    "#frame": {
+      "width": {
+        "value": 360,
+        "unit": "px"
+      },
+      "height": {
+        "value": 80,
+        "unit": "px"
+      }
+    }
+  },
   "breakpoints": [],
   "layout": {
     "type": "div",
     "props": {
       "id": "frame",
       "style": {
-        "width": { "value": 200, "unit": "px" },
+        "width": {
+          "value": 200,
+          "unit": "px"
+        },
         "overflow": "hidden"
       }
     },
@@ -21,7 +35,9 @@
             "textOverflow": "ellipsis"
           }
         },
-        "children": ["Inline-style ellipsis on a long single-line paragraph"]
+        "children": [
+          "Inline-style ellipsis on a long single-line paragraph"
+        ]
       }
     ]
   }

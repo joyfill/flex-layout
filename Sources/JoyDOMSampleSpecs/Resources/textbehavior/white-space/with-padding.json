@@ -2,18 +2,40 @@
   "version": 1,
   "style": {
     "#frame": {
-      "width":   { "value": 220, "unit": "px" },
-      "padding": { "value": 12,  "unit": "px" },
+      "height": {
+        "value": 120,
+        "unit": "px"
+      },
+      "width": {
+        "value": 220,
+        "unit": "px"
+      },
+      "padding": {
+        "value": 12,
+        "unit": "px"
+      },
       "backgroundColor": "#F3F4F6"
     },
-    "#one-line": { "whiteSpace": "nowrap" }
+    "#one-line": {
+      "whiteSpace": "nowrap"
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "frame" },
+    "props": {
+      "id": "frame"
+    },
     "children": [
-      { "type": "p", "props": { "id": "one-line" }, "children": ["Padding shrinks the content box so this nowrap line overflows visually"] }
+      {
+        "type": "p",
+        "props": {
+          "id": "one-line"
+        },
+        "children": [
+          "Padding shrinks the content box so this nowrap line overflows visually"
+        ]
+      }
     ]
   }
 }

@@ -1,14 +1,36 @@
 {
   "version": 1,
   "style": {
-    "p": { "fontSize": { "value": 24, "unit": "px" } }
+    "#root": {
+      "width": {
+        "value": 400,
+        "unit": "px"
+      },
+      "height": {
+        "value": 80,
+        "unit": "px"
+      }
+    },
+    "p": {
+      "fontSize": {
+        "value": 24,
+        "unit": "px"
+      }
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
-      { "type": "p", "children": ["textDecoration omitted (CSS default = none)"] }
+      {
+        "type": "p",
+        "children": [
+          "textDecoration omitted (CSS default = none)"
+        ]
+      }
     ]
   }
 }

@@ -2,29 +2,93 @@
   "version": 1,
   "style": {
     "#root": {
+      "width": {
+        "value": 400,
+        "unit": "px"
+      },
+      "height": {
+        "value": 200,
+        "unit": "px"
+      },
       "display": "flex",
       "flexDirection": "column",
-      "padding": { "value": 16, "unit": "px" },
-      "gap": { "value": 8, "unit": "px" },
+      "padding": {
+        "value": 16,
+        "unit": "px"
+      },
+      "gap": {
+        "value": 8,
+        "unit": "px"
+      },
       "backgroundColor": "#F3F4F6"
     },
     ".tracked": {
-      "fontSize": { "value": 20, "unit": "px" },
-      "letterSpacing": { "value": 4, "unit": "px" },
-      "width": { "value": 360, "unit": "px" }
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      },
+      "letterSpacing": {
+        "value": 4,
+        "unit": "px"
+      },
+      "width": {
+        "value": 360,
+        "unit": "px"
+      }
     },
-    "#left":   { "textAlign": "left" },
-    "#center": { "textAlign": "center" },
-    "#right":  { "textAlign": "right" }
+    "#left": {
+      "textAlign": "left"
+    },
+    "#center": {
+      "textAlign": "center"
+    },
+    "#right": {
+      "textAlign": "right"
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
-      { "type": "p", "props": { "id": "left",   "className": ["tracked"] }, "children": ["Tracked left."] },
-      { "type": "p", "props": { "id": "center", "className": ["tracked"] }, "children": ["Tracked center."] },
-      { "type": "p", "props": { "id": "right",  "className": ["tracked"] }, "children": ["Tracked right."] }
+      {
+        "type": "p",
+        "props": {
+          "id": "left",
+          "className": [
+            "tracked"
+          ]
+        },
+        "children": [
+          "Tracked left."
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "center",
+          "className": [
+            "tracked"
+          ]
+        },
+        "children": [
+          "Tracked center."
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "right",
+          "className": [
+            "tracked"
+          ]
+        },
+        "children": [
+          "Tracked right."
+        ]
+      }
     ]
   }
 }
