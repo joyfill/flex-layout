@@ -92,7 +92,21 @@ let package = Package(
                 "JoyDOMSampleSpecs",
                 .product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
             ],
-            path: "Tests/JoyDOMTests"
+            path: "Tests/JoyDOMTests",
+            // PropertyCoverage snapshot PNGs are read by the helper from
+            // source paths (not via Bundle.resources). Excluding the
+            // __Snapshots__ trees silences SwiftPM's unhandled-files warnings
+            // (~800+ on every build, growing with each property walk).
+            exclude: [
+                "PropertyCoverage/Flexbox/__Snapshots__",
+                "PropertyCoverage/Layout/__Snapshots__",
+                "PropertyCoverage/BoxModel/__Snapshots__",
+                "PropertyCoverage/Sizing/__Snapshots__",
+                "PropertyCoverage/Typography/__Snapshots__",
+                "PropertyCoverage/TextBehavior/__Snapshots__",
+                "PropertyCoverage/Media/__Snapshots__",
+                "Snapshot/__Snapshots__",
+            ]
         ),
     ]
 )
