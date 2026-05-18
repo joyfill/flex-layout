@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "style": {
+    "#frame": { "display": "flex", "flexDirection": "column", "width": { "value": 200, "unit": "px" } },
+    "#card":  { "whiteSpace": "nowrap" }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "frame" },
+    "children": [
+      { "type": "p", "props": { "id": "card" }, "children": [] }
+    ]
+  }
+}

@@ -6351,6 +6351,30 @@
       "snapshot": { "viewportWidth": 360, "height": 120 }
     },
     {
+      "id": "textbehavior-white-space-id-selector",
+      "file": "textbehavior/white-space/id-selector.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "ID selectors #wrapId (normal) vs #nowrapId (nowrap) — third authoring path alongside inline + class",
+      "snapshot": { "viewportWidth": 400, "height": 180 }
+    },
+    {
+      "id": "textbehavior-white-space-empty",
+      "file": "textbehavior/white-space/empty.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "Empty paragraph with whiteSpace=nowrap declared — verifies no crash and zero-content render",
+      "snapshot": { "viewportWidth": 360, "height": 80 }
+    },
+    {
+      "id": "textbehavior-white-space-with-flex-grow",
+      "file": "textbehavior/white-space/with-flex-grow.json",
+      "category": "Text Behavior",
+      "property": "whiteSpace",
+      "summary": "Flex row: fixed-width siblings sandwich a flexGrow:1 nowrap paragraph that truncates with ellipsis",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
       "id": "media-object-fit",
       "file": "media/object-fit/overview.json",
       "category": "Media",
