@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "style": {},
+  "breakpoints": [],
+  "layout": {
+    "type": "img",
+    "props": {
+      "id": "img",
+      "src": "bundle://photo-landscape",
+      "style": {
+        "width":  { "value": 200, "unit": "px" },
+        "height": { "value": 300, "unit": "px" },
+        "objectFit": "contain",
+        "objectPosition": { "horizontal": "right", "vertical": "top" },
+        "backgroundColor": "#111827"
+      }
+    }
+  }
+}

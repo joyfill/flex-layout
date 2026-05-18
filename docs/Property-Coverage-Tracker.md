@@ -100,7 +100,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 | Property | Status | Samples | Tests delta | Date | Notes |
 |---|---|---|---|---|---|
 | `objectFit` | ✅ | 17/1/1/0 | +18 | 2026-05-18 | 5 enum values incl. `scale-down` + default + inline + class-selector + id-selector + single-child + empty (unresolvable src) + nested (cascade via env) + with-position + with-border-radius + with-flex-grow + responsive. AsyncImage placeholder gap closed via `bundle://` URL scheme. |
-| `objectPosition` | ✅ | 14/1/1/0 | +15 | 2026-05-14 | 9 keyword combos + default + with-object-fit-{none,cover} + responsive + overview. Vertical alignment visible; horizontal a no-op for contain+landscape-in-square combo (documented). |
+| `objectPosition` | ✅ | 14/3/3/0 | +21 | 2026-05-18 | 9 keyword combos + default + with-object-fit-{none,cover} + responsive + overview. Coverage extended (2026-05-18) with 6 samples: inline / class-selector / id-selector authoring parity triple, single-child + nested edges, with-padding interaction. `nested.json` fixed post-review: objectFit + objectPosition declared on the `<img>` selector (`#child`) per the `schemaType == "img"` env-injection gate. |
 
 ## 8. Selectors (8 capabilities)
 

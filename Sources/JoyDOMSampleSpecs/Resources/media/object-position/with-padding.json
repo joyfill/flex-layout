@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "display": "flex",
+      "padding": { "value": 16, "unit": "px" },
+      "backgroundColor": "#FCD34D"
+    },
+    "#img": {
+      "width":  { "value": 200, "unit": "px" },
+      "height": { "value": 300, "unit": "px" },
+      "padding": { "value": 16, "unit": "px" },
+      "objectFit": "contain",
+      "objectPosition": { "horizontal": "left", "vertical": "bottom" },
+      "backgroundColor": "#111827"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "img", "props": { "id": "img", "src": "bundle://photo-landscape" } }
+    ]
+  }
+}

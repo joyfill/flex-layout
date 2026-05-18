@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "style": {
+    ".thumb": {
+      "width":  { "value": 200, "unit": "px" },
+      "height": { "value": 300, "unit": "px" },
+      "objectFit": "contain",
+      "objectPosition": { "horizontal": "right", "vertical": "top" },
+      "backgroundColor": "#111827"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "img",
+    "props": { "className": ["thumb"], "src": "bundle://photo-landscape" }
+  }
+}
