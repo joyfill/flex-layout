@@ -6151,6 +6151,14 @@
       "snapshot": { "viewportWidth": 400, "height": 240 }
     },
     {
+      "id": "textbehavior-text-overflow-missing-precondition-overflow",
+      "file": "textbehavior/text-overflow/missing-precondition-overflow.json",
+      "category": "Text Behavior",
+      "property": "textOverflow",
+      "summary": "Missing overflow precondition: width + nowrap + ellipsis WITHOUT overflow:hidden — text escapes the box (CSS default overflow:visible), ellipsis is a no-op",
+      "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
       "id": "textbehavior-text-overflow-id-selector",
       "file": "textbehavior/text-overflow/id-selector.json",
       "category": "Text Behavior",
