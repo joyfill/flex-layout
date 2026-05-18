@@ -539,7 +539,19 @@ public struct JoyDOMView: View {
             v = AnyView(v.environment(\.inheritedTextDecoration, inherited))
         }
 
-        if let to = visual.textOverflow, to == .ellipsis {
+        // CSS Overflow Module L3 §3.2: `text-overflow` only takes visual
+        // effect when the text would otherwise overflow a single-line
+        // container. The most-important precondition is `white-space: nowrap`
+        // — without it, text wraps to multiple lines and there's nothing to
+        // truncate. Gate on `whiteSpace == .nowrap` so a `<p>` that declares
+        // only `text-overflow: ellipsis` (or `clip`) without nowrap is
+        // rendered un-truncated (CSS-correct). The remaining CSS
+        // preconditions (overflow ≠ visible, constrained width, actual
+        // overflow) don't need to be checked here: without nowrap the text
+        // wraps regardless, and with nowrap-overflow SwiftUI handles
+        // truncation naturally given a `.lineLimit(1)`.
+        if let to = visual.textOverflow, to == .ellipsis,
+           let ws = visual.whiteSpace, ws == .nowrap {
             v = AnyView(v.truncationMode(.tail).lineLimit(1))
         }
 
