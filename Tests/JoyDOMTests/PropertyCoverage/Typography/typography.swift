@@ -162,7 +162,7 @@ final class TypographySnapshotTests: XCTestCase {
 
     /// Wide-viewport companion to `responsive.json`. Re-renders the same JSON
     /// at viewport 800×80 to trigger the `width >= 768px` breakpoint that
-    /// swaps fontFamily from Georgia → Menlo.
+    /// swaps fontFamily from `Libre Baskerville` → `Geist Mono`.
     func testFontFamilyResponsiveWide() throws {
         let sample = try XCTUnwrap(
             SpecPropertySamples.sample(withID: "typography-font-family-responsive"),
