@@ -2,7 +2,14 @@
   "version": 1,
   "style": {
     "#frame": {
-      "width": { "value": 200, "unit": "px" },
+      "height": {
+        "value": 120,
+        "unit": "px"
+      },
+      "width": {
+        "value": 200,
+        "unit": "px"
+      },
       "overflow": "hidden"
     },
     "#clipped": {
@@ -19,10 +26,28 @@
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "frame" },
+    "props": {
+      "id": "frame"
+    },
     "children": [
-      { "type": "p", "props": { "id": "clipped" }, "children": ["Lorem ipsum dolor sit amet"] },
-      { "type": "p", "props": { "id": "elided"  }, "children": ["Lorem ipsum dolor sit amet"] }
+      {
+        "type": "p",
+        "props": {
+          "id": "clipped"
+        },
+        "children": [
+          "Lorem ipsum dolor sit amet"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "elided"
+        },
+        "children": [
+          "Lorem ipsum dolor sit amet"
+        ]
+      }
     ]
   }
 }

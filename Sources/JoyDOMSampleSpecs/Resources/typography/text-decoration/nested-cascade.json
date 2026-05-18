@@ -1,22 +1,52 @@
 {
   "version": 1,
   "style": {
-    "#parent": { "textDecoration": "underline", "fontSize": { "value": 22, "unit": "px" } }
+    "#root": {
+      "width": {
+        "value": 400,
+        "unit": "px"
+      },
+      "height": {
+        "value": 160,
+        "unit": "px"
+      }
+    },
+    "#parent": {
+      "textDecoration": "underline",
+      "fontSize": {
+        "value": 22,
+        "unit": "px"
+      }
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
       {
         "type": "div",
-        "props": { "id": "parent" },
+        "props": {
+          "id": "parent"
+        },
         "children": [
-          { "type": "p", "children": ["Direct child of #parent"] },
+          {
+            "type": "p",
+            "children": [
+              "Direct child of #parent"
+            ]
+          },
           {
             "type": "div",
             "children": [
-              { "type": "p", "children": ["Deeper descendant — should also be underlined"] }
+              {
+                "type": "p",
+                "children": [
+                  "Deeper descendant \u2014 should also be underlined"
+                ]
+              }
             ]
           }
         ]

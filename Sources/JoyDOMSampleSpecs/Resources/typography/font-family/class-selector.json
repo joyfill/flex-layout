@@ -1,15 +1,35 @@
 {
   "version": 1,
   "style": {
+    "#text": {
+      "width": {
+        "value": 480,
+        "unit": "px"
+      },
+      "height": {
+        "value": 80,
+        "unit": "px"
+      }
+    },
     ".display-serif": {
       "fontFamily": "Libre Baskerville",
-      "fontSize": { "value": 20, "unit": "px" }
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      }
     }
   },
   "breakpoints": [],
   "layout": {
     "type": "p",
-    "props": { "id": "text", "className": ["display-serif"] },
-    "children": ["The quick brown fox jumps over the lazy dog"]
+    "props": {
+      "id": "text",
+      "className": [
+        "display-serif"
+      ]
+    },
+    "children": [
+      "The quick brown fox jumps over the lazy dog"
+    ]
   }
 }

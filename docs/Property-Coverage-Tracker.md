@@ -13,6 +13,11 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 **Sample-count column** uses `value-sweep / edges / contexts / interactions` counts.
 **Test-count column** is the delta vs. baseline (607 at start of Phase 0).
 
+## Conventions
+
+- **Bundled fonts (2026-05-18):** typography samples + any cross-property sample with a `fontFamily` declaration use the bundled `Geist` / `Geist Mono` / `Libre Baskerville` families. macOS-stock fonts (Georgia, Helvetica Neue, Courier) are preserved in `typography/font-family-ios-ext/` for system-fallback regression coverage.
+- **Self-contained viewport (2026-05-18):** every non-responsive sample under `textbehavior/` and `typography/` declares its canvas size explicitly on the layout root (`#root: { width, height }`). Cross-runtime renderers (joydom-js, joydom-kotlin) can reproduce a sample's bounds without consulting iOS-side `manifest.json`. Responsive samples (where the viewport IS the test variable) still rely on rendering-time viewport metadata. Other sections (flexbox, layout, boxmodel, sizing, media) to follow.
+
 ---
 
 ## Phase 0 — Infrastructure

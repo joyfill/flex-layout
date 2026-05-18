@@ -2,23 +2,65 @@
   "version": 1,
   "style": {
     "#root": {
+      "width": {
+        "value": 360,
+        "unit": "px"
+      },
+      "height": {
+        "value": 160,
+        "unit": "px"
+      },
       "display": "flex",
       "flexDirection": "column",
-      "padding": { "value": 16, "unit": "px" },
-      "gap":     { "value": 8,  "unit": "px" },
+      "padding": {
+        "value": 16,
+        "unit": "px"
+      },
+      "gap": {
+        "value": 8,
+        "unit": "px"
+      },
       "backgroundColor": "#F3F4F6",
       "color": "#3B82F6"
     },
-    "#override": { "color": "#EF4444" }
+    "#override": {
+      "color": "#EF4444"
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
-      { "type": "p", "props": { "id": "inherited" }, "children": ["Inherits blue from #root"] },
-      { "type": "p", "props": { "id": "override" },  "children": ["Overridden to red"] },
-      { "type": "p", "props": { "id": "again" },     "children": ["Inherits blue again"] }
+      {
+        "type": "p",
+        "props": {
+          "id": "inherited"
+        },
+        "children": [
+          "Inherits blue from #root"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "override"
+        },
+        "children": [
+          "Overridden to red"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "again"
+        },
+        "children": [
+          "Inherits blue again"
+        ]
+      }
     ]
   }
 }

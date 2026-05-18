@@ -1,14 +1,37 @@
 {
   "version": 1,
   "style": {
-    "p": { "fontWeight": 400, "fontSize": { "value": 28, "unit": "px" } }
+    "#root": {
+      "width": {
+        "value": 400,
+        "unit": "px"
+      },
+      "height": {
+        "value": 80,
+        "unit": "px"
+      }
+    },
+    "p": {
+      "fontWeight": 400,
+      "fontSize": {
+        "value": 28,
+        "unit": "px"
+      }
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
-      { "type": "p", "children": ["fontWeight: 400"] }
+      {
+        "type": "p",
+        "children": [
+          "fontWeight: 400"
+        ]
+      }
     ]
   }
 }

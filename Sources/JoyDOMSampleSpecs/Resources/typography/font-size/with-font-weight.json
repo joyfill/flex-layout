@@ -1,15 +1,45 @@
 {
   "version": 1,
   "style": {
-    "#root": { "padding": { "value": 16, "unit": "px" }, "backgroundColor": "#F3F4F6" },
-    "#t":    { "fontSize": { "value": 28, "unit": "px" }, "fontWeight": 700 }
+    "#root": {
+      "width": {
+        "value": 360,
+        "unit": "px"
+      },
+      "height": {
+        "value": 100,
+        "unit": "px"
+      },
+      "padding": {
+        "value": 16,
+        "unit": "px"
+      },
+      "backgroundColor": "#F3F4F6"
+    },
+    "#t": {
+      "fontSize": {
+        "value": 28,
+        "unit": "px"
+      },
+      "fontWeight": 700
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
-      { "type": "p", "props": { "id": "t" }, "children": ["28px Bold"] }
+      {
+        "type": "p",
+        "props": {
+          "id": "t"
+        },
+        "children": [
+          "28px Bold"
+        ]
+      }
     ]
   }
 }

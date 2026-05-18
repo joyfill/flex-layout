@@ -2,7 +2,14 @@
   "version": 1,
   "style": {
     "#frame": {
-      "width": { "value": 200, "unit": "px" },
+      "height": {
+        "value": 80,
+        "unit": "px"
+      },
+      "width": {
+        "value": 200,
+        "unit": "px"
+      },
       "overflow": "hidden"
     },
     "#text": {
@@ -13,9 +20,19 @@
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "frame" },
+    "props": {
+      "id": "frame"
+    },
     "children": [
-      { "type": "p", "props": { "id": "text" }, "children": ["The quick brown fox jumps over the lazy dog"] }
+      {
+        "type": "p",
+        "props": {
+          "id": "text"
+        },
+        "children": [
+          "The quick brown fox jumps over the lazy dog"
+        ]
+      }
     ]
   }
 }

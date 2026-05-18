@@ -2,26 +2,102 @@
   "version": 1,
   "style": {
     "#root": {
+      "width": {
+        "value": 480,
+        "unit": "px"
+      },
+      "height": {
+        "value": 220,
+        "unit": "px"
+      },
       "display": "flex",
       "flexDirection": "column",
-      "padding": { "value": 16, "unit": "px" },
-      "gap": { "value": 8, "unit": "px" },
+      "padding": {
+        "value": 16,
+        "unit": "px"
+      },
+      "gap": {
+        "value": 8,
+        "unit": "px"
+      },
       "backgroundColor": "#F3F4F6"
     },
-    "#regular":   { "fontFamily": "Geist", "fontSize": { "value": 20, "unit": "px" }, "fontWeight": "normal" },
-    "#bold":      { "fontFamily": "Geist", "fontSize": { "value": 20, "unit": "px" }, "fontWeight": "bold" },
-    "#weight300": { "fontFamily": "Geist", "fontSize": { "value": 20, "unit": "px" }, "fontWeight": 300 },
-    "#weight700": { "fontFamily": "Geist", "fontSize": { "value": 20, "unit": "px" }, "fontWeight": 700 }
+    "#regular": {
+      "fontFamily": "Geist",
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      },
+      "fontWeight": "normal"
+    },
+    "#bold": {
+      "fontFamily": "Geist",
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      },
+      "fontWeight": "bold"
+    },
+    "#weight300": {
+      "fontFamily": "Geist",
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      },
+      "fontWeight": 300
+    },
+    "#weight700": {
+      "fontFamily": "Geist",
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      },
+      "fontWeight": 700
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
-      { "type": "p", "props": { "id": "regular"   }, "children": ["Geist regular"] },
-      { "type": "p", "props": { "id": "bold"      }, "children": ["Geist bold"] },
-      { "type": "p", "props": { "id": "weight300" }, "children": ["Geist 300"] },
-      { "type": "p", "props": { "id": "weight700" }, "children": ["Geist 700"] }
+      {
+        "type": "p",
+        "props": {
+          "id": "regular"
+        },
+        "children": [
+          "Geist regular"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "bold"
+        },
+        "children": [
+          "Geist bold"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "weight300"
+        },
+        "children": [
+          "Geist 300"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "weight700"
+        },
+        "children": [
+          "Geist 700"
+        ]
+      }
     ]
   }
 }

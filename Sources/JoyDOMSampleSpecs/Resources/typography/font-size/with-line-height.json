@@ -1,15 +1,45 @@
 {
   "version": 1,
   "style": {
-    "#root": { "padding": { "value": 16, "unit": "px" }, "backgroundColor": "#F3F4F6" },
-    "#t":    { "fontSize": { "value": 20, "unit": "px" }, "lineHeight": 1.6 }
+    "#root": {
+      "width": {
+        "value": 360,
+        "unit": "px"
+      },
+      "height": {
+        "value": 160,
+        "unit": "px"
+      },
+      "padding": {
+        "value": 16,
+        "unit": "px"
+      },
+      "backgroundColor": "#F3F4F6"
+    },
+    "#t": {
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      },
+      "lineHeight": 1.6
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
-      { "type": "p", "props": { "id": "t" }, "children": ["20px text with lineHeight 1.6. The quick brown fox jumps over the lazy dog. Wrap me to a second line."] }
+      {
+        "type": "p",
+        "props": {
+          "id": "t"
+        },
+        "children": [
+          "20px text with lineHeight 1.6. The quick brown fox jumps over the lazy dog. Wrap me to a second line."
+        ]
+      }
     ]
   }
 }

@@ -2,28 +2,72 @@
   "version": 1,
   "style": {
     "#root": {
+      "width": {
+        "value": 400,
+        "unit": "px"
+      },
+      "height": {
+        "value": 140,
+        "unit": "px"
+      },
       "display": "flex",
       "flexDirection": "column",
-      "padding": { "value": 24, "unit": "px" },
-      "gap": { "value": 8, "unit": "px" },
+      "padding": {
+        "value": 24,
+        "unit": "px"
+      },
+      "gap": {
+        "value": 8,
+        "unit": "px"
+      },
       "backgroundColor": "#F3F4F6"
     },
     ".plain": {
       "fontStyle": "normal",
-      "fontSize": { "value": 22, "unit": "px" }
+      "fontSize": {
+        "value": 22,
+        "unit": "px"
+      }
     },
     ".emph": {
       "fontStyle": "italic",
-      "fontSize": { "value": 22, "unit": "px" }
+      "fontSize": {
+        "value": 22,
+        "unit": "px"
+      }
     }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
-      { "type": "p", "props": { "id": "a", "className": ["plain"] }, "children": ["Plain via .plain class"] },
-      { "type": "p", "props": { "id": "b", "className": ["emph"]  }, "children": ["Italic via .emph class"] }
+      {
+        "type": "p",
+        "props": {
+          "id": "a",
+          "className": [
+            "plain"
+          ]
+        },
+        "children": [
+          "Plain via .plain class"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "b",
+          "className": [
+            "emph"
+          ]
+        },
+        "children": [
+          "Italic via .emph class"
+        ]
+      }
     ]
   }
 }

@@ -2,26 +2,98 @@
   "version": 1,
   "style": {
     "#root": {
+      "width": {
+        "value": 400,
+        "unit": "px"
+      },
+      "height": {
+        "value": 200,
+        "unit": "px"
+      },
       "display": "flex",
       "flexDirection": "column",
-      "padding": { "value": 24, "unit": "px" },
-      "gap": { "value": 8, "unit": "px" },
+      "padding": {
+        "value": 24,
+        "unit": "px"
+      },
+      "gap": {
+        "value": 8,
+        "unit": "px"
+      },
       "backgroundColor": "#F3F4F6"
     },
-    "#regular":      { "fontSize": { "value": 22, "unit": "px" } },
-    "#bold":         { "fontSize": { "value": 22, "unit": "px" }, "fontWeight": "bold" },
-    "#italic":       { "fontSize": { "value": 22, "unit": "px" }, "fontStyle": "italic" },
-    "#bold-italic":  { "fontSize": { "value": 22, "unit": "px" }, "fontWeight": "bold", "fontStyle": "italic" }
+    "#regular": {
+      "fontSize": {
+        "value": 22,
+        "unit": "px"
+      }
+    },
+    "#bold": {
+      "fontSize": {
+        "value": 22,
+        "unit": "px"
+      },
+      "fontWeight": "bold"
+    },
+    "#italic": {
+      "fontSize": {
+        "value": 22,
+        "unit": "px"
+      },
+      "fontStyle": "italic"
+    },
+    "#bold-italic": {
+      "fontSize": {
+        "value": 22,
+        "unit": "px"
+      },
+      "fontWeight": "bold",
+      "fontStyle": "italic"
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
-      { "type": "p", "props": { "id": "regular"     }, "children": ["Regular"]    },
-      { "type": "p", "props": { "id": "bold"        }, "children": ["Bold"]       },
-      { "type": "p", "props": { "id": "italic"      }, "children": ["Italic"]     },
-      { "type": "p", "props": { "id": "bold-italic" }, "children": ["Bold Italic"] }
+      {
+        "type": "p",
+        "props": {
+          "id": "regular"
+        },
+        "children": [
+          "Regular"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "bold"
+        },
+        "children": [
+          "Bold"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "italic"
+        },
+        "children": [
+          "Italic"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "bold-italic"
+        },
+        "children": [
+          "Bold Italic"
+        ]
+      }
     ]
   }
 }

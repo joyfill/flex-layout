@@ -2,26 +2,101 @@
   "version": 1,
   "style": {
     "#root": {
+      "width": {
+        "value": 480,
+        "unit": "px"
+      },
+      "height": {
+        "value": 360,
+        "unit": "px"
+      },
       "display": "flex",
       "flexDirection": "column",
-      "padding": { "value": 16, "unit": "px" },
-      "gap": { "value": 8, "unit": "px" },
+      "padding": {
+        "value": 16,
+        "unit": "px"
+      },
+      "gap": {
+        "value": 8,
+        "unit": "px"
+      },
       "backgroundColor": "#F3F4F6"
     },
-    "#none":  { "fontSize": { "value": 20, "unit": "px" }, "color": "#111827" },
-    "#tight": { "fontSize": { "value": 20, "unit": "px" }, "lineHeight": 1.0, "color": "#111827" },
-    "#one-5": { "fontSize": { "value": 20, "unit": "px" }, "lineHeight": 1.5, "color": "#111827" },
-    "#two":   { "fontSize": { "value": 20, "unit": "px" }, "lineHeight": 2.0, "color": "#111827" }
+    "#none": {
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      },
+      "color": "#111827"
+    },
+    "#tight": {
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      },
+      "lineHeight": 1.0,
+      "color": "#111827"
+    },
+    "#one-5": {
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      },
+      "lineHeight": 1.5,
+      "color": "#111827"
+    },
+    "#two": {
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      },
+      "lineHeight": 2.0,
+      "color": "#111827"
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
-      { "type": "p", "props": { "id": "none"  }, "children": ["Omitted line-height. Two lines. Two lines. Two lines."] },
-      { "type": "p", "props": { "id": "tight" }, "children": ["lineHeight 1.0 — target == font, lineSpacing clamps 0. Two lines."] },
-      { "type": "p", "props": { "id": "one-5" }, "children": ["lineHeight 1.5 — target 30px, gap = 30 − system-leading ≈ 6px."] },
-      { "type": "p", "props": { "id": "two"   }, "children": ["lineHeight 2.0 — target 40px, gap = 40 − system-leading ≈ 16px."] }
+      {
+        "type": "p",
+        "props": {
+          "id": "none"
+        },
+        "children": [
+          "Omitted line-height. Two lines. Two lines. Two lines."
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "tight"
+        },
+        "children": [
+          "lineHeight 1.0 \u2014 target == font, lineSpacing clamps 0. Two lines."
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "one-5"
+        },
+        "children": [
+          "lineHeight 1.5 \u2014 target 30px, gap = 30 \u2212 system-leading \u2248 6px."
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "two"
+        },
+        "children": [
+          "lineHeight 2.0 \u2014 target 40px, gap = 40 \u2212 system-leading \u2248 16px."
+        ]
+      }
     ]
   }
 }

@@ -2,39 +2,97 @@
   "version": 1,
   "style": {
     "#root": {
+      "width": {
+        "value": 360,
+        "unit": "px"
+      },
+      "height": {
+        "value": 220,
+        "unit": "px"
+      },
       "display": "flex",
       "flexDirection": "column",
-      "padding": { "value": 16, "unit": "px" },
-      "gap":     { "value": 8,  "unit": "px" },
+      "padding": {
+        "value": 16,
+        "unit": "px"
+      },
+      "gap": {
+        "value": 8,
+        "unit": "px"
+      },
       "backgroundColor": "#F3F4F6"
     },
     "#a": {
       "color": "#EF4444",
       "borderColor": "#EF4444",
-      "borderWidth": { "value": 2, "unit": "px" },
-      "padding": { "value": 8, "unit": "px" }
+      "borderWidth": {
+        "value": 2,
+        "unit": "px"
+      },
+      "padding": {
+        "value": 8,
+        "unit": "px"
+      }
     },
     "#b": {
       "color": "#10B981",
       "borderColor": "#10B981",
-      "borderWidth": { "value": 2, "unit": "px" },
-      "padding": { "value": 8, "unit": "px" }
+      "borderWidth": {
+        "value": 2,
+        "unit": "px"
+      },
+      "padding": {
+        "value": 8,
+        "unit": "px"
+      }
     },
     "#c": {
       "color": "#3B82F6",
       "borderColor": "#3B82F6",
-      "borderWidth": { "value": 2, "unit": "px" },
-      "padding": { "value": 8, "unit": "px" }
+      "borderWidth": {
+        "value": 2,
+        "unit": "px"
+      },
+      "padding": {
+        "value": 8,
+        "unit": "px"
+      }
     }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
-      { "type": "p", "props": { "id": "a" }, "children": ["Red text + red border"] },
-      { "type": "p", "props": { "id": "b" }, "children": ["Green text + green border"] },
-      { "type": "p", "props": { "id": "c" }, "children": ["Blue text + blue border"] }
+      {
+        "type": "p",
+        "props": {
+          "id": "a"
+        },
+        "children": [
+          "Red text + red border"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "b"
+        },
+        "children": [
+          "Green text + green border"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "c"
+        },
+        "children": [
+          "Blue text + blue border"
+        ]
+      }
     ]
   }
 }

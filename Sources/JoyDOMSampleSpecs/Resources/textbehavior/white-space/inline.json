@@ -1,17 +1,34 @@
 {
   "version": 1,
   "style": {
-    "#frame": { "width": { "value": 200, "unit": "px" } }
+    "#frame": {
+      "height": {
+        "value": 100,
+        "unit": "px"
+      },
+      "width": {
+        "value": 200,
+        "unit": "px"
+      }
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "frame" },
+    "props": {
+      "id": "frame"
+    },
     "children": [
       {
         "type": "p",
-        "props": { "style": { "whiteSpace": "nowrap" } },
-        "children": ["Inline-styled nowrap text that exceeds the frame width"]
+        "props": {
+          "style": {
+            "whiteSpace": "nowrap"
+          }
+        },
+        "children": [
+          "Inline-styled nowrap text that exceeds the frame width"
+        ]
       }
     ]
   }

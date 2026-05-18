@@ -198,6 +198,32 @@ the value set is narrow (e.g. `boxSizing` only has one allowed value:
 For interactions, pick only combinations that produce a **visually distinct,
 non-obvious result**. Skip pairs that just "obviously work".
 
+**1c. Declare the sample's canvas size on `#root`.** For every non-responsive
+sample, the layout root's style rule should declare explicit `width` and
+`height`:
+
+```json
+{
+  "style": {
+    "#root": {
+      "width":  { "value": 480, "unit": "px" },
+      "height": { "value": 360, "unit": "px" },
+      "...other root styles..."
+    }
+  }
+}
+```
+
+The values should match what you set in the manifest's `snapshot.viewportWidth`
+/ `height`. This makes the sample self-contained — cross-runtime renderers
+(joydom-js, joydom-kotlin) can reproduce the canvas bounds without parsing our
+iOS-side `manifest.json`. Responsive samples are the one exception (the
+viewport IS the test variable for them) — they keep their floating root and
+rely on rendering-time viewport metadata.
+
+Existing samples under `textbehavior/` and `typography/` were retrofitted on
+2026-05-18; flexbox/layout/boxmodel/sizing will follow.
+
 **1c. iOS extensions (if any).** If the iOS implementation supports values the
 JoyDOM spec doesn't list (e.g. `row-reverse`, `column-reverse`), enumerate
 those separately. They get their own folder, their own test method, and

@@ -2,15 +2,28 @@
   "version": 1,
   "style": {
     "#root": {
+      "width": {
+        "value": 400,
+        "unit": "px"
+      },
+      "height": {
+        "value": 100,
+        "unit": "px"
+      },
       "display": "flex",
-      "padding": { "value": 24, "unit": "px" },
+      "padding": {
+        "value": 24,
+        "unit": "px"
+      },
       "backgroundColor": "#F3F4F6"
     }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
       {
         "type": "p",
@@ -18,10 +31,15 @@
           "id": "p",
           "style": {
             "fontStyle": "italic",
-            "fontSize": { "value": 24, "unit": "px" }
+            "fontSize": {
+              "value": 24,
+              "unit": "px"
+            }
           }
         },
-        "children": ["Italic via inline style"]
+        "children": [
+          "Italic via inline style"
+        ]
       }
     ]
   }

@@ -2,15 +2,30 @@
   "version": 1,
   "style": {
     "#text": {
+      "width": {
+        "value": 480,
+        "unit": "px"
+      },
+      "height": {
+        "value": 80,
+        "unit": "px"
+      },
       "fontFamily": "Libre Baskerville",
-      "fontSize": { "value": 24, "unit": "px" },
+      "fontSize": {
+        "value": 24,
+        "unit": "px"
+      },
       "color": "#3B82F6"
     }
   },
   "breakpoints": [],
   "layout": {
     "type": "p",
-    "props": { "id": "text" },
-    "children": ["Libre Baskerville blue heading"]
+    "props": {
+      "id": "text"
+    },
+    "children": [
+      "Libre Baskerville blue heading"
+    ]
   }
 }

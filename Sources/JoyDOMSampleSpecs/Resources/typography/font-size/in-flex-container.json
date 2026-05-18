@@ -2,24 +2,79 @@
   "version": 1,
   "style": {
     "#root": {
+      "width": {
+        "value": 480,
+        "unit": "px"
+      },
+      "height": {
+        "value": 120,
+        "unit": "px"
+      },
       "display": "flex",
       "flexDirection": "row",
-      "gap":     { "value": 12, "unit": "px" },
-      "padding": { "value": 16, "unit": "px" },
+      "gap": {
+        "value": 12,
+        "unit": "px"
+      },
+      "padding": {
+        "value": 16,
+        "unit": "px"
+      },
       "backgroundColor": "#F3F4F6"
     },
-    "#a": { "fontSize": { "value": 12, "unit": "px" } },
-    "#b": { "fontSize": { "value": 20, "unit": "px" } },
-    "#c": { "fontSize": { "value": 32, "unit": "px" } }
+    "#a": {
+      "fontSize": {
+        "value": 12,
+        "unit": "px"
+      }
+    },
+    "#b": {
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      }
+    },
+    "#c": {
+      "fontSize": {
+        "value": 32,
+        "unit": "px"
+      }
+    }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
-    "props": { "id": "root" },
+    "props": {
+      "id": "root"
+    },
     "children": [
-      { "type": "p", "props": { "id": "a" }, "children": ["12"] },
-      { "type": "p", "props": { "id": "b" }, "children": ["20"] },
-      { "type": "p", "props": { "id": "c" }, "children": ["32"] }
+      {
+        "type": "p",
+        "props": {
+          "id": "a"
+        },
+        "children": [
+          "12"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "b"
+        },
+        "children": [
+          "20"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "c"
+        },
+        "children": [
+          "32"
+        ]
+      }
     ]
   }
 }
