@@ -12,6 +12,6 @@
   "breakpoints": [],
   "layout": {
     "type": "img",
-    "props": { "className": "thumb", "src": "bundle://photo-landscape" }
+    "props": { "className": ["thumb"], "src": "bundle://photo-landscape" }
   }
 }

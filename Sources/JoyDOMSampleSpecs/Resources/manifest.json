@@ -6599,6 +6599,54 @@
       "snapshot": { "viewportWidth": 360, "height": 320 }
     },
     {
+      "id": "media-object-position-inline",
+      "file": "media/object-position/inline.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "authoring: inline props.style with objectPosition top-right + objectFit contain",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-class-selector",
+      "file": "media/object-position/class-selector.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "authoring: .thumb class with objectPosition top-right + objectFit contain (parity with inline)",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-id-selector",
+      "file": "media/object-position/id-selector.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "authoring: #avatar id with objectPosition top-right + objectFit contain (parity triple)",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-single-child",
+      "file": "media/object-position/single-child.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "edge: single image child anchored at bottom-center in a flex container",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-nested",
+      "file": "media/object-position/nested.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "cascade: parent declares objectFit + objectPosition; descendant img inherits via env",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
+      "id": "media-object-position-with-padding",
+      "file": "media/object-position/with-padding.json",
+      "category": "Media",
+      "property": "objectPosition",
+      "summary": "interaction: position computed relative to content box (inside padding), not border box",
+      "snapshot": { "viewportWidth": 240, "height": 320 }
+    },
+    {
       "id": "selectors-type",
       "file": "selectors/selector-type.json",
       "category": "Selectors",
