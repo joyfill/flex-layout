@@ -2,7 +2,7 @@
   "version": 1,
   "style": {
     "#text": {
-      "fontFamily": "LibreBaskerville",
+      "fontFamily": "Libre Baskerville",
       "fontSize": { "value": 24, "unit": "px" },
       "color": "#3B82F6"
     }

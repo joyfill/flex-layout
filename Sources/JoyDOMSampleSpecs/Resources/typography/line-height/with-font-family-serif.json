@@ -7,14 +7,14 @@
       "padding": { "value": 16, "unit": "px" },
       "backgroundColor": "#F3F4F6"
     },
-    "#para": { "fontFamily": "LibreBaskerville", "fontSize": { "value": 16, "unit": "px" }, "lineHeight": 1.5, "color": "#111827" }
+    "#para": { "fontFamily": "Libre Baskerville", "fontSize": { "value": 16, "unit": "px" }, "lineHeight": 1.5, "color": "#111827" }
   },
   "breakpoints": [],
   "layout": {
     "type": "div",
     "props": { "id": "root" },
     "children": [
-      { "type": "p", "props": { "id": "para" }, "children": ["Serif (LibreBaskerville) × line-height 1.5. Different fonts have different built-in leading. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog."] }
+      { "type": "p", "props": { "id": "para" }, "children": ["Serif (Libre Baskerville) × line-height 1.5. Different fonts have different built-in leading. The quick brown fox jumps over the lazy dog. The quick brown fox jumps over the lazy dog."] }
     ]
   }
 }

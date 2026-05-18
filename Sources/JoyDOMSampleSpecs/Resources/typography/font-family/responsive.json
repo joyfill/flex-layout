@@ -2,7 +2,7 @@
   "version": 1,
   "style": {
     "#text": {
-      "fontFamily": "LibreBaskerville",
+      "fontFamily": "Libre Baskerville",
       "fontSize": { "value": 20, "unit": "px" }
     }
   },
@@ -14,7 +14,7 @@
       "nodes": {},
       "style": {
         "#text": {
-          "fontFamily": "GeistMono"
+          "fontFamily": "Geist Mono"
         }
       }
     }
@@ -22,6 +22,6 @@
   "layout": {
     "type": "p",
     "props": { "id": "text" },
-    "children": ["Narrow: LibreBaskerville. Wide: GeistMono."]
+    "children": ["Narrow: Libre Baskerville. Wide: Geist Mono."]
   }
 }

@@ -8,7 +8,7 @@
       "gap": { "value": 6, "unit": "px" },
       "backgroundColor": "#F3F4F6"
     },
-    "#serif": { "textTransform": "uppercase", "fontFamily": "LibreBaskerville", "fontSize": { "value": 22, "unit": "px" } },
+    "#serif": { "textTransform": "uppercase", "fontFamily": "Libre Baskerville", "fontSize": { "value": 22, "unit": "px" } },
     "#sans":  { "textTransform": "uppercase", "fontFamily": "Geist", "fontSize": { "value": 22, "unit": "px" } }
   },
   "breakpoints": [],

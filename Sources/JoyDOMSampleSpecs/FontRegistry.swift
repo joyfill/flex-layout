@@ -30,11 +30,17 @@ public enum FontRegistry {
     /// suffix is the OpenType axis tag — kept intact in the filename
     /// because that's how the upstream Geist + Libre Baskerville releases
     /// distribute their variable fonts.
+    ///
+    /// Apple's CoreText does not register WOFF/WOFF2 directly — these
+    /// are web-only container formats. The Geist upstream and joy-dom
+    /// mirror ship `.woff2`; we decompress to `.ttf` at vendor time
+    /// (preserving the upstream `[wght]` filename suffix so the source
+    /// is traceable) and commit the `.ttf` payload here.
     private static let fontFiles: [(name: String, ext: String)] = [
-        ("Geist[wght]", "woff2"),
-        ("Geist-Italic[wght]", "woff2"),
-        ("GeistMono[wght]", "woff2"),
-        ("GeistMono-Italic[wght]", "woff2"),
+        ("Geist[wght]", "ttf"),
+        ("Geist-Italic[wght]", "ttf"),
+        ("GeistMono[wght]", "ttf"),
+        ("GeistMono-Italic[wght]", "ttf"),
         ("LibreBaskerville-VariableFont_wght", "ttf"),
         ("LibreBaskerville-Italic-VariableFont_wght", "ttf"),
     ]

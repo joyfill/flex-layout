@@ -4131,7 +4131,7 @@
       "file": "typography/font-family/overview.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Showcase: LibreBaskerville headline, Geist body, GeistMono code",
+      "summary": "Showcase: Libre Baskerville headline, Geist body, Geist Mono code",
       "snapshot": { "viewportWidth": 480, "height": 200 }
     },
     {
@@ -4155,7 +4155,7 @@
       "file": "typography/font-family/serif.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Value sweep: 'LibreBaskerville' (bundled serif, OFL 1.1)",
+      "summary": "Value sweep: 'Libre Baskerville' (bundled serif, OFL 1.1)",
       "snapshot": { "viewportWidth": 480, "height": 80 }
     },
     {
@@ -4171,7 +4171,7 @@
       "file": "typography/font-family/monospace.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Value sweep: 'GeistMono' (bundled monospace, OFL 1.1)",
+      "summary": "Value sweep: 'Geist Mono' (bundled monospace, OFL 1.1)",
       "snapshot": { "viewportWidth": 480, "height": 80 }
     },
     {
@@ -4227,7 +4227,7 @@
       "file": "typography/font-family/with-font-size.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Interaction × fontSize: LibreBaskerville at 12 / 20 / 32 px",
+      "summary": "Interaction × fontSize: Libre Baskerville at 12 / 20 / 32 px",
       "snapshot": { "viewportWidth": 480, "height": 200 }
     },
     {
@@ -4243,7 +4243,7 @@
       "file": "typography/font-family/with-color.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Interaction × color: LibreBaskerville heading in blue",
+      "summary": "Interaction × color: Libre Baskerville heading in blue",
       "snapshot": { "viewportWidth": 480, "height": 80 }
     },
     {
@@ -4251,7 +4251,7 @@
       "file": "typography/font-family/nested.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Nested: SwiftUI .font() env on #root cascades to children; #override resets to GeistMono",
+      "summary": "Nested: SwiftUI .font() env on #root cascades to children; #override resets to Geist Mono",
       "snapshot": { "viewportWidth": 480, "height": 140 }
     },
     {
@@ -4259,7 +4259,7 @@
       "file": "typography/font-family/multiple-paragraphs.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Three sibling paragraphs in LibreBaskerville / Geist / GeistMono",
+      "summary": "Three sibling paragraphs in Libre Baskerville / Geist / Geist Mono",
       "snapshot": { "viewportWidth": 480, "height": 160 }
     },
     {
@@ -4267,7 +4267,7 @@
       "file": "typography/font-family/responsive.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Breakpoint flip: LibreBaskerville at narrow viewport, GeistMono when width >= 768px",
+      "summary": "Breakpoint flip: Libre Baskerville at narrow viewport, Geist Mono when width >= 768px",
       "snapshot": { "viewportWidth": 320, "height": 80 }
     },
     {
@@ -4411,7 +4411,7 @@
       "file": "typography/font-size/with-font-family.json",
       "category": "Typography",
       "property": "fontSize",
-      "summary": "Interaction: 26px text × fontFamily LibreBaskerville",
+      "summary": "Interaction: 26px text × fontFamily Libre Baskerville",
       "snapshot": { "viewportWidth": 360, "height": 100 }
     },
     {
@@ -4579,7 +4579,7 @@
       "file": "typography/font-weight/with-font-family-mono.json",
       "category": "Typography",
       "property": "fontWeight",
-      "summary": "GeistMono at fontWeight 400 vs 700",
+      "summary": "Geist Mono at fontWeight 400 vs 700",
       "snapshot": { "viewportWidth": 400, "height": 140 }
     },
     {
@@ -4651,7 +4651,7 @@
       "file": "typography/font-style/with-font-family-serif.json",
       "category": "Typography",
       "property": "fontStyle",
-      "summary": "interaction × fontFamily: LibreBaskerville (serif) italic uses true italic glyphs",
+      "summary": "interaction × fontFamily: Libre Baskerville (serif) italic uses true italic glyphs",
       "snapshot": { "viewportWidth": 400, "height": 140 }
     },
     {
@@ -5331,7 +5331,7 @@
       "file": "typography/line-height/with-font-family-serif.json",
       "category": "Typography",
       "property": "lineHeight",
-      "summary": "LibreBaskerville serif × lineHeight 1.5 — different fonts have different built-in leading",
+      "summary": "Libre Baskerville serif × lineHeight 1.5 — different fonts have different built-in leading",
       "snapshot": { "viewportWidth": 480, "height": 220 }
     },
     {
@@ -6131,7 +6131,7 @@
       "file": "textbehavior/text-overflow/with-font-family.json",
       "category": "Text Behavior",
       "property": "textOverflow",
-      "summary": "Interaction with fontFamily: LibreBaskerville vs GeistMono in the same 220px frame; monospace truncates earlier",
+      "summary": "Interaction with fontFamily: Libre Baskerville vs Geist Mono in the same 220px frame; monospace truncates earlier",
       "snapshot": { "viewportWidth": 360, "height": 160 }
     },
     {

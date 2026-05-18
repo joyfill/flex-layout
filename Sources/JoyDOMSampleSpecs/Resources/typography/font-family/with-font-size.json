@@ -8,9 +8,9 @@
       "gap": { "value": 8, "unit": "px" },
       "backgroundColor": "#F3F4F6"
     },
-    "#small":  { "fontFamily": "LibreBaskerville", "fontSize": { "value": 12, "unit": "px" } },
-    "#medium": { "fontFamily": "LibreBaskerville", "fontSize": { "value": 20, "unit": "px" } },
-    "#large":  { "fontFamily": "LibreBaskerville", "fontSize": { "value": 32, "unit": "px" } }
+    "#small":  { "fontFamily": "Libre Baskerville", "fontSize": { "value": 12, "unit": "px" } },
+    "#medium": { "fontFamily": "Libre Baskerville", "fontSize": { "value": 20, "unit": "px" } },
+    "#large":  { "fontFamily": "Libre Baskerville", "fontSize": { "value": 32, "unit": "px" } }
   },
   "breakpoints": [],
   "layout": {

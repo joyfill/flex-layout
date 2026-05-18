@@ -12,8 +12,8 @@
       "whiteSpace": "nowrap",
       "textOverflow": "ellipsis"
     },
-    "#serif": { "fontFamily": "LibreBaskerville" },
-    "#mono":  { "fontFamily": "GeistMono" }
+    "#serif": { "fontFamily": "Libre Baskerville" },
+    "#mono":  { "fontFamily": "Geist Mono" }
   },
   "breakpoints": [],
   "layout": {

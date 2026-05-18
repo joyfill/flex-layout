@@ -2,7 +2,7 @@
   "version": 1,
   "style": {
     "#text": {
-      "fontFamily": "GeistMono",
+      "fontFamily": "Geist Mono",
       "fontSize": { "value": 20, "unit": "px" }
     }
   },

@@ -16,17 +16,30 @@ This is a static snapshot — there is no automatic sync. If joy-dom updates its
 fixture fonts and JoyDOM needs to follow, re-run the vendor step manually and
 record the new SHA here.
 
+### Format conversion: WOFF2 → TTF
+
+The joy-dom mirror ships Geist + Geist Mono as `.woff2` (the JS runtime
+streams them through `@font-face` in browsers). Apple's CoreText does
+not register WOFF/WOFF2 directly, so during vendoring we decompress the
+WOFF2 containers to plain TTF using `fontTools` + `brotli`. The font
+tables are byte-identical to the originals — only the outer container
+changes. The filename's `[wght]` suffix is preserved on the TTF to keep
+the trace back to the upstream variable-axis filename.
+
+Libre Baskerville is already shipped as `.ttf` upstream and copied
+verbatim.
+
 ## Families
 
 ### Geist & Geist Mono
 - License: [SIL Open Font License 1.1](https://openfontlicense.org/)
 - Copyright: 2023 Vercel, Inc.; design by Basement Studio + Vercel
 - Upstream: https://github.com/vercel/geist-font
-- Files:
-  - `Geist[wght].woff2` (variable-weight roman)
-  - `Geist-Italic[wght].woff2` (variable-weight italic)
-  - `GeistMono[wght].woff2` (variable-weight roman)
-  - `GeistMono-Italic[wght].woff2` (variable-weight italic)
+- Files (decompressed from upstream WOFF2 — see "Format conversion" below):
+  - `Geist[wght].ttf` (variable-weight roman)
+  - `Geist-Italic[wght].ttf` (variable-weight italic)
+  - `GeistMono[wght].ttf` (variable-weight roman)
+  - `GeistMono-Italic[wght].ttf` (variable-weight italic)
 
 The `[wght]` suffix in the filenames is the OpenType variable-font axis tag —
 it identifies these as single-file variable fonts whose `wght` axis spans the
