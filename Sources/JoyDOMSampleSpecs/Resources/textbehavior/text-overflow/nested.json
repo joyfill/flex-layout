@@ -1,7 +1,7 @@
 {
   "version": 1,
   "style": {
-    "#root": {
+    "#leaf": {
       "width": { "value": 200, "unit": "px" },
       "overflow": "hidden",
       "whiteSpace": "nowrap",
@@ -16,7 +16,7 @@
       {
         "type": "div",
         "children": [
-          { "type": "p", "children": ["Nested descendant truncates via cascade from root"] }
+          { "type": "p", "props": { "id": "leaf" }, "children": ["Styled leaf inside nested wrappers — ellipsis recipe lives on the <p>"] }
         ]
       }
     ]

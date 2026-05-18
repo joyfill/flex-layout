@@ -6155,7 +6155,7 @@
       "file": "textbehavior/text-overflow/missing-precondition-overflow.json",
       "category": "Text Behavior",
       "property": "textOverflow",
-      "summary": "Missing overflow precondition: width + nowrap + ellipsis WITHOUT overflow:hidden — text escapes the box (CSS default overflow:visible), ellipsis is a no-op",
+      "summary": "Missing overflow precondition: width + nowrap + ellipsis WITHOUT overflow:hidden — gate now correctly suppresses the textOverflow.ellipsis modifier (overflow defaults to visible); SwiftUI's lineLimit(1) from white-space:nowrap still tail-truncates as a separate, pre-existing limitation",
       "snapshot": { "viewportWidth": 400, "height": 80 }
     },
     {
@@ -6203,7 +6203,7 @@
       "file": "textbehavior/text-overflow/nested.json",
       "category": "Text Behavior",
       "property": "textOverflow",
-      "summary": "Nested cascade: root declares ellipsis + preconditions; descendant <p> inherits truncation",
+      "summary": "Styled leaf inside nested wrappers: ellipsis recipe applied directly to the <p> leaf (textOverflow is not CSS-inherited, so the recipe must live on the leaf)",
       "snapshot": { "viewportWidth": 360, "height": 80 }
     },
     {
