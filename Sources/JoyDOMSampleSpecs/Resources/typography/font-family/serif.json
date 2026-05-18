@@ -2,7 +2,7 @@
   "version": 1,
   "style": {
     "#text": {
-      "fontFamily": "Times New Roman",
+      "fontFamily": "LibreBaskerville",
       "fontSize": { "value": 20, "unit": "px" }
     }
   },

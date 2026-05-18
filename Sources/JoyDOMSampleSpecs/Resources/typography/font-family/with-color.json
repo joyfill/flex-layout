@@ -2,7 +2,7 @@
   "version": 1,
   "style": {
     "#text": {
-      "fontFamily": "Georgia",
+      "fontFamily": "LibreBaskerville",
       "fontSize": { "value": 24, "unit": "px" },
       "color": "#3B82F6"
     }
@@ -11,6 +11,6 @@
   "layout": {
     "type": "p",
     "props": { "id": "text" },
-    "children": ["Georgia blue heading"]
+    "children": ["Libre Baskerville blue heading"]
   }
 }

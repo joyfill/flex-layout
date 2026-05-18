@@ -2,7 +2,7 @@
   "version": 1,
   "style": {
     ".display-serif": {
-      "fontFamily": "Georgia",
+      "fontFamily": "LibreBaskerville",
       "fontSize": { "value": 20, "unit": "px" }
     }
   },

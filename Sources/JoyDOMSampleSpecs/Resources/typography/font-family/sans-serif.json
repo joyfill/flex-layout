@@ -2,7 +2,7 @@
   "version": 1,
   "style": {
     "#text": {
-      "fontFamily": "Helvetica",
+      "fontFamily": "Geist",
       "fontSize": { "value": 20, "unit": "px" }
     }
   },

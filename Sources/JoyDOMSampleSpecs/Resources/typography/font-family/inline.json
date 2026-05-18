@@ -7,7 +7,7 @@
     "props": {
       "id": "text",
       "style": {
-        "fontFamily": "Georgia",
+        "fontFamily": "LibreBaskerville",
         "fontSize": { "value": 20, "unit": "px" }
       }
     },
