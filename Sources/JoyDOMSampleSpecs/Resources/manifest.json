@@ -4411,7 +4411,7 @@
       "file": "typography/font-size/with-font-family.json",
       "category": "Typography",
       "property": "fontSize",
-      "summary": "Interaction: 26px text × fontFamily Georgia",
+      "summary": "Interaction: 26px text × fontFamily LibreBaskerville",
       "snapshot": { "viewportWidth": 360, "height": 100 }
     },
     {
@@ -4579,7 +4579,7 @@
       "file": "typography/font-weight/with-font-family-mono.json",
       "category": "Typography",
       "property": "fontWeight",
-      "summary": "Menlo at fontWeight 400 vs 700",
+      "summary": "GeistMono at fontWeight 400 vs 700",
       "snapshot": { "viewportWidth": 400, "height": 140 }
     },
     {
@@ -4651,7 +4651,7 @@
       "file": "typography/font-style/with-font-family-serif.json",
       "category": "Typography",
       "property": "fontStyle",
-      "summary": "interaction × fontFamily: Georgia (serif) italic uses true italic glyphs",
+      "summary": "interaction × fontFamily: LibreBaskerville (serif) italic uses true italic glyphs",
       "snapshot": { "viewportWidth": 400, "height": 140 }
     },
     {
@@ -4659,7 +4659,7 @@
       "file": "typography/font-style/with-font-family-sans.json",
       "category": "Typography",
       "property": "fontStyle",
-      "summary": "interaction × fontFamily: Helvetica (sans) italic — visually distinct from serif italic",
+      "summary": "interaction × fontFamily: Geist (sans) italic — visually distinct from serif italic",
       "snapshot": { "viewportWidth": 400, "height": 140 }
     },
     {
@@ -5331,7 +5331,7 @@
       "file": "typography/line-height/with-font-family-serif.json",
       "category": "Typography",
       "property": "lineHeight",
-      "summary": "Georgia serif × lineHeight 1.5 — different fonts have different built-in leading",
+      "summary": "LibreBaskerville serif × lineHeight 1.5 — different fonts have different built-in leading",
       "snapshot": { "viewportWidth": 480, "height": 220 }
     },
     {
@@ -6131,7 +6131,7 @@
       "file": "textbehavior/text-overflow/with-font-family.json",
       "category": "Text Behavior",
       "property": "textOverflow",
-      "summary": "Interaction with fontFamily: Georgia vs Menlo in the same 220px frame; monospace truncates earlier",
+      "summary": "Interaction with fontFamily: LibreBaskerville vs GeistMono in the same 220px frame; monospace truncates earlier",
       "snapshot": { "viewportWidth": 360, "height": 160 }
     },
     {
