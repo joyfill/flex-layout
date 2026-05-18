@@ -4439,6 +4439,14 @@
       "snapshot": { "viewportWidth": 360, "height": 100 }
     },
     {
+      "id": "typography-font-size-nested",
+      "file": "typography/font-size/nested.json",
+      "category": "Typography",
+      "property": "fontSize",
+      "summary": "Inheritance: fontSize on #root cascades to children; #override resets to 12px",
+      "snapshot": { "viewportWidth": 480, "height": 140 }
+    },
+    {
       "id": "typography-font-weight-overview",
       "file": "typography/font-weight/overview.json",
       "category": "Typography",
@@ -4589,6 +4597,14 @@
       "property": "fontWeight",
       "summary": "Narrow 300 → wide 800 at width>=768px",
       "snapshot": { "viewportWidth": 400, "height": 80 }
+    },
+    {
+      "id": "typography-font-weight-nested",
+      "file": "typography/font-weight/nested.json",
+      "category": "Typography",
+      "property": "fontWeight",
+      "summary": "Inheritance: fontWeight:700 on #root cascades to children; #override resets to 300",
+      "snapshot": { "viewportWidth": 480, "height": 140 }
     },
     {
       "id": "typography-font-style-overview",
@@ -5215,6 +5231,14 @@
       "snapshot": { "viewportWidth": 400, "height": 80 }
     },
     {
+      "id": "typography-text-transform-nested",
+      "file": "typography/text-transform/nested.json",
+      "category": "Typography",
+      "property": "textTransform",
+      "summary": "Inheritance: textTransform:uppercase on #root cascades to children; #override resets to none",
+      "snapshot": { "viewportWidth": 480, "height": 140 }
+    },
+    {
       "id": "typography-line-height-overview",
       "file": "typography/line-height/overview.json",
       "category": "Typography",
@@ -5525,6 +5549,14 @@
       "property": "letterSpacing",
       "summary": "responsive: 0px tight at narrow viewport, 6px wide at >=768px",
       "snapshot": { "viewportWidth": 400, "height": 120 }
+    },
+    {
+      "id": "typography-letter-spacing-nested",
+      "file": "typography/letter-spacing/nested.json",
+      "category": "Typography",
+      "property": "letterSpacing",
+      "summary": "Inheritance: letterSpacing:4px on #root cascades to children; #override resets to 0px",
+      "snapshot": { "viewportWidth": 480, "height": 140 }
     },
     {
       "id": "sizing-width",

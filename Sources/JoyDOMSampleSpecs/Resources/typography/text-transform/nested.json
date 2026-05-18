@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "style": {
+    "#root": {
+      "width": {
+        "value": 480,
+        "unit": "px"
+      },
+      "height": {
+        "value": 140,
+        "unit": "px"
+      },
+      "display": "flex",
+      "flexDirection": "column",
+      "padding": {
+        "value": 16,
+        "unit": "px"
+      },
+      "gap": {
+        "value": 8,
+        "unit": "px"
+      },
+      "backgroundColor": "#F3F4F6",
+      "fontSize": {
+        "value": 20,
+        "unit": "px"
+      },
+      "textTransform": "uppercase"
+    },
+    "#override": {
+      "textTransform": "none"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": {
+      "id": "root"
+    },
+    "children": [
+      {
+        "type": "p",
+        "props": {
+          "id": "inherited"
+        },
+        "children": [
+          "Inherits uppercase from root"
+        ]
+      },
+      {
+        "type": "p",
+        "props": {
+          "id": "override"
+        },
+        "children": [
+          "Overrides to None Mixed Case"
+        ]
+      }
+    ]
+  }
+}

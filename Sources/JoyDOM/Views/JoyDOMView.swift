@@ -513,14 +513,34 @@ public struct JoyDOMView: View {
         }
 
         if let tt = visual.textTransform {
+            // Each explicit declaration must fully redefine the inherited
+            // case state so a child can override an ancestor cascade. The
+            // previous form left stale env values in place — e.g. a child
+            // declaring `textTransform: "none"` could not break a parent's
+            // `uppercase` because the `.none` arm fell through without
+            // clearing `\.textCase`. Likewise, `\.inheritedCapitalize`
+            // had to be reset alongside `\.textCase` to keep the two
+            // env-driven paths mutually exclusive.
             switch tt {
-            case .uppercase: v = AnyView(v.environment(\.textCase, .uppercase))
-            case .lowercase: v = AnyView(v.environment(\.textCase, .lowercase))
+            case .uppercase:
+                v = AnyView(v.environment(\.textCase, .uppercase)
+                             .environment(\.inheritedCapitalize, false))
+            case .lowercase:
+                v = AnyView(v.environment(\.textCase, .lowercase)
+                             .environment(\.inheritedCapitalize, false))
             case .capitalize:
                 // SwiftUI's `.textCase` only models upper/lower; capitalize
                 // has to be applied to the raw string at the text leaf.
-                v = AnyView(v.environment(\.inheritedCapitalize, true))
-            case .none: break
+                v = AnyView(v.environment(\.textCase, nil)
+                             .environment(\.inheritedCapitalize, true))
+            case .none:
+                // Explicit `textTransform: "none"` must break an ancestor's
+                // cascade — otherwise a parent's uppercase/lowercase/
+                // capitalize keeps flowing into this subtree even though
+                // the child opted out. Regression seam:
+                // `typography/text-transform/nested.json`.
+                v = AnyView(v.environment(\.textCase, nil)
+                             .environment(\.inheritedCapitalize, false))
             }
         }
 
