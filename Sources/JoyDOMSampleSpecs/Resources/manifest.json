@@ -6254,6 +6254,62 @@
       "snapshot": { "viewportWidth": 360, "height": 200 }
     },
     {
+      "id": "media-object-fit-class-selector",
+      "file": "media/object-fit/class-selector.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "class selector authoring path: .tile { objectFit: cover } applied via className",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "media-object-fit-id-selector",
+      "file": "media/object-fit/id-selector.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "id selector authoring path: #hero { objectFit: cover } applied via id",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "media-object-fit-single-child",
+      "file": "media/object-fit/single-child.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "edge: single root img with objectFit: cover and no wrapper container",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "media-object-fit-empty",
+      "file": "media/object-fit/empty.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "edge: unresolvable bundle:// src — _DOMImage gray-fallback path, no crash",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "media-object-fit-nested",
+      "file": "media/object-fit/nested.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "cascade: objectFit declared on #parent reaches descendant img via inheritedObjectFit env",
+      "snapshot": { "viewportWidth": 280, "height": 220 }
+    },
+    {
+      "id": "media-object-fit-with-border-radius",
+      "file": "media/object-fit/with-border-radius.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "interaction: cover + borderRadius 32px + overflow:hidden produces a rounded clipped image",
+      "snapshot": { "viewportWidth": 280, "height": 200 }
+    },
+    {
+      "id": "media-object-fit-with-flex-grow",
+      "file": "media/object-fit/with-flex-grow.json",
+      "category": "Media",
+      "property": "objectFit",
+      "summary": "interaction: cover image flexGrow:1 between two 40x40 swatches in a flex row",
+      "snapshot": { "viewportWidth": 360, "height": 200 }
+    },
+    {
       "id": "media-object-position",
       "file": "media/object-position/overview.json",
       "category": "Media",
