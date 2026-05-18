@@ -2,20 +2,14 @@
   "version": 1,
   "style": {
     "#parent": {
-      "display": "flex",
-      "padding": { "value": 8, "unit": "px" },
-      "backgroundColor": "#F3F4F6",
       "objectFit": "contain",
-      "objectPosition": { "horizontal": "left", "vertical": "bottom" }
-    },
-    "#wrap": {
-      "display": "flex",
-      "padding": { "value": 4, "unit": "px" }
+      "objectPosition": { "horizontal": "left", "vertical": "bottom" },
+      "padding": { "value": 8, "unit": "px" },
+      "backgroundColor": "#111827"
     },
     "#child": {
       "width":  { "value": 200, "unit": "px" },
-      "height": { "value": 300, "unit": "px" },
-      "backgroundColor": "#111827"
+      "height": { "value": 300, "unit": "px" }
     }
   },
   "breakpoints": [],
@@ -25,7 +19,6 @@
     "children": [
       {
         "type": "div",
-        "props": { "id": "wrap" },
         "children": [
           { "type": "img", "props": { "id": "child", "src": "bundle://photo-landscape" } }
         ]
