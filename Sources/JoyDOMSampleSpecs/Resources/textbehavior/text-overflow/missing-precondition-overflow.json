@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "style": {
+    "#card": {
+      "width": { "value": 200, "unit": "px" },
+      "whiteSpace": "nowrap",
+      "textOverflow": "ellipsis"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "root" },
+    "children": [
+      { "type": "p", "props": { "id": "card" }, "children": ["The quick brown fox jumps over the lazy dog repeatedly without overflow hidden"] }
+    ]
+  }
+}

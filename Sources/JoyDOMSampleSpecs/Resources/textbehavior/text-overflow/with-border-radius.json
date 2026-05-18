@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "style": {
+    "#frame": {
+      "width": { "value": 240, "unit": "px" },
+      "overflow": "hidden",
+      "borderRadius": { "value": 16, "unit": "px" },
+      "backgroundColor": "#DBEAFE"
+    },
+    "#card": {
+      "padding": { "value": 12, "unit": "px" },
+      "overflow": "hidden",
+      "whiteSpace": "nowrap",
+      "textOverflow": "ellipsis"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "frame" },
+    "children": [
+      { "type": "p", "props": { "id": "card" }, "children": ["Rounded ellipsis truncates inside the rounded clipping shape"] }
+    ]
+  }
+}

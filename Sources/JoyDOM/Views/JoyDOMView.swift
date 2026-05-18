@@ -238,7 +238,8 @@ public struct JoyDOMView: View {
         let withVisual = applyVisual(
             rawView,
             visual: root.visualStyle,
-            schemaType: root.schemaType
+            schemaType: root.schemaType,
+            containerOverflow: root.containerStyle.overflow
         )
         let maybeHidden: AnyView = root.isVisibilityHidden
             ? AnyView(withVisual.hidden())
@@ -354,7 +355,7 @@ public struct JoyDOMView: View {
         // Apply non-layout visual CSS (background, border, typography, etc.)
         // before the flex-item wrapper so the decorations sit inside the
         // item's allocated slot.
-        let withVisual = applyVisual(rawView, visual: child.visualStyle, schemaType: child.schemaType)
+        let withVisual = applyVisual(rawView, visual: child.visualStyle, schemaType: child.schemaType, containerOverflow: child.containerStyle.overflow)
         // `visibility: hidden` keeps the flex slot and only suppresses the
         // paint — apply `.hidden()` *before* `.flexItem(...)` so layout
         // still sees the natural size of the underlying view.
@@ -477,7 +478,7 @@ public struct JoyDOMView: View {
     /// Typography modifiers propagate through SwiftUI's environment, so they
     /// automatically cascade to `Text` descendants (including those produced
     /// by `primitive_string` factories in child nodes).
-    private func applyVisual(_ view: AnyView, visual: VisualStyle, schemaType: String? = nil) -> AnyView {
+    private func applyVisual(_ view: AnyView, visual: VisualStyle, schemaType: String? = nil, containerOverflow: FlexOverflow = .visible) -> AnyView {
         var v: AnyView = view
 
         // --- Typography (propagates via SwiftUI environment) ---
@@ -539,7 +540,21 @@ public struct JoyDOMView: View {
             v = AnyView(v.environment(\.inheritedTextDecoration, inherited))
         }
 
-        if let to = visual.textOverflow, to == .ellipsis {
+        // CSS Overflow Module L3 §3.2: `text-overflow` only takes visual
+        // effect under three preconditions:
+        //   1. `white-space: nowrap` — without it, text wraps and there's
+        //      nothing to truncate on a single line.
+        //   2. `overflow != visible` — the element must clip overflow
+        //      (`hidden`, `clip`, `scroll`, `auto`). With the CSS-default
+        //      `overflow: visible`, content escapes the box rather than
+        //      being clipped/truncated.
+        //   3. Constrained width with actual overflow — handled naturally
+        //      by SwiftUI's `.lineLimit(1)` once the precondition holds.
+        // Browsers treat `text-overflow: ellipsis` as a no-op when either
+        // (1) or (2) is missing — we faithfully reproduce that here.
+        if let to = visual.textOverflow, to == .ellipsis,
+           let ws = visual.whiteSpace, ws == .nowrap,
+           containerOverflow != .visible {
             v = AnyView(v.truncationMode(.tail).lineLimit(1))
         }
 

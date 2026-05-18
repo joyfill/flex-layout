@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "style": {
+    "#frame": {
+      "width": { "value": 200, "unit": "px" },
+      "overflow": "hidden"
+    },
+    ".ellipsis": {
+      "overflow": "hidden",
+      "whiteSpace": "nowrap",
+      "textOverflow": "ellipsis"
+    }
+  },
+  "breakpoints": [],
+  "layout": {
+    "type": "div",
+    "props": { "id": "frame" },
+    "children": [
+      { "type": "p", "props": { "className": ["ellipsis"] }, "children": ["Class-selector ellipsis on a long single-line paragraph"] }
+    ]
+  }
+}
