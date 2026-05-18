@@ -1,8 +1,12 @@
 {
   "version": 1,
   "style": {
-    "#parent": { "objectFit": "contain", "padding": { "value": 8, "unit": "px" }, "backgroundColor": "#111827" },
-    "#img":    { "width": { "value": 240, "unit": "px" }, "height": { "value": 160, "unit": "px" } }
+    "#parent": { "padding": { "value": 8, "unit": "px" }, "backgroundColor": "#111827" },
+    "#img":    {
+      "width":  { "value": 240, "unit": "px" },
+      "height": { "value": 160, "unit": "px" },
+      "objectFit": "contain"
+    }
   },
   "breakpoints": [],
   "layout": {
