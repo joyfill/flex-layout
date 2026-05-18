@@ -99,7 +99,7 @@ Live status for the per-property test-coverage walk described in [`Property-Test
 
 | Property | Status | Samples | Tests delta | Date | Notes |
 |---|---|---|---|---|---|
-| `objectFit` | ✅ | 10/1/1/0 | +11 | 2026-05-14 | 5 enum values incl. new `scale-down` + default + inline + with-position + responsive. AsyncImage placeholder gap closed via `bundle://` URL scheme. |
+| `objectFit` | ✅ | 17/1/1/0 | +18 | 2026-05-18 | 5 enum values incl. `scale-down` + default + inline + class-selector + id-selector + single-child + empty (unresolvable src) + nested (cascade via env) + with-position + with-border-radius + with-flex-grow + responsive. AsyncImage placeholder gap closed via `bundle://` URL scheme. |
 | `objectPosition` | ✅ | 14/1/1/0 | +15 | 2026-05-14 | 9 keyword combos + default + with-object-fit-{none,cover} + responsive + overview. Vertical alignment visible; horizontal a no-op for contain+landscape-in-square combo (documented). |
 
 ## 8. Selectors (8 capabilities)
