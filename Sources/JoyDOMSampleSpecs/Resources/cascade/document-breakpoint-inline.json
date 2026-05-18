@@ -18,7 +18,7 @@
     "type": "h1",
     "props": {
       "id": "headline",
-      "style": { "fontFamily": "Georgia" }
+      "style": { "fontFamily": "Libre Baskerville" }
     },
     "children": ["Cascade demo"]
   }

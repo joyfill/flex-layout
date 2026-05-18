@@ -93,7 +93,7 @@ Every property listed as `Length<'px'>` or `Length<'px' | '%'>` takes the typed 
 
 | Property | Legal values |
 |---|---|
-| `fontFamily` | string |
+| `fontFamily` | string — bundled cross-runtime families: `Geist`, `Libre Baskerville`, `Geist Mono`. Other names fall through to host system fonts (out-of-spec for cross-platform parity). |
 | `fontSize` | `Length<"px">` |
 | `fontWeight` | `"normal"` · `"bold"` · `100` · `200` · `300` · `400` · `500` · `600` · `700` · `800` · `900` |
 | `fontStyle` | `"normal"` · `"italic"` |

@@ -4131,7 +4131,7 @@
       "file": "typography/font-family/overview.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Showcase: Georgia headline, Helvetica Neue body, Menlo code",
+      "summary": "Showcase: Libre Baskerville headline, Geist body, Geist Mono code",
       "snapshot": { "viewportWidth": 480, "height": 200 }
     },
     {
@@ -4155,7 +4155,7 @@
       "file": "typography/font-family/serif.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Value sweep: 'Times New Roman' (serif)",
+      "summary": "Value sweep: 'Libre Baskerville' (bundled serif, OFL 1.1)",
       "snapshot": { "viewportWidth": 480, "height": 80 }
     },
     {
@@ -4163,7 +4163,7 @@
       "file": "typography/font-family/sans-serif.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Value sweep: 'Helvetica' (sans-serif)",
+      "summary": "Value sweep: 'Geist' (bundled sans-serif, OFL 1.1)",
       "snapshot": { "viewportWidth": 480, "height": 80 }
     },
     {
@@ -4171,31 +4171,31 @@
       "file": "typography/font-family/monospace.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Value sweep: 'Menlo' (monospace)",
+      "summary": "Value sweep: 'Geist Mono' (bundled monospace, OFL 1.1)",
       "snapshot": { "viewportWidth": 480, "height": 80 }
     },
     {
       "id": "typography-font-family-courier",
-      "file": "typography/font-family/courier.json",
+      "file": "typography/font-family-ios-ext/courier.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Value sweep: 'Courier' (classic monospace)",
+      "summary": "iOS-ext: 'Courier' macOS-stock host font (CoreText fallback path)",
       "snapshot": { "viewportWidth": 480, "height": 80 }
     },
     {
       "id": "typography-font-family-georgia",
-      "file": "typography/font-family/georgia.json",
+      "file": "typography/font-family-ios-ext/georgia.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Value sweep: 'Georgia' (specific named family)",
+      "summary": "iOS-ext: 'Georgia' macOS-stock host font (CoreText fallback path)",
       "snapshot": { "viewportWidth": 480, "height": 80 }
     },
     {
       "id": "typography-font-family-helvetica-neue",
-      "file": "typography/font-family/helvetica-neue.json",
+      "file": "typography/font-family-ios-ext/helvetica-neue.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Value sweep: 'Helvetica Neue' (multi-word family name)",
+      "summary": "iOS-ext: 'Helvetica Neue' macOS-stock host font (CoreText fallback path)",
       "snapshot": { "viewportWidth": 480, "height": 80 }
     },
     {
@@ -4227,7 +4227,7 @@
       "file": "typography/font-family/with-font-size.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Interaction × fontSize: Georgia at 12 / 20 / 32 px",
+      "summary": "Interaction × fontSize: Libre Baskerville at 12 / 20 / 32 px",
       "snapshot": { "viewportWidth": 480, "height": 200 }
     },
     {
@@ -4235,7 +4235,7 @@
       "file": "typography/font-family/with-font-weight.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Interaction × fontWeight: Helvetica Neue regular / bold / 300 / 700",
+      "summary": "Interaction × fontWeight: Geist regular / bold / 300 / 700",
       "snapshot": { "viewportWidth": 480, "height": 220 }
     },
     {
@@ -4243,7 +4243,7 @@
       "file": "typography/font-family/with-color.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Interaction × color: Georgia heading in blue",
+      "summary": "Interaction × color: Libre Baskerville heading in blue",
       "snapshot": { "viewportWidth": 480, "height": 80 }
     },
     {
@@ -4251,7 +4251,7 @@
       "file": "typography/font-family/nested.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Nested: SwiftUI .font() env on #root cascades to children; #override resets to Menlo",
+      "summary": "Nested: SwiftUI .font() env on #root cascades to children; #override resets to Geist Mono",
       "snapshot": { "viewportWidth": 480, "height": 140 }
     },
     {
@@ -4259,7 +4259,7 @@
       "file": "typography/font-family/multiple-paragraphs.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Three sibling paragraphs in Georgia / Helvetica / Menlo",
+      "summary": "Three sibling paragraphs in Libre Baskerville / Geist / Geist Mono",
       "snapshot": { "viewportWidth": 480, "height": 160 }
     },
     {
@@ -4267,7 +4267,7 @@
       "file": "typography/font-family/responsive.json",
       "category": "Typography",
       "property": "fontFamily",
-      "summary": "Breakpoint flip: Georgia at narrow viewport, Menlo when width >= 768px",
+      "summary": "Breakpoint flip: Libre Baskerville at narrow viewport, Geist Mono when width >= 768px",
       "snapshot": { "viewportWidth": 320, "height": 80 }
     },
     {
@@ -4411,7 +4411,7 @@
       "file": "typography/font-size/with-font-family.json",
       "category": "Typography",
       "property": "fontSize",
-      "summary": "Interaction: 26px text × fontFamily Georgia",
+      "summary": "Interaction: 26px text × fontFamily Libre Baskerville",
       "snapshot": { "viewportWidth": 360, "height": 100 }
     },
     {
@@ -4579,7 +4579,7 @@
       "file": "typography/font-weight/with-font-family-mono.json",
       "category": "Typography",
       "property": "fontWeight",
-      "summary": "Menlo at fontWeight 400 vs 700",
+      "summary": "Geist Mono at fontWeight 400 vs 700",
       "snapshot": { "viewportWidth": 400, "height": 140 }
     },
     {
@@ -4651,7 +4651,7 @@
       "file": "typography/font-style/with-font-family-serif.json",
       "category": "Typography",
       "property": "fontStyle",
-      "summary": "interaction × fontFamily: Georgia (serif) italic uses true italic glyphs",
+      "summary": "interaction × fontFamily: Libre Baskerville (serif) italic uses true italic glyphs",
       "snapshot": { "viewportWidth": 400, "height": 140 }
     },
     {
@@ -4659,7 +4659,7 @@
       "file": "typography/font-style/with-font-family-sans.json",
       "category": "Typography",
       "property": "fontStyle",
-      "summary": "interaction × fontFamily: Helvetica (sans) italic — visually distinct from serif italic",
+      "summary": "interaction × fontFamily: Geist (sans) italic — visually distinct from serif italic",
       "snapshot": { "viewportWidth": 400, "height": 140 }
     },
     {
@@ -5331,7 +5331,7 @@
       "file": "typography/line-height/with-font-family-serif.json",
       "category": "Typography",
       "property": "lineHeight",
-      "summary": "Georgia serif × lineHeight 1.5 — different fonts have different built-in leading",
+      "summary": "Libre Baskerville serif × lineHeight 1.5 — different fonts have different built-in leading",
       "snapshot": { "viewportWidth": 480, "height": 220 }
     },
     {
@@ -6131,7 +6131,7 @@
       "file": "textbehavior/text-overflow/with-font-family.json",
       "category": "Text Behavior",
       "property": "textOverflow",
-      "summary": "Interaction with fontFamily: Georgia vs Menlo in the same 220px frame; monospace truncates earlier",
+      "summary": "Interaction with fontFamily: Libre Baskerville vs Geist Mono in the same 220px frame; monospace truncates earlier",
       "snapshot": { "viewportWidth": 360, "height": 160 }
     },
     {

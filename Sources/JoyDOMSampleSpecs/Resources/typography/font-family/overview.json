@@ -8,9 +8,9 @@
       "gap": { "value": 6, "unit": "px" },
       "backgroundColor": "#F3F4F6"
     },
-    "#headline":  { "fontFamily": "Georgia",        "fontSize": { "value": 28, "unit": "px" } },
-    "#body":      { "fontFamily": "Helvetica Neue", "fontSize": { "value": 16, "unit": "px" } },
-    "#code":      { "fontFamily": "Menlo",          "fontSize": { "value": 14, "unit": "px" } }
+    "#headline":  { "fontFamily": "Libre Baskerville", "fontSize": { "value": 28, "unit": "px" } },
+    "#body":      { "fontFamily": "Geist",            "fontSize": { "value": 16, "unit": "px" } },
+    "#code":      { "fontFamily": "Geist Mono",        "fontSize": { "value": 14, "unit": "px" } }
   },
   "breakpoints": [],
   "layout": {
@@ -18,8 +18,8 @@
     "props": { "id": "root" },
     "children": [
       { "type": "h1", "props": { "id": "headline" }, "children": ["Hello, joy-dom!"] },
-      { "type": "p",  "props": { "id": "body"     }, "children": ["A short paragraph in Helvetica Neue."] },
-      { "type": "p",  "props": { "id": "code"     }, "children": ["fontFamily: 'Menlo'"] }
+      { "type": "p",  "props": { "id": "body"     }, "children": ["A short paragraph in Geist."] },
+      { "type": "p",  "props": { "id": "code"     }, "children": ["fontFamily: 'Geist Mono'"] }
     ]
   }
 }

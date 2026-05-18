@@ -203,6 +203,27 @@ JoyDOM spec doesn't list (e.g. `row-reverse`, `column-reverse`), enumerate
 those separately. They get their own folder, their own test method, and
 **do not appear** in the cross-platform Notion table. See Step 2 for layout.
 
+**1d. Typography only — use bundled cross-runtime font families.** If a
+sample sets `fontFamily` (either directly or as a cross-property interaction
+with `fontSize`, `fontStyle`, `lineHeight`, etc.), the value must be one of
+the three families JoyDOM bundles in `Resources/fonts/` and registers with
+CoreText at test setUp:
+
+| Family name (use this exact string in JSON) | Use for |
+|---|---|
+| `Geist` | sans-serif samples |
+| `Libre Baskerville` | serif samples |
+| `Geist Mono` | monospace samples |
+
+All three are SIL OFL 1.1 fonts mirrored from joy-dom's JS-runtime fixture
+assets so SwiftUI baselines render byte-comparable glyphs to the JS runtime.
+Host-system families (Georgia, Helvetica Neue, Menlo, Courier, …) are
+**out of spec** for the cross-platform walk; samples that exercise them go
+to a `<prop>-ios-ext/` sibling folder paired with an `ios-ext` test method
+(see `font-family` / `font-family-ios-ext/` for the canonical pattern).
+Unknown family names belong in a dedicated `invalid-fallback.json` that
+verifies the CoreText system-fallback path.
+
 **Gate:** A written list of sample filenames, split into two groups: in-scope
 (spec-aligned) and ios-ext (if any).
 

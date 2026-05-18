@@ -7,11 +7,11 @@
       "padding": { "value": 16, "unit": "px" },
       "gap": { "value": 8, "unit": "px" },
       "backgroundColor": "#F3F4F6",
-      "fontFamily": "Georgia",
+      "fontFamily": "Libre Baskerville",
       "fontSize": { "value": 20, "unit": "px" }
     },
     "#override": {
-      "fontFamily": "Menlo"
+      "fontFamily": "Geist Mono"
     }
   },
   "breakpoints": [],
@@ -19,8 +19,8 @@
     "type": "div",
     "props": { "id": "root" },
     "children": [
-      { "type": "p", "props": { "id": "inherited" }, "children": ["Inherits Georgia from #root"] },
-      { "type": "p", "props": { "id": "override"  }, "children": ["Overrides with Menlo"] }
+      { "type": "p", "props": { "id": "inherited" }, "children": ["Inherits Libre Baskerville from #root"] },
+      { "type": "p", "props": { "id": "override"  }, "children": ["Overrides with Geist Mono"] }
     ]
   }
 }
